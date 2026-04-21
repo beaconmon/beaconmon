@@ -112,9 +112,13 @@ The web app writes monitor configs to the DB. Workers read the queue, execute ch
 write results to the DB, and enqueue alert jobs. No direct HTTP calls between services.
 
 ### 2. All database access goes through repositories
-No raw Prisma calls in route handlers or worker code. Every DB operation lives in
-`apps/web/lib/repositories/`. Every repository function takes `teamId` as its first
-argument and scopes all queries to that team. This is the tenant isolation boundary.
+No raw Prisma calls in route handlers or worker code. Web-facing DB operations live
+in `apps/web/lib/repositories/` — every function takes `teamId` as its first argument
+and scopes all queries to that team. This is the tenant isolation boundary.
+
+Worker-only repositories live in `packages/db/src/repositories/` and are imported as
+`@beaconmon/db`. These operate on trusted job payloads (monitorId from the queue) and
+do not require teamId scoping since the data was already tenant-scoped at enqueue time.
 
 ```typescript
 // CORRECT

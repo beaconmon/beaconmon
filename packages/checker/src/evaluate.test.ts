@@ -42,4 +42,15 @@ describe('evaluateCheckResult', () => {
       expect(result.becameDown).toBe(false);
     });
   });
+
+  describe('transient failure recovery', () => {
+    it('recovers to up with no state change after single failure', () => {
+      // up → failure → success → up (no state change, no alert)
+      const result = evaluateCheckResult(true, 'up', 1);
+      expect(result.status).toBe('up');
+      expect(result.consecutiveFailures).toBe(0);
+      expect(result.becameDown).toBe(false);
+      expect(result.becameUp).toBe(false);
+    });
+  });
 });

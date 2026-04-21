@@ -15,7 +15,8 @@
   "dependencies": {
     "@beaconmon/logger": "workspace:*",
     "@beaconmon/types": "workspace:*",
-    "undici": "^7.3.0"
+    "undici": "^7.3.0",
+    "whoiser": "^1.17.0"
   },
   "devDependencies": {
     "@beaconmon/tsconfig": "workspace:*",

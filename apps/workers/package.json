@@ -11,7 +11,8 @@
     "dev:content": "tsx watch content-worker.ts",
     "dev:alert": "tsx watch alert-worker.ts",
     "dev:scheduler": "tsx watch scheduler.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:integration": "vitest run --reporter=verbose check-worker.integration.test.ts"
   },
   "dependencies": {
     "@beaconmon/checker": "workspace:*",
@@ -27,6 +28,7 @@
     "@beaconmon/tsconfig": "workspace:*",
     "@types/node": "^20.17.9",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
   }
 }
