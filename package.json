@@ -1,0 +1,39 @@
+{
+  "name": "beaconmon",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.25.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "db:migrate": "pnpm --filter @beaconmon/db run migrate",
+    "db:seed": "pnpm --filter @beaconmon/db run seed",
+    "db:studio": "pnpm --filter @beaconmon/db run studio",
+    "start:web": "pnpm --filter @beaconmon/web run start",
+    "start:worker:checks": "pnpm --filter @beaconmon/workers run start:check",
+    "start:worker:content": "pnpm --filter @beaconmon/workers run start:content",
+    "start:worker:alerts": "pnpm --filter @beaconmon/workers run start:alert",
+    "start:scheduler": "pnpm --filter @beaconmon/workers run start:scheduler"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "msgpackr-extract",
+      "prisma",
+      "unrs-resolver"
+    ]
+  }
+}

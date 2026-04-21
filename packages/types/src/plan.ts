@@ -1,0 +1,37 @@
+export type PlanTier = 'free' | 'pro' | 'business';
+
+export const PLAN_LIMITS = {
+  free: {
+    monitors: 5,
+    checkIntervalSeconds: 300, // 5 minutes minimum
+    historyDays: 7,
+    statusPages: 1,
+    teamMembers: 1,
+    alertChannels: 1,
+  },
+  pro: {
+    monitors: 25,
+    checkIntervalSeconds: 60, // 1 minute minimum
+    historyDays: 90,
+    statusPages: 3,
+    teamMembers: 5,
+    alertChannels: 5,
+  },
+  business: {
+    monitors: -1, // unlimited
+    checkIntervalSeconds: 30, // 30 seconds minimum
+    historyDays: 365,
+    statusPages: -1,
+    teamMembers: -1,
+    alertChannels: -1,
+  },
+} as const satisfies Record<PlanTier, PlanLimits>;
+
+export interface PlanLimits {
+  monitors: number;
+  checkIntervalSeconds: number;
+  historyDays: number;
+  statusPages: number;
+  teamMembers: number;
+  alertChannels: number;
+}

@@ -1,0 +1,368 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum MonitorType {
+  http
+  ssl
+  domain
+  tcp
+  keyword
+  content
+}
+
+enum MonitorStatus {
+  up
+  down
+  paused
+}
+
+enum KeywordCondition {
+  present
+  absent
+}
+
+enum TeamRole {
+  owner
+  admin
+  viewer
+}
+
+enum PlanTier {
+  free
+  pro
+  business
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  incomplete
+}
+
+enum ResolutionType {
+  automatic
+  manual
+}
+
+enum AlertChannelType {
+  email
+  slack
+  webhook
+  sms
+}
+
+enum ExpiryAlertType {
+  ssl
+  domain
+}
+
+// ─── Teams & Users ────────────────────────────────────────────────────────────
+
+model Team {
+  id          String    @id @default(cuid())
+  name        String
+  plan        PlanTier  @default(free)
+  trialEndsAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  members        TeamMember[]
+  invitations    TeamInvitation[]
+  subscription   Subscription?
+  monitors       Monitor[]
+  alertChannels  AlertChannel[]
+  incidents      Incident[]
+  expiryAlerts   ExpiryAlert[]
+  notifications  Notification[]
+  statusPages    StatusPage[]
+
+  @@map("teams")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  memberships TeamMember[]
+  sessions    Session[]
+  accounts    Account[]
+
+  @@map("users")
+}
+
+// Better Auth tables
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      TeamRole @default(viewer)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("team_members")
+}
+
+model TeamInvitation {
+  id         String    @id @default(cuid())
+  teamId     String
+  email      String
+  role       TeamRole  @default(viewer)
+  token      String    @unique
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("team_invitations")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  teamId               String             @unique
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String?            @unique
+  plan                 PlanTier           @default(free)
+  status               SubscriptionStatus @default(trialing)
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ─── Monitors ─────────────────────────────────────────────────────────────────
+
+model Monitor {
+  id            String        @id @default(cuid())
+  teamId        String
+  name          String
+  url           String
+  type          MonitorType
+  isActive      Boolean       @default(true)
+  currentStatus MonitorStatus @default(up)
+  intervalSeconds Int         @default(300)
+  timeoutMs     Int           @default(30000)
+  nextCheckAt   DateTime?
+  lastCheckedAt DateTime?
+  consecutiveFailures Int     @default(0)
+
+  // HTTP / keyword extras
+  responseTimeThresholdMs Int?
+  keyword                 String?
+  keywordCondition        KeywordCondition?
+
+  // Content monitor
+  contentSnapshot       String?
+  contentLastChangedAt  DateTime?
+  requiresJs            Boolean  @default(false)
+
+  // Type-specific config (port, selector, etc.)
+  config Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team              Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  checkResults      CheckResult[]
+  incidents         Incident[]
+  expiryAlerts      ExpiryAlert[]
+  statusPageMonitors StatusPageMonitor[]
+
+  // Partial index (is_active = true) is created in migration 0001 as raw SQL
+  @@map("monitors")
+}
+
+// ─── Check Results (partitioned — see migration 0002) ─────────────────────────
+// Prisma maps to the partition parent table for type generation only.
+// Actual partitioned DDL is in migration 0002_check_results_partition.
+
+model CheckResult {
+  id            String   @id @default(cuid())
+  monitorId     String
+  checkedAt     DateTime @default(now())
+  success       Boolean
+  statusCode    Int?
+  responseTimeMs Int?
+  errorType     String?
+  errorMessage  String?
+
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@map("check_results")
+}
+
+// ─── Incidents ────────────────────────────────────────────────────────────────
+
+model Incident {
+  id             String          @id @default(cuid())
+  teamId         String
+  monitorId      String
+  startedAt      DateTime        @default(now())
+  resolvedAt     DateTime?
+  resolutionType ResolutionType?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  monitor       Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@index([teamId, startedAt(sort: Desc)])
+  @@map("incidents")
+}
+
+// ─── Expiry Alerts (SSL + domain) ─────────────────────────────────────────────
+
+model ExpiryAlert {
+  id           String          @id @default(cuid())
+  teamId       String
+  monitorId    String
+  type         ExpiryAlertType
+  daysRemaining Int
+  threshold    Int
+  sentAt       DateTime        @default(now())
+  createdAt    DateTime        @default(now())
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@map("expiry_alerts")
+}
+
+// ─── Alert Channels ───────────────────────────────────────────────────────────
+
+model AlertChannel {
+  id        String           @id @default(cuid())
+  teamId    String
+  name      String
+  type      AlertChannelType
+  config    Json             @default("{}")
+  isActive  Boolean          @default(true)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@map("alert_channels")
+}
+
+// ─── Notifications (idempotency log) ─────────────────────────────────────────
+
+model Notification {
+  id         String   @id @default(cuid())
+  teamId     String
+  incidentId String
+  channelId  String
+  sentAt     DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  team     Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  incident Incident     @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  channel  AlertChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId, channelId, sentAt(sort: Desc)])
+  @@map("notifications")
+}
+
+// ─── Status Pages ─────────────────────────────────────────────────────────────
+
+model StatusPage {
+  id           String  @id @default(cuid())
+  teamId       String
+  name         String
+  slug         String  @unique
+  customDomain String?
+  isPublic     Boolean @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  team     Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  monitors StatusPageMonitor[]
+
+  // Partial unique index (custom_domain IS NOT NULL) is created in migration 0001 as raw SQL
+  @@map("status_pages")
+}
+
+model StatusPageMonitor {
+  id           String @id @default(cuid())
+  statusPageId String
+  monitorId    String
+  displayOrder Int    @default(0)
+
+  statusPage StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+  monitor    Monitor    @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@unique([statusPageId, monitorId])
+  @@map("status_page_monitors")
+}
