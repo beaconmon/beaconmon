@@ -4,3 +4,4 @@ export * from './incident.js';
 export * from './alert.js';
 export * from './team.js';
 export * from './plan.js';
+export * from './result.js';
