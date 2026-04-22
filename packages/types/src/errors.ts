@@ -1,0 +1,10 @@
+export const ErrorCode = {
+  PLAN_LIMIT_REACHED: 'PLAN_LIMIT_REACHED',
+  RESOURCE_NOT_FOUND: 'RESOURCE_NOT_FOUND',
+  SLUG_TAKEN: 'SLUG_TAKEN',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  FORBIDDEN: 'FORBIDDEN',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+} as const;
+
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

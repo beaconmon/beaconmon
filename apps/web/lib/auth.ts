@@ -65,16 +65,36 @@ export const auth = betterAuth({
         // "First team wins" — sufficient for the solo-founder MVP.
         const membership = await prisma.teamMember.findFirst({
           where: { userId: user.id },
-          include: { team: { select: { id: true, plan: true } } },
+          include: {
+            team: {
+              select: {
+                id: true,
+                plan: true,
+                trialEndsAt: true,
+                subscription: { select: { status: true } },
+              },
+            },
+          },
           orderBy: { createdAt: 'asc' },
         });
+
+        // Resolve effective plan — downgrade to free if trial expired with no active subscription.
+        let effectivePlan: PlanTier = (membership?.team.plan ?? 'free') as PlanTier;
+        if (effectivePlan !== 'free' && membership?.team.trialEndsAt) {
+          const subStatus = membership.team.subscription?.status;
+          const trialExpired = membership.team.trialEndsAt < new Date();
+          const hasActiveSub = subStatus === 'active' || subStatus === 'past_due';
+          if (trialExpired && !hasActiveSub) {
+            effectivePlan = 'free';
+          }
+        }
 
         return {
           session,
           user: {
             ...user,
             teamId: membership?.team.id ?? null,
-            plan: (membership?.team.plan ?? 'free') as PlanTier,
+            plan: effectivePlan,
           },
         };
       },

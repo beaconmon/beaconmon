@@ -69,6 +69,9 @@ async function scheduleChecks(): Promise<void> {
       }
     }
 
+    // Record last run timestamp for the health endpoint
+    await connection.set('scheduler:last_run', new Date().toISOString());
+
     if (dueMonitors.length > 0) {
       logger.info(
         { service: 'scheduler', count: dueMonitors.length },
