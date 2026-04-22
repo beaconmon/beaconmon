@@ -6,6 +6,7 @@ import { Worker } from 'bullmq';
 import { QUEUE_NAMES } from '@beaconmon/queue';
 import type { AlertJob } from '@beaconmon/queue';
 import { prisma } from '@beaconmon/db';
+import { processAlertJob } from './process-alert-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 
@@ -14,22 +15,10 @@ const worker = new Worker<AlertJob>(
   async (job) => {
     const { incidentId, monitorId, teamId, type } = job.data;
     logger.info(
-      { service: 'alert-worker', incidentId, monitorId, teamId, type },
+      { service: 'alert-worker', jobId: job.id, incidentId, monitorId, teamId, type },
       'Processing alert job'
     );
-
-    if (env.ALERT_DRY_RUN) {
-      logger.info({ service: 'alert-worker', job: job.data }, 'ALERT_DRY_RUN=true — skipping send');
-      return;
-    }
-
-    // Idempotency check — architecture rule #5:
-    // Before sending, check notifications table for same (incident_id, channel_id)
-    // within the last 5 minutes. If found, skip.
-
-    // TODO: load team's active alert channels
-    // TODO: for each channel, check idempotency, then send via email/slack/webhook
-    // TODO: log to notifications table after successful send
+    await processAlertJob(job.data);
   },
   {
     connection,
@@ -45,6 +34,7 @@ worker.on('failed', (job, err) => {
 });
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────
+
 const shutdown = async (signal: string) => {
   logger.info({ signal }, 'Received shutdown signal, draining alert worker');
 

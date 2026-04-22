@@ -4,6 +4,7 @@ import type { MonitorStatus, MonitorType } from '@beaconmon/types';
 export interface MonitorForCheck {
   id: string;
   teamId: string;
+  name: string;
   url: string;
   type: MonitorType;
   intervalSeconds: number;
@@ -28,6 +29,7 @@ export const monitorRepository = {
       select: {
         id: true,
         teamId: true,
+        name: true,
         url: true,
         type: true,
         intervalSeconds: true,

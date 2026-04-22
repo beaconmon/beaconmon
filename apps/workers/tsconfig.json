@@ -2,7 +2,9 @@
   "extends": "@beaconmon/tsconfig/node.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "types": ["node"]
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }
