@@ -8,6 +8,7 @@ export interface CreateNotificationData {
 
 export const notificationRepository = {
   async existsRecent(
+    teamId: string,
     incidentId: string,
     channelId: string,
     windowMinutes: number
@@ -16,6 +17,7 @@ export const notificationRepository = {
 
     const notification = await prisma.notification.findFirst({
       where: {
+        teamId,
         incidentId,
         channelId,
         sentAt: { gte: cutoff },

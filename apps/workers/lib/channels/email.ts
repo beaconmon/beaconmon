@@ -30,11 +30,7 @@ export const emailSender: ChannelSender = async (rawConfig, payload) => {
   }
 
   if (!env.RESEND_API_KEY || !env.EMAIL_FROM) {
-    logger.warn(
-      { service: 'alert-worker', channel: 'email' },
-      'RESEND_API_KEY or EMAIL_FROM not set — skipping email send'
-    );
-    return;
+    throw new Error('RESEND_API_KEY or EMAIL_FROM not set — cannot send email alert');
   }
 
   const html =

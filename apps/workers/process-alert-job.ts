@@ -56,6 +56,7 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
   for (const channel of channels) {
     // 4a. Idempotency check (architecture rule #5)
     const alreadySent = await notificationRepository.existsRecent(
+      teamId,
       incidentId,
       channel.id,
       IDEMPOTENCY_WINDOW_MINUTES
