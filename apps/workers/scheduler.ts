@@ -52,7 +52,7 @@ async function scheduleChecks(): Promise<void> {
             intervalSeconds: monitor.intervalSeconds,
             selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
           },
-          { jobId: `content:${monitor.id}:${now.getTime()}` }
+          { jobId: `content:${monitor.id}` }
         );
       } else {
         await checkQueue.add(
@@ -64,7 +64,7 @@ async function scheduleChecks(): Promise<void> {
             intervalSeconds: monitor.intervalSeconds,
             timeoutMs: monitor.timeoutMs,
           },
-          { jobId: `check:${monitor.id}:${now.getTime()}` }
+          { jobId: `check:${monitor.id}` }
         );
       }
     }

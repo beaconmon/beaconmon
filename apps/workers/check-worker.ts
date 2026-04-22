@@ -3,62 +3,27 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { Worker } from 'bullmq';
-import { QUEUE_NAMES } from '@beaconmon/queue';
+import { QUEUE_NAMES, createAlertQueue } from '@beaconmon/queue';
 import type { CheckJob } from '@beaconmon/queue';
-import { runHttpCheck, runSslCheck, runTcpCheck, type CheckInput } from '@beaconmon/checker';
 import { prisma } from '@beaconmon/db';
+import { processCheckJob } from './process-check-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
+const alertQueue = createAlertQueue(connection);
 
 const worker = new Worker<CheckJob>(
   QUEUE_NAMES.CHECK_SCHEDULED,
   async (job) => {
-    const { monitorId, type, url, timeoutMs, intervalSeconds } = job.data;
-    logger.info({ service: 'check-worker', monitorId, type, url }, 'Processing check job');
-
-    const checkInput: CheckInput = {
-      monitorId,
-      url,
-      type: type as CheckInput['type'],
-      timeoutMs,
-      intervalSeconds,
-    };
-
-    let result;
-    switch (type) {
-      case 'http':
-      case 'keyword':
-        result = await runHttpCheck(checkInput);
-        break;
-      case 'ssl':
-        result = await runSslCheck(checkInput);
-        break;
-      case 'tcp':
-        result = await runTcpCheck(checkInput);
-        break;
-      case 'domain':
-        // TODO: implement WHOIS-based domain expiry check
-        logger.warn({ monitorId }, 'Domain check not yet implemented');
-        return;
-      default:
-        logger.error({ monitorId, type }, 'Unknown check type');
-        return;
-    }
-
     logger.info(
       {
         service: 'check-worker',
-        monitorId,
-        success: result.success,
-        responseTimeMs: result.responseTimeMs,
-        errorType: result.errorType,
+        monitorId: job.data.monitorId,
+        type: job.data.type,
+        url: job.data.url,
       },
-      'Check completed'
+      'Processing check job'
     );
-
-    // TODO: persist result, evaluate status transition, enqueue alert if needed
-    void result;
-    void intervalSeconds;
+    await processCheckJob(job.data, alertQueue);
   },
   {
     connection,
@@ -88,6 +53,7 @@ const shutdown = async (signal: string) => {
   await worker.close();
   clearTimeout(drainTimeout);
 
+  await alertQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 
@@ -96,6 +62,7 @@ const shutdown = async (signal: string) => {
 };
 
 const forceShutdown = async () => {
+  await alertQueue.close().catch(() => {});
   await prisma.$disconnect().catch(() => {});
   await connection.quit().catch(() => {});
   process.exit(1);

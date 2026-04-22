@@ -2,6 +2,8 @@ export { runHttpCheck } from './http.js';
 export { runSslCheck } from './ssl.js';
 export type { SslCheckDetail } from './ssl.js';
 export { runTcpCheck } from './tcp.js';
+export { runDomainCheck } from './domain.js';
+export type { DomainCheckDetail } from './domain.js';
 export { classifyError } from './errors.js';
 export { evaluateCheckResult } from './evaluate.js';
 export type { EvaluationResult } from './evaluate.js';
