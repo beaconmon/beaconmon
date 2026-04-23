@@ -1,0 +1,325 @@
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import type { Resolver } from 'react-hook-form';
+import { z } from 'zod';
+import { PLAN_LIMITS } from '@beaconmon/types';
+import type { PlanTier } from '@beaconmon/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+
+const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content'] as const;
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  type: z.enum(MONITOR_TYPES),
+  url: z.string().optional(),
+  host: z.string().optional(),
+  port: z.coerce.number().int().positive().optional(),
+  domain: z.string().optional(),
+  intervalSeconds: z.coerce.number().int().positive(),
+  timeoutMs: z.coerce.number().int().positive().optional(),
+  responseTimeThresholdMs: z.coerce.number().int().positive().optional(),
+  keyword: z.string().optional(),
+  keywordCondition: z.enum(['present', 'absent']).optional(),
+  cssSelector: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.type === 'http' || data.type === 'keyword' || data.type === 'content') {
+    if (!data.url) {
+      ctx.addIssue({ code: 'custom', path: ['url'], message: 'URL is required' });
+    }
+  }
+  if (data.type === 'tcp') {
+    if (!data.host) ctx.addIssue({ code: 'custom', path: ['host'], message: 'Host is required' });
+    if (!data.port) ctx.addIssue({ code: 'custom', path: ['port'], message: 'Port is required' });
+  }
+  if (data.type === 'ssl' || data.type === 'domain') {
+    if (!data.domain) ctx.addIssue({ code: 'custom', path: ['domain'], message: 'Domain is required' });
+  }
+  if (data.type === 'keyword') {
+    if (!data.keyword) ctx.addIssue({ code: 'custom', path: ['keyword'], message: 'Keyword is required' });
+    if (!data.keywordCondition) ctx.addIssue({ code: 'custom', path: ['keywordCondition'], message: 'Condition is required' });
+  }
+});
+
+export type MonitorFormValues = z.infer<typeof formSchema>;
+
+interface MonitorFormProps {
+  defaultValues?: Partial<MonitorFormValues>;
+  plan: PlanTier;
+  onSubmit: (data: MonitorFormValues) => Promise<void>;
+  isSubmitting: boolean;
+  error?: string | null;
+}
+
+export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error }: MonitorFormProps) {
+  const minInterval = PLAN_LIMITS[plan].checkIntervalSeconds;
+
+  const form = useForm<MonitorFormValues>({
+    resolver: standardSchemaResolver(formSchema) as unknown as Resolver<MonitorFormValues>,
+    defaultValues: {
+      name: '',
+      type: 'http',
+      intervalSeconds: minInterval,
+      timeoutMs: 30000,
+      ...defaultValues,
+    },
+  });
+
+  const selectedType = form.watch('type');
+  const intervalValue = form.watch('intervalSeconds');
+  const intervalTooLow = Number(intervalValue) < minInterval;
+
+  const needsUrl = selectedType === 'http' || selectedType === 'keyword' || selectedType === 'content';
+  const needsDomain = selectedType === 'ssl' || selectedType === 'domain';
+  const needsTcp = selectedType === 'tcp';
+  const needsKeyword = selectedType === 'keyword';
+  const needsTimeout = selectedType === 'http' || selectedType === 'tcp' || selectedType === 'keyword' || selectedType === 'content';
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="My website" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Monitor type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="http">HTTP — status code &amp; response time</SelectItem>
+                  <SelectItem value="ssl">SSL — certificate expiry</SelectItem>
+                  <SelectItem value="domain">Domain — WHOIS expiry</SelectItem>
+                  <SelectItem value="tcp">TCP — port availability</SelectItem>
+                  <SelectItem value="keyword">Keyword — text present/absent</SelectItem>
+                  <SelectItem value="content">Content — HTML change detection</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {needsUrl && (
+          <FormField
+            control={form.control}
+            name="url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com" {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {needsDomain && (
+          <FormField
+            control={form.control}
+            name="domain"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Domain</FormLabel>
+                <FormControl>
+                  <Input placeholder="example.com" {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {needsTcp && (
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="host"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Host</FormLabel>
+                  <FormControl>
+                    <Input placeholder="db.example.com" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="port"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Port</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="5432" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+
+        {needsKeyword && (
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="keyword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Keyword</FormLabel>
+                  <FormControl>
+                    <Input placeholder="In stock" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="keywordCondition"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Condition</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="present">Present</SelectItem>
+                      <SelectItem value="absent">Absent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+
+        {selectedType === 'content' && (
+          <FormField
+            control={form.control}
+            name="cssSelector"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CSS selector <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+                <FormControl>
+                  <Input placeholder=".price" {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormDescription>Leave blank to monitor the entire page body.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {selectedType === 'http' && (
+          <FormField
+            control={form.control}
+            name="responseTimeThresholdMs"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Response time threshold <span className="text-muted-foreground font-normal">(ms, optional)</span></FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="2000" {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormDescription>Alert if response time exceeds this value.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <FormField
+          control={form.control}
+          name="intervalSeconds"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Check interval (seconds)</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              {intervalTooLow && (
+                <p className="text-sm text-amber-600">
+                  Your plan minimum is {minInterval}s. Upgrade to reduce the interval.
+                </p>
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {needsTimeout && (
+          <FormField
+            control={form.control}
+            name="timeoutMs"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Timeout (ms)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="30000" {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <Button type="submit" disabled={isSubmitting || intervalTooLow}>
+          {isSubmitting ? 'Saving…' : 'Save monitor'}
+        </Button>
+      </form>
+    </Form>
+  );
+}

@@ -19,7 +19,7 @@ export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
       const subscriptionId = session.subscription as string | null;
 
       if (!teamId || !customerId) {
-        logger.warn({ eventId: event.id, type: event.type }, 'Missing teamId or customerId — skipping');
+        logger.warn({ service: 'web', eventId: event.id, type: event.type }, 'Missing teamId or customerId — skipping');
         return;
       }
 
@@ -72,7 +72,7 @@ export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
       });
 
       if (!existing) {
-        logger.warn({ customerId, type: event.type }, 'No subscription record found — skipping');
+        logger.warn({ service: 'web', customerId, type: event.type }, 'No subscription record found — skipping');
         return;
       }
 
@@ -108,7 +108,7 @@ export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
       });
 
       if (!existing) {
-        logger.warn({ customerId, type: event.type }, 'No subscription record found — skipping');
+        logger.warn({ service: 'web', customerId, type: event.type }, 'No subscription record found — skipping');
         return;
       }
 
@@ -130,6 +130,6 @@ export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
     }
 
     default:
-      logger.info({ type: event.type }, 'Unhandled Stripe event — ignored');
+      logger.info({ service: 'web', type: event.type }, 'Unhandled Stripe event — ignored');
   }
 }

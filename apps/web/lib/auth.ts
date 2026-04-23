@@ -5,7 +5,7 @@ import { Resend } from 'resend';
 import { prisma } from '@beaconmon/db';
 import type { PlanTier } from '@beaconmon/types';
 
-const resend = new Resend(process.env['RESEND_API_KEY']);
+const resend = new Resend(process.env['RESEND_API_KEY'] ?? 'placeholder-key-set-in-production');
 
 const options = {
   secret: process.env['BETTER_AUTH_SECRET'] ?? 'dev-secret-change-me',

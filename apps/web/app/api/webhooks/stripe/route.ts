@@ -1,3 +1,4 @@
+import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { logger } from '@/lib/logger';
 import { handleStripeEvent } from '@/lib/stripe-handlers';
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Webhook not configured' }, { status: 500 });
   }
 
-  let event;
+  let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {

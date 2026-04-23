@@ -108,7 +108,7 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
         : (routeCtx?.params ?? ({} as P));
       return await handler(req, authCtx, params);
     } catch (err) {
-      logger.error({ err, userId, teamId }, 'Unhandled error in route handler');
+      logger.error({ service: 'web', err, userId, teamId }, 'Unhandled error in route handler');
       return Response.json({ error: 'Internal server error' }, { status: 500 });
     }
   };

@@ -551,8 +551,8 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [x] Monorepo scaffold (Turborepo, packages, apps)
 - [x] Docker-compose local dev environment
 - [x] Prisma schema and initial migration
-- [ ] Better Auth setup (email magic link)
-- [ ] Team auto-creation on signup + 14-day Pro trial
+- [x] Better Auth setup (email magic link)
+- [x] Team auto-creation on signup + 14-day Pro trial
 - [ ] Team invitation flow (`team_invitations` table, email invite link)
 - [ ] Stripe subscription integration (`subscriptions` table, customer portal)
 - [ ] Stripe billing gates (plan limits enforced at API layer)
@@ -565,7 +565,7 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [ ] Alert worker (email via Resend, Slack webhook, generic webhook)
 - [ ] Expiry alerts (SSL + domain, tiered warnings at 30/14/7 days)
 - [ ] Incident management (auto + manual resolution)
-- [ ] Dashboard UI (monitor list, status, response time)
+- [x] Dashboard UI (monitor list, status, response time)
 - [ ] Status page (ISR, Redis cache, 90-day uptime %, incident history)
 - [ ] Sentry + Pino logging wired up
 - [ ] Graceful shutdown handlers on all workers

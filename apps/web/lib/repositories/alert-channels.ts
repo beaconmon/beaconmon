@@ -16,6 +16,7 @@ export const alertChannelRepository: {
   findAll(teamId: string): Promise<AlertChannelRow[]>;
   create(teamId: string, data: CreateAlertChannelInput): Promise<AlertChannelRow>;
   countByTeam(teamId: string): Promise<number>;
+  softDelete(teamId: string, id: string): Promise<number>;
 } = {
   async findAll(teamId) {
     const rows = await prisma.alertChannel.findMany({
@@ -59,5 +60,13 @@ export const alertChannelRepository: {
     return prisma.alertChannel.count({
       where: { teamId, isActive: true },
     });
+  },
+
+  async softDelete(teamId, id) {
+    const result = await prisma.alertChannel.updateMany({
+      where: { id, teamId, isActive: true },
+      data: { isActive: false },
+    });
+    return result.count;
   },
 };
