@@ -29,7 +29,7 @@ export async function GET() {
       schedulerLastRun: schedulerLastRun ?? null,
     });
   } catch (err) {
-    logger.error({ err }, 'Health check failed');
+    logger.error({ service: 'web', err }, 'Health check failed');
     return Response.json({ status: 'degraded', error: 'Failed to read queue state' }, { status: 503 });
   }
 }

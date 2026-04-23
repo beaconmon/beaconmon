@@ -72,9 +72,9 @@ model Team {
   id          String    @id @default(cuid())
   name        String
   plan        PlanTier  @default(free)
-  trialEndsAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  trialEndsAt DateTime? @map("trial_ends_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   members        TeamMember[]
   invitations    TeamInvitation[]
@@ -93,10 +93,10 @@ model User {
   id            String   @id @default(cuid())
   name          String
   email         String   @unique
-  emailVerified Boolean  @default(false)
+  emailVerified Boolean  @default(false) @map("email_verified")
   image         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   memberships TeamMember[]
   sessions    Session[]
@@ -108,13 +108,13 @@ model User {
 // Better Auth tables
 model Session {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   @map("user_id")
   token     String   @unique
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -123,18 +123,18 @@ model Session {
 
 model Account {
   id                    String    @id @default(cuid())
-  userId                String
-  accountId             String
-  providerId            String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
+  userId                String    @map("user_id")
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
   scope                 String?
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -146,20 +146,20 @@ model Verification {
   id         String   @id @default(cuid())
   identifier String
   value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("verifications")
 }
 
 model TeamMember {
   id        String   @id @default(cuid())
-  teamId    String
-  userId    String
+  teamId    String   @map("team_id")
+  userId    String   @map("user_id")
   role      TeamRole @default(viewer)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -170,13 +170,13 @@ model TeamMember {
 
 model TeamInvitation {
   id         String    @id @default(cuid())
-  teamId     String
+  teamId     String    @map("team_id")
   email      String
   role       TeamRole  @default(viewer)
   token      String    @unique
-  expiresAt  DateTime
-  acceptedAt DateTime?
-  createdAt  DateTime  @default(now())
+  expiresAt  DateTime  @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -185,15 +185,15 @@ model TeamInvitation {
 
 model Subscription {
   id                   String             @id @default(cuid())
-  teamId               String             @unique
-  stripeCustomerId     String             @unique
-  stripeSubscriptionId String?            @unique
+  teamId               String             @unique @map("team_id")
+  stripeCustomerId     String             @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?            @unique @map("stripe_subscription_id")
   plan                 PlanTier           @default(free)
   status               SubscriptionStatus @default(trialing)
-  trialEndsAt          DateTime?
-  currentPeriodEnd     DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  trialEndsAt          DateTime?          @map("trial_ends_at")
+  currentPeriodEnd     DateTime?          @map("current_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -204,35 +204,35 @@ model Subscription {
 
 model Monitor {
   id            String        @id @default(cuid())
-  teamId        String
+  teamId        String        @map("team_id")
   name          String
   url           String
   type          MonitorType
-  isActive      Boolean       @default(true)
-  currentStatus MonitorStatus @default(up)
-  intervalSeconds Int         @default(300)
-  timeoutMs     Int           @default(30000)
-  nextCheckAt   DateTime?
-  lastCheckedAt DateTime?
-  consecutiveFailures Int     @default(0)
+  isActive      Boolean       @default(true) @map("is_active")
+  currentStatus MonitorStatus @default(up) @map("current_status")
+  intervalSeconds Int         @default(300) @map("interval_seconds")
+  timeoutMs     Int           @default(30000) @map("timeout_ms")
+  nextCheckAt   DateTime?     @map("next_check_at")
+  lastCheckedAt DateTime?     @map("last_checked_at")
+  consecutiveFailures Int     @default(0) @map("consecutive_failures")
 
   // HTTP / keyword extras
-  responseTimeThresholdMs Int?
+  responseTimeThresholdMs Int?             @map("response_time_threshold_ms")
   keyword                 String?
-  keywordCondition        KeywordCondition?
+  keywordCondition        KeywordCondition? @map("keyword_condition")
 
   // Content monitor
-  contentSnapshot       String?
-  contentLastChangedAt  DateTime?
-  requiresJs            Boolean  @default(false)
+  contentSnapshot       String?   @map("content_snapshot")
+  contentLastChangedAt  DateTime? @map("content_last_changed_at")
+  requiresJs            Boolean   @default(false) @map("requires_js")
 
   // Type-specific config (port, selector, etc.)
   config Json @default("{}")
 
   deletedAt DateTime? @map("deleted_at")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   team              Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
   checkResults      CheckResult[]
@@ -250,13 +250,13 @@ model Monitor {
 
 model CheckResult {
   id            String   @id @default(cuid())
-  monitorId     String
-  checkedAt     DateTime @default(now())
+  monitorId     String   @map("monitor_id")
+  checkedAt     DateTime @default(now()) @map("checked_at")
   success       Boolean
-  statusCode    Int?
-  responseTimeMs Int?
-  errorType     String?
-  errorMessage  String?
+  statusCode    Int?     @map("status_code")
+  responseTimeMs Int?    @map("response_time_ms")
+  errorType     String?  @map("error_type")
+  errorMessage  String?  @map("error_message")
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
@@ -267,13 +267,13 @@ model CheckResult {
 
 model Incident {
   id             String          @id @default(cuid())
-  teamId         String
-  monitorId      String
-  startedAt      DateTime        @default(now())
-  resolvedAt     DateTime?
-  resolutionType ResolutionType?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  teamId         String          @map("team_id")
+  monitorId      String          @map("monitor_id")
+  startedAt      DateTime        @default(now()) @map("started_at")
+  resolvedAt     DateTime?       @map("resolved_at")
+  resolutionType ResolutionType? @map("resolution_type")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
 
   team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor       Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
@@ -287,13 +287,13 @@ model Incident {
 
 model ExpiryAlert {
   id           String          @id @default(cuid())
-  teamId       String
-  monitorId    String
+  teamId       String          @map("team_id")
+  monitorId    String          @map("monitor_id")
   type         ExpiryAlertType
-  daysRemaining Int
+  daysRemaining Int            @map("days_remaining")
   threshold    Int
-  sentAt       DateTime        @default(now())
-  createdAt    DateTime        @default(now())
+  sentAt       DateTime        @default(now()) @map("sent_at")
+  createdAt    DateTime        @default(now()) @map("created_at")
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
@@ -305,13 +305,13 @@ model ExpiryAlert {
 
 model AlertChannel {
   id        String           @id @default(cuid())
-  teamId    String
+  teamId    String           @map("team_id")
   name      String
   type      AlertChannelType
   config    Json             @default("{}")
-  isActive  Boolean          @default(true)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  isActive  Boolean          @default(true) @map("is_active")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
 
   team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
   notifications Notification[]
@@ -323,11 +323,11 @@ model AlertChannel {
 
 model Notification {
   id         String   @id @default(cuid())
-  teamId     String
-  incidentId String
-  channelId  String
-  sentAt     DateTime @default(now())
-  createdAt  DateTime @default(now())
+  teamId     String   @map("team_id")
+  incidentId String   @map("incident_id")
+  channelId  String   @map("channel_id")
+  sentAt     DateTime @default(now()) @map("sent_at")
+  createdAt  DateTime @default(now()) @map("created_at")
 
   team     Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
   incident Incident     @relation(fields: [incidentId], references: [id], onDelete: Cascade)
@@ -340,14 +340,14 @@ model Notification {
 // ─── Status Pages ─────────────────────────────────────────────────────────────
 
 model StatusPage {
-  id           String  @id @default(cuid())
-  teamId       String
+  id           String   @id @default(cuid())
+  teamId       String   @map("team_id")
   name         String
-  slug         String  @unique
-  customDomain String?
-  isPublic     Boolean @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  slug         String   @unique
+  customDomain String?  @map("custom_domain")
+  isPublic     Boolean  @default(true) @map("is_public")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   team     Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitors StatusPageMonitor[]
@@ -358,9 +358,9 @@ model StatusPage {
 
 model StatusPageMonitor {
   id           String @id @default(cuid())
-  statusPageId String
-  monitorId    String
-  displayOrder Int    @default(0)
+  statusPageId String @map("status_page_id")
+  monitorId    String @map("monitor_id")
+  displayOrder Int    @default(0) @map("display_order")
 
   statusPage StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
   monitor    Monitor    @relation(fields: [monitorId], references: [id], onDelete: Cascade)
