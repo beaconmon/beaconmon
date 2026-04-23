@@ -5,3 +5,4 @@ export * from './alert.js';
 export * from './team.js';
 export * from './plan.js';
 export * from './result.js';
+export * from './errors.js';

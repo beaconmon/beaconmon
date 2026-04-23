@@ -1,5 +1,6 @@
 import { stripe } from '@/lib/stripe';
 import { logger } from '@/lib/logger';
+import { handleStripeEvent } from '@/lib/stripe-handlers';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,23 +18,23 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Webhook not configured' }, { status: 500 });
   }
 
+  let event;
   try {
-    const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-    logger.info({ type: event.type }, 'Stripe webhook received');
-
-    switch (event.type) {
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted':
-        // TODO: implement subscription sync
-        break;
-      default:
-        logger.info({ type: event.type }, 'Unhandled Stripe event');
-    }
-
-    return Response.json({ received: true });
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
-    logger.error({ err }, 'Stripe webhook error');
+    logger.error({ err }, 'Stripe webhook signature verification failed');
     return Response.json({ error: 'Webhook error' }, { status: 400 });
   }
+
+  logger.info({ type: event.type, eventId: event.id }, 'Stripe webhook received');
+
+  try {
+    await handleStripeEvent(event);
+  } catch (err) {
+    logger.error({ err, eventId: event.id, type: event.type }, 'Failed to handle Stripe event');
+    // Return 200 so Stripe does not retry transient processing errors
+    return Response.json({ received: true });
+  }
+
+  return Response.json({ received: true });
 }
