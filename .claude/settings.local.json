@@ -24,7 +24,8 @@
       "Bash(curl -s http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
       "Bash(pnpm run:*)",
       "Bash(echo \"PID: $!\")",
-      "Bash(docker exec beaconmon-postgres:*)"
+      "Bash(docker exec beaconmon-postgres:*)",
+      "Bash(npx prisma:*)"
     ]
   }
 }

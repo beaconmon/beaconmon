@@ -65,7 +65,7 @@ export default function BillingPage() {
   }
 
   const plan = sessionQ.data?.plan ?? 'free';
-  const limits = PLAN_LIMITS[plan];
+  const limits = PLAN_LIMITS[plan] ?? PLAN_LIMITS['free'];
   const planDisplay = PLAN_DISPLAY[plan] ?? PLAN_DISPLAY['free']!;
 
   const monitorCount = monitorsQ.data?.length ?? 0;

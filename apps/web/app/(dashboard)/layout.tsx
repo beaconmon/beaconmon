@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -27,7 +28,7 @@ import { Breadcrumbs } from '@/components/dashboard/breadcrumbs';
 import { Providers } from '@/components/providers';
 
 const NAV_ITEMS = [
-  { href: '/',                label: 'Monitors',       icon: Activity },
+  { href: '/monitors',        label: 'Monitors',       icon: Activity },
   { href: '/incidents',       label: 'Incidents',      icon: AlertTriangle },
   { href: '/status-pages',    label: 'Status Pages',   icon: Globe },
   { href: '/alert-channels',  label: 'Alert Channels', icon: Bell },
@@ -41,8 +42,7 @@ function NavLink({ href, label, icon: Icon, onClick }: {
   onClick?: () => void;
 }) {
   const pathname = usePathname();
-  const isActive =
-    href === '/' ? pathname === '/' : pathname.startsWith(href);
+  const isActive = pathname.startsWith(href);
 
   return (
     <Link
@@ -80,6 +80,8 @@ function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <Providers>
       <div className="flex min-h-screen bg-background">
@@ -92,7 +94,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Top bar */}
           <header className="flex h-14 items-center gap-4 border-b px-4">
             {/* Mobile hamburger */}
-            <Sheet>
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden">
                   <Menu className="h-5 w-5" />
@@ -100,7 +102,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-56 p-0">
-                <Sidebar />
+                <Sidebar onNavClick={() => setMobileOpen(false)} />
               </SheetContent>
             </Sheet>
 

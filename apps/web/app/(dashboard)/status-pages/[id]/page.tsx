@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ExternalLink, ChevronUp, ChevronDown } from 'lucide-react';
+import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,12 +13,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useStatusPage, useUpdateStatusPage } from '@/lib/hooks/use-status-pages';
 import { useMonitors } from '@/lib/hooks/use-monitors';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function StatusPageEditorPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const pageQ = useStatusPage(id);
   const monitorsQ = useMonitors();
   const update = useUpdateStatusPage(id);
+  const queryClient = useQueryClient();
 
   const [name, setName] = useState('');
   const [customDomain, setCustomDomain] = useState('');
@@ -26,6 +28,21 @@ export default function StatusPageEditorPage({ params }: { params: { id: string 
   const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+
+  const verifyDomain = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/status-pages/${id}/verify-domain`, { method: 'POST' });
+      const body = (await res.json()) as { error?: string; message?: string };
+      if (!res.ok) throw new Error(body.message ?? body.error ?? 'Verification failed');
+      return body;
+    },
+    onSuccess: () => {
+      setVerifyError(null);
+      void queryClient.invalidateQueries({ queryKey: ['status-pages', id] });
+    },
+    onError: (err: Error) => setVerifyError(err.message),
+  });
 
   useEffect(() => {
     if (pageQ.data) {
@@ -160,6 +177,46 @@ export default function StatusPageEditorPage({ params }: { params: { id: string 
               onChange={(e) => setCustomDomain(e.target.value)}
               placeholder="status.mycompany.com"
             />
+            {customDomain && customDomain === pageQ.data?.customDomain && (
+              <div className="rounded-md border bg-muted/30 px-3 py-3 space-y-2">
+                <p className="text-xs text-muted-foreground">
+                  Add this DNS record at your domain registrar:
+                </p>
+                <div className="font-mono text-xs bg-background rounded px-2 py-1.5 border">
+                  <span className="text-muted-foreground">CNAME</span>{' '}
+                  <span className="font-semibold">{customDomain}</span>{' → '}
+                  <span className="font-semibold">{typeof window !== 'undefined' ? window.location.hostname : 'your-app-domain.com'}</span>
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  {pageQ.data?.customDomainVerified ? (
+                    <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Verified
+                    </span>
+                  ) : (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs"
+                        onClick={() => verifyDomain.mutate()}
+                        disabled={verifyDomain.isPending}
+                      >
+                        {verifyDomain.isPending && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
+                        Verify DNS
+                      </Button>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <XCircle className="h-3.5 w-3.5" />
+                        Not verified
+                      </span>
+                    </>
+                  )}
+                </div>
+                {verifyError && (
+                  <p className="text-xs text-destructive">{verifyError}</p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">

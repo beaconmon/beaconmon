@@ -2,10 +2,25 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { magicLink, customSession } from 'better-auth/plugins';
 import { Resend } from 'resend';
+import { z } from 'zod';
 import { prisma } from '@beaconmon/db';
 import type { PlanTier } from '@beaconmon/types';
 
-const resend = new Resend(process.env['RESEND_API_KEY'] ?? 'placeholder-key-set-in-production');
+const envSchema = z.object({
+  RESEND_API_KEY: z.string().min(1).optional(),
+  NODE_ENV: z.enum(['development', 'test', 'production']).optional(),
+});
+
+const env = envSchema.parse({
+  RESEND_API_KEY: process.env['RESEND_API_KEY'],
+  NODE_ENV: process.env['NODE_ENV'],
+});
+
+if (!env.RESEND_API_KEY && env.NODE_ENV === 'production') {
+  throw new Error('RESEND_API_KEY is required in production');
+}
+
+const resend = new Resend(env.RESEND_API_KEY ?? 'placeholder-key-for-dev');
 
 const options = {
   secret: process.env['BETTER_AUTH_SECRET'] ?? 'dev-secret-change-me',
