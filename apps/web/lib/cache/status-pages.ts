@@ -2,6 +2,7 @@ import { getRedis } from '@/lib/redis';
 import { assembleStatusPageCacheData } from '@beaconmon/types';
 import type { StatusPageCacheData } from '@beaconmon/types';
 import { findBySlugPublic } from '@/lib/repositories/status-pages';
+import { checkResultRepository } from '@/lib/repositories/check-results';
 
 const CACHE_TTL_SECONDS = 300;
 const UPTIME_HASH_KEY = 'uptime:90d';
@@ -31,23 +32,29 @@ export async function getStatusPageData(slug: string): Promise<StatusPageCacheDa
 
   const monitorIds = dbData.monitors.map((spm) => spm.monitor.id);
 
-  // Read uptime percentages from Redis — default to 100 on failure
-  let uptimeMap: Record<string, number> = {};
-  try {
-    if (monitorIds.length > 0) {
-      const values = await redis.hmget(UPTIME_HASH_KEY, ...monitorIds);
-      for (let i = 0; i < monitorIds.length; i++) {
-        const id = monitorIds[i]!;
-        const val = values[i];
-        const parsed = val != null ? parseFloat(val) : NaN;
-        uptimeMap[id] = Number.isNaN(parsed) ? 100 : parsed;
+  // Fetch uptime map (Redis) and daily stats (DB) in parallel
+  const [uptimeMap, dailyStatsMap] = await Promise.all([
+    (async (): Promise<Record<string, number>> => {
+      const map: Record<string, number> = {};
+      try {
+        if (monitorIds.length > 0) {
+          const values = await redis.hmget(UPTIME_HASH_KEY, ...monitorIds);
+          for (let i = 0; i < monitorIds.length; i++) {
+            const id = monitorIds[i]!;
+            const val = values[i];
+            const parsed = val != null ? parseFloat(val) : NaN;
+            map[id] = Number.isNaN(parsed) ? 100 : parsed;
+          }
+        }
+      } catch {
+        // Redis unavailable — all monitors default to 100% uptime display
       }
-    }
-  } catch {
-    // Redis unavailable — all monitors default to 100% uptime display
-  }
+      return map;
+    })(),
+    checkResultRepository.getDailyUptimeStats(monitorIds, 90).catch(() => new Map()),
+  ]);
 
-  const data = assembleStatusPageCacheData(dbData, uptimeMap);
+  const data = assembleStatusPageCacheData(dbData, uptimeMap, dailyStatsMap);
 
   // Write to cache (fire and forget — never block on Redis)
   redis.set(cacheKey, JSON.stringify(data), 'EX', CACHE_TTL_SECONDS).catch(() => {});

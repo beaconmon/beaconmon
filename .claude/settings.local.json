@@ -37,7 +37,13 @@
       "Bash(tar -xO \"beaconmon/chats/chat1.md\")",
       "Bash(tar -xO \"beaconmon/project/Dashboard Redesign.html\")",
       "Bash(tar -xO \"beaconmon/project/dashboard-screens.jsx\")",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(zcat \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/43441cae-3ff5-4616-aaad-cedf724228cf/tool-results/webfetch-1777031064046-jjkln1.bin\")",
+      "Bash(xxd \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/43441cae-3ff5-4616-aaad-cedf724228cf/tool-results/webfetch-1777031064046-jjkln1.bin\")",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)"
     ]
   }
 }

@@ -52,6 +52,8 @@ export async function findBySlugPublic(slug: string): Promise<StatusPageDbData |
     select: {
       slug: true,
       name: true,
+      customDomain: true,
+      customDomainVerified: true,
       monitors: {
         orderBy: { displayOrder: 'asc' },
         select: {
@@ -80,7 +82,14 @@ export async function findBySlugPublic(slug: string): Promise<StatusPageDbData |
     },
   });
 
-  return result as StatusPageDbData | null;
+  if (!result) return null;
+
+  // Only expose customDomain to public callers when verification is confirmed
+  const { customDomainVerified, ...rest } = result as typeof result & { customDomainVerified: boolean };
+  return {
+    ...rest,
+    customDomain: customDomainVerified ? rest.customDomain : null,
+  } as StatusPageDbData;
 }
 
 export const statusPageRepository: {
