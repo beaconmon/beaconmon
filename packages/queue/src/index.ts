@@ -1,3 +1,3 @@
-export * from './types.js';
-export * from './queues.js';
-export * from './workers.js';
+export * from './types';
+export * from './queues';
+export * from './workers';

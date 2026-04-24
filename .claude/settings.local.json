@@ -25,7 +25,19 @@
       "Bash(pnpm run:*)",
       "Bash(echo \"PID: $!\")",
       "Bash(docker exec beaconmon-postgres:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(zcat \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/80fbd148-e952-4192-8ccb-6ebb7e422476/tool-results/webfetch-1777018003886-wrn5he.bin\")",
+      "Bash(xxd \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/80fbd148-e952-4192-8ccb-6ebb7e422476/tool-results/webfetch-1777018003886-wrn5he.bin\")",
+      "Read(//private/tmp/beaconmon/**)",
+      "Bash(cp \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/80fbd148-e952-4192-8ccb-6ebb7e422476/tool-results/webfetch-1777018003886-wrn5he.bin\" design.gz)",
+      "Bash(gunzip -c design.gz)",
+      "Bash(gunzip -c \"/Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/36668a49-02a0-4400-840a-4bfa3debe6f8/tool-results/webfetch-1777027384244-s5lw74.bin\")",
+      "Bash(tar -t)",
+      "Bash(tar -xO \"beaconmon/chats/chat1.md\")",
+      "Bash(tar -xO \"beaconmon/project/Dashboard Redesign.html\")",
+      "Bash(tar -xO \"beaconmon/project/dashboard-screens.jsx\")",
+      "Bash(python3:*)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -61,8 +61,8 @@ function buildApiPayload(data: MonitorFormValues): UpdateMonitorInput {
   return { ...base, url: data.url ?? '' };
 }
 
-export default function EditMonitorPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function EditMonitorPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 

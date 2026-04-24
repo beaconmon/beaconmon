@@ -28,5 +28,5 @@ if (process.env['NODE_ENV'] !== 'production') {
 }
 
 export { PrismaClient } from '../generated/prisma/client/client';
-export type { Prisma } from '../generated/prisma/client/client';
-export * from './repositories/index.js';
+export { Prisma } from '../generated/prisma/client/client';
+export * from './repositories/index';

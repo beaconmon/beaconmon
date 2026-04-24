@@ -6,10 +6,11 @@ const slugSchema = z.string().regex(/^[a-z0-9-]+$/).min(3).max(50);
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   // Validate slug format
-  const parsed = slugSchema.safeParse(params.id);
+  const parsed = slugSchema.safeParse(id);
   if (!parsed.success) {
     return Response.json({ error: 'Invalid slug' }, { status: 400 });
   }

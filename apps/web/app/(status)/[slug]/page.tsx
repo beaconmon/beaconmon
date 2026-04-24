@@ -9,11 +9,12 @@ import { Separator } from '@/components/ui/separator';
 export const revalidate = 30;
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export default async function StatusPage({ params }: Props) {
-  const data = await getStatusPageData(params.slug);
+  const { slug } = await params;
+  const data = await getStatusPageData(slug);
   if (!data) notFound();
 
   const statusConfig = {

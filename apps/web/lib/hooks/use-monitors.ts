@@ -4,6 +4,23 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { MonitorRow } from '@/lib/repositories/monitors';
 import type { CreateMonitorInput, UpdateMonitorInput } from '@/lib/validations/monitors';
 
+export interface MonitorSummary {
+  uptime30d: number | null;
+  recentRts: number[];
+}
+
+export function useMonitorSummaries() {
+  return useQuery<Record<string, MonitorSummary>>({
+    queryKey: ['monitor-summaries'],
+    queryFn: async () => {
+      const res = await fetch('/api/monitors/summaries');
+      if (!res.ok) throw new Error('Failed to fetch monitor summaries');
+      return res.json();
+    },
+    refetchInterval: 60_000,
+  });
+}
+
 export function useMonitors() {
   return useQuery<MonitorRow[]>({
     queryKey: ['monitors'],

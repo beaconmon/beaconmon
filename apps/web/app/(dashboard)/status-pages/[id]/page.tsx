@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +15,8 @@ import { useStatusPage, useUpdateStatusPage } from '@/lib/hooks/use-status-pages
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export default function StatusPageEditorPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function StatusPageEditorPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const pageQ = useStatusPage(id);
   const monitorsQ = useMonitors();
   const update = useUpdateStatusPage(id);

@@ -20,7 +20,11 @@ type AuthHandler<P extends RouteParams = RouteParams> = (
 ) => Promise<Response>;
 
 export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandler<P>) {
-  return async (req: Request, routeCtx?: { params: Promise<P> | P }): Promise<Response> => {
+  // Next.js 16 generates `type RouteContext = { params: Promise<SegmentParams> }` and
+  // checks that the exported handler's second arg extends that. Using Promise<any> for
+  // params satisfies the constraint for all route segments. The cast to P is safe because
+  // Next.js always resolves params to the correct shape for the route.
+  return async (req: Request, routeCtx: { params: Promise<unknown> }): Promise<Response> => {
     const session = await auth.api.getSession({ headers: req.headers });
 
     if (!session?.user?.id) {
@@ -103,9 +107,7 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
     const authCtx: AuthContext = { userId, teamId, plan, role };
 
     try {
-      const params = routeCtx?.params instanceof Promise
-        ? await routeCtx.params
-        : (routeCtx?.params ?? ({} as P));
+      const params = (await routeCtx.params ?? {}) as P;
       return await handler(req, authCtx, params);
     } catch (err) {
       logger.error({ service: 'web', err, userId, teamId }, 'Unhandled error in route handler');

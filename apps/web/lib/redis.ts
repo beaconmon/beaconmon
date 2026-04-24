@@ -1,3 +1,4 @@
+import 'server-only';
 import { Redis } from 'ioredis';
 
 // Singleton Redis connection for the web app (health route, status page cache).

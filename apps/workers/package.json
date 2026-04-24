@@ -22,10 +22,10 @@
     "@beaconmon/types": "workspace:*",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.7",
-    "@types/react": "^18.3.28",
+    "@types/react": "^19.2.14",
     "bullmq": "^5.34.8",
     "ioredis": "^5.4.1",
-    "react": "^18.3.1",
+    "react": "^19.2.5",
     "resend": "^4.8.0",
     "zod": "^4.0.0"
   },

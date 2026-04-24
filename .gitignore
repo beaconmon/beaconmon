@@ -46,3 +46,7 @@ packages/db/generated/
 
 # Railway
 .railway/
+
+# Claude Code
+.claw/
+next-env.d.ts

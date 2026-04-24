@@ -25,7 +25,7 @@ deep content change monitoring.
 ```
 /
 ├── apps/
-│   ├── web/                     # Next.js 14 app (App Router)
+│   ├── web/                     # Next.js 16 app (App Router)
 │   │   ├── app/
 │   │   │   ├── (dashboard)/     # Auth-gated routes
 │   │   │   ├── (status)/        # Public status pages (ISR)
@@ -60,7 +60,7 @@ deep content change monitoring.
 
 | Concern | Choice | Reason |
 |---|---|---|
-| Framework | Next.js 14 App Router | SSR for status pages, API routes, one deploy |
+| Framework | Next.js 16 App Router | SSR for status pages, API routes, one deploy |
 | ORM | Prisma | Type safety, migration management |
 | Queue | BullMQ + Redis | Reliable job processing, retry logic, concurrency control |
 | Auth | Better Auth | Email magic link + credentials, session-based |
