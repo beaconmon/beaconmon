@@ -9,6 +9,20 @@ import { useSession } from '@/lib/hooks/use-session';
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useStatusPages } from '@/lib/hooks/use-status-pages';
+import Script from 'next/script';
+import { useEffect, useRef, useState } from 'react';
+import { format } from 'date-fns';
+
+declare global {
+  interface Window {
+    Paddle?: {
+      Initialize: (opts: { token: string }) => void;
+      Checkout: {
+        open: (opts: { items: { priceId: string }[]; customData: Record<string, string> }) => void;
+      };
+    };
+  }
+}
 
 const PLAN_DISPLAY: Record<string, { label: string; color: string }> = {
   free:     { label: 'Free',     color: 'bg-gray-100 text-gray-700 border-gray-200' },
@@ -54,6 +68,34 @@ export default function BillingPage() {
   const monitorsQ = useMonitors();
   const channelsQ = useAlertChannels();
   const statusPagesQ = useStatusPages();
+  const paddleReady = useRef(false);
+  const [renewalDate, setRenewalDate] = useState<string | null>(null);
+
+  // Fetch subscription data for renewal date
+  useEffect(() => {
+    if (!sessionQ.data?.teamId) return;
+    fetch('/api/billing/subscription')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { currentPeriodEnd?: string; trialEndsAt?: string } | null) => {
+        if (data?.currentPeriodEnd) {
+          setRenewalDate(`Renews on ${format(new Date(data.currentPeriodEnd), 'MMM d, yyyy')}`);
+        } else if (data?.trialEndsAt) {
+          setRenewalDate(`Trial ends on ${format(new Date(data.trialEndsAt), 'MMM d, yyyy')}`);
+        }
+      })
+      .catch(() => null);
+  }, [sessionQ.data?.teamId]);
+
+  function handleUpgrade() {
+    const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'];
+    const teamId = sessionQ.data?.teamId;
+    if (!proPriceId || !teamId || !window.Paddle) return;
+
+    window.Paddle.Checkout.open({
+      items: [{ priceId: proPriceId }],
+      customData: { teamId },
+    });
+  }
 
   if (sessionQ.isLoading) {
     return (
@@ -75,53 +117,67 @@ export default function BillingPage() {
   const isPaid = plan === 'pro' || plan === 'business';
 
   return (
-    <div className="max-w-xl space-y-6">
-      <h1 className="text-xl font-semibold">Billing</h1>
+    <>
+      <Script
+        src="https://cdn.paddle.com/paddle/v2/paddle.js"
+        onLoad={() => {
+          if (window.Paddle && !paddleReady.current) {
+            const token = process.env['NEXT_PUBLIC_PADDLE_CLIENT_TOKEN'];
+            if (token) {
+              window.Paddle.Initialize({ token });
+              paddleReady.current = true;
+            }
+          }
+        }}
+      />
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-3">
-            Current plan
-            <Badge variant="outline" className={planDisplay.color}>
-              {planDisplay.label}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p>Check interval: every {limits.checkIntervalSeconds}s minimum</p>
-            <p>History retention: {limits.historyDays} days</p>
-          </div>
+      <div className="max-w-xl space-y-6">
+        <h1 className="text-xl font-semibold">Billing</h1>
 
-          {isPaid ? (
-            <form action="/api/billing/portal" method="POST">
-              <Button variant="outline" type="submit">
-                Manage subscription
-              </Button>
-            </form>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Upgrade to Pro for 25 monitors, 1-minute checks, and 90-day history.
-              </p>
-              <Button asChild>
-                <a href="/api/billing/checkout?plan=pro">Upgrade to Pro — $15/mo</a>
-              </Button>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-3">
+              Current plan
+              <Badge variant="outline" className={planDisplay.color}>
+                {planDisplay.label}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>Check interval: every {limits.checkIntervalSeconds}s minimum</p>
+              <p>History retention: {limits.historyDays} days</p>
+              {renewalDate && <p>{renewalDate}</p>}
             </div>
-          )}
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Usage</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <UsageStat label="Monitors" used={monitorCount} limit={limits.monitors} />
-          <UsageStat label="Alert channels" used={channelCount} limit={limits.alertChannels} />
-          <UsageStat label="Status pages" used={statusPageCount} limit={limits.statusPages} />
-        </CardContent>
-      </Card>
-    </div>
+            {isPaid ? (
+              <form action="/api/billing/portal" method="POST">
+                <Button variant="outline" type="submit">
+                  Manage subscription
+                </Button>
+              </form>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Upgrade to Pro for 25 monitors, 1-minute checks, and 90-day history.
+                </p>
+                <Button onClick={handleUpgrade}>Upgrade to Pro — $15/mo</Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Usage</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <UsageStat label="Monitors" used={monitorCount} limit={limits.monitors} />
+            <UsageStat label="Alert channels" used={channelCount} limit={limits.alertChannels} />
+            <UsageStat label="Status pages" used={statusPageCount} limit={limits.statusPages} />
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

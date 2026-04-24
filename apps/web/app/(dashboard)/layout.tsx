@@ -27,6 +27,7 @@ import {
 import { Breadcrumbs } from '@/components/dashboard/breadcrumbs';
 import { CommandPalette } from '@/components/command-palette';
 import { Providers } from '@/components/providers';
+import { TrialBanner } from '@/components/ui/trial-banner';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
@@ -274,6 +275,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
   const { data: incidents } = useIncidents();
+  const { data: session } = useSession();
   const incidentCount = (incidents ?? []).filter((i) => !i.resolvedAt).length;
 
   return (
@@ -286,6 +288,9 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onOpenCommandPalette={() => setCmdOpen(true)} incidentCount={incidentCount} />
+        {session?.plan && session.teamCreatedAt && (
+          <TrialBanner plan={session.plan} teamCreatedAt={session.teamCreatedAt} />
+        )}
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
 
