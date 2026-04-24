@@ -4,6 +4,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue } from '@beaconmon/queue';
+import { PLAN_LIMITS } from '@beaconmon/types';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const checkQueue = createCheckQueue(connection);
@@ -33,10 +34,31 @@ async function scheduleChecks(): Promise<void> {
         intervalSeconds: true,
         timeoutMs: true,
         config: true,
+        team: { select: { plan: true } },
       },
     });
 
     for (const monitor of dueMonitors) {
+      // Throttle monitors whose interval is below the team's plan minimum
+      const planMin = PLAN_LIMITS[monitor.team.plan].checkIntervalSeconds;
+      if (monitor.intervalSeconds < planMin) {
+        logger.warn(
+          {
+            service: 'scheduler',
+            monitorId: monitor.id,
+            interval: monitor.intervalSeconds,
+            planMin,
+            plan: monitor.team.plan,
+          },
+          'Monitor interval below plan minimum — throttling to plan minimum'
+        );
+        await prisma.monitor.update({
+          where: { id: monitor.id },
+          data: { nextCheckAt: new Date(now.getTime() + planMin * 1000) },
+        });
+        continue;
+      }
+
       const nextCheckAt = new Date(now.getTime() + monitor.intervalSeconds * 1000);
 
       // Update next_check_at first (optimistic lock pattern — prevents double-enqueue)

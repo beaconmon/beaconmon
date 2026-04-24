@@ -7,6 +7,7 @@ interface SessionInfo {
   teamId: string;
   plan: PlanTier;
   role: TeamRole;
+  teamCreatedAt: string | null;
 }
 
 export function useSession() {

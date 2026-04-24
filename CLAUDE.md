@@ -16,7 +16,7 @@ deep content change monitoring.
 **Target users:** freelancers, agencies, small e-commerce businesses.
 **Business model:** freemium subscription — Free / Pro ($15/mo) / Business ($49/mo).
 **Trial:** 14-day Pro trial, no card required. Auto-starts at signup.
-**Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Stripe, Resend.
+**Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Paddle, Resend.
 
 ---
 
@@ -35,7 +35,7 @@ deep content change monitoring.
 │   │   │   └── monitors/        # Domain-specific components
 │   │   └── lib/
 │   │       ├── auth.ts          # Better Auth config
-│   │       ├── stripe.ts        # Stripe client + webhooks
+│   │       ├── paddle.ts        # Paddle client + webhook helpers
 │   │       └── repositories/    # All DB access goes here
 │   └── workers/
 │       ├── scheduler.ts         # Cron — enqueues check jobs + purges old partitions
@@ -64,7 +64,7 @@ deep content change monitoring.
 | ORM | Prisma | Type safety, migration management |
 | Queue | BullMQ + Redis | Reliable job processing, retry logic, concurrency control |
 | Auth | Better Auth | Email magic link + credentials, session-based |
-| Billing | Stripe | Subscriptions, webhooks, customer portal |
+| Billing | Paddle | Subscriptions, webhooks, customer portal. MoR — no tax handling needed |
 | Email | Resend | Transactional email, React Email templates |
 | SMS | Twilio | Alert SMS (tier 2 — Business plan only) |
 | HTML parsing | cheerio | Content monitoring, lightweight, no browser needed |
@@ -193,11 +193,13 @@ REDIS_URL=redis://...
 BETTER_AUTH_SECRET=
 BETTER_AUTH_URL=https://yourdomain.com
 
-# Stripe
-STRIPE_SECRET_KEY=sk_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PRO_PRICE_ID=price_...
-STRIPE_BUSINESS_PRICE_ID=price_...
+# Paddle
+PADDLE_API_KEY=
+PADDLE_WEBHOOK_SECRET=
+PADDLE_PRO_PRICE_ID=
+PADDLE_BUSINESS_PRICE_ID=
+NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=
+NEXT_PUBLIC_PADDLE_PRO_PRICE_ID=
 
 # Email
 RESEND_API_KEY=re_...
@@ -354,7 +356,7 @@ All API routes live under `apps/web/app/api/`.
 /api/status-pages/[slug]/data        GET — public, rate-limited, Redis-cached
 /api/team/invitations                GET (list), POST (send invite)
 /api/team/invitations/[token]/accept POST — public endpoint, accepts invite
-/api/webhooks/stripe                 POST — Stripe webhook handler
+/api/webhooks/paddle                 POST — Paddle webhook handler
 /api/health                          GET — queue depth, worker status (internal monitoring)
 ```
 
@@ -539,7 +541,7 @@ Cloudflare: DNS, proxied A record to Railway web service.
 **Deploy checklist before going live:**
 - [ ] `DATABASE_URL_POOLED` points to PgBouncer, not raw Postgres
 - [ ] `ALERT_DRY_RUN=false` in production
-- [ ] Stripe webhook endpoint registered and `STRIPE_WEBHOOK_SECRET` set
+- [ ] Paddle webhook endpoint registered and `PADDLE_WEBHOOK_SECRET` set
 - [ ] Sentry DSN configured in all worker services
 - [ ] Health check endpoint responding at `/api/health`
 - [ ] Self-monitoring: add your own app as a monitor after deploy
@@ -554,8 +556,8 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [x] Better Auth setup (email magic link)
 - [x] Team auto-creation on signup + 14-day Pro trial
 - [ ] Team invitation flow (`team_invitations` table, email invite link)
-- [ ] Stripe subscription integration (`subscriptions` table, customer portal)
-- [ ] Stripe billing gates (plan limits enforced at API layer)
+- [x] Paddle subscription integration (`subscriptions` table, customer portal)
+- [x] Paddle billing gates (plan limits enforced at API layer + scheduler throttle)
 - [ ] Monitor CRUD API (all 6 types)
 - [ ] Per-monitor pause/unpause (`is_active` toggle)
 - [ ] BullMQ queue setup (packages/queue)
