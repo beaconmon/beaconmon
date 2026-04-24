@@ -1,11 +1,18 @@
 export type StatusPageOverallStatus = 'operational' | 'degraded' | 'outage';
 
+export interface DailyUptimeStat {
+  date: string; // 'YYYY-MM-DD' UTC
+  state: 'up' | 'degraded' | 'outage' | 'nodata';
+  uptimePercent: number; // 0–100
+}
+
 export interface StatusPageMonitorData {
   id: string;
   name: string;
   type: string;
   currentStatus: 'up' | 'down' | 'paused';
   uptimePercent90d: number;
+  dailyStats: DailyUptimeStat[]; // 90 entries, oldest first
   recentIncidents: Array<{
     id: string;
     startedAt: string;
@@ -17,6 +24,7 @@ export interface StatusPageMonitorData {
 export interface StatusPageCacheData {
   slug: string;
   name: string;
+  customDomain?: string;
   overallStatus: StatusPageOverallStatus;
   monitors: StatusPageMonitorData[];
   cachedAt: string;
@@ -41,6 +49,7 @@ export function computeOverallStatus(
 export interface StatusPageDbData {
   slug: string;
   name: string;
+  customDomain?: string | null;
   monitors: Array<{
     monitorId: string;
     displayOrder: number;
@@ -59,12 +68,15 @@ export interface StatusPageDbData {
 }
 
 /**
- * Assemble StatusPageCacheData from a DB query result and a Redis uptime map.
+ * Assemble StatusPageCacheData from a DB query result, a Redis uptime map,
+ * and a per-monitor daily stats map (90 entries each).
  * uptimeMap: Record<monitorId, uptimePercent> — missing entries default to 100.
+ * dailyStatsMap: Map<monitorId, DailyUptimeStat[]> — missing entries get empty array.
  */
 export function assembleStatusPageCacheData(
   dbData: StatusPageDbData,
-  uptimeMap: Record<string, number>
+  uptimeMap: Record<string, number>,
+  dailyStatsMap: Map<string, DailyUptimeStat[]> = new Map()
 ): StatusPageCacheData {
   const monitors: StatusPageMonitorData[] = dbData.monitors.map((spm) => {
     const m = spm.monitor;
@@ -75,6 +87,7 @@ export function assembleStatusPageCacheData(
       type: m.type,
       currentStatus: status,
       uptimePercent90d: uptimeMap[m.id] ?? 100,
+      dailyStats: dailyStatsMap.get(m.id) ?? [],
       recentIncidents: m.incidents.map((inc) => ({
         id: inc.id,
         startedAt: inc.startedAt.toISOString(),
@@ -90,6 +103,7 @@ export function assembleStatusPageCacheData(
   return {
     slug: dbData.slug,
     name: dbData.name,
+    ...(dbData.customDomain ? { customDomain: dbData.customDomain } : {}),
     overallStatus: computeOverallStatus(monitors),
     monitors,
     cachedAt: new Date().toISOString(),

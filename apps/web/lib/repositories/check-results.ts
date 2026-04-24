@@ -1,7 +1,7 @@
 import { prisma } from '@beaconmon/db';
 import { Prisma } from '@beaconmon/db';
 import { PLAN_LIMITS } from '@beaconmon/types';
-import type { PlanTier } from '@beaconmon/types';
+import type { PlanTier, DailyUptimeStat } from '@beaconmon/types';
 
 interface CheckResultsOptions {
   from: Date;
@@ -110,6 +110,90 @@ export const checkResultRepository = {
       const uptime30d = total > 0 ? Math.round((success / total) * 10000) / 100 : null;
       const recentRts = (row.recent_rts ?? []).filter((v): v is number => v != null);
       result.set(row.monitor_id, { uptime30d, recentRts });
+    }
+
+    return result;
+  },
+
+  /**
+   * Returns 90 DailyUptimeStat entries per monitor (oldest first).
+   * Days with no data are filled as { state: 'nodata', uptimePercent: 0 }.
+   * Used for the per-service uptime bar chart on public status pages.
+   * Called from the status page cache layer on a cache miss.
+   */
+  async getDailyUptimeStats(
+    monitorIds: string[],
+    days: number
+  ): Promise<Map<string, DailyUptimeStat[]>> {
+    const result = new Map<string, DailyUptimeStat[]>();
+    if (monitorIds.length === 0) return result;
+
+    interface DailyRow {
+      monitor_id: string;
+      day: Date;
+      total: bigint;
+      successes: bigint;
+    }
+
+    const idList = Prisma.join(monitorIds.map((id) => Prisma.sql`${id}`));
+
+    const cutoff = new Date();
+    cutoff.setUTCHours(0, 0, 0, 0);
+    cutoff.setUTCDate(cutoff.getUTCDate() - days);
+
+    const rows = await prisma.$queryRaw<DailyRow[]>(Prisma.sql`
+      SELECT
+        monitor_id,
+        DATE_TRUNC('day', checked_at AT TIME ZONE 'UTC') AS day,
+        COUNT(*)::bigint AS total,
+        SUM(CASE WHEN success THEN 1 ELSE 0 END)::bigint AS successes
+      FROM check_results
+      WHERE monitor_id IN (${idList})
+        AND checked_at >= ${cutoff}
+      GROUP BY monitor_id, DATE_TRUNC('day', checked_at AT TIME ZONE 'UTC')
+      ORDER BY monitor_id, day
+    `);
+
+    // Build a map of rows per monitor: dateStr → { total, successes }
+    const rowsByMonitor = new Map<string, Map<string, { total: number; successes: number }>>();
+    for (const row of rows) {
+      const dateStr = row.day.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+      if (!rowsByMonitor.has(row.monitor_id)) {
+        rowsByMonitor.set(row.monitor_id, new Map());
+      }
+      rowsByMonitor.get(row.monitor_id)!.set(dateStr, {
+        total: Number(row.total),
+        successes: Number(row.successes),
+      });
+    }
+
+    // Generate the full date array (oldest → today) for each monitor
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    for (const monitorId of monitorIds) {
+      const stats: DailyUptimeStat[] = [];
+      const monitorRows = rowsByMonitor.get(monitorId) ?? new Map();
+
+      for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(today);
+        d.setUTCDate(d.getUTCDate() - i);
+        const dateStr = d.toISOString().slice(0, 10);
+        const row = monitorRows.get(dateStr);
+
+        if (!row) {
+          stats.push({ date: dateStr, state: 'nodata', uptimePercent: 0 });
+        } else {
+          const uptimePercent = row.total > 0 ? (row.successes / row.total) * 100 : 0;
+          let state: DailyUptimeStat['state'];
+          if (uptimePercent === 100) state = 'up';
+          else if (uptimePercent === 0) state = 'outage';
+          else state = 'degraded';
+          stats.push({ date: dateStr, state, uptimePercent });
+        }
+      }
+
+      result.set(monitorId, stats);
     }
 
     return result;
