@@ -2,7 +2,7 @@ import './lib/env.js'; // validates env at startup
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { prisma } from '@beaconmon/db';
+import { prisma, statusPageWorkerRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue } from '@beaconmon/queue';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -11,6 +11,8 @@ const contentQueue = createContentCheckQueue(connection);
 
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
+let lastUptimeCompute = 0;
+const UPTIME_COMPUTE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Enqueue check jobs for all active monitors whose next_check_at <= now.
@@ -105,6 +107,47 @@ async function purgeOldPartitions(): Promise<void> {
   }
 }
 
+/**
+ * Pre-compute 90-day uptime percentages for all monitors on status pages.
+ * Stores results in Redis hash `uptime:90d` as { monitorId: percentString }.
+ * Runs once on startup, then every 5 minutes inside the scheduler interval.
+ */
+async function computeUptimePercentages(): Promise<void> {
+  try {
+    const monitorIds = await statusPageWorkerRepository.findAllMonitorIdsOnStatusPages();
+    if (monitorIds.length === 0) return;
+
+    const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+
+    type UptimeRow = { monitor_id: string; uptime: number };
+    const rows = await prisma.$queryRaw<UptimeRow[]>`
+      SELECT
+        monitor_id,
+        ROUND(
+          (SUM(CASE WHEN success THEN 1 ELSE 0 END)::float / NULLIF(COUNT(*), 0)::float * 100)::numeric,
+          2
+        )::float AS uptime
+      FROM check_results
+      WHERE monitor_id = ANY(${monitorIds})
+        AND checked_at >= ${cutoff}
+      GROUP BY monitor_id
+    `;
+
+    if (rows.length === 0) return;
+
+    // Build flat args for HSET: [field, value, field, value, ...]
+    const args: string[] = [];
+    for (const row of rows) {
+      args.push(row.monitor_id, String(row.uptime ?? 100));
+    }
+    await connection.hset('uptime:90d', ...args);
+
+    logger.info({ service: 'scheduler', count: rows.length }, 'Uptime percentages computed');
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Failed to compute uptime percentages');
+  }
+}
+
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   logger.info({ service: 'scheduler' }, 'Scheduler started');
@@ -114,13 +157,18 @@ async function main(): Promise<void> {
 
   // Poll every 10 seconds — fine-grained enough for 30s monitors
   schedulerInterval = setInterval(() => {
-    if (running) {
-      void scheduleChecks();
+    if (!running) return;
+    void scheduleChecks();
+    if (Date.now() - lastUptimeCompute >= UPTIME_COMPUTE_INTERVAL_MS) {
+      lastUptimeCompute = Date.now();
+      void computeUptimePercentages();
     }
   }, 10_000);
 
   // Run immediately
   await scheduleChecks();
+  lastUptimeCompute = Date.now();
+  await computeUptimePercentages();
 }
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────

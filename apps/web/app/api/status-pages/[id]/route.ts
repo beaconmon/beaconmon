@@ -1,5 +1,6 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { statusPageRepository } from '@/lib/repositories/status-pages';
+import { getRedis } from '@/lib/redis';
 import { ErrorCode } from '@beaconmon/types';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
@@ -50,9 +51,20 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
 
   const { monitorIds, ...rest } = parsed.data;
 
+  // If the custom domain is changing, reset verification and clean up Redis
+  const domainChanging =
+    rest.customDomain !== undefined &&
+    rest.customDomain !== existing.customDomain;
+
+  const updateData = {
+    ...rest,
+    // Reset verified flag whenever domain changes (including being cleared)
+    ...(domainChanging && { customDomainVerified: false }),
+  };
+
   let updated: Awaited<ReturnType<typeof statusPageRepository.update>>;
   try {
-    updated = await statusPageRepository.update(teamId, params.id, rest, monitorIds);
+    updated = await statusPageRepository.update(teamId, params.id, updateData, monitorIds);
   } catch (err) {
     if (err instanceof Error && err.message === 'INVALID_MONITOR_IDS') {
       return Response.json(
@@ -61,6 +73,20 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
       );
     }
     throw err;
+  }
+
+  // Remove old custom domain from Redis when domain changes or page is made private
+  const shouldRemoveDomain =
+    (domainChanging && existing.customDomain) ||
+    (rest.isPublic === false && existing.customDomain && existing.customDomainVerified);
+
+  if (shouldRemoveDomain && existing.customDomain) {
+    try {
+      const redis = getRedis();
+      await redis.hdel('custom_domains', existing.customDomain);
+    } catch (err) {
+      logger.warn({ service: 'web', teamId, statusPageId: params.id, err }, 'Failed to remove old custom domain from Redis');
+    }
   }
 
   logger.info({ service: 'web', teamId, statusPageId: params.id }, 'Status page updated');

@@ -23,7 +23,7 @@ const worker = new Worker<CheckJob>(
       },
       'Processing check job'
     );
-    await processCheckJob(job.data, alertQueue);
+    await processCheckJob(job.data, alertQueue, connection);
   },
   {
     connection,

@@ -6,3 +6,4 @@ export * from './team';
 export * from './plan';
 export * from './result';
 export * from './errors';
+export * from './status-page';

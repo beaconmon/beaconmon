@@ -1,11 +1,35 @@
 import { prisma } from '@beaconmon/db';
 import type { CreateStatusPageInput } from '@/lib/validations/status-pages';
+import type { StatusPageDbData } from '@beaconmon/types';
+
+export interface StatusPageRow {
+  id: string;
+  name: string;
+  slug: string;
+  customDomain: string | null;
+  isPublic: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface StatusPageDetail extends StatusPageRow {
+  customDomainVerified: boolean;
+  monitors: { monitorId: string; displayOrder: number }[];
+}
+
+interface BatchResult {
+  count: number;
+}
+
+const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+const RECENT_INCIDENTS_LIMIT = 5;
 
 const detailSelect = {
   id: true,
   name: true,
   slug: true,
   customDomain: true,
+  customDomainVerified: true,
   isPublic: true,
   createdAt: true,
   updatedAt: true,
@@ -15,7 +39,64 @@ const detailSelect = {
   },
 } as const;
 
-export const statusPageRepository = {
+/**
+ * Public query — no teamId scoping by design.
+ * Status pages are intentionally public; isPublic:true is the access gate.
+ * Only called from the cache layer for status page rendering.
+ */
+export async function findBySlugPublic(slug: string): Promise<StatusPageDbData | null> {
+  const cutoff = new Date(Date.now() - NINETY_DAYS_MS);
+
+  const result = await prisma.statusPage.findFirst({
+    where: { slug, isPublic: true },
+    select: {
+      slug: true,
+      name: true,
+      monitors: {
+        orderBy: { displayOrder: 'asc' },
+        select: {
+          monitorId: true,
+          displayOrder: true,
+          monitor: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              currentStatus: true,
+              incidents: {
+                where: { startedAt: { gte: cutoff } },
+                orderBy: { startedAt: 'desc' },
+                take: RECENT_INCIDENTS_LIMIT,
+                select: {
+                  id: true,
+                  startedAt: true,
+                  resolvedAt: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result as StatusPageDbData | null;
+}
+
+export const statusPageRepository: {
+  findAll(teamId: string): Promise<StatusPageRow[]>;
+  create(teamId: string, data: CreateStatusPageInput): Promise<StatusPageRow>;
+  countByTeam(teamId: string): Promise<number>;
+  slugExists(slug: string): Promise<boolean>;
+  findById(teamId: string, id: string): Promise<StatusPageDetail | null>;
+  verifyCustomDomain(teamId: string, id: string, verified: boolean): Promise<BatchResult>;
+  update(
+    teamId: string,
+    id: string,
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; isPublic?: boolean },
+    monitorIds?: string[]
+  ): Promise<StatusPageDetail | null>;
+} = {
   async findAll(teamId: string) {
     return prisma.statusPage.findMany({
       where: { teamId },
@@ -67,10 +148,17 @@ export const statusPageRepository = {
     });
   },
 
+  async verifyCustomDomain(teamId: string, id: string, verified: boolean) {
+    return prisma.statusPage.updateMany({
+      where: { id, teamId },
+      data: { customDomainVerified: verified },
+    });
+  },
+
   async update(
     teamId: string,
     id: string,
-    data: { name?: string; customDomain?: string | null; isPublic?: boolean },
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; isPublic?: boolean },
     monitorIds?: string[]
   ) {
     return prisma.$transaction(async (tx) => {
@@ -91,6 +179,7 @@ export const statusPageRepository = {
         data: {
           ...(data.name !== undefined && { name: data.name }),
           ...(data.customDomain !== undefined && { customDomain: data.customDomain }),
+          ...(data.customDomainVerified !== undefined && { customDomainVerified: data.customDomainVerified }),
           ...(data.isPublic !== undefined && { isPublic: data.isPublic }),
         },
       });

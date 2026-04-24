@@ -14,13 +14,17 @@ import {
   checkResultRepository,
   incidentRepository,
   expiryAlertRepository,
+  statusPageWorkerRepository,
 } from '@beaconmon/db';
+import { assembleStatusPageCacheData } from '@beaconmon/types';
+import type { Redis } from 'ioredis';
 
 const EXPIRY_THRESHOLDS = [7, 14, 30] as const;
 
 export async function processCheckJob(
   job: CheckJob,
-  alertQueue: Queue<AlertJob>
+  alertQueue: Queue<AlertJob>,
+  redis?: Redis
 ): Promise<void> {
   const { monitorId, type, url, timeoutMs, intervalSeconds } = job;
   const service = 'check-worker';
@@ -204,5 +208,46 @@ export async function processCheckJob(
         );
       }
     }
+
+    // Warm status page cache on any status transition
+    if ((evaluation.becameDown || evaluation.becameUp) && redis) {
+      try {
+        const slugs = await statusPageWorkerRepository.findStatusPageSlugsForMonitor(monitorId);
+        for (const slug of slugs) {
+          await warmStatusPageCache(slug, redis);
+        }
+      } catch (err) {
+        logger.warn({ service, monitorId, err }, 'Failed to warm status page cache');
+      }
+    }
   }
+}
+
+/**
+ * Inline cache warming — fetches fresh DB data, reads uptime from Redis,
+ * and writes assembled StatusPageCacheData to Redis with 5-min TTL.
+ * Inlined here because workers cannot import from apps/web.
+ */
+async function warmStatusPageCache(slug: string, redis: Redis): Promise<void> {
+  const dbData = await statusPageWorkerRepository.findStatusPageDataBySlug(slug);
+  if (!dbData) return;
+
+  const monitorIds = dbData.monitors.map((spm) => spm.monitor.id);
+  let uptimeMap: Record<string, number> = {};
+
+  if (monitorIds.length > 0) {
+    try {
+      const values = await redis.hmget('uptime:90d', ...monitorIds);
+      for (let i = 0; i < monitorIds.length; i++) {
+        const id = monitorIds[i]!;
+        const val = values[i];
+        uptimeMap[id] = val != null ? parseFloat(val) : 100;
+      }
+    } catch {
+      // Redis unavailable — default uptime values
+    }
+  }
+
+  const data = assembleStatusPageCacheData(dbData, uptimeMap);
+  await redis.set(`statuspage:${slug}`, JSON.stringify(data), 'EX', 300);
 }

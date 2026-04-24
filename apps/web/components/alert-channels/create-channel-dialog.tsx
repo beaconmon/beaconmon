@@ -37,6 +37,7 @@ export function CreateChannelDialog({ open, onOpenChange }: CreateChannelDialogP
   const create = useCreateAlertChannel();
 
   function reset() {
+    setType('email');
     setName('');
     setEmail('');
     setWebhookUrl('');
