@@ -35,7 +35,11 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
   function handleUpgrade() {
     const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'];
     const teamId = session?.teamId;
-    if (!proPriceId || !teamId || !window.Paddle) return;
+    if (!proPriceId || !teamId || !window.Paddle) {
+      // Paddle not loaded or session missing — surface an actionable message
+      alert('Unable to start checkout. Please refresh the page and try again.');
+      return;
+    }
 
     window.Paddle.Checkout.open({
       items: [{ priceId: proPriceId }],

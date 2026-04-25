@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['ioredis', '@prisma/client', 'pg', 'pg-connection-string', 'pgpass', 'split2', 'string_decoder', 'buffer', 'redis-parser', 'redis-errors'],
@@ -22,4 +23,16 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Suppress source map upload when SENTRY_AUTH_TOKEN is not set (local dev / CI without secrets)
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  // Only upload source maps in production builds with a valid auth token
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+  // Disable the Sentry webpack plugin telemetry
+  telemetry: false,
+  // Do not auto-instrument routes — we rely on manual Sentry.captureException()
+  autoInstrumentServerFunctions: false,
+  autoInstrumentMiddleware: false,
+});

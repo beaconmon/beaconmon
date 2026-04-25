@@ -1,4 +1,7 @@
 import './lib/env.js'; // validates env at startup
+import { initSentry, Sentry } from './lib/sentry.js';
+initSentry('alert-worker'); // must be before other imports
+
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
@@ -7,6 +10,9 @@ import { QUEUE_NAMES } from '@beaconmon/queue';
 import type { AlertJob } from '@beaconmon/queue';
 import { prisma } from '@beaconmon/db';
 import { processAlertJob } from './process-alert-job.js';
+
+const HEARTBEAT_INTERVAL_MS = 30_000;
+const HEARTBEAT_KEY = 'worker:heartbeat:alert';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 
@@ -31,13 +37,26 @@ worker.on('failed', (job, err) => {
     { service: 'alert-worker', jobId: job?.id, incidentId: job?.data.incidentId, err },
     'Alert job failed'
   );
+  Sentry.captureException(err, {
+    extra: { jobId: job?.id, incidentId: job?.data.incidentId, teamId: job?.data.teamId },
+  });
 });
+
+// ─── Heartbeat ────────────────────────────────────────────────────────────────
+const heartbeatInterval = setInterval(() => {
+  connection.set(HEARTBEAT_KEY, new Date().toISOString(), 'EX', 120).catch((err) => {
+    logger.warn({ service: 'alert-worker', err }, 'Failed to write heartbeat');
+  });
+}, HEARTBEAT_INTERVAL_MS);
+
+connection.set(HEARTBEAT_KEY, new Date().toISOString(), 'EX', 120).catch(() => {});
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────
 
 const shutdown = async (signal: string) => {
   logger.info({ signal }, 'Received shutdown signal, draining alert worker');
 
+  clearInterval(heartbeatInterval);
   await worker.pause();
 
   const drainTimeout = setTimeout(() => {

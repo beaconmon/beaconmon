@@ -212,6 +212,9 @@ TWILIO_FROM_NUMBER=
 
 # Error tracking
 SENTRY_DSN=
+NEXT_PUBLIC_SENTRY_DSN=        # Same value as SENTRY_DSN — needed for client-side capture
+SENTRY_AUTH_TOKEN=             # CI only — for source map uploads to Sentry
+SENTRY_MONITOR_SLUG=beaconmon-scheduler  # Sentry Cron Monitor slug for the scheduler
 
 # Storage (tier 2 — reports)
 R2_BUCKET=
@@ -542,9 +545,20 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [ ] `DATABASE_URL_POOLED` points to PgBouncer, not raw Postgres
 - [ ] `ALERT_DRY_RUN=false` in production
 - [ ] Paddle webhook endpoint registered and `PADDLE_WEBHOOK_SECRET` set
-- [ ] Sentry DSN configured in all worker services
-- [ ] Health check endpoint responding at `/api/health`
+- [ ] `SENTRY_DSN` set in all Railway services (web + all workers)
+- [ ] `NEXT_PUBLIC_SENTRY_DSN` set in web service (client-side error capture)
+- [ ] `SENTRY_AUTH_TOKEN` set in CI/CD for source map uploads
+- [ ] Create a Sentry Cron Monitor with slug `beaconmon-scheduler` (or whatever `SENTRY_MONITOR_SLUG` is set to)
+- [ ] Health check endpoint responding at `/api/health` with all workers showing `alive: true`
+- [ ] Run `pnpm smoke-test` after deploy before flipping DNS
 - [ ] Self-monitoring: add your own app as a monitor after deploy
+
+**Observability / rate limiting added in production hardening:**
+- Worker heartbeats: each worker writes `worker:heartbeat:{name}` to Redis every 30s (TTL 120s)
+- Health endpoint (`/api/health`) checks: Redis + queue depths + scheduler last run + worker heartbeats + DB ping. Returns 503 if Redis or DB fails.
+- Rate limits: POST /api/monitors → 20/hr per team; POST /api/auth/* → 10/15min per IP (fail-open on Redis unavailability); GET /api/status-pages/[id]/data → 60/min per IP
+- Sentry cron monitor: scheduler reports check-in status every tick (uses 1-minute interval in Sentry)
+- Per-plan retention cleanup runs daily in the scheduler (Free 7d, Pro 90d; Business is handled by partition purge)
 
 ---
 
@@ -558,19 +572,26 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [ ] Team invitation flow (`team_invitations` table, email invite link)
 - [x] Paddle subscription integration (`subscriptions` table, customer portal)
 - [x] Paddle billing gates (plan limits enforced at API layer + scheduler throttle)
-- [ ] Monitor CRUD API (all 6 types)
-- [ ] Per-monitor pause/unpause (`is_active` toggle)
-- [ ] BullMQ queue setup (packages/queue)
-- [ ] Check worker (HTTP, SSL, domain, TCP, keyword)
-- [ ] Content worker (HTML-only change detection via cheerio)
-- [ ] Scheduler (cron → enqueue check jobs + nightly partition purge)
-- [ ] Alert worker (email via Resend, Slack webhook, generic webhook)
-- [ ] Expiry alerts (SSL + domain, tiered warnings at 30/14/7 days)
-- [ ] Incident management (auto + manual resolution)
+- [x] Monitor CRUD API (all 6 types)
+- [x] Per-monitor pause/unpause (`is_active` toggle)
+- [x] BullMQ queue setup (packages/queue)
+- [x] Check worker (HTTP, SSL, domain, TCP, keyword)
+- [ ] Content worker (HTML-only change detection via cheerio) — stub only, TODO
+- [x] Scheduler (cron → enqueue check jobs + nightly partition purge + daily retention cleanup)
+- [x] Alert worker (email via Resend, Slack webhook, generic webhook)
+- [x] Expiry alerts (SSL + domain, tiered warnings at 30/14/7 days)
+- [x] Incident management (auto + manual resolution)
 - [x] Dashboard UI (monitor list, status, response time)
-- [ ] Status page (ISR, Redis cache, 90-day uptime %, incident history)
-- [ ] Sentry + Pino logging wired up
-- [ ] Graceful shutdown handlers on all workers
+- [x] Status page (ISR, Redis cache, 90-day uptime %, incident history)
+- [x] Sentry integration (@sentry/nextjs for web, @sentry/node for workers, cron monitor on scheduler)
+- [x] Pino structured logging in all workers (no console.log; ESLint rule enforces this)
+- [x] Graceful shutdown handlers on all workers (10s drain timeout)
+- [x] Graceful shutdown unit tests (shutdown.test.ts)
+- [x] Worker heartbeats (Redis, 30s interval, read by /api/health)
+- [x] /api/health — queue depth + worker heartbeats + DB ping + scheduler last run
+- [x] Rate limiting — POST /api/monitors (20/hr/team), POST /api/auth/* (10/15min/IP)
+- [x] Per-plan check_results retention cleanup (daily, batched DELETE, Free 7d / Pro 90d)
+- [x] Smoke test script (`pnpm smoke-test`) — DB + Redis + check cycle + health endpoint
 - [ ] Multi-location checks (Cloudflare Workers) — post-launch
 - [ ] Heartbeat monitoring — post-launch
 - [ ] Scheduled maintenance windows — post-launch

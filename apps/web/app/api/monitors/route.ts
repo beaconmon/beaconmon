@@ -3,6 +3,7 @@ import { monitorRepository } from '@/lib/repositories/monitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS, ErrorCode } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const monitors = await monitorRepository.findAll(teamId);
@@ -12,6 +13,18 @@ export const GET = withAuth(async (_req, { teamId }) => {
 export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (role === 'viewer') {
     return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
+  }
+
+  // 20 monitor creates per hour per team — prevents bulk abuse / accidental loops
+  // Fail-open on Redis unavailability so monitor creation still works
+  try {
+    const rl = await rateLimit(`monitors:create:${teamId}`, 20, 3600);
+    if (!rl.allowed) {
+      logger.warn({ service: 'web', teamId }, 'Monitor create rate limit exceeded');
+      return rateLimitResponse(rl.reset);
+    }
+  } catch {
+    logger.warn({ service: 'web', teamId }, 'Rate limit Redis unavailable — failing open');
   }
 
   let body: unknown;
