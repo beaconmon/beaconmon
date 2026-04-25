@@ -20,9 +20,11 @@
     "start:worker:checks": "pnpm --filter @beaconmon/workers run start:check",
     "start:worker:content": "pnpm --filter @beaconmon/workers run start:content",
     "start:worker:alerts": "pnpm --filter @beaconmon/workers run start:alert",
-    "start:scheduler": "pnpm --filter @beaconmon/workers run start:scheduler"
+    "start:scheduler": "pnpm --filter @beaconmon/workers run start:scheduler",
+    "smoke-test": "tsx scripts/smoke-test.ts"
   },
   "devDependencies": {
+    "tsx": "^4.21.0",
     "turbo": "^2.3.3",
     "typescript": "^5.7.3"
   },

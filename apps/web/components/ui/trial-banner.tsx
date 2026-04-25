@@ -20,6 +20,7 @@ export function TrialBanner({ plan, teamCreatedAt }: TrialBannerProps) {
     if (plan !== 'free') return;
 
     const createdAt = new Date(teamCreatedAt).getTime();
+    if (!Number.isFinite(createdAt)) return; // invalid date, don't show banner
     const trialExpiry = createdAt + TRIAL_DAYS * 24 * 60 * 60 * 1000;
     if (Date.now() <= trialExpiry) return; // still in trial, don't show
 
