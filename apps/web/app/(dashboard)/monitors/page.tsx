@@ -206,7 +206,7 @@ export default function MonitorsPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-brand-text">Monitors</h1>
+        <h1 className="text-2xl font-semibold text-brand-text">Monitors</h1>
         <Link
           href="/monitors/new"
           className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-bg transition-colors hover:bg-brand-green/90"

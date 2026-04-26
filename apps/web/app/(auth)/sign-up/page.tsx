@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
@@ -20,11 +20,11 @@ import {
   SocialButtons,
 } from '@/components/auth';
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
 
-  const searchParams = useSearchParams()
-  const emailParam = searchParams.get('email') ?? '' // Get value by key
+  const searchParams = useSearchParams();
+  const emailParam = searchParams.get('email') ?? '';
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState(emailParam);
@@ -173,5 +173,13 @@ export default function SignUpPage() {
         </p>
       </div>
     </AuthShell>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense>
+      <SignUpForm />
+    </Suspense>
   );
 }

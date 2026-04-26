@@ -36,7 +36,7 @@ export function Breadcrumbs() {
 
   return (
     <nav className="flex items-center gap-1 text-sm">
-      <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link href="/monitors" className="text-muted-foreground hover:text-foreground transition-colors">
         Overview
       </Link>
       {crumbs.map(({ href, label, isLast }) => (

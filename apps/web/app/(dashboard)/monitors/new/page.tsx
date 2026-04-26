@@ -64,7 +64,7 @@ export default function NewMonitorPage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-xl font-semibold mb-6">Add monitor</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-brand-text">Add monitor</h1>
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Monitor details</CardTitle>

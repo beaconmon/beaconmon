@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 import {
   Activity,
   AlertTriangle,
@@ -36,7 +37,7 @@ const NAV_ITEMS = [
   { href: '/incidents',       label: 'Incidents',      icon: AlertTriangle },
   { href: '/status-pages',    label: 'Status Pages',   icon: Globe },
   { href: '/alert-channels',  label: 'Alert Channels', icon: Bell },
-  { href: '/settings',        label: 'Settings',       icon: Settings },
+  { href: '/settings/billing', label: 'Settings',       icon: Settings },
 ];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];
@@ -62,7 +63,7 @@ function NavItem({
       href={href}
       title={collapsed ? label : undefined}
       className={cn(
-        'group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-colors',
+        'group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-all duration-150',
         collapsed ? 'justify-center px-2' : 'px-3',
         isActive
           ? 'bg-brand-bg3 text-brand-text'
@@ -205,7 +206,13 @@ function TopBar({
   incidentCount: number;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const showAddMonitor = ADD_MONITOR_ROUTES.some((r) => pathname.startsWith(r));
+
+  async function handleSignOut() {
+    await authClient.signOut();
+    router.push('/sign-in');
+  }
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-brand-line bg-brand-bg px-4">
@@ -259,11 +266,12 @@ function TopBar({
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-brand-line" />
-          <DropdownMenuItem asChild className="cursor-pointer text-brand-dim hover:text-brand-text focus:text-brand-text">
-            <Link href="/api/auth/sign-out">
-              <LogOut className="mr-2 h-3.5 w-3.5" />
-              Sign out
-            </Link>
+          <DropdownMenuItem
+            className="cursor-pointer text-brand-dim hover:text-brand-text focus:text-brand-text"
+            onSelect={(e) => { e.preventDefault(); void handleSignOut(); }}
+          >
+            <LogOut className="mr-2 h-3.5 w-3.5" />
+            Sign out
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -274,6 +282,11 @@ function TopBar({
 function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
+
+  // Auto-collapse sidebar on small screens
+  useEffect(() => {
+    if (window.innerWidth < 1024) setCollapsed(true);
+  }, []);
   const { data: incidents } = useIncidents();
   const { data: session } = useSession();
   const incidentCount = (incidents ?? []).filter((i) => !i.resolvedAt).length;
@@ -291,7 +304,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
         {session?.plan && session.teamCreatedAt && (
           <TrialBanner plan={session.plan} teamCreatedAt={session.teamCreatedAt} />
         )}
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
       </div>
 
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
