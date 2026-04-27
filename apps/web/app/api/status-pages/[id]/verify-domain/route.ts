@@ -2,8 +2,8 @@ import { promises as dns } from 'dns';
 import { withAuth } from '@/lib/api/with-auth';
 import { statusPageRepository } from '@/lib/repositories/status-pages';
 import { getRedis } from '@/lib/redis';
-import { ErrorCode } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
+import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
 
 type Params = { id: string; [key: string]: string };
 
@@ -17,20 +17,13 @@ function getAppHost(): string {
 }
 
 export const POST = withAuth<Params>(async (_req, { teamId, role }, params) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   const page = await statusPageRepository.findById(teamId, params.id);
-  if (!page) {
-    return Response.json({ error: 'Not found', code: ErrorCode.RESOURCE_NOT_FOUND }, { status: 404 });
-  }
+  if (!page) throw new NotFoundError();
 
   if (!page.customDomain) {
-    return Response.json(
-      { error: 'No custom domain configured', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
+    throw new ValidationError('No custom domain configured');
   }
 
   const appHost = getAppHost();

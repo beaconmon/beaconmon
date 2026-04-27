@@ -7,3 +7,4 @@ export * from './plan';
 export * from './result';
 export * from './errors';
 export * from './status-page';
+export * from './alert-channels';

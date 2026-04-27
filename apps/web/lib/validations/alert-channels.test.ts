@@ -6,7 +6,7 @@ describe('createAlertChannelSchema', () => {
     const result = createAlertChannelSchema.safeParse({
       type: 'email',
       name: 'Team Email',
-      config: { address: 'alerts@example.com' },
+      config: { recipients: ['alerts@example.com'] },
     });
     expect(result.success).toBe(true);
   });
@@ -44,7 +44,17 @@ describe('createAlertChannelSchema', () => {
       createAlertChannelSchema.safeParse({
         type: 'email',
         name: 'Bad Email',
-        config: { address: 'not-an-email' },
+        config: { recipients: ['not-an-email'] },
+      }).success
+    ).toBe(false);
+  });
+
+  it('rejects empty recipients array in email channel', () => {
+    expect(
+      createAlertChannelSchema.safeParse({
+        type: 'email',
+        name: 'Empty Recipients',
+        config: { recipients: [] },
       }).success
     ).toBe(false);
   });
@@ -69,7 +79,7 @@ describe('createAlertChannelSchema', () => {
     ).toBe(false);
   });
 
-  it('rejects email channel with missing config.address', () => {
+  it('rejects email channel with missing config.recipients', () => {
     expect(
       createAlertChannelSchema.safeParse({
         type: 'email',
@@ -84,7 +94,7 @@ describe('createAlertChannelSchema', () => {
       createAlertChannelSchema.safeParse({
         type: 'email',
         name: '',
-        config: { address: 'ok@example.com' },
+        config: { recipients: ['ok@example.com'] },
       }).success
     ).toBe(false);
   });

@@ -1,17 +1,16 @@
 import { z } from 'zod';
+import { Prisma } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { teamRepository } from '@/lib/repositories/teams';
 import { logger } from '@/lib/logger';
-import { ErrorCode } from '@beaconmon/types';
+import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
 
 const updateRoleSchema = z.object({
   role: z.enum(['admin', 'viewer']),
 });
 
 export const PATCH = withAuth(async (req, { teamId, role, userId: callerId }, params) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   const targetUserId = params['userId'] as string;
 
@@ -19,53 +18,34 @@ export const PATCH = withAuth(async (req, { teamId, role, userId: callerId }, pa
   try {
     body = await req.json();
   } catch {
-    return Response.json(
-      { error: 'Invalid JSON body', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
+    throw new ValidationError('Invalid JSON body');
   }
 
   const parsed = updateRoleSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR, issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const { role: newRole } = parsed.data;
 
   // Privilege escalation guard: admins cannot assign admin or owner roles
-  if (role === 'admin' && newRole !== 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'admin' && newRole !== 'viewer') throw new ForbiddenError();
 
   // Prevent demoting the last owner
   const members = await teamRepository.findMembers(teamId);
   const targetMember = members.find((m) => m.userId === targetUserId);
-  if (!targetMember) {
-    return Response.json(
-      { error: 'Member not found', code: ErrorCode.RESOURCE_NOT_FOUND },
-      { status: 404 }
-    );
-  }
+  if (!targetMember) throw new NotFoundError('Member not found');
+
   if (targetMember.role === 'owner') {
     const ownerCount = members.filter((m) => m.role === 'owner').length;
-    if (ownerCount <= 1) {
-      return Response.json(
-        { error: 'Cannot demote the last owner of the team', code: ErrorCode.FORBIDDEN },
-        { status: 403 }
-      );
-    }
+    if (ownerCount <= 1) throw new ForbiddenError('Cannot demote the last owner of the team');
   }
 
   try {
     await teamRepository.updateMemberRole(teamId, targetUserId, newRole);
-  } catch {
-    return Response.json(
-      { error: 'Member not found', code: ErrorCode.RESOURCE_NOT_FOUND },
-      { status: 404 }
-    );
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+      throw new NotFoundError('Member not found');
+    }
+    throw err;
   }
 
   logger.info({ service: 'web', teamId, targetUserId, newRole, callerId }, 'Member role updated');
@@ -73,46 +53,32 @@ export const PATCH = withAuth(async (req, { teamId, role, userId: callerId }, pa
 });
 
 export const DELETE = withAuth(async (_req, { teamId, role, userId: callerId }, params) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   const targetUserId = params['userId'] as string;
 
   // Prevent self-removal
   if (targetUserId === callerId) {
-    return Response.json(
-      { error: 'You cannot remove yourself from the team', code: ErrorCode.FORBIDDEN },
-      { status: 403 }
-    );
+    throw new ForbiddenError('You cannot remove yourself from the team');
   }
 
   // Prevent removing the last owner
   const members = await teamRepository.findMembers(teamId);
   const targetMember = members.find((m) => m.userId === targetUserId);
-  if (!targetMember) {
-    return Response.json(
-      { error: 'Member not found', code: ErrorCode.RESOURCE_NOT_FOUND },
-      { status: 404 }
-    );
-  }
+  if (!targetMember) throw new NotFoundError('Member not found');
+
   if (targetMember.role === 'owner') {
     const ownerCount = members.filter((m) => m.role === 'owner').length;
-    if (ownerCount <= 1) {
-      return Response.json(
-        { error: 'Cannot remove the last owner of the team', code: ErrorCode.FORBIDDEN },
-        { status: 403 }
-      );
-    }
+    if (ownerCount <= 1) throw new ForbiddenError('Cannot remove the last owner of the team');
   }
 
   try {
     await teamRepository.removeMember(teamId, targetUserId);
-  } catch {
-    return Response.json(
-      { error: 'Member not found', code: ErrorCode.RESOURCE_NOT_FOUND },
-      { status: 404 }
-    );
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+      throw new NotFoundError('Member not found');
+    }
+    throw err;
   }
 
   logger.info({ service: 'web', teamId, targetUserId, callerId }, 'Member removed');

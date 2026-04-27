@@ -1,9 +1,10 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
-import { PLAN_LIMITS, ErrorCode } from '@beaconmon/types';
+import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const monitors = await monitorRepository.findAll(teamId);
@@ -11,9 +12,7 @@ export const GET = withAuth(async (_req, { teamId }) => {
 });
 
 export const POST = withAuth(async (req, { teamId, plan, role }) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   // 20 monitor creates per hour per team — prevents bulk abuse / accidental loops
   // Fail-open on Redis unavailability so monitor creation still works
@@ -31,19 +30,11 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   try {
     body = await req.json();
   } catch {
-    return Response.json(
-      { error: 'Invalid JSON body', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
+    throw new ValidationError('Invalid JSON body');
   }
 
   const parsed = createMonitorSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR, issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const data = parsed.data;
   const limits = PLAN_LIMITS[plan];
@@ -52,25 +43,13 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (limits.monitors !== -1) {
     const count = await monitorRepository.countByTeam(teamId);
     if (count >= limits.monitors) {
-      return Response.json(
-        {
-          error: `Your plan allows a maximum of ${limits.monitors} monitors`,
-          code: ErrorCode.PLAN_LIMIT_REACHED,
-        },
-        { status: 422 }
-      );
+      throw new PlanLimitError(`Your plan allows a maximum of ${limits.monitors} monitors`);
     }
   }
 
   // Enforce minimum check interval for the plan
   if (data.intervalSeconds < limits.checkIntervalSeconds) {
-    return Response.json(
-      {
-        error: `Your plan minimum check interval is ${limits.checkIntervalSeconds}s`,
-        code: ErrorCode.PLAN_LIMIT_REACHED,
-      },
-      { status: 422 }
-    );
+    throw new PlanLimitError(`Your plan minimum check interval is ${limits.checkIntervalSeconds}s`);
   }
 
   const monitor = await monitorRepository.create(teamId, data);

@@ -1,11 +1,6 @@
 import { createHmac } from 'node:crypto';
-import { z } from 'zod';
 import type { AlertPayload, ChannelSender } from './types.js';
-
-const WebhookChannelConfig = z.object({
-  url: z.string().url(),
-  secret: z.string().optional(),
-});
+import { webhookChannelConfigSchema } from '@beaconmon/types';
 import { logger } from '../logger.js';
 import { env } from '../env.js';
 
@@ -40,7 +35,7 @@ async function postWebhook(url: string, body: string, secret?: string): Promise<
 }
 
 export const webhookSender: ChannelSender = async (rawConfig, payload) => {
-  const config = WebhookChannelConfig.parse(rawConfig);
+  const config = webhookChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
   const webhookPayload = {

@@ -51,7 +51,7 @@ export function CreateChannelDialog({ open, onOpenChange }: CreateChannelDialogP
 
     let payload: Parameters<typeof create.mutate>[0];
     if (type === 'email') {
-      payload = { type: 'email', name, config: { address: email } };
+      payload = { type: 'email', name, config: { recipients: [email] } };
     } else if (type === 'slack') {
       payload = { type: 'slack', name, config: { webhookUrl } };
     } else {

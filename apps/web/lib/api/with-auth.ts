@@ -3,6 +3,7 @@ import { logger } from '@/lib/logger';
 import { prisma } from '@beaconmon/db';
 import { ErrorCode } from '@beaconmon/types';
 import type { PlanTier, TeamRole } from '@beaconmon/types';
+import { AppError } from '@/lib/api/errors';
 
 export interface AuthContext {
   userId: string;
@@ -110,6 +111,7 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
       const params = (await routeCtx.params ?? {}) as P;
       return await handler(req, authCtx, params);
     } catch (err) {
+      if (err instanceof AppError) return err.toResponse();
       logger.error({ service: 'web', err, userId, teamId }, 'Unhandled error in route handler');
       return Response.json({ error: 'Internal server error' }, { status: 500 });
     }

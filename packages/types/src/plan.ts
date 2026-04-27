@@ -35,3 +35,16 @@ export interface PlanLimits {
   teamMembers: number;
   alertChannels: number;
 }
+
+export function planRetentionCutoff(plan: PlanTier): Date {
+  const days = PLAN_LIMITS[plan].historyDays;
+  const cutoff = new Date();
+  cutoff.setUTCDate(cutoff.getUTCDate() - days);
+  cutoff.setUTCHours(0, 0, 0, 0);
+  return cutoff;
+}
+
+export function clampToPlanRetention(from: Date, plan: PlanTier): Date {
+  const cutoff = planRetentionCutoff(plan);
+  return from < cutoff ? cutoff : from;
+}
