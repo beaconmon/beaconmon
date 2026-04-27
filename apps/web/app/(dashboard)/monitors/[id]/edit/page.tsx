@@ -18,7 +18,7 @@ function toFormValues(monitor: MonitorRow): Partial<MonitorFormValues> {
     timeoutMs: monitor.timeoutMs,
     responseTimeThresholdMs: monitor.responseTimeThresholdMs ?? undefined,
     keyword: monitor.keyword ?? undefined,
-    keywordCondition: monitor.keywordCondition as MonitorFormValues['keywordCondition'],
+    keywordCondition: (monitor.keywordCondition ?? undefined) as MonitorFormValues['keywordCondition'],
   };
 
   if (monitor.type === 'tcp') {
@@ -82,7 +82,7 @@ export default function EditMonitorPage({ params }: { params: Promise<{ id: stri
   }
 
   if (!monitorQ.data) {
-    return <p className="text-sm text-muted-foreground">Monitor not found.</p>;
+    return <p className="text-sm text-brand-muted">Monitor not found.</p>;
   }
 
   const plan = sessionQ.data?.plan ?? 'free';
@@ -103,7 +103,7 @@ export default function EditMonitorPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-xl font-semibold mb-6">Edit monitor</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-brand-text">Edit monitor</h1>
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Monitor details</CardTitle>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Globe, Plus, ExternalLink } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -75,7 +76,7 @@ function CreateStatusPageDialog({ open, onOpenChange }: {
               required
             />
             <p className="text-xs text-muted-foreground">
-              Your page URL: /status/{slug || '…'}
+              Your page URL: /s/{slug || '…'}
             </p>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
@@ -100,7 +101,7 @@ export default function StatusPagesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Status pages</h1>
+        <h1 className="text-2xl font-semibold text-brand-text">Status pages</h1>
         <Button size="sm" onClick={() => setDialogOpen(true)}>
           <Plus className="mr-1.5 h-4 w-4" />
           New status page
@@ -122,45 +123,50 @@ export default function StatusPagesPage() {
             action={{ label: 'New status page', onClick: () => setDialogOpen(true) }}
           />
         ) : (
-          <div className="rounded-md border">
+          <div className="overflow-hidden rounded-lg border border-brand-line bg-brand-surface">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead className="hidden md:table-cell">Custom domain</TableHead>
-                  <TableHead>Visibility</TableHead>
+                <TableRow className="border-brand-line hover:bg-brand-bg3/40">
+                  <TableHead className="text-brand-muted">Name</TableHead>
+                  <TableHead className="text-brand-muted">Slug</TableHead>
+                  <TableHead className="hidden md:table-cell text-brand-muted">Custom domain</TableHead>
+                  <TableHead className="text-brand-muted">Visibility</TableHead>
                   <TableHead />
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pages?.map((page) => (
-                  <TableRow key={page.id}>
+                  <TableRow key={page.id} className="border-brand-line hover:bg-brand-bg3/40 transition-colors duration-150">
                     <TableCell>
                       <Link
                         href={`/status-pages/${page.id}`}
-                        className="font-medium text-sm hover:underline"
+                        className="font-medium text-sm text-brand-text hover:text-brand-green transition-colors duration-150"
                       >
                         {page.name}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="font-mono text-sm text-brand-muted">
                       {page.slug}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
+                    <TableCell className="hidden md:table-cell font-mono text-sm text-brand-muted">
                       {page.customDomain ?? '—'}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={page.isPublic ? 'outline' : 'secondary'} className="text-xs">
+                      <span className={cn(
+                        'inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-medium tracking-wider',
+                        page.isPublic
+                          ? 'border-brand-green/30 bg-brand-green/10 text-brand-green'
+                          : 'border-brand-line bg-brand-bg3 text-brand-muted'
+                      )}>
                         {page.isPublic ? 'Public' : 'Private'}
-                      </Badge>
+                      </span>
                     </TableCell>
                     <TableCell>
                       <a
-                        href={`/status/${page.slug}`}
+                        href={`/s/${page.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                        className="flex items-center gap-1 text-xs text-brand-muted hover:text-brand-dim transition-colors duration-150"
                       >
                         Preview
                         <ExternalLink className="h-3 w-3" />

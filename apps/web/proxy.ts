@@ -55,10 +55,3 @@ export default async function proxy(req: NextRequest) {
   return NextResponse.rewrite(url);
 }
 
-export const runtime = 'nodejs';
-
-export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api/).*)',
-  ],
-};

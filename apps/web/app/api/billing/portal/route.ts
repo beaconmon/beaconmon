@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { auth } from '@/lib/auth';
 import { subscriptionRepository } from '@/lib/repositories/subscriptions';
 import { createPortalSession } from '@/lib/paddle';

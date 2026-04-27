@@ -286,10 +286,22 @@ export default async function StatusPage({ params }: Props) {
         .sp-beacon-pulse {
           animation: sp-pulse 2s ease-out infinite;
         }
+        @media (max-width: 640px) {
+          .sp-page-header { padding: 14px 16px !important; }
+          .sp-page-content { padding: 20px 16px 40px !important; }
+          .sp-monitor-row { flex-wrap: wrap; gap: 10px !important; }
+          .sp-monitor-name { min-width: 80px !important; max-width: 140px !important; }
+          .sp-status-label { min-width: 70px !important; font-size: 12px !important; }
+          .sp-subscribe-section { flex-direction: column !important; align-items: stretch !important; }
+          .sp-subscribe-form { min-width: unset !important; width: 100% !important; }
+          .sp-banner { padding: 16px !important; gap: 12px !important; }
+          .sp-banner-icon { width: 36px !important; height: 36px !important; flex-shrink: 0; }
+          .sp-banner-title { font-size: 17px !important; }
+        }
       `}</style>
 
       {/* ── Header ── */}
-      <header style={{
+      <header className="sp-page-header" style={{
         background: 'white',
         borderBottom: `1px solid ${SP.border}`,
         padding: '18px 32px',
@@ -347,10 +359,10 @@ export default async function StatusPage({ params }: Props) {
       </header>
 
       {/* ── Content ── */}
-      <div style={{ maxWidth: 880, margin: '0 auto', padding: '32px 32px 56px' }}>
+      <div className="sp-page-content" style={{ maxWidth: 880, margin: '0 auto', padding: '32px 32px 56px' }}>
 
         {/* Status banner */}
-        <div style={{
+        <div className="sp-banner" style={{
           background: banner.bg,
           border: `1px solid ${banner.border}`,
           borderLeft: `4px solid ${banner.accent}`,
@@ -360,7 +372,7 @@ export default async function StatusPage({ params }: Props) {
           alignItems: 'center',
           gap: 18,
         }}>
-          <div style={{
+          <div className="sp-banner-icon" style={{
             width: 44, height: 44, borderRadius: '50%',
             background: banner.iconBg,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -370,7 +382,7 @@ export default async function StatusPage({ params }: Props) {
             {banner.icon}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
+            <div className="sp-banner-title" style={{
               fontSize: 20, fontWeight: 600, color: banner.titleColor,
               letterSpacing: -0.3, lineHeight: 1.2,
             }}>
@@ -495,7 +507,7 @@ export default async function StatusPage({ params }: Props) {
               const isLast = idx === data.monitors.length - 1;
 
               return (
-                <div key={monitor.id} style={{
+                <div key={monitor.id} className="sp-monitor-row" style={{
                   padding: '18px 4px',
                   borderBottom: isLast ? 'none' : `1px solid ${SP.borderMuted}`,
                   display: 'flex',
@@ -513,7 +525,7 @@ export default async function StatusPage({ params }: Props) {
                   />
 
                   {/* Name */}
-                  <div style={{ flex: '0 0 auto', minWidth: 100, maxWidth: 180 }}>
+                  <div className="sp-monitor-name" style={{ flex: '0 0 auto', minWidth: 100, maxWidth: 180 }}>
                     <div style={{ fontSize: 15, fontWeight: 500, color: SP.gray900, letterSpacing: -0.1 }}>
                       {monitor.name}
                     </div>
@@ -596,7 +608,7 @@ export default async function StatusPage({ params }: Props) {
                   </div>
 
                   {/* Status label */}
-                  <div style={{
+                  <div className="sp-status-label" style={{
                     fontSize: 13, color: ms.color,
                     fontWeight: ms.bold ? 600 : 500,
                     minWidth: 90, textAlign: 'right', flexShrink: 0,
@@ -651,7 +663,7 @@ export default async function StatusPage({ params }: Props) {
 
         {/* Subscribe */}
         <section style={{ marginTop: 44 }}>
-          <div style={{
+          <div className="sp-subscribe-section" style={{
             background: 'white',
             border: `1px solid ${SP.border}`,
             borderRadius: 10,
@@ -682,7 +694,7 @@ export default async function StatusPage({ params }: Props) {
                 Subscribe by email to receive updates when the status changes.
               </div>
             </div>
-            <div style={{ flexShrink: 0, minWidth: 260 }}>
+            <div className="sp-subscribe-form" style={{ flexShrink: 0, minWidth: 260 }}>
               <SubscribeForm />
             </div>
           </div>

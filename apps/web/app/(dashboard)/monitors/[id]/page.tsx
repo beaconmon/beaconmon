@@ -204,7 +204,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="mb-1 flex items-center gap-3">
-                <h1 className="text-xl font-semibold text-brand-text">{monitor.name}</h1>
+                <h1 className="text-2xl font-semibold text-brand-text">{monitor.name}</h1>
                 <StatusBadge status={monitor.currentStatus} />
               </div>
               <a

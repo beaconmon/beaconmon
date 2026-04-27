@@ -70,7 +70,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
   }
 
   if (!pageQ.data) {
-    return <p className="text-sm text-muted-foreground">Status page not found.</p>;
+    return <p className="text-sm text-brand-muted">Status page not found.</p>;
   }
 
   const allMonitors = monitorsQ.data ?? [];
@@ -129,12 +129,12 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{pageQ.data.name}</h1>
+        <h1 className="text-2xl font-semibold text-brand-text">{pageQ.data.name}</h1>
         <a
-          href={`/status/${slug}`}
+          href={`/s/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-dim transition-colors duration-150"
         >
           Preview
           <ExternalLink className="h-3.5 w-3.5" />
@@ -246,29 +246,29 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
                   .map((monitor) => (
                     <label
                       key={monitor.id}
-                      className="flex items-center gap-3 rounded-md border px-3 py-2 cursor-pointer hover:bg-muted/50"
+                      className="flex items-center gap-3 rounded-md border border-brand-line px-3 py-2 cursor-pointer transition-colors duration-150 hover:bg-brand-bg3/50"
                     >
                       <Checkbox
                         checked={false}
                         onCheckedChange={() => toggleMonitor(monitor.id)}
                       />
-                      <span className="text-sm">{monitor.name}</span>
-                      <span className="text-xs text-muted-foreground truncate">{monitor.url}</span>
+                      <span className="text-sm text-brand-text">{monitor.name}</span>
+                      <span className="text-xs text-brand-muted font-mono truncate">{monitor.url}</span>
                     </label>
                   ))}
               </div>
 
               {/* Selected monitors (ordered) */}
               {selectedMonitorIds.length > 0 && (
-                <div className="space-y-2 pt-2 border-t">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Selected (displayed order)</p>
+                <div className="space-y-2 pt-2 border-t border-brand-line">
+                  <p className="text-xs text-brand-muted font-medium uppercase tracking-wide">Selected (displayed order)</p>
                   {selectedMonitorIds.map((mId, idx) => {
                     const monitor = allMonitors.find((m) => m.id === mId);
                     if (!monitor) return null;
                     return (
                       <div
                         key={mId}
-                        className="flex items-center gap-2 rounded-md border px-3 py-2 bg-muted/30"
+                        className="flex items-center gap-2 rounded-md border border-brand-line bg-brand-bg3/30 px-3 py-2"
                       >
                         <Checkbox
                           checked={true}
