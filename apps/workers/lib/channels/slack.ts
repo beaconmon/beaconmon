@@ -1,9 +1,5 @@
-import { z } from 'zod';
 import type { AlertPayload, ChannelSender } from './types.js';
-
-const SlackChannelConfig = z.object({
-  webhookUrl: z.string().url(),
-});
+import { slackChannelConfigSchema } from '@beaconmon/types';
 import { logger } from '../logger.js';
 import { env } from '../env.js';
 
@@ -19,7 +15,7 @@ function formatDuration(ms: number): string {
 }
 
 export const slackSender: ChannelSender = async (rawConfig, payload) => {
-  const config = SlackChannelConfig.parse(rawConfig);
+  const config = slackChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
   const isDown = type === 'down';

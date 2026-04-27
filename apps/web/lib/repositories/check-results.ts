@@ -1,6 +1,6 @@
 import { prisma } from '@beaconmon/db';
 import { Prisma } from '@beaconmon/db';
-import { PLAN_LIMITS } from '@beaconmon/types';
+import { planRetentionCutoff, clampToPlanRetention, PLAN_LIMITS } from '@beaconmon/types';
 import type { PlanTier, DailyUptimeStat } from '@beaconmon/types';
 
 interface CheckResultsOptions {
@@ -24,11 +24,7 @@ export const checkResultRepository = {
     options: CheckResultsOptions
   ) {
     // Clamp `from` to the plan's retention window — never expose data beyond plan limits.
-    const retentionDays = PLAN_LIMITS[plan].historyDays;
-    const retentionCutoff = new Date();
-    retentionCutoff.setDate(retentionCutoff.getDate() - retentionDays);
-
-    const from = options.from < retentionCutoff ? retentionCutoff : options.from;
+    const from = clampToPlanRetention(options.from, plan);
 
     // Verify the monitor belongs to this team (authorization check).
     const monitor = await prisma.monitor.findFirst({
@@ -72,10 +68,10 @@ export const checkResultRepository = {
       result.set(id, { uptime30d: null, recentRts: [] });
     }
 
-    const retentionDays = PLAN_LIMITS[plan].historyDays;
-    const clampedDays = Math.min(30, retentionDays);
+    const clampedDays = Math.min(30, PLAN_LIMITS[plan].historyDays);
     const from = new Date();
-    from.setDate(from.getDate() - clampedDays);
+    from.setUTCDate(from.getUTCDate() - clampedDays);
+    from.setUTCHours(0, 0, 0, 0);
 
     const idList = Prisma.join(monitorIds.map((id) => Prisma.sql`${id}`));
 

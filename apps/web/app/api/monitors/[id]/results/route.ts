@@ -1,7 +1,7 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { checkResultRepository } from '@/lib/repositories/check-results';
 import { checkResultsQuerySchema } from '@/lib/validations/monitors';
-import { ErrorCode } from '@beaconmon/types';
+import { NotFoundError, ValidationError } from '@/lib/api/errors';
 
 type Params = { id: string; [key: string]: string };
 
@@ -14,12 +14,7 @@ export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
   };
 
   const parsed = checkResultsQuerySchema.safeParse(raw);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR, issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const { from, to, limit } = parsed.data;
 
@@ -29,9 +24,7 @@ export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
     limit,
   });
 
-  if (results === null) {
-    return Response.json({ error: 'Not found', code: ErrorCode.RESOURCE_NOT_FOUND }, { status: 404 });
-  }
+  if (results === null) throw new NotFoundError();
 
   return Response.json(results);
 });

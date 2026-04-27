@@ -1,19 +1,15 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { statusPageRepository } from '@/lib/repositories/status-pages';
 import { getRedis } from '@/lib/redis';
-import { ErrorCode } from '@beaconmon/types';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
+import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
 
 type Params = { id: string; [key: string]: string };
 
 export const GET = withAuth<Params>(async (_req, { teamId }, params) => {
   const page = await statusPageRepository.findById(teamId, params.id);
-
-  if (!page) {
-    return Response.json({ error: 'Not found', code: ErrorCode.RESOURCE_NOT_FOUND }, { status: 404 });
-  }
-
+  if (!page) throw new NotFoundError();
   return Response.json(page);
 });
 
@@ -25,29 +21,20 @@ const updateStatusPageSchema = z.object({
 });
 
 export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return Response.json({ error: 'Invalid JSON body', code: ErrorCode.VALIDATION_ERROR }, { status: 400 });
+    throw new ValidationError('Invalid JSON body');
   }
 
   const parsed = updateStatusPageSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR, issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const existing = await statusPageRepository.findById(teamId, params.id);
-  if (!existing) {
-    return Response.json({ error: 'Not found', code: ErrorCode.RESOURCE_NOT_FOUND }, { status: 404 });
-  }
+  if (!existing) throw new NotFoundError();
 
   const { monitorIds, ...rest } = parsed.data;
 
@@ -67,10 +54,7 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
     updated = await statusPageRepository.update(teamId, params.id, updateData, monitorIds);
   } catch (err) {
     if (err instanceof Error && err.message === 'INVALID_MONITOR_IDS') {
-      return Response.json(
-        { error: 'One or more monitor IDs are invalid', code: ErrorCode.VALIDATION_ERROR },
-        { status: 400 }
-      );
+      throw new ValidationError('One or more monitor IDs are invalid');
     }
     throw err;
   }

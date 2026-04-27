@@ -1,8 +1,9 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { alertChannelRepository } from '@/lib/repositories/alert-channels';
 import { createAlertChannelSchema } from '@/lib/validations/alert-channels';
-import { PLAN_LIMITS, ErrorCode } from '@beaconmon/types';
+import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
+import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const channels = await alertChannelRepository.findAll(teamId);
@@ -10,39 +11,23 @@ export const GET = withAuth(async (_req, { teamId }) => {
 });
 
 export const POST = withAuth(async (req, { teamId, plan, role }) => {
-  if (role === 'viewer') {
-    return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
-  }
+  if (role === 'viewer') throw new ForbiddenError();
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return Response.json(
-      { error: 'Invalid JSON body', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
+    throw new ValidationError('Invalid JSON body');
   }
 
   const parsed = createAlertChannelSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR, issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const limits = PLAN_LIMITS[plan];
   if (limits.alertChannels !== -1) {
     const count = await alertChannelRepository.countByTeam(teamId);
     if (count >= limits.alertChannels) {
-      return Response.json(
-        {
-          error: `Your plan allows a maximum of ${limits.alertChannels} alert channels`,
-          code: ErrorCode.PLAN_LIMIT_REACHED,
-        },
-        { status: 422 }
-      );
+      throw new PlanLimitError(`Your plan allows a maximum of ${limits.alertChannels} alert channels`);
     }
   }
 

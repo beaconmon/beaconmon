@@ -21,6 +21,7 @@
     "@beaconmon/db": "workspace:*",
     "@beaconmon/logger": "workspace:*",
     "@beaconmon/queue": "workspace:*",
+    "@beaconmon/status-pages": "workspace:*",
     "@beaconmon/types": "workspace:*",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.7",

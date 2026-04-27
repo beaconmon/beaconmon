@@ -1,19 +1,15 @@
 import * as React from 'react';
-import { z } from 'zod';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import { DowntimeAlert } from '../../emails/downtime-alert.js';
-
-const EmailChannelConfig = z.object({
-  recipients: z.array(z.string().email()),
-});
+import { emailChannelConfigSchema } from '@beaconmon/types';
 import { RecoveryAlert } from '../../emails/recovery-alert.js';
 import type { AlertPayload, ChannelSender } from './types.js';
 import { logger } from '../logger.js';
 import { env } from '../env.js';
 
 export const emailSender: ChannelSender = async (rawConfig, payload) => {
-  const config = EmailChannelConfig.parse(rawConfig);
+  const config = emailChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
   const subject =
