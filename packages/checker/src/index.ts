@@ -1,4 +1,6 @@
 export { runHttpCheck } from './http.js';
+export { runContentCheck } from './content.js';
+export type { ContentCheckInput, ContentCheckResult } from './content.js';
 export { runSslCheck } from './ssl.js';
 export type { SslCheckDetail } from './ssl.js';
 export { runTcpCheck } from './tcp.js';

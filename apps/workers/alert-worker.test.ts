@@ -71,6 +71,7 @@ const mockMonitor = {
   currentStatus: 'down' as const,
   consecutiveFailures: 2,
   config: {},
+  contentSnapshot: null,
 };
 
 const mockIncident = {

@@ -9,6 +9,7 @@ import { Worker } from 'bullmq';
 import { QUEUE_NAMES } from '@beaconmon/queue';
 import type { ContentCheckJob } from '@beaconmon/queue';
 import { prisma } from '@beaconmon/db';
+import { processContentCheckJob } from './process-content-check-job.js';
 
 const HEARTBEAT_INTERVAL_MS = 30_000;
 const HEARTBEAT_KEY = 'worker:heartbeat:content';
@@ -20,11 +21,7 @@ const worker = new Worker<ContentCheckJob>(
   async (job) => {
     const { monitorId, url } = job.data;
     logger.info({ service: 'content-worker', monitorId, url }, 'Processing content check job');
-
-    // TODO: fetch page, parse HTML with cheerio, compare to contentSnapshot
-    // On change: update monitor.content_snapshot, monitor.content_last_changed_at
-    // Send notification (NOT an incident — architecture rule #9)
-    // Never use Playwright here — architecture rule #10
+    await processContentCheckJob(job.data);
   },
   {
     connection,
