@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { PlanTier, TeamRole } from '@beaconmon/types';
 
 interface SessionInfo {
+  userId: string;
   teamId: string;
   plan: PlanTier;
   role: TeamRole;

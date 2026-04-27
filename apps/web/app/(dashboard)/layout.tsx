@@ -16,6 +16,7 @@ import {
   Plus,
   Search,
   Settings,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -37,7 +38,8 @@ const NAV_ITEMS = [
   { href: '/incidents',       label: 'Incidents',      icon: AlertTriangle },
   { href: '/status-pages',    label: 'Status Pages',   icon: Globe },
   { href: '/alert-channels',  label: 'Alert Channels', icon: Bell },
-  { href: '/settings/billing', label: 'Settings',       icon: Settings },
+  { href: '/settings/team',   label: 'Team',           icon: Users },
+  { href: '/settings/billing', label: 'Settings',      icon: Settings },
 ];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];
