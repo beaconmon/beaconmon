@@ -1,17 +1,19 @@
-import { z } from 'zod';
+import { auth } from '@/lib/auth';
 import { invitationRepository } from '@/lib/repositories/invitations';
 import { logger } from '@/lib/logger';
 import { ErrorCode } from '@beaconmon/types';
 
-const acceptSchema = z.object({
-  userId: z.string().min(1),
-});
-
 export async function POST(
   req: Request,
-  routeCtx: { params: Promise<{ token: string }> }
+  routeCtx: { params: Promise<{ id: string }> }
 ): Promise<Response> {
-  const { token } = await routeCtx.params;
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session?.user?.id) {
+    return Response.json({ error: 'Unauthorized', code: ErrorCode.UNAUTHORIZED }, { status: 401 });
+  }
+
+  const userId = session.user.id;
+  const { id: token } = await routeCtx.params;
 
   const invitation = await invitationRepository.findByToken(token);
 
@@ -35,26 +37,6 @@ export async function POST(
       { status: 409 }
     );
   }
-
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json(
-      { error: 'Invalid JSON body', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
-  }
-
-  const parsed = acceptSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: 'Validation error', code: ErrorCode.VALIDATION_ERROR },
-      { status: 400 }
-    );
-  }
-
-  const { userId } = parsed.data;
 
   try {
     await invitationRepository.accept(token, userId);

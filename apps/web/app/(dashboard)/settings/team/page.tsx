@@ -213,22 +213,24 @@ export default function TeamPage() {
                       <td className="px-6 py-3 text-right space-x-2">
                         {showActions && (
                           <>
-                            <Select
-                              value={member.role}
-                              onValueChange={(v) =>
-                                void updateRoleMutation.mutate({ userId: member.userId, role: v })
-                              }
-                            >
-                              <SelectTrigger className="h-7 w-24 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {currentRole === 'owner' && (
-                                  <SelectItem value="admin">Admin</SelectItem>
-                                )}
-                                <SelectItem value="viewer">Viewer</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            {!isOwner && (
+                              <Select
+                                value={member.role}
+                                onValueChange={(v) =>
+                                  void updateRoleMutation.mutate({ userId: member.userId, role: v })
+                                }
+                              >
+                                <SelectTrigger className="h-7 w-24 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {currentRole === 'owner' && (
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                  )}
+                                  <SelectItem value="viewer">Viewer</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
                             <Button
                               variant="outline"
                               size="sm"

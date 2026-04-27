@@ -40,6 +40,25 @@ export const PATCH = withAuth(async (req, { teamId, role, userId: callerId }, pa
     return Response.json({ error: 'Forbidden', code: ErrorCode.FORBIDDEN }, { status: 403 });
   }
 
+  // Prevent demoting the last owner
+  const members = await teamRepository.findMembers(teamId);
+  const targetMember = members.find((m) => m.userId === targetUserId);
+  if (!targetMember) {
+    return Response.json(
+      { error: 'Member not found', code: ErrorCode.RESOURCE_NOT_FOUND },
+      { status: 404 }
+    );
+  }
+  if (targetMember.role === 'owner') {
+    const ownerCount = members.filter((m) => m.role === 'owner').length;
+    if (ownerCount <= 1) {
+      return Response.json(
+        { error: 'Cannot demote the last owner of the team', code: ErrorCode.FORBIDDEN },
+        { status: 403 }
+      );
+    }
+  }
+
   try {
     await teamRepository.updateMemberRole(teamId, targetUserId, newRole);
   } catch {
