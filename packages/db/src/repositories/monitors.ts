@@ -12,6 +12,7 @@ export interface MonitorForCheck {
   currentStatus: MonitorStatus;
   consecutiveFailures: number;
   config: Record<string, unknown>;
+  contentSnapshot: string | null;
 }
 
 export interface UpdateAfterCheckData {
@@ -37,6 +38,7 @@ export const monitorRepository = {
         currentStatus: true,
         consecutiveFailures: true,
         config: true,
+        contentSnapshot: true,
       },
     });
 
@@ -47,6 +49,7 @@ export const monitorRepository = {
       type: monitor.type as MonitorType,
       currentStatus: monitor.currentStatus as MonitorStatus,
       config: monitor.config as Record<string, unknown>,
+      contentSnapshot: monitor.contentSnapshot,
     };
   },
 
@@ -68,6 +71,17 @@ export const monitorRepository = {
     await prisma.monitor.update({
       where: { id: monitorId },
       data: { nextCheckAt },
+    });
+  },
+
+  async updateContentSnapshot(
+    monitorId: string,
+    snapshot: string,
+    changedAt: Date
+  ): Promise<void> {
+    await prisma.monitor.update({
+      where: { id: monitorId },
+      data: { contentSnapshot: snapshot, contentLastChangedAt: changedAt },
     });
   },
 };

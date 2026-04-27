@@ -15,6 +15,7 @@
   "dependencies": {
     "@beaconmon/logger": "workspace:*",
     "@beaconmon/types": "workspace:*",
+    "cheerio": "^1.2.0",
     "undici": "^7.3.0",
     "whoiser": "^1.17.0"
   },
