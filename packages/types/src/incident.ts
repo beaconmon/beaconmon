@@ -7,6 +7,8 @@ export interface Incident {
   startedAt: Date;
   resolvedAt: Date | null;
   resolutionType: ResolutionType | null;
+  acknowledgedAt: Date | null;
+  acknowledgedBy: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

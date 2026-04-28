@@ -8,8 +8,8 @@ export interface AlertPayload {
     id: string;
     startedAt: Date;
   };
-  type: 'down' | 'up';
-  durationMs?: number;
+  type: 'down' | 'up' | 'slow';
+  durationMs?: number; // ms duration for 'up' (recovery); response time ms for 'slow' (anomaly)
 }
 
 export type ChannelSender = (config: unknown, payload: AlertPayload) => Promise<void>;

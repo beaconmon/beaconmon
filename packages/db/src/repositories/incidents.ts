@@ -62,4 +62,36 @@ export const incidentRepository = {
       resolutionType: incident.resolutionType as ResolutionType | null,
     };
   },
+
+  async acknowledge(
+    incidentId: string,
+    userId: string,
+    acknowledgedAt: Date
+  ): Promise<Incident | null> {
+    const incident = await prisma.incident.findFirst({
+      where: { id: incidentId, resolvedAt: null },
+    });
+    if (!incident) return null;
+
+    const updated = await prisma.incident.update({
+      where: { id: incidentId },
+      data: { acknowledgedAt, acknowledgedBy: userId },
+    });
+
+    return {
+      ...updated,
+      resolutionType: updated.resolutionType as ResolutionType | null,
+    };
+  },
+
+  async findByIdForTeam(teamId: string, incidentId: string): Promise<Incident | null> {
+    const incident = await prisma.incident.findFirst({
+      where: { id: incidentId, teamId },
+    });
+    if (!incident) return null;
+    return {
+      ...incident,
+      resolutionType: incident.resolutionType as ResolutionType | null,
+    };
+  },
 };

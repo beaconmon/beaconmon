@@ -5,3 +5,4 @@ export * from './expiry-alerts.js';
 export * from './alert-channels.js';
 export * from './notifications.js';
 export * from './status-pages.js';
+export * from './performance-alerts.js';

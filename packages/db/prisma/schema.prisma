@@ -78,16 +78,22 @@ model Team {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  members        TeamMember[]
-  invitations    TeamInvitation[]
-  subscription   Subscription?
-  monitors       Monitor[]
-  alertChannels  AlertChannel[]
-  incidents      Incident[]
-  expiryAlerts   ExpiryAlert[]
-  notifications  Notification[]
-  statusPages    StatusPage[]
+  // Report branding (agency white-label)
+  reportLogoUrl    String? @map("report_logo_url")
+  reportBrandColor String? @map("report_brand_color")
+  reportAgencyName String? @map("report_agency_name")
+
+  members            TeamMember[]
+  invitations        TeamInvitation[]
+  subscription       Subscription?
+  monitors           Monitor[]
+  alertChannels      AlertChannel[]
+  incidents          Incident[]
+  expiryAlerts       ExpiryAlert[]
+  notifications      Notification[]
+  statusPages        StatusPage[]
   maintenanceWindows MaintenanceWindow[]
+  escalationPolicies EscalationPolicy[]
 
   @@map("teams")
 }
@@ -232,6 +238,12 @@ model Monitor {
   // Heartbeat monitor
   lastHeartbeatAt DateTime? @map("last_heartbeat_at")
 
+  // Escalation policy (optional — overrides default alert channel broadcast)
+  escalationPolicyId String? @map("escalation_policy_id")
+
+  // Anomaly detection
+  anomalyDetectionEnabled Boolean @default(false) @map("anomaly_detection_enabled")
+
   // Type-specific config (port, selector, gracePeriodSeconds for heartbeat, etc.)
   config Json @default("{}")
 
@@ -240,10 +252,11 @@ model Monitor {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  team              Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  checkResults      CheckResult[]
-  incidents         Incident[]
-  expiryAlerts      ExpiryAlert[]
+  team               Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  escalationPolicy   EscalationPolicy?   @relation(fields: [escalationPolicyId], references: [id])
+  checkResults       CheckResult[]
+  incidents          Incident[]
+  expiryAlerts       ExpiryAlert[]
   statusPageMonitors StatusPageMonitor[]
   maintenanceWindowMonitors MaintenanceWindowMonitor[]
 
@@ -281,6 +294,8 @@ model Incident {
   startedAt      DateTime        @default(now()) @map("started_at")
   resolvedAt     DateTime?       @map("resolved_at")
   resolutionType ResolutionType? @map("resolution_type")
+  acknowledgedAt DateTime?       @map("acknowledged_at")
+  acknowledgedBy String?         @map("acknowledged_by")
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
 
@@ -322,8 +337,9 @@ model AlertChannel {
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @updatedAt @map("updated_at")
 
-  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  notifications Notification[]
+  team             Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  notifications    Notification[]
+  escalationSteps  EscalationStep[]
 
   @@map("alert_channels")
 }
@@ -406,4 +422,52 @@ model MaintenanceWindowMonitor {
 
   @@unique([windowId, monitorId])
   @@map("maintenance_window_monitors")
+}
+
+// ─── Escalation Policies ──────────────────────────────────────────────────────
+
+model EscalationPolicy {
+  id        String   @id @default(cuid())
+  teamId    String   @map("team_id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  team     Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  steps    EscalationStep[]
+  monitors Monitor[]
+
+  @@map("escalation_policies")
+}
+
+model EscalationStep {
+  id           String @id @default(cuid())
+  policyId     String @map("policy_id")
+  stepOrder    Int    @map("step_order")
+  delayMinutes Int    @map("delay_minutes")
+  channelId    String @map("channel_id")
+
+  policy  EscalationPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  channel AlertChannel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, stepOrder])
+  @@map("escalation_steps")
+}
+
+// ─── Performance Alerts (anomaly detection) ────────────────────────────────────
+
+model PerformanceAlert {
+  id             String    @id @default(cuid())
+  teamId         String    @map("team_id")
+  monitorId      String    @map("monitor_id")
+  checkedAt      DateTime  @map("checked_at")
+  responseTimeMs Int       @map("response_time_ms")
+  meanMs         Float     @map("mean_ms")
+  stdDevMs       Float     @map("std_dev_ms")
+  zScore         Float     @map("z_score")
+  notifiedAt     DateTime? @map("notified_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@index([monitorId, checkedAt(sort: Desc)])
+  @@map("performance_alerts")
 }

@@ -5,6 +5,7 @@ import type {
   ContentCheckJob,
   AlertJob,
   ReportJob,
+  EscalationStepJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -53,6 +54,18 @@ export function createReportQueue(connection: Redis): Queue<ReportJob> {
       backoff: { type: 'exponential', delay: 5000 },
       removeOnComplete: { count: 50 },
       removeOnFail: { count: 100 },
+    },
+  });
+}
+
+export function createEscalationQueue(connection: Redis): Queue<EscalationStepJob> {
+  return new Queue<EscalationStepJob>(QUEUE_NAMES.ESCALATION_STEP, {
+    connection,
+    defaultJobOptions: {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: { count: 200 },
+      removeOnFail: { count: 500 },
     },
   });
 }

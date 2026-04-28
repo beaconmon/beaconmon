@@ -15,6 +15,8 @@ export interface MonitorForCheck {
   contentSnapshot: string | null;
   keyword: string | null;
   keywordCondition: 'present' | 'absent' | null;
+  escalationPolicyId: string | null;
+  anomalyDetectionEnabled: boolean;
 }
 
 export interface UpdateAfterCheckData {
@@ -43,6 +45,8 @@ export const monitorRepository = {
         contentSnapshot: true,
         keyword: true,
         keywordCondition: true,
+        escalationPolicyId: true,
+        anomalyDetectionEnabled: true,
       },
     });
 
@@ -56,6 +60,8 @@ export const monitorRepository = {
       contentSnapshot: monitor.contentSnapshot,
       keyword: monitor.keyword,
       keywordCondition: monitor.keywordCondition as 'present' | 'absent' | null,
+      escalationPolicyId: monitor.escalationPolicyId,
+      anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
     };
   },
 

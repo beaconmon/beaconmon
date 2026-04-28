@@ -5,13 +5,14 @@ initSentry('check-worker'); // must be before other imports
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { QUEUE_NAMES, createAlertQueue, createManagedWorker } from '@beaconmon/queue';
+import { QUEUE_NAMES, createAlertQueue, createEscalationQueue, createManagedWorker } from '@beaconmon/queue';
 import type { CheckJob } from '@beaconmon/queue';
 import { prisma } from '@beaconmon/db';
 import { processCheckJob } from './process-check-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const alertQueue = createAlertQueue(connection);
+const escalationQueue = createEscalationQueue(connection);
 
 // Reduce concurrency when multi-location is enabled to cap outbound connections.
 // 20 jobs × 5 regions = ~100 concurrent outbound fetches — acceptable for Railway.
@@ -33,10 +34,11 @@ const { worker } = createManagedWorker<CheckJob>({
       },
       'Processing check job'
     );
-    await processCheckJob(job.data, alertQueue, connection);
+    await processCheckJob(job.data, alertQueue, connection, escalationQueue);
   },
   onShutdown: async () => {
     await alertQueue.close();
+    await escalationQueue.close();
     await prisma.$disconnect();
     await connection.quit();
   },

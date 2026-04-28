@@ -14,31 +14,41 @@ function formatDuration(ms: number): string {
   return `${seconds}s`;
 }
 
-// Discord colour integers: #dc2626 → 14423100 (red), #16a34a → 1484074 (green)
+// Discord colour integers: #dc2626 → 14423100 (red), #16a34a → 1484074 (green), #d97706 → 14254854 (amber)
 const COLOR_DOWN = 14423100;
 const COLOR_UP = 1484074;
+const COLOR_SLOW = 14254854;
 
 export const discordSender: ChannelSender = async (rawConfig, payload) => {
   const config = discordChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
-  const isDown = type === 'down';
-  const color = isDown ? COLOR_DOWN : COLOR_UP;
-  const title = isDown
-    ? `Monitor Down: ${monitor.name}`
-    : `Monitor Recovered: ${monitor.name}`;
+  const color = type === 'down' ? COLOR_DOWN : type === 'slow' ? COLOR_SLOW : COLOR_UP;
+  const title =
+    type === 'down'
+      ? `Monitor Down: ${monitor.name}`
+      : type === 'slow'
+        ? `Slow Response: ${monitor.name}`
+        : `Monitor Recovered: ${monitor.name}`;
 
-  const fields = isDown
-    ? [
-        { name: 'URL', value: monitor.url, inline: false },
-        { name: 'Detected at', value: incident.startedAt.toUTCString(), inline: true },
-        { name: 'Incident ID', value: incident.id, inline: true },
-      ]
-    : [
-        { name: 'URL', value: monitor.url, inline: false },
-        { name: 'Downtime', value: formatDuration(durationMs ?? 0), inline: true },
-        { name: 'Incident ID', value: incident.id, inline: true },
-      ];
+  const fields =
+    type === 'down'
+      ? [
+          { name: 'URL', value: monitor.url, inline: false },
+          { name: 'Detected at', value: incident.startedAt.toUTCString(), inline: true },
+          { name: 'Incident ID', value: incident.id, inline: true },
+        ]
+      : type === 'slow'
+        ? [
+            { name: 'URL', value: monitor.url, inline: false },
+            { name: 'Response time', value: `${durationMs ?? 0}ms`, inline: true },
+            { name: 'Detected at', value: incident.startedAt.toUTCString(), inline: true },
+          ]
+        : [
+            { name: 'URL', value: monitor.url, inline: false },
+            { name: 'Downtime', value: formatDuration(durationMs ?? 0), inline: true },
+            { name: 'Incident ID', value: incident.id, inline: true },
+          ];
 
   const discordPayload = {
     embeds: [

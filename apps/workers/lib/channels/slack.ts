@@ -18,21 +18,32 @@ export const slackSender: ChannelSender = async (rawConfig, payload) => {
   const config = slackChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
-  const isDown = type === 'down';
-  const color = isDown ? '#dc2626' : '#16a34a';
-  const title = isDown ? `Monitor Down: ${monitor.name}` : `Monitor Recovered: ${monitor.name}`;
+  const color = type === 'down' ? '#dc2626' : type === 'slow' ? '#d97706' : '#16a34a';
+  const title =
+    type === 'down'
+      ? `Monitor Down: ${monitor.name}`
+      : type === 'slow'
+        ? `Slow Response: ${monitor.name}`
+        : `Monitor Recovered: ${monitor.name}`;
 
-  const fields = isDown
-    ? [
-        { title: 'URL', value: monitor.url, short: false },
-        { title: 'Detected at', value: incident.startedAt.toUTCString(), short: true },
-        { title: 'Incident ID', value: incident.id, short: true },
-      ]
-    : [
-        { title: 'URL', value: monitor.url, short: false },
-        { title: 'Downtime', value: formatDuration(durationMs ?? 0), short: true },
-        { title: 'Incident ID', value: incident.id, short: true },
-      ];
+  const fields =
+    type === 'down'
+      ? [
+          { title: 'URL', value: monitor.url, short: false },
+          { title: 'Detected at', value: incident.startedAt.toUTCString(), short: true },
+          { title: 'Incident ID', value: incident.id, short: true },
+        ]
+      : type === 'slow'
+        ? [
+            { title: 'URL', value: monitor.url, short: false },
+            { title: 'Response time', value: `${durationMs ?? 0}ms`, short: true },
+            { title: 'Detected at', value: incident.startedAt.toUTCString(), short: true },
+          ]
+        : [
+            { title: 'URL', value: monitor.url, short: false },
+            { title: 'Downtime', value: formatDuration(durationMs ?? 0), short: true },
+            { title: 'Incident ID', value: incident.id, short: true },
+          ];
 
   const slackPayload = {
     attachments: [

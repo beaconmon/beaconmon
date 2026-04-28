@@ -39,6 +39,17 @@ export interface ReportJob {
   teamId: string;
   periodStart: string; // ISO date string
   periodEnd: string;   // ISO date string
+  clientName: string;
+  clientNotes?: string;
+}
+
+/** Enqueued when an incident is created and the monitor has an escalation policy */
+export interface EscalationStepJob {
+  incidentId: string;
+  monitorId: string;
+  policyId: string;
+  teamId: string;
+  stepIndex: number; // 0-based index into the policy's steps array
 }
 
 // ─── Queue name constants ─────────────────────────────────────────────────────
@@ -48,6 +59,7 @@ export const QUEUE_NAMES = {
   CONTENT_CHECK: 'content:check',
   ALERT_SEND: 'alert:send',
   REPORT_GENERATE: 'report:generate',
+  ESCALATION_STEP: 'escalation:step',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
