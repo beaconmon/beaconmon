@@ -11,6 +11,8 @@ export interface CheckJob {
   intervalSeconds: number;
   timeoutMs: number;
   regions?: ProbeRegion[]; // only for http/keyword; absent = existing behavior
+  keyword?: string;             // keyword monitors only
+  keywordCondition?: 'present' | 'absent'; // keyword monitors only
 }
 
 /** Enqueued by scheduler for content monitors */

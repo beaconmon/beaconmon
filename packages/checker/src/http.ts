@@ -8,7 +8,7 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
   const checkedAt = new Date();
 
   try {
-    const { statusCode } = await request(job.url, {
+    const { statusCode, body } = await request(job.url, {
       method: 'GET',
       headersTimeout: job.timeoutMs,
       bodyTimeout: job.timeoutMs,
@@ -18,6 +18,32 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
     } as Parameters<typeof request>[1]);
 
     const responseTimeMs = Date.now() - startedAt;
+
+    if (job.type === 'keyword') {
+      const bodyText = await body.text();
+      const keyword = job.keyword ?? '';
+      const condition = job.keywordCondition ?? 'present';
+      const found = bodyText.includes(keyword);
+      const success = condition === 'present' ? found : !found;
+
+      return {
+        monitorId: job.monitorId,
+        checkedAt,
+        success,
+        statusCode,
+        responseTimeMs,
+        errorType: success ? null : 'keyword_not_found',
+        errorMessage: success
+          ? null
+          : condition === 'present'
+          ? `Keyword "${keyword}" not found in response body`
+          : `Keyword "${keyword}" was found in response body (expected absent)`,
+        type: job.type,
+      };
+    }
+
+    // HTTP monitor — check status code only
+    await body.dump(); // consume body to free the socket
     const success = statusCode >= 200 && statusCode < 300;
 
     return {

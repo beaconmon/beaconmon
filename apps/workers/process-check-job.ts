@@ -192,6 +192,8 @@ export async function processCheckJob(
     type: type as CheckInput['type'],
     timeoutMs,
     intervalSeconds,
+    keyword: job.keyword,
+    keywordCondition: job.keywordCondition,
   };
 
   let result;

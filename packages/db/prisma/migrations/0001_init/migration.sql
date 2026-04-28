@@ -107,8 +107,8 @@ CREATE UNIQUE INDEX "team_invitations_token_key" ON "team_invitations"("token");
 CREATE TABLE "subscriptions" (
     "id" TEXT NOT NULL,
     "team_id" TEXT NOT NULL,
-    "stripe_customer_id" TEXT NOT NULL,
-    "stripe_subscription_id" TEXT,
+    "paddle_customer_id" TEXT NOT NULL,
+    "paddle_subscription_id" TEXT,
     "plan" "PlanTier" NOT NULL DEFAULT 'free',
     "status" "SubscriptionStatus" NOT NULL DEFAULT 'trialing',
     "trial_ends_at" TIMESTAMPTZ,
@@ -118,8 +118,8 @@ CREATE TABLE "subscriptions" (
     CONSTRAINT "subscriptions_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "subscriptions_team_id_key" ON "subscriptions"("team_id");
-CREATE UNIQUE INDEX "subscriptions_stripe_customer_id_key" ON "subscriptions"("stripe_customer_id");
-CREATE UNIQUE INDEX "subscriptions_stripe_subscription_id_key" ON "subscriptions"("stripe_subscription_id");
+CREATE UNIQUE INDEX "subscriptions_paddle_customer_id_key" ON "subscriptions"("paddle_customer_id");
+CREATE UNIQUE INDEX "subscriptions_paddle_subscription_id_key" ON "subscriptions"("paddle_subscription_id");
 
 -- CreateTable: monitors
 CREATE TABLE "monitors" (

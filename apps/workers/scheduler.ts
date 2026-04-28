@@ -24,6 +24,21 @@ let lastRetentionCleanup = 0;
 const UPTIME_COMPUTE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 const RETENTION_CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
+function getEffectivePlan(team: {
+  plan: string;
+  trialEndsAt: Date | null;
+  subscription: { status: string } | null;
+}): keyof typeof PLAN_LIMITS {
+  const plan = team.plan as keyof typeof PLAN_LIMITS;
+  if (plan === 'free') return 'free';
+  if (team.trialEndsAt && team.trialEndsAt < new Date()) {
+    const subStatus = team.subscription?.status;
+    const hasActiveSub = subStatus === 'active' || subStatus === 'past_due';
+    if (!hasActiveSub) return 'free';
+  }
+  return plan;
+}
+
 /**
  * Enqueue check jobs for all active monitors whose next_check_at <= now.
  */
@@ -52,13 +67,22 @@ async function scheduleChecks(): Promise<void> {
         intervalSeconds: true,
         timeoutMs: true,
         config: true,
-        team: { select: { plan: true } },
+        keyword: true,
+        keywordCondition: true,
+        team: {
+          select: {
+            plan: true,
+            trialEndsAt: true,
+            subscription: { select: { status: true } },
+          },
+        },
       },
     });
 
     for (const monitor of dueMonitors) {
       // Throttle monitors whose interval is below the team's plan minimum
-      const planMin = PLAN_LIMITS[monitor.team.plan].checkIntervalSeconds;
+      const effectivePlan = getEffectivePlan(monitor.team);
+      const planMin = PLAN_LIMITS[effectivePlan].checkIntervalSeconds;
       if (monitor.intervalSeconds < planMin) {
         logger.warn(
           {
@@ -66,7 +90,7 @@ async function scheduleChecks(): Promise<void> {
             monitorId: monitor.id,
             interval: monitor.intervalSeconds,
             planMin,
-            plan: monitor.team.plan,
+            plan: effectivePlan,
           },
           'Monitor interval below plan minimum — throttling to plan minimum'
         );
@@ -97,7 +121,7 @@ async function scheduleChecks(): Promise<void> {
           { jobId: `content:${monitor.id}` }
         );
       } else {
-        const planRegionCount = PLAN_LIMITS[monitor.team.plan].regions;
+        const planRegionCount = PLAN_LIMITS[effectivePlan].regions;
         const enabledRegions = REGIONS.slice(0, planRegionCount);
         const isHttpOrKeyword = monitor.type === 'http' || monitor.type === 'keyword';
 
@@ -110,6 +134,10 @@ async function scheduleChecks(): Promise<void> {
             intervalSeconds: monitor.intervalSeconds,
             timeoutMs: monitor.timeoutMs,
             regions: isHttpOrKeyword ? enabledRegions : undefined,
+            ...(monitor.type === 'keyword' && {
+              keyword: monitor.keyword ?? undefined,
+              keywordCondition: (monitor.keywordCondition ?? undefined) as 'present' | 'absent' | undefined,
+            }),
           },
           { jobId: `check:${monitor.id}` }
         );

@@ -86,13 +86,12 @@ export default function BillingPage() {
       .catch(() => null);
   }, [sessionQ.data?.teamId]);
 
-  function handleUpgrade() {
-    const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'];
+  function handleUpgrade(priceId: string) {
     const teamId = sessionQ.data?.teamId;
-    if (!proPriceId || !teamId || !window.Paddle) return;
+    if (!priceId || !teamId || !window.Paddle) return;
 
     window.Paddle.Checkout.open({
-      items: [{ priceId: proPriceId }],
+      items: [{ priceId }],
       customData: { teamId },
     });
   }
@@ -114,6 +113,8 @@ export default function BillingPage() {
   const channelCount = channelsQ.data?.length ?? 0;
   const statusPageCount = statusPagesQ.data?.length ?? 0;
 
+  const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'] ?? '';
+  const businessPriceId = process.env['NEXT_PUBLIC_PADDLE_BUSINESS_PRICE_ID'] ?? '';
   const isPaid = plan === 'pro' || plan === 'business';
 
   return (
@@ -150,18 +151,39 @@ export default function BillingPage() {
               {renewalDate && <p>{renewalDate}</p>}
             </div>
 
-            {isPaid ? (
+            {plan === 'business' ? (
               <form action="/api/billing/portal" method="POST">
                 <Button variant="outline" type="submit">
                   Manage subscription
                 </Button>
               </form>
+            ) : plan === 'pro' ? (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Upgrade to Business for unlimited monitors, 30-second checks, and 365-day history.
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <Button onClick={() => handleUpgrade(businessPriceId)}>
+                    Upgrade to Business — $49/mo
+                  </Button>
+                  <form action="/api/billing/portal" method="POST">
+                    <Button variant="outline" type="submit">
+                      Manage subscription
+                    </Button>
+                  </form>
+                </div>
+              </div>
             ) : (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
                   Upgrade to Pro for 25 monitors, 1-minute checks, and 90-day history.
                 </p>
-                <Button onClick={handleUpgrade}>Upgrade to Pro — $15/mo</Button>
+                <div className="flex gap-2 flex-wrap">
+                  <Button onClick={() => handleUpgrade(proPriceId)}>Upgrade to Pro — $15/mo</Button>
+                  <Button variant="outline" onClick={() => handleUpgrade(businessPriceId)}>
+                    Business — $49/mo
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>

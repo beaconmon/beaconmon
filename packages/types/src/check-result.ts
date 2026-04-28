@@ -7,6 +7,7 @@ export type CheckErrorType =
   | 'non_2xx'
   | 'ssl_error'
   | 'dns_error'
+  | 'keyword_not_found'
   | 'unknown';
 
 export interface CheckResult {
