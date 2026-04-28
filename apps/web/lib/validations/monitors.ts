@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const createMonitorSchema = z.object({
   name: z.string().min(1).max(100),
   url: z.string().url(),
-  type: z.enum(['http', 'ssl', 'domain', 'tcp', 'keyword', 'content']),
+  type: z.enum(['http', 'ssl', 'domain', 'tcp', 'keyword', 'content', 'heartbeat']),
   intervalSeconds: z.number().int().positive(),
   timeoutMs: z.number().int().positive().optional(),
   responseTimeThresholdMs: z.number().int().positive().optional(),

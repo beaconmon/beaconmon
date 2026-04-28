@@ -20,4 +20,5 @@ export interface CheckResult {
   errorMessage: string | null;
   type: MonitorType;
   region?: ProbeRegion | null; // undefined/null = Railway-only check (SSL/TCP/domain)
+  maintenance?: boolean; // true when check ran during a maintenance window
 }

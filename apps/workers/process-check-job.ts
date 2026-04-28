@@ -147,9 +147,12 @@ export async function processCheckJob(
     const probeResults = await fanOutToRegions(job, monitor, regions, env.REGION_PROBE_SECRET!);
     const checkedAt = new Date();
 
-    // Write all regional results to DB
+    // Write all regional results to DB (with maintenance flag)
     for (const probe of probeResults) {
-      const result = probeToCheckResult(probe, monitorId, type, checkedAt);
+      const result: CheckResult = {
+        ...probeToCheckResult(probe, monitorId, type, checkedAt),
+        maintenance: job.inMaintenance ?? false,
+      };
       try {
         await checkResultRepository.create(result);
       } catch (err) {
@@ -163,9 +166,16 @@ export async function processCheckJob(
         monitorId,
         regions: regions.length,
         failures: probeResults.filter((r) => !r.success).length,
+        maintenance: job.inMaintenance ?? false,
       },
       'Multi-region check completed'
     );
+
+    // During maintenance: skip incident evaluation and alerts
+    if (job.inMaintenance) {
+      logger.info({ service, monitorId }, 'Monitor in maintenance window — skipping alert evaluation');
+      return;
+    }
 
     if (regions.length > 1) {
       // Pro/Business: multi-region incident logic (≥2 failures → incident)
@@ -216,8 +226,12 @@ export async function processCheckJob(
       return;
   }
 
-  // Add region: null for Railway-local checks
-  const resultWithRegion: CheckResult = { ...result, region: null };
+  // Add region: null for Railway-local checks; propagate maintenance flag
+  const resultWithRegion: CheckResult = {
+    ...result,
+    region: null,
+    maintenance: job.inMaintenance ?? false,
+  };
 
   logger.info(
     {
@@ -226,6 +240,7 @@ export async function processCheckJob(
       success: resultWithRegion.success,
       responseTimeMs: resultWithRegion.responseTimeMs,
       errorType: resultWithRegion.errorType,
+      maintenance: resultWithRegion.maintenance,
     },
     'Check completed'
   );
@@ -234,6 +249,12 @@ export async function processCheckJob(
     await checkResultRepository.create(resultWithRegion);
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Failed to persist check result, aborting status evaluation');
+    return;
+  }
+
+  // During maintenance: record the result but skip incident evaluation and alerts
+  if (job.inMaintenance) {
+    logger.info({ service, monitorId }, 'Monitor in maintenance window — skipping alert evaluation');
     return;
   }
 

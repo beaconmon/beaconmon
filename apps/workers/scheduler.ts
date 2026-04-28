@@ -5,9 +5,11 @@ initSentry('scheduler'); // must be before other imports
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { prisma, statusPageWorkerRepository } from '@beaconmon/db';
+import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue } from '@beaconmon/queue';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
+import { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from '@beaconmon/checker';
+import { warmStatusPageCache } from '@beaconmon/status-pages';
 
 const HEARTBEAT_KEY = 'worker:heartbeat:scheduler';
 // Sentry cron monitor slug — create a matching monitor in your Sentry project
@@ -40,7 +42,133 @@ function getEffectivePlan(team: {
 }
 
 /**
+ * Returns the set of monitor IDs that are currently in an active maintenance window
+ * for the given team. An empty monitor list on a window means all monitors are covered.
+ */
+async function getMaintenanceMonitorIds(teamId: string, now: Date): Promise<Set<string> | 'all'> {
+  const activeWindows = await prisma.maintenanceWindow.findMany({
+    where: {
+      teamId,
+      startsAt: { lte: now },
+      endsAt: { gt: now },
+    },
+    include: { monitors: { select: { monitorId: true } } },
+  });
+
+  if (activeWindows.length === 0) return new Set();
+
+  // Any window with zero monitor rows covers the whole team
+  const coversAll = activeWindows.some((w) => w.monitors.length === 0);
+  if (coversAll) return 'all';
+
+  const ids = new Set<string>();
+  for (const window of activeWindows) {
+    for (const m of window.monitors) ids.add(m.monitorId);
+  }
+  return ids;
+}
+
+/**
+ * Evaluate a heartbeat monitor directly in the scheduler (no HTTP check needed).
+ * Writes a check_result and calls evaluateCheckResult() to handle incident transitions.
+ */
+async function evaluateHeartbeatMonitor(
+  monitor: {
+    id: string;
+    teamId: string;
+    intervalSeconds: number;
+    config: Record<string, unknown>;
+    currentStatus: string;
+    consecutiveFailures: number;
+  },
+  now: Date
+): Promise<void> {
+  const service = 'scheduler';
+  const { id: monitorId } = monitor;
+  const config = monitor.config;
+  const gracePeriodSeconds = (config['gracePeriodSeconds'] as number | undefined) ?? 0;
+
+  // Fetch last_heartbeat_at from DB
+  const row = await prisma.monitor.findUnique({
+    where: { id: monitorId },
+    select: { lastHeartbeatAt: true, currentStatus: true, consecutiveFailures: true },
+  });
+
+  const lastHeartbeat = row?.lastHeartbeatAt ?? null;
+  const deadlineMs =
+    (monitor.intervalSeconds + gracePeriodSeconds) * 1000;
+  const missed =
+    !lastHeartbeat ||
+    now.getTime() - lastHeartbeat.getTime() > deadlineMs;
+
+  const result = {
+    monitorId,
+    checkedAt: now,
+    success: !missed,
+    statusCode: null,
+    responseTimeMs: null,
+    errorType: missed ? ('timeout' as const) : null,
+    errorMessage: missed ? 'Heartbeat not received within interval + grace period' : null,
+    type: 'heartbeat' as const,
+    region: null,
+    maintenance: false,
+  };
+
+  try {
+    await checkResultRepository.create(result);
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Heartbeat: failed to write check_result');
+    return;
+  }
+
+  const prevStatus = (row?.currentStatus ?? 'up') as 'up' | 'down' | 'paused';
+  const prevConsecutive = row?.consecutiveFailures ?? 0;
+  const evaluation = evaluateCheckResult(result.success, prevStatus, prevConsecutive);
+
+  try {
+    await monitorRepository.updateAfterCheck(monitorId, {
+      currentStatus: evaluation.status,
+      consecutiveFailures: evaluation.consecutiveFailures,
+      lastCheckedAt: now,
+    });
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Heartbeat: failed to update monitor status');
+    return;
+  }
+
+  if (evaluation.becameDown) {
+    try {
+      const incident = await incidentRepository.create({
+        monitorId,
+        teamId: monitor.teamId,
+        startedAt: now,
+      });
+      logger.info({ service, monitorId, incidentId: incident.id }, 'Heartbeat missed — incident created');
+    } catch (err) {
+      logger.error({ service, monitorId, err }, 'Heartbeat: failed to create incident');
+    }
+  }
+
+  if (evaluation.becameUp) {
+    try {
+      const openIncident = await incidentRepository.findOpenByMonitorId(monitorId);
+      if (openIncident) {
+        await incidentRepository.resolve(openIncident.id, {
+          resolvedAt: now,
+          resolutionType: 'automatic',
+        });
+        logger.info({ service, monitorId, incidentId: openIncident.id }, 'Heartbeat recovered — incident resolved');
+      }
+    } catch (err) {
+      logger.error({ service, monitorId, err }, 'Heartbeat: failed to resolve incident');
+    }
+  }
+}
+
+/**
  * Enqueue check jobs for all active monitors whose next_check_at <= now.
+ * Heartbeat monitors are evaluated in-process; all others are enqueued.
+ * Maintenance windows are detected per-team and annotated on job payloads.
  */
 async function scheduleChecks(): Promise<void> {
   const now = new Date();
@@ -69,8 +197,12 @@ async function scheduleChecks(): Promise<void> {
         config: true,
         keyword: true,
         keywordCondition: true,
+        teamId: true,
+        currentStatus: true,
+        consecutiveFailures: true,
         team: {
           select: {
+            id: true,
             plan: true,
             trialEndsAt: true,
             subscription: { select: { status: true } },
@@ -78,6 +210,9 @@ async function scheduleChecks(): Promise<void> {
         },
       },
     });
+
+    // Cache maintenance sets per team to avoid N+1 queries
+    const maintenanceByTeam = new Map<string, Set<string> | 'all'>();
 
     for (const monitor of dueMonitors) {
       // Throttle monitors whose interval is below the team's plan minimum
@@ -101,6 +236,17 @@ async function scheduleChecks(): Promise<void> {
         continue;
       }
 
+      // Resolve maintenance status for this team (cached)
+      if (!maintenanceByTeam.has(monitor.teamId)) {
+        maintenanceByTeam.set(
+          monitor.teamId,
+          await getMaintenanceMonitorIds(monitor.teamId, now)
+        );
+      }
+      const teamMaintenance = maintenanceByTeam.get(monitor.teamId)!;
+      const inMaintenance =
+        teamMaintenance === 'all' || teamMaintenance.has(monitor.id);
+
       const nextCheckAt = new Date(now.getTime() + monitor.intervalSeconds * 1000);
 
       // Update next_check_at first (optimistic lock pattern — prevents double-enqueue)
@@ -108,6 +254,22 @@ async function scheduleChecks(): Promise<void> {
         where: { id: monitor.id },
         data: { nextCheckAt },
       });
+
+      // ─── Heartbeat: evaluate in-process, no queue needed ──────────────────
+      if (monitor.type === 'heartbeat') {
+        await evaluateHeartbeatMonitor(
+          {
+            id: monitor.id,
+            teamId: monitor.teamId,
+            intervalSeconds: monitor.intervalSeconds,
+            config: monitor.config as Record<string, unknown>,
+            currentStatus: monitor.currentStatus,
+            consecutiveFailures: monitor.consecutiveFailures,
+          },
+          now
+        );
+        continue;
+      }
 
       if (monitor.type === 'content') {
         await contentQueue.add(
@@ -117,6 +279,7 @@ async function scheduleChecks(): Promise<void> {
             url: monitor.url,
             intervalSeconds: monitor.intervalSeconds,
             selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
+            inMaintenance,
           },
           { jobId: `content:${monitor.id}` }
         );
@@ -138,6 +301,7 @@ async function scheduleChecks(): Promise<void> {
               keyword: monitor.keyword ?? undefined,
               keywordCondition: (monitor.keywordCondition ?? undefined) as 'present' | 'absent' | undefined,
             }),
+            inMaintenance,
           },
           { jobId: `check:${monitor.id}` }
         );
@@ -270,6 +434,7 @@ async function computeUptimePercentages(): Promise<void> {
       FROM check_results
       WHERE monitor_id = ANY(${monitorIds})
         AND checked_at >= ${cutoff}
+        AND maintenance = false
       GROUP BY monitor_id
     `;
 

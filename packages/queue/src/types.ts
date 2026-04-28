@@ -13,6 +13,7 @@ export interface CheckJob {
   regions?: ProbeRegion[]; // only for http/keyword; absent = existing behavior
   keyword?: string;             // keyword monitors only
   keywordCondition?: 'present' | 'absent'; // keyword monitors only
+  inMaintenance?: boolean; // true when a maintenance window is active for this monitor
 }
 
 /** Enqueued by scheduler for content monitors */
@@ -21,6 +22,7 @@ export interface ContentCheckJob {
   url: string;
   intervalSeconds: number;
   selector?: string; // CSS selector from monitor.config, if set
+  inMaintenance?: boolean; // true when a maintenance window is active for this monitor
 }
 
 /** Enqueued by check-worker on monitor status transition (down or recovery) */

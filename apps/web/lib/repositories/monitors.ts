@@ -85,6 +85,11 @@ export const monitorRepository: {
   },
 
   async create(teamId, data) {
+    // Heartbeat monitors get a secret token stored in config for the ping endpoint
+    const config = data.type === 'heartbeat'
+      ? { ...data.config, token: crypto.randomUUID() }
+      : (data.config ?? {});
+
     const row = await prisma.monitor.create({
       data: {
         teamId,
@@ -96,7 +101,7 @@ export const monitorRepository: {
         responseTimeThresholdMs: data.responseTimeThresholdMs ?? null,
         keyword: data.keyword ?? null,
         keywordCondition: data.keywordCondition ?? null,
-        config: (data.config ?? {}) as unknown as Prisma.InputJsonValue,
+        config: config as unknown as Prisma.InputJsonValue,
         // Make immediately eligible for the scheduler to pick up
         nextCheckAt: new Date(),
       },
