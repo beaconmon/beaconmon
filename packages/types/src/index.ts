@@ -1,5 +1,6 @@
 export * from './monitor';
 export * from './check-result';
+export * from './regions';
 export * from './incident';
 export * from './alert';
 export * from './team';

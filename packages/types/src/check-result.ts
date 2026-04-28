@@ -1,4 +1,5 @@
 import type { MonitorType } from './monitor.js';
+import type { ProbeRegion } from './regions.js';
 
 export type CheckErrorType =
   | 'timeout'
@@ -6,6 +7,7 @@ export type CheckErrorType =
   | 'non_2xx'
   | 'ssl_error'
   | 'dns_error'
+  | 'keyword_not_found'
   | 'unknown';
 
 export interface CheckResult {
@@ -17,4 +19,5 @@ export interface CheckResult {
   errorType: CheckErrorType | null;
   errorMessage: string | null;
   type: MonitorType;
+  region?: ProbeRegion | null; // undefined/null = Railway-only check (SSL/TCP/domain)
 }

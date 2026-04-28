@@ -576,7 +576,7 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [x] Per-monitor pause/unpause (`is_active` toggle)
 - [x] BullMQ queue setup (packages/queue)
 - [x] Check worker (HTTP, SSL, domain, TCP, keyword)
-- [ ] Content worker (HTML-only change detection via cheerio) — stub only, TODO
+- [x] Content worker (HTML-only change detection via cheerio)
 - [x] Scheduler (cron → enqueue check jobs + nightly partition purge + daily retention cleanup)
 - [x] Alert worker (email via Resend, Slack webhook, generic webhook)
 - [x] Expiry alerts (SSL + domain, tiered warnings at 30/14/7 days)

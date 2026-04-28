@@ -1,6 +1,6 @@
 import type { MonitorStatus } from '@beaconmon/types';
 
-const CONSECUTIVE_FAILURES_THRESHOLD = 2;
+export const CONSECUTIVE_FAILURES_THRESHOLD = 2;
 
 export interface EvaluationResult {
   status: MonitorStatus;

@@ -257,6 +257,7 @@ model CheckResult {
   responseTimeMs Int?    @map("response_time_ms")
   errorType     String?  @map("error_type")
   errorMessage  String?  @map("error_message")
+  region        String?  // null = Railway-only check (SSL/TCP/domain)
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 

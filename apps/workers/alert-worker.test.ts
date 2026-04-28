@@ -72,6 +72,8 @@ const mockMonitor = {
   consecutiveFailures: 2,
   config: {},
   contentSnapshot: null,
+  keyword: null,
+  keywordCondition: null,
 };
 
 const mockIncident = {

@@ -7,6 +7,6 @@ export { runTcpCheck } from './tcp.js';
 export { runDomainCheck } from './domain.js';
 export type { DomainCheckDetail } from './domain.js';
 export { classifyError } from './errors.js';
-export { evaluateCheckResult } from './evaluate.js';
+export { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from './evaluate.js';
 export type { EvaluationResult } from './evaluate.js';
 export type { CheckInput, CheckMonitorType } from './types.js';

@@ -691,7 +691,7 @@ export default async function StatusPage({ params }: Props) {
                 Get notified of incidents
               </div>
               <div style={{ fontSize: 13, color: SP.gray500 }}>
-                Subscribe by email to receive updates when the status changes.
+                Create a free account to get notified when the status changes.
               </div>
             </div>
             <div className="sp-subscribe-form" style={{ flexShrink: 0, minWidth: 260 }}>

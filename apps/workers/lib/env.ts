@@ -17,6 +17,17 @@ const EnvSchema = z.object({
     .string()
     .transform((v) => v === 'true')
     .default(false),
+  // Multi-region check probes (Cloudflare Workers)
+  FEATURE_MULTI_LOCATION: z
+    .string()
+    .transform((v) => v === 'true')
+    .default(false),
+  REGION_PROBE_SECRET: z.string().min(32).optional(),
+  CF_PROBE_URL_US_EAST: z.string().url().optional(),
+  CF_PROBE_URL_US_WEST: z.string().url().optional(),
+  CF_PROBE_URL_EU_WEST: z.string().url().optional(),
+  CF_PROBE_URL_AP_SOUTHEAST: z.string().url().optional(),
+  CF_PROBE_URL_SA_EAST: z.string().url().optional(),
 });
 
 // Validate at startup — fails fast before any worker logic runs
@@ -30,4 +41,15 @@ if (!result.success) {
   process.exit(1);
 }
 
-export const env = result.data;
+const parsed = result.data;
+
+// Fail-open: if multi-location is enabled but the shared secret is missing,
+// log a warning and disable the feature rather than crashing or probing without auth.
+if (parsed.FEATURE_MULTI_LOCATION && !parsed.REGION_PROBE_SECRET) {
+  console.warn(
+    '[env] FEATURE_MULTI_LOCATION=true but REGION_PROBE_SECRET is not set — disabling multi-location checks'
+  );
+  parsed.FEATURE_MULTI_LOCATION = false;
+}
+
+export const env = parsed;

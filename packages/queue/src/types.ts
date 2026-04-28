@@ -1,6 +1,8 @@
 // ─── Job payload types ────────────────────────────────────────────────────────
 // All job definitions — every queue payload must be typed here.
 
+import type { ProbeRegion } from '@beaconmon/types';
+
 /** Enqueued by scheduler per active non-content monitor */
 export interface CheckJob {
   monitorId: string;
@@ -8,6 +10,9 @@ export interface CheckJob {
   type: 'http' | 'ssl' | 'domain' | 'tcp' | 'keyword';
   intervalSeconds: number;
   timeoutMs: number;
+  regions?: ProbeRegion[]; // only for http/keyword; absent = existing behavior
+  keyword?: string;             // keyword monitors only
+  keywordCondition?: 'present' | 'absent'; // keyword monitors only
 }
 
 /** Enqueued by scheduler for content monitors */
