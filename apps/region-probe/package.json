@@ -1,0 +1,20 @@
+{
+  "name": "@beaconmon/region-probe",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy:us-east": "wrangler deploy --config wrangler.us-east.toml",
+    "deploy:us-west": "wrangler deploy --config wrangler.us-west.toml",
+    "deploy:eu-west": "wrangler deploy --config wrangler.eu-west.toml",
+    "deploy:ap-southeast": "wrangler deploy --config wrangler.ap-southeast.toml",
+    "deploy:sa-east": "wrangler deploy --config wrangler.sa-east.toml",
+    "deploy:all": "pnpm run deploy:us-east && pnpm run deploy:us-west && pnpm run deploy:eu-west && pnpm run deploy:ap-southeast && pnpm run deploy:sa-east",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250430.0",
+    "typescript": "^5.7.3",
+    "wrangler": "^4.0.0"
+  }
+}

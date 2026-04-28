@@ -8,11 +8,32 @@
  * Run with: pnpm --filter @beaconmon/workers run test:integration
  */
 import { createServer, type Server } from 'node:http';
-import { describe, it, expect, afterAll, beforeAll } from 'vitest';
+import { describe, it, expect, afterAll, beforeAll, vi } from 'vitest';
 import { prisma } from '@beaconmon/db';
-import { processCheckJob } from './process-check-job.js';
 import type { AlertJob } from '@beaconmon/queue';
 import type { Queue } from 'bullmq';
+
+// Mock env before importing processCheckJob — process-check-job.ts imports env
+// at module level, which would call process.exit(1) if DATABASE_URL is missing.
+vi.mock('./lib/env.js', () => ({
+  env: {
+    DATABASE_URL: process.env['DATABASE_URL'] ?? 'postgresql://localhost/test',
+    REDIS_URL: process.env['REDIS_URL'] ?? 'redis://localhost:6379',
+    NODE_ENV: 'test',
+    LOG_LEVEL: 'silent',
+    ALERT_DRY_RUN: false,
+    FEATURE_SMS_ALERTS: false,
+    FEATURE_MULTI_LOCATION: false,
+    REGION_PROBE_SECRET: undefined,
+    CF_PROBE_URL_US_EAST: undefined,
+    CF_PROBE_URL_US_WEST: undefined,
+    CF_PROBE_URL_EU_WEST: undefined,
+    CF_PROBE_URL_AP_SOUTHEAST: undefined,
+    CF_PROBE_URL_SA_EAST: undefined,
+  },
+}));
+
+import { processCheckJob } from './process-check-job.js';
 
 // ─── Local test HTTP server ──────────────────────────────────────────────────
 let server: Server;

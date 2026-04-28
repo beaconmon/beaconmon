@@ -12,6 +12,7 @@ export const checkResultRepository = {
         responseTimeMs: result.responseTimeMs,
         errorType: result.errorType,
         errorMessage: result.errorMessage,
+        region: result.region ?? null,
       },
     });
   },

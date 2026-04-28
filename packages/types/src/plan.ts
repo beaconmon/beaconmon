@@ -8,6 +8,7 @@ export const PLAN_LIMITS = {
     statusPages: 1,
     teamMembers: 1,
     alertChannels: 1,
+    regions: 1,
   },
   pro: {
     monitors: 25,
@@ -16,6 +17,7 @@ export const PLAN_LIMITS = {
     statusPages: 3,
     teamMembers: 5,
     alertChannels: 5,
+    regions: 5,
   },
   business: {
     monitors: -1, // unlimited
@@ -24,6 +26,7 @@ export const PLAN_LIMITS = {
     statusPages: -1,
     teamMembers: -1,
     alertChannels: -1,
+    regions: 5,
   },
 } as const satisfies Record<PlanTier, PlanLimits>;
 
@@ -34,6 +37,7 @@ export interface PlanLimits {
   statusPages: number;
   teamMembers: number;
   alertChannels: number;
+  regions: number;
 }
 
 export function planRetentionCutoff(plan: PlanTier): Date {

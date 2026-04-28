@@ -1,0 +1,16 @@
+name = "beaconmon-probe-us-east"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+REGION_NAME = "us-east"
+# REGION_PROBE_SECRET is set via: wrangler secret put REGION_PROBE_SECRET --config wrangler.us-east.toml
+
+[[durable_objects.bindings]]
+name = "PROBE_DO"
+class_name = "ProbeDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ProbeDurableObject"]

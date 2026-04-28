@@ -13,6 +13,8 @@ export interface MonitorForCheck {
   consecutiveFailures: number;
   config: Record<string, unknown>;
   contentSnapshot: string | null;
+  keyword: string | null;
+  keywordCondition: 'present' | 'absent' | null;
 }
 
 export interface UpdateAfterCheckData {
@@ -39,6 +41,8 @@ export const monitorRepository = {
         consecutiveFailures: true,
         config: true,
         contentSnapshot: true,
+        keyword: true,
+        keywordCondition: true,
       },
     });
 
@@ -50,6 +54,8 @@ export const monitorRepository = {
       currentStatus: monitor.currentStatus as MonitorStatus,
       config: monitor.config as Record<string, unknown>,
       contentSnapshot: monitor.contentSnapshot,
+      keyword: monitor.keyword,
+      keywordCondition: monitor.keywordCondition as 'present' | 'absent' | null,
     };
   },
 

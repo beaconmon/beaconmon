@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue } from '@beaconmon/queue';
-import { PLAN_LIMITS } from '@beaconmon/types';
+import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 
 const HEARTBEAT_KEY = 'worker:heartbeat:scheduler';
 // Sentry cron monitor slug — create a matching monitor in your Sentry project
@@ -97,6 +97,10 @@ async function scheduleChecks(): Promise<void> {
           { jobId: `content:${monitor.id}` }
         );
       } else {
+        const planRegionCount = PLAN_LIMITS[monitor.team.plan].regions;
+        const enabledRegions = REGIONS.slice(0, planRegionCount);
+        const isHttpOrKeyword = monitor.type === 'http' || monitor.type === 'keyword';
+
         await checkQueue.add(
           `check:${monitor.id}`,
           {
@@ -105,6 +109,7 @@ async function scheduleChecks(): Promise<void> {
             type: monitor.type as 'http' | 'ssl' | 'domain' | 'tcp' | 'keyword',
             intervalSeconds: monitor.intervalSeconds,
             timeoutMs: monitor.timeoutMs,
+            regions: isHttpOrKeyword ? enabledRegions : undefined,
           },
           { jobId: `check:${monitor.id}` }
         );
