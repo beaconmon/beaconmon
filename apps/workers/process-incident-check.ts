@@ -1,4 +1,5 @@
 import { logger } from './lib/logger.js';
+import { prisma } from '@beaconmon/db';
 import {
   monitorRepository,
   incidentRepository,
@@ -8,14 +9,45 @@ import {
 import { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from '@beaconmon/checker';
 import { warmStatusPageCache } from '@beaconmon/status-pages';
 import type { Queue } from 'bullmq';
-import type { AlertJob } from '@beaconmon/queue';
+import type { AlertJob, EscalationStepJob } from '@beaconmon/queue';
 import type { Redis } from 'ioredis';
 import type { CheckContext } from './process-expiry-check.js';
+
+async function enqueueEscalationSteps(
+  incidentId: string,
+  monitorId: string,
+  teamId: string,
+  policyId: string,
+  escalationQueue: Queue<EscalationStepJob>
+): Promise<void> {
+  const policy = await prisma.escalationPolicy.findUnique({
+    where: { id: policyId },
+    include: { steps: { orderBy: { stepOrder: 'asc' } } },
+  });
+  if (!policy || policy.steps.length === 0) return;
+
+  for (const step of policy.steps) {
+    const delayMs = step.delayMinutes * 60_000;
+    await escalationQueue.add(
+      `escalation:${incidentId}:step${step.stepOrder}`,
+      { incidentId, monitorId, policyId, teamId, stepIndex: step.stepOrder },
+      {
+        jobId: `escalation:${incidentId}:step${step.stepOrder}`,
+        delay: delayMs,
+      }
+    );
+  }
+  logger.info(
+    { service: 'check-worker', incidentId, policyId, steps: policy.steps.length },
+    'Escalation steps enqueued'
+  );
+}
 
 export async function processIncidentCheck(
   ctx: CheckContext,
   alertQueue: Queue<AlertJob>,
-  redis?: Redis
+  redis?: Redis,
+  escalationQueue?: Queue<EscalationStepJob>
 ): Promise<void> {
   const { monitorId, monitor, result } = ctx;
   const service = 'check-worker';
@@ -48,16 +80,29 @@ export async function processIncidentCheck(
         teamId: monitor.teamId,
         startedAt: result.checkedAt,
       });
-      await alertQueue.add(
-        `alert:down:${monitorId}`,
-        {
-          incidentId: incident.id,
+
+      if (monitor.escalationPolicyId && escalationQueue) {
+        // Use escalation policy instead of direct channel broadcast
+        await enqueueEscalationSteps(
+          incident.id,
           monitorId,
-          teamId: monitor.teamId,
-          type: 'down',
-        },
-        { jobId: `alert:down:${incident.id}` }
-      );
+          monitor.teamId,
+          monitor.escalationPolicyId,
+          escalationQueue
+        );
+      } else {
+        await alertQueue.add(
+          `alert:down:${monitorId}`,
+          {
+            incidentId: incident.id,
+            monitorId,
+            teamId: monitor.teamId,
+            type: 'down',
+          },
+          { jobId: `alert:down:${incident.id}` }
+        );
+      }
+
       logger.info(
         { service, monitorId, incidentId: incident.id },
         'Incident created, alert enqueued'
@@ -154,7 +199,8 @@ export async function processMultiRegionIncidentCheck(
   ctx: MultiRegionCheckContext,
   probeResults: RegionProbeResult[],
   alertQueue: Queue<AlertJob>,
-  redis?: Redis
+  redis?: Redis,
+  escalationQueue?: Queue<EscalationStepJob>
 ): Promise<void> {
   const { monitorId, monitor, checkedAt } = ctx;
   const service = 'check-worker';
@@ -208,16 +254,28 @@ export async function processMultiRegionIncidentCheck(
         teamId: monitor.teamId,
         startedAt: checkedAt,
       });
-      await alertQueue.add(
-        `alert:down:${monitorId}`,
-        {
-          incidentId: incident.id,
+
+      if (monitor.escalationPolicyId && escalationQueue) {
+        await enqueueEscalationSteps(
+          incident.id,
           monitorId,
-          teamId: monitor.teamId,
-          type: 'down',
-        },
-        { jobId: `alert:down:${incident.id}` }
-      );
+          monitor.teamId,
+          monitor.escalationPolicyId,
+          escalationQueue
+        );
+      } else {
+        await alertQueue.add(
+          `alert:down:${monitorId}`,
+          {
+            incidentId: incident.id,
+            monitorId,
+            teamId: monitor.teamId,
+            type: 'down',
+          },
+          { jobId: `alert:down:${incident.id}` }
+        );
+      }
+
       logger.info(
         { service, monitorId, incidentId: incident.id, failCount, totalRegions: probeResults.length },
         'Multi-region incident created, alert enqueued'

@@ -13,6 +13,7 @@ export const checkResultRepository = {
         errorType: result.errorType,
         errorMessage: result.errorMessage,
         region: result.region ?? null,
+        maintenance: result.maintenance ?? false,
       },
     });
   },

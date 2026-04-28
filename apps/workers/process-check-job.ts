@@ -1,7 +1,7 @@
 import { logger } from './lib/logger.js';
 import { env } from './lib/env.js';
 import type { Queue } from 'bullmq';
-import type { CheckJob, AlertJob } from '@beaconmon/queue';
+import type { CheckJob, AlertJob, EscalationStepJob } from '@beaconmon/queue';
 import {
   runHttpCheck,
   runSslCheck,
@@ -9,12 +9,19 @@ import {
   runDomainCheck,
   type CheckInput,
 } from '@beaconmon/checker';
-import { monitorRepository, checkResultRepository, type MonitorForCheck } from '@beaconmon/db';
+import {
+  monitorRepository,
+  checkResultRepository,
+  alertChannelRepository,
+  performanceAlertRepository,
+  type MonitorForCheck,
+} from '@beaconmon/db';
 import type { Redis } from 'ioredis';
 import type { CheckResult, ProbeRegion, CheckErrorType, MonitorType } from '@beaconmon/types';
 import { REGION_ENV_VAR } from '@beaconmon/types';
 import { processExpiryCheck } from './process-expiry-check.js';
 import { processIncidentCheck, processMultiRegionIncidentCheck } from './process-incident-check.js';
+import { getChannelSender } from './lib/channels/index.js';
 
 // ─── Region probe types ───────────────────────────────────────────────────────
 
@@ -117,12 +124,111 @@ function probeToCheckResult(
   };
 }
 
+// ─── Anomaly detection ────────────────────────────────────────────────────────
+
+const ANOMALY_MIN_SAMPLES = 30;
+const ANOMALY_Z_THRESHOLD = 3.0;
+const ANOMALY_COOLDOWN_MINUTES = 30;
+const ANOMALY_WINDOW_HOURS = 24;
+
+/**
+ * Z-score anomaly detection over a 24-hour rolling window.
+ * Fires at most once per 30 minutes per monitor.
+ * Creates a performance_alert row and sends via all team alert channels (no incident).
+ */
+async function checkForAnomaly(
+  monitor: MonitorForCheck,
+  responseTimeMs: number,
+  checkedAt: Date
+): Promise<void> {
+  const service = 'check-worker';
+  const { id: monitorId, teamId } = monitor;
+
+  // Fetch recent response times
+  const since = new Date(checkedAt.getTime() - ANOMALY_WINDOW_HOURS * 60 * 60 * 1000);
+  let samples: number[];
+  try {
+    samples = await performanceAlertRepository.getRecentResponseTimes(monitorId, since);
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Anomaly: failed to fetch recent response times');
+    return;
+  }
+
+  if (samples.length < ANOMALY_MIN_SAMPLES) return; // not enough data
+
+  const n = samples.length;
+  const mean = samples.reduce((a, b) => a + b, 0) / n;
+  const variance = samples.reduce((sum, v) => sum + (v - mean) ** 2, 0) / n;
+  const stdDev = Math.sqrt(variance);
+
+  if (stdDev === 0) return; // all samples identical
+
+  const zScore = (responseTimeMs - mean) / stdDev;
+  if (zScore <= ANOMALY_Z_THRESHOLD) return; // within normal range
+
+  // Cooldown: skip if a notification was sent in the last 30 minutes
+  try {
+    const last = await performanceAlertRepository.findLastNotified(monitorId);
+    if (last?.notifiedAt) {
+      const elapsed = checkedAt.getTime() - last.notifiedAt.getTime();
+      if (elapsed < ANOMALY_COOLDOWN_MINUTES * 60_000) return;
+    }
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Anomaly: failed to check cooldown');
+    return;
+  }
+
+  // Persist the alert
+  const alertId = crypto.randomUUID();
+  try {
+    await performanceAlertRepository.create({
+      id: alertId,
+      teamId,
+      monitorId,
+      checkedAt,
+      responseTimeMs,
+      meanMs: mean,
+      stdDevMs: stdDev,
+      zScore,
+    });
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Anomaly: failed to persist performance_alert');
+    return;
+  }
+
+  // Send via all active team alert channels (no incident)
+  try {
+    const channels = await alertChannelRepository.findActiveByTeamId(teamId);
+    for (const channel of channels) {
+      try {
+        const sender = getChannelSender(channel.type);
+        await sender(channel.config as Record<string, unknown>, {
+          monitor: { id: monitor.id, name: monitor.name, url: monitor.url },
+          incident: { id: alertId, startedAt: checkedAt },
+          type: 'slow',
+          durationMs: responseTimeMs,
+        });
+      } catch (err) {
+        logger.error({ service, monitorId, channelId: channel.id, err }, 'Anomaly: channel send failed');
+      }
+    }
+    await performanceAlertRepository.markNotified(alertId, checkedAt);
+    logger.info(
+      { service, monitorId, zScore: zScore.toFixed(2), responseTimeMs, mean: mean.toFixed(0) },
+      'Anomaly detected — performance alert sent'
+    );
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Anomaly: failed to send alerts');
+  }
+}
+
 // ─── Main processor ───────────────────────────────────────────────────────────
 
 export async function processCheckJob(
   job: CheckJob,
   alertQueue: Queue<AlertJob>,
-  redis?: Redis
+  redis?: Redis,
+  escalationQueue?: Queue<EscalationStepJob>
 ): Promise<void> {
   const { monitorId, type, url, timeoutMs, intervalSeconds } = job;
   const service = 'check-worker';
@@ -147,9 +253,12 @@ export async function processCheckJob(
     const probeResults = await fanOutToRegions(job, monitor, regions, env.REGION_PROBE_SECRET!);
     const checkedAt = new Date();
 
-    // Write all regional results to DB
+    // Write all regional results to DB (with maintenance flag)
     for (const probe of probeResults) {
-      const result = probeToCheckResult(probe, monitorId, type, checkedAt);
+      const result: CheckResult = {
+        ...probeToCheckResult(probe, monitorId, type, checkedAt),
+        maintenance: job.inMaintenance ?? false,
+      };
       try {
         await checkResultRepository.create(result);
       } catch (err) {
@@ -163,9 +272,16 @@ export async function processCheckJob(
         monitorId,
         regions: regions.length,
         failures: probeResults.filter((r) => !r.success).length,
+        maintenance: job.inMaintenance ?? false,
       },
       'Multi-region check completed'
     );
+
+    // During maintenance: skip incident evaluation and alerts
+    if (job.inMaintenance) {
+      logger.info({ service, monitorId }, 'Monitor in maintenance window — skipping alert evaluation');
+      return;
+    }
 
     if (regions.length > 1) {
       // Pro/Business: multi-region incident logic (≥2 failures → incident)
@@ -173,13 +289,14 @@ export async function processCheckJob(
         { monitorId, type, monitor, checkedAt },
         probeResults,
         alertQueue,
-        redis
+        redis,
+        escalationQueue
       );
     } else {
       // Free plan: single CF region — use existing consecutive-failures logic
       const singleResult = probeToCheckResult(probeResults[0]!, monitorId, type, checkedAt);
       const ctx = { monitorId, type, monitor, result: singleResult };
-      await processIncidentCheck(ctx, alertQueue, redis);
+      await processIncidentCheck(ctx, alertQueue, redis, escalationQueue);
     }
 
     return;
@@ -216,8 +333,12 @@ export async function processCheckJob(
       return;
   }
 
-  // Add region: null for Railway-local checks
-  const resultWithRegion: CheckResult = { ...result, region: null };
+  // Add region: null for Railway-local checks; propagate maintenance flag
+  const resultWithRegion: CheckResult = {
+    ...result,
+    region: null,
+    maintenance: job.inMaintenance ?? false,
+  };
 
   logger.info(
     {
@@ -226,6 +347,7 @@ export async function processCheckJob(
       success: resultWithRegion.success,
       responseTimeMs: resultWithRegion.responseTimeMs,
       errorType: resultWithRegion.errorType,
+      maintenance: resultWithRegion.maintenance,
     },
     'Check completed'
   );
@@ -237,11 +359,27 @@ export async function processCheckJob(
     return;
   }
 
+  // During maintenance: record the result but skip incident evaluation and alerts
+  if (job.inMaintenance) {
+    logger.info({ service, monitorId }, 'Monitor in maintenance window — skipping alert evaluation');
+    return;
+  }
+
+  // Anomaly detection: runs after result is persisted, only for HTTP/keyword monitors
+  if (
+    monitor.anomalyDetectionEnabled &&
+    resultWithRegion.success &&
+    resultWithRegion.responseTimeMs != null &&
+    (type === 'http' || type === 'keyword')
+  ) {
+    await checkForAnomaly(monitor, resultWithRegion.responseTimeMs, resultWithRegion.checkedAt);
+  }
+
   const ctx = { monitorId, type, monitor, result: resultWithRegion };
 
   if (type === 'ssl' || type === 'domain') {
     await processExpiryCheck(ctx);
   } else {
-    await processIncidentCheck(ctx, alertQueue, redis);
+    await processIncidentCheck(ctx, alertQueue, redis, escalationQueue);
   }
 }

@@ -4,7 +4,8 @@ export type MonitorType =
   | 'domain'
   | 'tcp'
   | 'keyword'
-  | 'content';
+  | 'content'
+  | 'heartbeat';
 
 export type MonitorStatus = 'up' | 'down' | 'paused';
 

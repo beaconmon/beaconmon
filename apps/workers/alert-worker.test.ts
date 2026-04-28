@@ -74,6 +74,8 @@ const mockMonitor = {
   contentSnapshot: null,
   keyword: null,
   keywordCondition: null,
+  escalationPolicyId: null,
+  anomalyDetectionEnabled: false,
 };
 
 const mockIncident = {

@@ -28,6 +28,12 @@ const EnvSchema = z.object({
   CF_PROBE_URL_EU_WEST: z.string().url().optional(),
   CF_PROBE_URL_AP_SOUTHEAST: z.string().url().optional(),
   CF_PROBE_URL_SA_EAST: z.string().url().optional(),
+  // Cloudflare R2 (report storage)
+  R2_BUCKET: z.string().optional(),
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  APP_URL: z.string().url().optional(), // used in report email links
 });
 
 // Validate at startup — fails fast before any worker logic runs
