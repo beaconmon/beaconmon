@@ -569,7 +569,7 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [x] Prisma schema and initial migration
 - [x] Better Auth setup (email magic link)
 - [x] Team auto-creation on signup + 14-day Pro trial
-- [ ] Team invitation flow (`team_invitations` table, email invite link)
+- [x] Team invitation flow (`team_invitations` table, email invite link)
 - [x] Paddle subscription integration (`subscriptions` table, customer portal)
 - [x] Paddle billing gates (plan limits enforced at API layer + scheduler throttle)
 - [x] Monitor CRUD API (all 6 types)
@@ -592,9 +592,13 @@ Cloudflare: DNS, proxied A record to Railway web service.
 - [x] Rate limiting — POST /api/monitors (20/hr/team), POST /api/auth/* (10/15min/IP)
 - [x] Per-plan check_results retention cleanup (daily, batched DELETE, Free 7d / Pro 90d)
 - [x] Smoke test script (`pnpm smoke-test`) — DB + Redis + check cycle + health endpoint
-- [ ] Multi-location checks (Cloudflare Workers) — post-launch
-- [ ] Heartbeat monitoring — post-launch
-- [ ] Scheduled maintenance windows — post-launch
+- [x] Deploy-aware monitoring (deploy_events table, webhook + manual buttons, alert suppression, 30-min auto-expire)
+- [x] SLO / error budget tracking (per-monitor SLO target, fast/slow burn-rate alerts, plan-gated)
+- [x] Content snapshot history + diff view (content_snapshots table, list + diff API, plan-gated retention 3/30/90)
+- [x] Competitor tracking preset (is_competitor flag on monitors, `/api/monitors/competitor-presets` endpoint with suggested selectors)
+- [x] Multi-location checks (Cloudflare Workers) — post-launch
+- [x] Heartbeat monitoring — post-launch
+- [x] Scheduled maintenance windows — post-launch
 - [ ] SMS alerts (Twilio) — tier 2, Business plan only
 - [ ] Agency multi-client dashboard — post-launch
 

@@ -10,6 +10,7 @@ export const createMonitorSchema = z.object({
   keyword: z.string().optional(),
   keywordCondition: z.enum(['present', 'absent']).optional(),
   config: z.record(z.string(), z.unknown()).optional(),
+  isCompetitor: z.boolean().optional(),
 });
 
 export type CreateMonitorInput = z.infer<typeof createMonitorSchema>;

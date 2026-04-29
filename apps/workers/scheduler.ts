@@ -5,8 +5,8 @@ initSentry('scheduler'); // must be before other imports
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository } from '@beaconmon/db';
-import { createCheckQueue, createContentCheckQueue } from '@beaconmon/queue';
+import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
+import { createCheckQueue, createContentCheckQueue, createSloBurnQueue } from '@beaconmon/queue';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from '@beaconmon/checker';
 import { warmStatusPageCache } from '@beaconmon/status-pages';
@@ -18,13 +18,24 @@ const SENTRY_MONITOR_SLUG = process.env['SENTRY_MONITOR_SLUG'] ?? 'beaconmon-sch
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const checkQueue = createCheckQueue(connection);
 const contentQueue = createContentCheckQueue(connection);
+const sloBurnQueue = createSloBurnQueue(connection);
 
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
 let lastUptimeCompute = 0;
 let lastRetentionCleanup = 0;
+let lastDeployExpiry = 0;
+let lastSloBurnCheck = 0;
 const UPTIME_COMPUTE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 const RETENTION_CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const DEPLOY_EXPIRY_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+const SLO_BURN_CHECK_INTERVAL_MS = 60 * 1000; // 1 minute
+
+// Burn-rate alert windows
+const SLO_FAST_BURN_WINDOW_MINUTES = 5;
+const SLO_SLOW_BURN_WINDOW_MINUTES = 60;
+// Cooldown: don't re-alert for same monitor+severity within this window
+const SLO_BURN_ALERT_COOLDOWN_MINUTES = 30;
 
 function getEffectivePlan(team: {
   plan: string;
@@ -411,6 +422,63 @@ async function runRetentionCleanup(): Promise<void> {
   }
 }
 
+// Per-plan snapshot retention for content monitors.
+// Free → 3, Pro → 30, Business → 90.
+const SNAPSHOT_RETENTION_BY_PLAN: Record<keyof typeof PLAN_LIMITS, number> = {
+  free: 3,
+  pro: 30,
+  business: 90,
+};
+
+/**
+ * Drop content snapshots beyond each team's plan-allowed retention count.
+ * Runs alongside daily retention cleanup.
+ */
+async function runContentSnapshotRetention(): Promise<void> {
+  try {
+    const monitors = await contentSnapshotWorkerRepository.findContentMonitorsWithTeamPlan();
+    if (monitors.length === 0) return;
+
+    let totalDeleted = 0;
+
+    for (const m of monitors) {
+      const effectivePlan = getEffectivePlan({
+        plan: m.plan,
+        trialEndsAt: m.trialEndsAt,
+        subscription: m.subscriptionStatus ? { status: m.subscriptionStatus } : null,
+      });
+      const keep = SNAPSHOT_RETENTION_BY_PLAN[effectivePlan];
+
+      const deleted = await contentSnapshotWorkerRepository.pruneToLimit(m.monitorId, keep);
+      totalDeleted += deleted;
+    }
+
+    logger.info({ service: 'scheduler', totalDeleted }, 'Content snapshot retention complete');
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Content snapshot retention failed');
+    Sentry.captureException(err);
+  }
+}
+
+const DEPLOY_AUTO_EXPIRE_MINUTES = 30;
+
+/**
+ * Auto-expire deploy events that were started more than 30 minutes ago but never ended.
+ * Safety net so forgotten deploys don't suppress alerts indefinitely.
+ * Runs alongside daily retention cleanup.
+ */
+async function expireStaleDeployEvents(): Promise<void> {
+  try {
+    const expired = await deployEventRepository.expireStaleDeployEvents(DEPLOY_AUTO_EXPIRE_MINUTES);
+    if (expired > 0) {
+      logger.info({ service: 'scheduler', expired }, 'Auto-expired stale deploy events');
+    }
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Failed to expire stale deploy events');
+    Sentry.captureException(err);
+  }
+}
+
 /**
  * Pre-compute 90-day uptime percentages for all monitors on status pages.
  * Stores results in Redis hash `uptime:90d` as { monitorId: percentString }.
@@ -454,6 +522,98 @@ async function computeUptimePercentages(): Promise<void> {
   }
 }
 
+/**
+ * Evaluate SLO burn rates for all monitors with SLO targets.
+ * Checks both fast-burn (5-min window) and slow-burn (1-hour window).
+ * Uses Redis cooldown keys to avoid duplicate alerts.
+ */
+async function evaluateSloBurnRates(): Promise<void> {
+  try {
+    const monitors = await sloRepository.findMonitorsWithSlo();
+    if (monitors.length === 0) return;
+
+    let alertCount = 0;
+
+    for (const monitor of monitors) {
+      // Fast burn check (5-min window)
+      const fast = await sloRepository.computeShortWindowBurnRate(
+        monitor.id,
+        monitor.sloTarget,
+        SLO_FAST_BURN_WINDOW_MINUTES
+      );
+
+      if (fast.totalChecks >= 2 && fast.burnRate > monitor.sloBurnRateFastThreshold) {
+        const cooldownKey = `slo:burn:cooldown:${monitor.id}:fast`;
+        const cooled = await connection.get(cooldownKey);
+        if (!cooled) {
+          // Fetch full-window metrics for the alert payload
+          const metrics = await sloRepository.computeMetrics(
+            monitor.id,
+            monitor.sloTarget,
+            monitor.sloWindowDays
+          );
+          await sloBurnQueue.add(`slo-burn:${monitor.id}:fast`, {
+            monitorId: monitor.id,
+            teamId: monitor.teamId,
+            burnRate: fast.burnRate,
+            severity: 'fast',
+            uptimePercent: metrics.uptimePercent,
+            errorBudgetRemainingMinutes: metrics.errorBudgetRemainingMinutes,
+            windowDays: monitor.sloWindowDays,
+          });
+          await connection.set(cooldownKey, '1', 'EX', SLO_BURN_ALERT_COOLDOWN_MINUTES * 60);
+          alertCount++;
+          logger.warn(
+            { service: 'scheduler', monitorId: monitor.id, burnRate: fast.burnRate, severity: 'fast' },
+            'SLO fast-burn threshold exceeded'
+          );
+        }
+      }
+
+      // Slow burn check (1-hour window)
+      const slow = await sloRepository.computeShortWindowBurnRate(
+        monitor.id,
+        monitor.sloTarget,
+        SLO_SLOW_BURN_WINDOW_MINUTES
+      );
+
+      if (slow.totalChecks >= 5 && slow.burnRate > monitor.sloBurnRateSlowThreshold) {
+        const cooldownKey = `slo:burn:cooldown:${monitor.id}:slow`;
+        const cooled = await connection.get(cooldownKey);
+        if (!cooled) {
+          const metrics = await sloRepository.computeMetrics(
+            monitor.id,
+            monitor.sloTarget,
+            monitor.sloWindowDays
+          );
+          await sloBurnQueue.add(`slo-burn:${monitor.id}:slow`, {
+            monitorId: monitor.id,
+            teamId: monitor.teamId,
+            burnRate: slow.burnRate,
+            severity: 'slow',
+            uptimePercent: metrics.uptimePercent,
+            errorBudgetRemainingMinutes: metrics.errorBudgetRemainingMinutes,
+            windowDays: monitor.sloWindowDays,
+          });
+          await connection.set(cooldownKey, '1', 'EX', SLO_BURN_ALERT_COOLDOWN_MINUTES * 60);
+          alertCount++;
+          logger.warn(
+            { service: 'scheduler', monitorId: monitor.id, burnRate: slow.burnRate, severity: 'slow' },
+            'SLO slow-burn threshold exceeded'
+          );
+        }
+      }
+    }
+
+    if (alertCount > 0) {
+      logger.info({ service: 'scheduler', alertCount }, 'SLO burn-rate alerts enqueued');
+    }
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'SLO burn-rate evaluation failed');
+    Sentry.captureException(err);
+  }
+}
+
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   // Log which DB connection is in use so ops can verify pooling is configured correctly
@@ -467,6 +627,8 @@ async function main(): Promise<void> {
   await purgeOldPartitions();
   lastRetentionCleanup = Date.now();
   await runRetentionCleanup();
+  await runContentSnapshotRetention();
+  await expireStaleDeployEvents();
 
   // Poll every 10 seconds — fine-grained enough for 30s monitors
   schedulerInterval = setInterval(() => {
@@ -478,10 +640,22 @@ async function main(): Promise<void> {
       void computeUptimePercentages();
     }
 
+    if (Date.now() - lastDeployExpiry >= DEPLOY_EXPIRY_INTERVAL_MS) {
+      lastDeployExpiry = Date.now();
+      void expireStaleDeployEvents();
+    }
+
+    if (Date.now() - lastSloBurnCheck >= SLO_BURN_CHECK_INTERVAL_MS) {
+      lastSloBurnCheck = Date.now();
+      void evaluateSloBurnRates();
+    }
+
     if (Date.now() - lastRetentionCleanup >= RETENTION_CLEANUP_INTERVAL_MS) {
       lastRetentionCleanup = Date.now();
       void purgeOldPartitions();
       void runRetentionCleanup();
+      void runContentSnapshotRetention();
+      void expireStaleDeployEvents();
     }
   }, 10_000);
 
@@ -502,6 +676,7 @@ const shutdown = async (signal: string) => {
 
   await checkQueue.close();
   await contentQueue.close();
+  await sloBurnQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 

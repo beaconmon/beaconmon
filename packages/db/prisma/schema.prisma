@@ -94,6 +94,7 @@ model Team {
   statusPages        StatusPage[]
   maintenanceWindows MaintenanceWindow[]
   escalationPolicies EscalationPolicy[]
+  deployEvents       DeployEvent[]
 
   @@map("teams")
 }
@@ -234,6 +235,7 @@ model Monitor {
   contentSnapshot       String?   @map("content_snapshot")
   contentLastChangedAt  DateTime? @map("content_last_changed_at")
   requiresJs            Boolean   @default(false) @map("requires_js")
+  isCompetitor          Boolean   @default(false) @map("is_competitor")
 
   // Heartbeat monitor
   lastHeartbeatAt DateTime? @map("last_heartbeat_at")
@@ -243,6 +245,12 @@ model Monitor {
 
   // Anomaly detection
   anomalyDetectionEnabled Boolean @default(false) @map("anomaly_detection_enabled")
+
+  // SLO / Error Budget
+  sloTarget                  Decimal? @map("slo_target") @db.Decimal(6, 4)      // e.g. 0.9990 for 99.9%
+  sloWindowDays              Int?     @map("slo_window_days")                    // rolling window, default 30
+  sloBurnRateFastThreshold   Float?   @map("slo_burn_rate_fast_threshold")       // default 14.4
+  sloBurnRateSlowThreshold   Float?   @map("slo_burn_rate_slow_threshold")       // default 3.0
 
   // Type-specific config (port, selector, gracePeriodSeconds for heartbeat, etc.)
   config Json @default("{}")
@@ -259,6 +267,8 @@ model Monitor {
   expiryAlerts       ExpiryAlert[]
   statusPageMonitors StatusPageMonitor[]
   maintenanceWindowMonitors MaintenanceWindowMonitor[]
+  deployEvents       DeployEvent[]
+  contentSnapshots   ContentSnapshot[]
 
   // Partial index (is_active = true) is created in migration 0001 as raw SQL
   @@map("monitors")
@@ -470,4 +480,39 @@ model PerformanceAlert {
 
   @@index([monitorId, checkedAt(sort: Desc)])
   @@map("performance_alerts")
+}
+
+// ─── Deploy Events (deploy-aware monitoring) ──────────────────────────────────
+
+model DeployEvent {
+  id             String    @id @default(cuid())
+  monitorId      String    @map("monitor_id")
+  teamId         String    @map("team_id")
+  startedAt      DateTime  @default(now()) @map("started_at")
+  endedAt        DateTime? @map("ended_at")
+  commitSha      String?   @map("commit_sha")
+  description    String?
+  suppressAlerts Boolean   @default(true) @map("suppress_alerts")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@index([monitorId, startedAt(sort: Desc)])
+  @@map("deploy_events")
+}
+
+// ─── Content Snapshots (history for content monitors) ─────────────────────────
+
+model ContentSnapshot {
+  id           String   @id @default(cuid())
+  monitorId    String   @map("monitor_id")
+  content      String
+  capturedAt   DateTime @default(now()) @map("captured_at")
+  diffSummary  String?  @map("diff_summary") // reserved for future AI summaries
+
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@index([monitorId, capturedAt(sort: Desc)])
+  @@map("content_snapshots")
 }

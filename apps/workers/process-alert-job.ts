@@ -1,4 +1,4 @@
-import { prisma, monitorRepository, alertChannelRepository, notificationRepository } from '@beaconmon/db';
+import { prisma, monitorRepository, alertChannelRepository, notificationRepository, deployEventRepository } from '@beaconmon/db';
 import { getChannelSender } from './lib/channels/index.js';
 import type { AlertPayload } from './lib/channels/types.js';
 import { logger } from './lib/logger.js';
@@ -24,7 +24,19 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     throw new Error(`Incident ${incidentId} not found — cannot send alert`);
   }
 
-  // 3. Load active alert channels for this team
+  // 3. Check for active deploy with alert suppression
+  if (type === 'down') {
+    const suppressed = await deployEventRepository.hasActiveDeployWithSuppression(monitorId);
+    if (suppressed) {
+      logger.info(
+        { service: 'alert-worker', monitorId, incidentId },
+        'Alert suppressed — active deploy in progress'
+      );
+      return;
+    }
+  }
+
+  // 4. Load active alert channels for this team
   const channels = await alertChannelRepository.findActiveByTeamId(teamId);
 
   if (channels.length === 0) {
@@ -49,12 +61,12 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     durationMs,
   };
 
-  // 4. Send to each channel with per-channel idempotency and error isolation
+  // 5. Send to each channel with per-channel idempotency and error isolation
   let successCount = 0;
   let failureCount = 0;
 
   for (const channel of channels) {
-    // 4a. Idempotency check (architecture rule #5)
+    // 5a. Idempotency check (architecture rule #5)
     const alreadySent = await notificationRepository.existsRecent(
       teamId,
       incidentId,
@@ -71,12 +83,12 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
       continue;
     }
 
-    // 4b. Get sender and dispatch
+    // 5b. Get sender and dispatch
     try {
       const sender = getChannelSender(channel.type);
       await sender(channel.config, payload);
 
-      // 4c. Insert notification record AFTER successful send
+      // 5c. Insert notification record AFTER successful send
       await notificationRepository.create({ teamId, incidentId, channelId: channel.id });
 
       logger.info(
@@ -94,7 +106,7 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     }
   }
 
-  // 5. If ALL channels failed, throw so BullMQ retries the job
+  // 6. If ALL channels failed, throw so BullMQ retries the job
   if (failureCount > 0 && successCount === 0) {
     throw new Error(
       `All ${failureCount} alert channel(s) failed for incident ${incidentId}`

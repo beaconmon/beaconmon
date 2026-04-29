@@ -6,6 +6,7 @@ import type {
   AlertJob,
   ReportJob,
   EscalationStepJob,
+  SloBurnAlertJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -54,6 +55,18 @@ export function createReportQueue(connection: Redis): Queue<ReportJob> {
       backoff: { type: 'exponential', delay: 5000 },
       removeOnComplete: { count: 50 },
       removeOnFail: { count: 100 },
+    },
+  });
+}
+
+export function createSloBurnQueue(connection: Redis): Queue<SloBurnAlertJob> {
+  return new Queue<SloBurnAlertJob>(QUEUE_NAMES.SLO_BURN, {
+    connection,
+    defaultJobOptions: {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: { count: 200 },
+      removeOnFail: { count: 500 },
     },
   });
 }

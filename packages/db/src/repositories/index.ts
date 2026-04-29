@@ -6,3 +6,6 @@ export * from './alert-channels.js';
 export * from './notifications.js';
 export * from './status-pages.js';
 export * from './performance-alerts.js';
+export * from './deploy-events.js';
+export * from './slo.js';
+export * from './content-snapshots.js';
