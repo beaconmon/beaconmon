@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { getStatusPageData } from '@/lib/cache/status-pages';
+import { logger } from '@/lib/logger';
 import type { StatusPageOverallStatus } from '@beaconmon/types';
 
 const slugSchema = z.string().regex(/^[a-z0-9-]+$/).min(3).max(50);
@@ -63,7 +64,8 @@ export async function GET(
       return new Response('Not found', { status: 404 });
     }
     overallStatus = data.overallStatus;
-  } catch {
+  } catch (err) {
+    logger.error({ service: 'api', slug: parsed.data, err }, 'Failed to fetch status page data for badge');
     // Redis / DB failure — return unknown badge rather than 500
   }
 

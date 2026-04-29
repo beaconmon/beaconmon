@@ -12,6 +12,7 @@ export interface CheckResultRow {
   responseTimeMs: number | null;
   errorType: string | null;
   errorMessage: string | null;
+  region: string | null;
 }
 
 function rangeToMs(range: TimeRange): number {

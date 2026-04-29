@@ -6,6 +6,8 @@ export interface IncidentRow {
   startedAt: Date;
   resolvedAt: Date | null;
   resolutionType: string | null;
+  acknowledgedAt: Date | null;
+  acknowledgedBy: string | null;
   createdAt: Date;
 }
 
@@ -31,6 +33,8 @@ export const incidentRepository: {
         startedAt: true,
         resolvedAt: true,
         resolutionType: true,
+        acknowledgedAt: true,
+        acknowledgedBy: true,
         createdAt: true,
       },
       orderBy: { startedAt: 'desc' },
@@ -48,6 +52,8 @@ export const incidentRepository: {
         startedAt: true,
         resolvedAt: true,
         resolutionType: true,
+        acknowledgedAt: true,
+        acknowledgedBy: true,
         createdAt: true,
         monitor: { select: { name: true, url: true } },
       },

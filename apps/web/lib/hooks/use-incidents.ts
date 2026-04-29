@@ -26,6 +26,20 @@ export function useMonitorIncidents(monitorId: string) {
   });
 }
 
+export function useAcknowledgeIncident(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<{ acknowledged: boolean; acknowledgedAt?: string }, Error>({
+    mutationFn: async () => {
+      const res = await fetch(`/api/incidents/${id}/acknowledge`, { method: 'PATCH' });
+      if (!res.ok) throw new Error('Failed to acknowledge incident');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incidents'] });
+    },
+  });
+}
+
 export function useResolveIncident(id: string) {
   const queryClient = useQueryClient();
   return useMutation<{ resolved: boolean }, Error>({

@@ -11,6 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
+  FileText,
+  GitBranch,
   Globe,
   LogOut,
   Plus,
@@ -34,12 +36,14 @@ import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
 const NAV_ITEMS = [
-  { href: '/monitors',        label: 'Monitors',       icon: Activity },
-  { href: '/incidents',       label: 'Incidents',      icon: AlertTriangle },
-  { href: '/status-pages',    label: 'Status Pages',   icon: Globe },
-  { href: '/alert-channels',  label: 'Alert Channels', icon: Bell },
-  { href: '/settings/team',   label: 'Team',           icon: Users },
-  { href: '/settings/billing', label: 'Settings',      icon: Settings },
+  { href: '/monitors',              label: 'Monitors',           icon: Activity },
+  { href: '/incidents',             label: 'Incidents',          icon: AlertTriangle },
+  { href: '/status-pages',          label: 'Status Pages',       icon: Globe },
+  { href: '/alert-channels',        label: 'Alert Channels',     icon: Bell },
+  { href: '/escalation-policies',   label: 'Escalations',        icon: GitBranch },
+  { href: '/reports',               label: 'Reports',            icon: FileText },
+  { href: '/settings/team',         label: 'Team',               icon: Users },
+  { href: '/settings/billing',      label: 'Settings',           icon: Settings },
 ];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];

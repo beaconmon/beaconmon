@@ -1,4 +1,4 @@
-import { prisma } from '@beaconmon/db';
+import { heartbeatRepository } from '@/lib/repositories/heartbeats';
 import { logger } from '@/lib/logger';
 
 /**
@@ -16,24 +16,19 @@ export async function POST(
     return new Response(null, { status: 404 });
   }
 
-  const monitor = await prisma.monitor.findFirst({
-    where: {
-      type: 'heartbeat',
-      isActive: true,
-      config: { path: ['token'], equals: token },
-    },
-    select: { id: true },
-  });
+  try {
+    const monitor = await heartbeatRepository.findActiveMonitorByToken(token);
 
-  if (!monitor) {
-    return new Response(null, { status: 404 });
+    if (!monitor) {
+      return new Response(null, { status: 404 });
+    }
+
+    await heartbeatRepository.recordHeartbeat(monitor.id);
+
+    logger.info({ service: 'web', monitorId: monitor.id }, 'Heartbeat received');
+    return new Response(null, { status: 200 });
+  } catch (err) {
+    logger.error({ service: 'web', err }, 'Heartbeat processing failed');
+    return new Response(null, { status: 500 });
   }
-
-  await prisma.monitor.update({
-    where: { id: monitor.id },
-    data: { lastHeartbeatAt: new Date() },
-  });
-
-  logger.info({ service: 'web', monitorId: monitor.id }, 'Heartbeat received');
-  return new Response(null, { status: 200 });
 }

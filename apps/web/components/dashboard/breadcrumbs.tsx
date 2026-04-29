@@ -5,15 +5,18 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 
 const SEGMENT_LABELS: Record<string, string> = {
-  monitors:         'Monitors',
-  incidents:        'Incidents',
-  'status-pages':   'Status Pages',
-  'alert-channels': 'Alert Channels',
-  settings:         'Settings',
-  billing:          'Billing',
-  team:             'Team',
-  new:              'New',
-  edit:             'Edit',
+  monitors:               'Monitors',
+  incidents:              'Incidents',
+  'status-pages':         'Status Pages',
+  'alert-channels':       'Alert Channels',
+  'escalation-policies':  'Escalation Policies',
+  reports:                'Reports',
+  settings:               'Settings',
+  billing:                'Billing',
+  branding:               'Branding',
+  team:                   'Team',
+  new:                    'New',
+  edit:                   'Edit',
 };
 
 function getLabel(segment: string): string {
