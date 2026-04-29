@@ -9,11 +9,11 @@ async function main() {
 
   // Create a demo user
   const user = await prisma.user.upsert({
-    where: { email: 'demo@beaconmon.dev' },
+    where: { email: 'demo@beaconmon.com' },
     update: {},
     create: {
       name: 'Demo User',
-      email: 'demo@beaconmon.dev',
+      email: 'demo@beaconmon.com',
       emailVerified: true,
     },
   });
@@ -96,7 +96,7 @@ async function main() {
       teamId: team.id,
       name: 'Email Alerts',
       type: 'email',
-      config: { email: 'demo@beaconmon.dev' },
+      config: { email: 'demo@beaconmon.com' },
       isActive: true,
     },
   });

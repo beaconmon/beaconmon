@@ -26,9 +26,9 @@ export const contentSnapshotRepository = {
     return !!monitor;
   },
 
-  async list(monitorId: string, limit: number): Promise<SnapshotSummary[]> {
+  async list(teamId: string, monitorId: string, limit: number): Promise<SnapshotSummary[]> {
     const rows = await prisma.contentSnapshot.findMany({
-      where: { monitorId },
+      where: { monitorId, teamId },
       select: { id: true, capturedAt: true, content: true },
       orderBy: { capturedAt: 'desc' },
       take: limit,
@@ -40,9 +40,9 @@ export const contentSnapshotRepository = {
     }));
   },
 
-  async getById(monitorId: string, id: string): Promise<SnapshotFull | null> {
+  async getById(teamId: string, monitorId: string, id: string): Promise<SnapshotFull | null> {
     const row = await prisma.contentSnapshot.findFirst({
-      where: { id, monitorId },
+      where: { id, monitorId, teamId },
       select: { id: true, monitorId: true, content: true, capturedAt: true },
     });
     return row;

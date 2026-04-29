@@ -15,12 +15,13 @@ export const contentSnapshotWorkerRepository = {
    */
   async recordChange(
     monitorId: string,
+    teamId: string,
     content: string,
     capturedAt: Date
   ): Promise<ContentSnapshotRecord> {
     const [snapshot] = await prisma.$transaction([
       prisma.contentSnapshot.create({
-        data: { monitorId, content, capturedAt },
+        data: { monitorId, teamId, content, capturedAt },
         select: {
           id: true,
           monitorId: true,

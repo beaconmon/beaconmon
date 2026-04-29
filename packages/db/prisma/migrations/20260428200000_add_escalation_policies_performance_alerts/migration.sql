@@ -70,3 +70,9 @@ CREATE TABLE IF NOT EXISTS "performance_alerts" (
 
 CREATE INDEX IF NOT EXISTS "performance_alerts_monitor_id_checked_at_idx"
   ON "performance_alerts" ("monitor_id", "checked_at" DESC);
+
+ALTER TABLE "performance_alerts"
+  ADD CONSTRAINT "performance_alerts_team_id_fkey"
+    FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE,
+  ADD CONSTRAINT "performance_alerts_monitor_id_fkey"
+    FOREIGN KEY ("monitor_id") REFERENCES "monitors"("id") ON DELETE CASCADE;

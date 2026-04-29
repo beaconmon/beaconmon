@@ -18,7 +18,12 @@ export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params
   if (role === 'viewer') throw new ForbiddenError();
   if (plan === 'free') throw new PlanLimitError('SLO tracking requires a Pro or Business plan');
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    throw new ValidationError('Invalid JSON body', []);
+  }
   const parsed = updateSloSchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 

@@ -9,6 +9,12 @@ type Params = { id: string; [key: string]: string };
 // Cap raw content to avoid quadratic-time blowups in diffLines on huge pages.
 const MAX_DIFF_BYTES = 256 * 1024;
 
+function truncateToBytes(str: string, maxBytes: number): string {
+  const buf = Buffer.from(str, 'utf8');
+  if (buf.length <= maxBytes) return str;
+  return buf.slice(0, maxBytes).toString('utf8');
+}
+
 export const GET = withAuth<Params>(async (req, { teamId }, params) => {
   const ok = await contentSnapshotRepository.assertContentMonitor(teamId, params.id);
   if (!ok) throw new NotFoundError();
@@ -21,8 +27,8 @@ export const GET = withAuth<Params>(async (req, { teamId }, params) => {
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const [fromSnap, toSnap] = await Promise.all([
-    contentSnapshotRepository.getById(params.id, parsed.data.from),
-    contentSnapshotRepository.getById(params.id, parsed.data.to),
+    contentSnapshotRepository.getById(teamId, params.id, parsed.data.from),
+    contentSnapshotRepository.getById(teamId, params.id, parsed.data.to),
   ]);
 
   if (!fromSnap || !toSnap) throw new NotFoundError();
@@ -31,8 +37,8 @@ export const GET = withAuth<Params>(async (req, { teamId }, params) => {
     Buffer.byteLength(fromSnap.content, 'utf8') > MAX_DIFF_BYTES ||
     Buffer.byteLength(toSnap.content, 'utf8') > MAX_DIFF_BYTES;
 
-  const fromContent = truncated ? fromSnap.content.slice(0, MAX_DIFF_BYTES) : fromSnap.content;
-  const toContent = truncated ? toSnap.content.slice(0, MAX_DIFF_BYTES) : toSnap.content;
+  const fromContent = truncated ? truncateToBytes(fromSnap.content, MAX_DIFF_BYTES) : fromSnap.content;
+  const toContent = truncated ? truncateToBytes(toSnap.content, MAX_DIFF_BYTES) : toSnap.content;
 
   const lines = diffLines(fromContent, toContent);
 

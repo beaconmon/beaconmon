@@ -71,7 +71,7 @@ export async function processContentCheckJob(data: ContentCheckJob): Promise<voi
   // 5. First run — initialize snapshot (also write the first history row)
   if (monitor.contentSnapshot === null) {
     try {
-      await contentSnapshotWorkerRepository.recordChange(monitorId, content, checkedAt);
+      await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
       logger.info({ service, monitorId }, 'Content snapshot initialized');
     } catch (err) {
       logger.error({ service, monitorId, err }, 'Failed to initialize content snapshot');
@@ -91,7 +91,7 @@ export async function processContentCheckJob(data: ContentCheckJob): Promise<voi
   // 7a. Persist new snapshot (history row + hot column) — abort before notifying
   // so retries see no diff and don't double-notify.
   try {
-    await contentSnapshotWorkerRepository.recordChange(monitorId, content, checkedAt);
+    await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
     return;

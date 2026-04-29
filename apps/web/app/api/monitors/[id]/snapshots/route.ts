@@ -26,6 +26,6 @@ export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
   const planLimit = PLAN_SNAPSHOT_LIMIT[plan];
   const effectiveLimit = Math.min(parsed.data.limit, planLimit);
 
-  const snapshots = await contentSnapshotRepository.list(params.id, effectiveLimit);
+  const snapshots = await contentSnapshotRepository.list(teamId, params.id, effectiveLimit);
   return Response.json({ snapshots, planLimit });
 });

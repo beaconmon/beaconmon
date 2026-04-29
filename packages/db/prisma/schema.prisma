@@ -95,6 +95,7 @@ model Team {
   maintenanceWindows MaintenanceWindow[]
   escalationPolicies EscalationPolicy[]
   deployEvents       DeployEvent[]
+  contentSnapshots   ContentSnapshot[]
 
   @@map("teams")
 }
@@ -507,10 +508,12 @@ model DeployEvent {
 model ContentSnapshot {
   id           String   @id @default(cuid())
   monitorId    String   @map("monitor_id")
+  teamId       String   @map("team_id")
   content      String
   capturedAt   DateTime @default(now()) @map("captured_at")
   diffSummary  String?  @map("diff_summary") // reserved for future AI summaries
 
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
   @@index([monitorId, capturedAt(sort: Desc)])
