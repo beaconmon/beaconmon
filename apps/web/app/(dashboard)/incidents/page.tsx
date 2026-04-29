@@ -9,6 +9,8 @@ import { EmptyState } from '@/components/dashboard/empty-state';
 import { QueryState } from '@/components/dashboard/query-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
 import { useIncidents, useResolveIncident } from '@/lib/hooks/use-incidents';
+import { AckButton } from '@/components/dashboard/ack-button';
+import { useSession } from '@/lib/hooks/use-session';
 import type { IncidentWithMonitor } from '@/lib/repositories/incidents';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -26,7 +28,13 @@ type FilterTab = 'all' | 'ongoing' | 'resolved';
 
 // ─── Incident card ────────────────────────────────────────────────────────────
 
-function IncidentCard({ incident }: { incident: IncidentWithMonitor }) {
+function IncidentCard({
+  incident,
+  sessionUserId,
+}: {
+  incident: IncidentWithMonitor;
+  sessionUserId?: string;
+}) {
   const resolve = useResolveIncident(incident.id);
   const isOpen = !incident.resolvedAt;
   const status = isOpen ? 'ongoing' : 'resolved';
@@ -85,9 +93,16 @@ function IncidentCard({ incident }: { incident: IncidentWithMonitor }) {
           )}
         </div>
 
-        {/* Resolve button */}
+        {/* Acknowledge + Resolve buttons */}
         {isOpen && (
-          <div className="mt-3">
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <AckButton
+              incidentId={incident.id}
+              resolvedAt={incident.resolvedAt ? String(incident.resolvedAt) : null}
+              acknowledgedAt={incident.acknowledgedAt ? String(incident.acknowledgedAt) : null}
+              acknowledgedBy={incident.acknowledgedBy}
+              sessionUserId={sessionUserId}
+            />
             <button
               onClick={() => resolve.mutate()}
               disabled={resolve.isPending}
@@ -152,6 +167,7 @@ function FilterTabs({
 export default function IncidentsPage() {
   const [filter, setFilter] = useState<FilterTab>('all');
   const { data: incidents, isLoading, isError, error, refetch } = useIncidents();
+  const { data: session } = useSession();
 
   const all = incidents ?? [];
   const ongoing = all.filter((i) => !i.resolvedAt);
@@ -197,7 +213,7 @@ export default function IncidentsPage() {
         ) : (
           <div className="space-y-3">
             {filtered.map((incident) => (
-              <IncidentCard key={incident.id} incident={incident} />
+              <IncidentCard key={incident.id} incident={incident} sessionUserId={session?.userId} />
             ))}
           </div>
         )}

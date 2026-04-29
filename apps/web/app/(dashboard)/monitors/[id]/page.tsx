@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-import { ExternalLink, Pencil, Trash2, Bell, Clock, ArrowLeft, AlertCircle } from 'lucide-react';
+import { ExternalLink, Pencil, Trash2, Bell, Clock, ArrowLeft, AlertCircle, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -24,12 +24,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { QueryState } from '@/components/dashboard/query-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
 import { useMonitor, useDeleteMonitor } from '@/lib/hooks/use-monitors';
 import { useCheckResults, type TimeRange, type CheckResultRow } from '@/lib/hooks/use-check-results';
 import { useMonitorIncidents, useResolveIncident } from '@/lib/hooks/use-incidents';
+import { useSession } from '@/lib/hooks/use-session';
+import { AckButton } from '@/components/dashboard/ack-button';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 
 const RANGES: TimeRange[] = ['24h', '7d', '30d', '90d'];
@@ -148,6 +151,8 @@ interface IncidentApiRow {
   startedAt: string;
   resolvedAt: string | null;
   resolutionType: string | null;
+  acknowledgedAt: string | null;
+  acknowledgedBy: string | null;
 }
 
 export default function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -156,6 +161,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const [range, setRange] = useState<TimeRange>('24h');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  const sessionQ = useSession();
   const monitorQ = useMonitor(id);
   const resultsQ = useCheckResults(id, range, 500);
   const incidentsQ = useMonitorIncidents(id);
@@ -166,6 +172,10 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const results = resultsQ.data ?? [];
   const incidents = (incidentsQ.data ?? []) as unknown as IncidentApiRow[];
   const channels = channelsQ.data ?? [];
+  const sessionUserId = sessionQ.data?.userId;
+
+  const multiLocationEnabled = process.env['NEXT_PUBLIC_FEATURE_MULTI_LOCATION'] === 'true';
+  const hasRegionData = results.some((r) => r.region != null);
 
   const chartData = [...results]
     .reverse()
@@ -244,6 +254,25 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
       <div className="flex gap-5 items-start flex-col lg:flex-row">
         {/* Left: chart + checks */}
         <div className="min-w-0 flex-1 space-y-5">
+          <Tabs defaultValue="performance">
+            {(multiLocationEnabled && hasRegionData) && (
+              <TabsList className="mb-4 bg-brand-bg3 border border-brand-line">
+                <TabsTrigger
+                  value="performance"
+                  className="text-xs data-[state=active]:bg-brand-surface data-[state=active]:text-brand-text text-brand-muted"
+                >
+                  Performance
+                </TabsTrigger>
+                <TabsTrigger
+                  value="regions"
+                  className="text-xs data-[state=active]:bg-brand-surface data-[state=active]:text-brand-text text-brand-muted"
+                >
+                  Regions
+                </TabsTrigger>
+              </TabsList>
+            )}
+
+            <TabsContent value="performance" className="mt-0 space-y-5">
           {/* Response time chart */}
           <div className="rounded-lg border border-brand-line bg-brand-surface">
             <div className="flex items-center justify-between border-b border-brand-line px-4 py-3">
@@ -387,6 +416,14 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               )}
             </QueryState>
           </div>
+            </TabsContent>
+
+            {multiLocationEnabled && hasRegionData && (
+              <TabsContent value="regions" className="mt-0">
+                <RegionsTab results={results} />
+              </TabsContent>
+            )}
+          </Tabs>
         </div>
 
         {/* Right sidebar */}
@@ -427,7 +464,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               ) : (
                 <div className="space-y-2">
                   {incidents.slice(0, 5).map((inc) => (
-                    <IncidentSidebarRow key={inc.id} incident={inc} />
+                    <IncidentSidebarRow key={inc.id} incident={inc} sessionUserId={sessionUserId} />
                   ))}
                   {incidents.length > 5 && (
                     <Link
@@ -507,7 +544,13 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
 
 // ─── Incident sidebar row ─────────────────────────────────────────────────────
 
-function IncidentSidebarRow({ incident }: { incident: { id: string; startedAt: string; resolvedAt: string | null; resolutionType: string | null } }) {
+function IncidentSidebarRow({
+  incident,
+  sessionUserId,
+}: {
+  incident: IncidentApiRow;
+  sessionUserId?: string;
+}) {
   const resolve = useResolveIncident(incident.id);
   const isOpen = !incident.resolvedAt;
 
@@ -524,15 +567,97 @@ function IncidentSidebarRow({ incident }: { incident: { id: string; startedAt: s
           </span>
         </p>
         {isOpen && (
-          <button
-            onClick={() => resolve.mutate()}
-            disabled={resolve.isPending}
-            className="mt-0.5 text-[10px] text-brand-dim underline transition-colors hover:text-brand-text disabled:opacity-50"
-          >
-            Resolve
-          </button>
+          <div className="mt-0.5 flex items-center gap-2 flex-wrap">
+            <AckButton
+              incidentId={incident.id}
+              resolvedAt={incident.resolvedAt}
+              acknowledgedAt={incident.acknowledgedAt}
+              acknowledgedBy={incident.acknowledgedBy}
+              sessionUserId={sessionUserId}
+            />
+            <button
+              onClick={() => resolve.mutate()}
+              disabled={resolve.isPending}
+              className="text-[10px] text-brand-dim underline transition-colors hover:text-brand-text disabled:opacity-50"
+            >
+              Resolve
+            </button>
+          </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── Regions tab ──────────────────────────────────────────────────────────────
+
+function RegionsTab({ results }: { results: CheckResultRow[] }) {
+  const regionMap = new Map<string, CheckResultRow[]>();
+  for (const r of results) {
+    const key = r.region ?? 'unknown';
+    const existing = regionMap.get(key) ?? [];
+    existing.push(r);
+    regionMap.set(key, existing);
+  }
+
+  return (
+    <div className="rounded-lg border border-brand-line bg-brand-surface">
+      <div className="border-b border-brand-line px-4 py-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
+          Region status
+        </h2>
+      </div>
+      {regionMap.size === 0 ? (
+        <p className="px-4 py-8 text-center text-sm text-brand-muted">No region data available.</p>
+      ) : (
+        <div>
+          <div className="grid grid-cols-4 border-b border-brand-line px-4 py-2">
+            {['Region', 'Status', 'Last response', 'Uptime'].map((h) => (
+              <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                {h}
+              </span>
+            ))}
+          </div>
+          {Array.from(regionMap.entries()).map(([region, regionResults]) => {
+            const latest = regionResults[0];
+            const uptime = computeUptime(regionResults);
+            const uptimeColor =
+              uptime == null
+                ? 'text-brand-muted'
+                : uptime >= 99
+                ? 'text-brand-green'
+                : uptime >= 90
+                ? 'text-brand-amber'
+                : 'text-brand-red';
+
+            return (
+              <div
+                key={region}
+                className="grid grid-cols-4 border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30"
+              >
+                <span className="flex items-center gap-1.5 font-mono text-xs text-brand-dim">
+                  <Globe className="h-3 w-3 text-brand-muted" />
+                  {region}
+                </span>
+                <span>
+                  <span
+                    className={cn(
+                      'inline-block h-2 w-2 rounded-full',
+                      latest?.success ? 'bg-brand-green' : 'bg-brand-red'
+                    )}
+                  />
+                </span>
+                <span className="font-mono text-sm text-brand-dim">
+                  {latest?.responseTimeMs != null ? `${latest.responseTimeMs}ms` : '—'}
+                </span>
+                <span className={cn('font-mono text-sm font-semibold', uptimeColor)}>
+                  {uptime != null ? `${uptime}%` : '—'}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

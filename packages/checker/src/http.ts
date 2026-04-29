@@ -20,8 +20,22 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
     const responseTimeMs = Date.now() - startedAt;
 
     if (job.type === 'keyword') {
-      const bodyText = await body.text();
       const keyword = job.keyword ?? '';
+      if (keyword === '') {
+        await body.dump();
+        return {
+          monitorId: job.monitorId,
+          checkedAt,
+          success: false,
+          statusCode,
+          responseTimeMs,
+          errorType: 'invalid_keyword',
+          errorMessage: 'Keyword monitor has no keyword configured',
+          type: job.type,
+        };
+      }
+
+      const bodyText = await body.text();
       const condition = job.keywordCondition ?? 'present';
       const found = bodyText.includes(keyword);
       const success = condition === 'present' ? found : !found;

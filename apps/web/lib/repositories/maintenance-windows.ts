@@ -37,6 +37,15 @@ export const maintenanceWindowRepository = {
   },
 
   async create(teamId: string, input: CreateMaintenanceWindowInput): Promise<MaintenanceWindowRow> {
+    if (input.monitorIds && input.monitorIds.length > 0) {
+      const validCount = await prisma.monitor.count({
+        where: { id: { in: input.monitorIds }, teamId },
+      });
+      if (validCount !== input.monitorIds.length) {
+        throw new Error('One or more monitors do not belong to this team');
+      }
+    }
+
     const window = await prisma.maintenanceWindow.create({
       data: {
         teamId,

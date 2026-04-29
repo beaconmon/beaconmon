@@ -89,6 +89,29 @@ export function useUpdateMemberRole() {
   });
 }
 
+export function useUpdateTeamSettings() {
+  const queryClient = useQueryClient();
+  return useMutation<
+    { updated: boolean },
+    Error,
+    { reportAgencyName?: string; reportBrandColor?: string; reportLogoUrl?: string | null }
+  >({
+    mutationFn: async (data) => {
+      const res = await fetch('/api/team/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((json as { error?: string }).error ?? 'Failed to update settings');
+      return json as { updated: boolean };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['session'] });
+    },
+  });
+}
+
 export function useRemoveMember() {
   const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
