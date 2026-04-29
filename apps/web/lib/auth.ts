@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { prisma } from '@beaconmon/db';
 import type { PlanTier } from '@beaconmon/types';
 import { nextCookies } from "better-auth/next-js";
+import { logger } from '@/lib/logger';
 
 const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1).optional(),
@@ -54,12 +55,17 @@ const options = {
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
-      await resend.emails.send({
-        from: process.env['EMAIL_FROM'] ?? 'noreply@beaconmon.com',
-        to: user.email,
-        subject: 'Reset your Beaconmon password',
-        html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${url}">${url}</a></p>`,
-      });
+      try {
+        const result = await resend.emails.send({
+          from: process.env['EMAIL_FROM'] ?? 'noreply@beaconmon.com',
+          to: user.email,
+          subject: 'Reset your Beaconmon password',
+          html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${url}">${url}</a></p>`,
+        });
+        logger.info({ service: 'web', messageId: result.data?.id }, 'Password reset email sent');
+      } catch (err) {
+        logger.error({ service: 'web', err }, 'Failed to send password reset email');
+      }
     },
   },
   socialProviders: {

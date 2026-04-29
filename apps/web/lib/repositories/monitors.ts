@@ -17,6 +17,7 @@ export interface MonitorRow {
   keyword: string | null;
   keywordCondition: string | null;
   config: Record<string, unknown>;
+  isCompetitor: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +52,7 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
+        isCompetitor: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -77,6 +79,7 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
+        isCompetitor: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -102,6 +105,7 @@ export const monitorRepository: {
         keyword: data.keyword ?? null,
         keywordCondition: data.keywordCondition ?? null,
         config: config as unknown as Prisma.InputJsonValue,
+        isCompetitor: data.isCompetitor ?? false,
         // Make immediately eligible for the scheduler to pick up
         nextCheckAt: new Date(),
       },
@@ -120,6 +124,7 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
+        isCompetitor: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -142,6 +147,7 @@ export const monitorRepository: {
         ...(data.keyword !== undefined && { keyword: data.keyword }),
         ...(data.keywordCondition !== undefined && { keywordCondition: data.keywordCondition }),
         ...(data.config !== undefined && { config: data.config as unknown as Prisma.InputJsonValue }),
+        ...(data.isCompetitor !== undefined && { isCompetitor: data.isCompetitor }),
       },
     });
   },

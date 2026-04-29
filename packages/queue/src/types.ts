@@ -43,6 +43,17 @@ export interface ReportJob {
   clientNotes?: string;
 }
 
+/** Enqueued by scheduler when SLO burn rate exceeds threshold */
+export interface SloBurnAlertJob {
+  monitorId: string;
+  teamId: string;
+  burnRate: number;
+  severity: 'fast' | 'slow'; // fast = budget exhausted in ~1h, slow = ~10d
+  uptimePercent: number;
+  errorBudgetRemainingMinutes: number;
+  windowDays: number;
+}
+
 /** Enqueued when an incident is created and the monitor has an escalation policy */
 export interface EscalationStepJob {
   incidentId: string;
@@ -60,6 +71,7 @@ export const QUEUE_NAMES = {
   ALERT_SEND: 'alert:send',
   REPORT_GENERATE: 'report:generate',
   ESCALATION_STEP: 'escalation:step',
+  SLO_BURN: 'slo:burn',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];

@@ -2,7 +2,12 @@ import * as React from 'react';
 import { z } from 'zod';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
-import { monitorRepository, checkResultRepository, alertChannelRepository } from '@beaconmon/db';
+import {
+  monitorRepository,
+  checkResultRepository,
+  alertChannelRepository,
+  contentSnapshotWorkerRepository,
+} from '@beaconmon/db';
 import { runContentCheck } from '@beaconmon/checker';
 import type { ContentCheckJob } from '@beaconmon/queue';
 import { ContentChangeAlert } from './emails/content-change-alert.js';
@@ -63,10 +68,10 @@ export async function processContentCheckJob(data: ContentCheckJob): Promise<voi
 
   const { content, checkedAt } = result;
 
-  // 5. First run — initialize snapshot
+  // 5. First run — initialize snapshot (also write the first history row)
   if (monitor.contentSnapshot === null) {
     try {
-      await monitorRepository.updateContentSnapshot(monitorId, content, checkedAt);
+      await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
       logger.info({ service, monitorId }, 'Content snapshot initialized');
     } catch (err) {
       logger.error({ service, monitorId, err }, 'Failed to initialize content snapshot');
@@ -83,9 +88,10 @@ export async function processContentCheckJob(data: ContentCheckJob): Promise<voi
   // 7. Content changed
   logger.info({ service, monitorId }, 'Content change detected');
 
-  // 7a. Persist new snapshot — abort before notifying so retries see no diff
+  // 7a. Persist new snapshot (history row + hot column) — abort before notifying
+  // so retries see no diff and don't double-notify.
   try {
-    await monitorRepository.updateContentSnapshot(monitorId, content, checkedAt);
+    await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
     return;
