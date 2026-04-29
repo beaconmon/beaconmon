@@ -54,7 +54,7 @@ function SignInForm() {
       return;
     }
     setLoading(true);
-    const res = await authClient.signIn.magicLink({ email });
+    const res = await authClient.signIn.magicLink({ email, callbackURL: "/monitors" });
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');
