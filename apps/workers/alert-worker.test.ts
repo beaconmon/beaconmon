@@ -24,7 +24,12 @@ vi.mock('@beaconmon/db', () => ({
   },
   notificationRepository: {
     existsRecent: vi.fn(),
-    create: vi.fn(),
+    tryClaim: vi.fn(),
+    markSent: vi.fn(),
+    releaseClaim: vi.fn(),
+  },
+  deployEventRepository: {
+    hasActiveDeployWithSuppression: vi.fn(),
   },
 }));
 
@@ -55,7 +60,13 @@ vi.mock('./lib/logger.js', () => ({
 }));
 
 import { processAlertJob } from './process-alert-job.js';
-import { prisma, monitorRepository, alertChannelRepository, notificationRepository } from '@beaconmon/db';
+import {
+  prisma,
+  monitorRepository,
+  alertChannelRepository,
+  notificationRepository,
+  deployEventRepository,
+} from '@beaconmon/db';
 import { getChannelSender } from './lib/channels/index.js';
 
 // ─── Test fixtures ────────────────────────────────────────────────────────────
@@ -99,6 +110,8 @@ const alertJob: AlertJob = {
   type: 'down',
 };
 
+const mockClaim = { id: 'notif-1', bucket: new Date('2024-01-01T10:00:00Z') };
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('processAlertJob', () => {
@@ -109,63 +122,52 @@ describe('processAlertJob', () => {
     vi.mocked(prisma.incident.findUnique).mockResolvedValue(mockIncident as never);
     vi.mocked(alertChannelRepository.findActiveByTeamId).mockResolvedValue([mockChannel]);
     vi.mocked(notificationRepository.existsRecent).mockResolvedValue(false);
-    vi.mocked(notificationRepository.create).mockResolvedValue();
+    vi.mocked(notificationRepository.tryClaim).mockResolvedValue(mockClaim);
+    vi.mocked(notificationRepository.markSent).mockResolvedValue();
+    vi.mocked(notificationRepository.releaseClaim).mockResolvedValue();
+    vi.mocked(deployEventRepository.hasActiveDeployWithSuppression).mockResolvedValue(false);
 
     const mockSender = vi.fn().mockResolvedValue(undefined);
     vi.mocked(getChannelSender).mockReturnValue(mockSender);
   });
 
-  it('sends alert and logs notification on first call', async () => {
+  it('claims, sends, and marks notification on first call', async () => {
     await processAlertJob(alertJob);
 
     const sender = vi.mocked(getChannelSender).mock.results[0]?.value;
     expect(sender).toHaveBeenCalledOnce();
-    expect(notificationRepository.create).toHaveBeenCalledOnce();
-    expect(notificationRepository.create).toHaveBeenCalledWith({
+    expect(notificationRepository.tryClaim).toHaveBeenCalledWith({
       teamId: 'team-1',
       incidentId: 'incident-1',
       channelId: 'channel-1',
+      kind: 'down',
     });
+    expect(notificationRepository.markSent).toHaveBeenCalledWith(mockClaim.id);
+    expect(notificationRepository.releaseClaim).not.toHaveBeenCalled();
   });
 
-  it('skips send when notification already exists within window (idempotency)', async () => {
+  it('skips send when notification already exists in window (fast path)', async () => {
     vi.mocked(notificationRepository.existsRecent).mockResolvedValue(true);
 
-    // Call twice — both should be no-ops since existsRecent returns true
     await processAlertJob(alertJob);
     await processAlertJob(alertJob);
 
-    // sender should never be called
     expect(getChannelSender).not.toHaveBeenCalled();
-    // no new notification records
-    expect(notificationRepository.create).not.toHaveBeenCalled();
+    expect(notificationRepository.tryClaim).not.toHaveBeenCalled();
+    expect(notificationRepository.markSent).not.toHaveBeenCalled();
   });
 
-  it('only sends once when called twice and first call creates the notification', async () => {
-    // First call: not sent yet
-    vi.mocked(notificationRepository.existsRecent).mockResolvedValueOnce(false);
-    const mockSender = vi.fn().mockResolvedValue(undefined);
-    vi.mocked(getChannelSender).mockReturnValue(mockSender);
+  it('skips send when claim is lost to a concurrent worker (race protection)', async () => {
+    vi.mocked(notificationRepository.tryClaim).mockResolvedValue(null);
 
     await processAlertJob(alertJob);
-    expect(mockSender).toHaveBeenCalledOnce();
-    expect(notificationRepository.create).toHaveBeenCalledOnce();
 
-    // Second call: notification now exists
-    vi.mocked(notificationRepository.existsRecent).mockResolvedValueOnce(true);
-    vi.clearAllMocks();
-    vi.mocked(monitorRepository.findById).mockResolvedValue(mockMonitor);
-    vi.mocked(prisma.incident.findUnique).mockResolvedValue(mockIncident as never);
-    vi.mocked(alertChannelRepository.findActiveByTeamId).mockResolvedValue([mockChannel]);
-    vi.mocked(notificationRepository.existsRecent).mockResolvedValue(true);
-    vi.mocked(getChannelSender).mockReturnValue(mockSender);
-
-    await processAlertJob(alertJob);
-    expect(mockSender).not.toHaveBeenCalled();
-    expect(notificationRepository.create).not.toHaveBeenCalled();
+    expect(getChannelSender).not.toHaveBeenCalled();
+    expect(notificationRepository.markSent).not.toHaveBeenCalled();
+    expect(notificationRepository.releaseClaim).not.toHaveBeenCalled();
   });
 
-  it('continues to next channel when one channel fails (partial failure)', async () => {
+  it('releases claim and continues to next channel when one channel fails', async () => {
     const failingChannel = { ...mockChannel, id: 'channel-fail', name: 'Failing Channel' };
     const successChannel = { ...mockChannel, id: 'channel-ok', name: 'Success Channel' };
 
@@ -173,7 +175,9 @@ describe('processAlertJob', () => {
       failingChannel,
       successChannel,
     ]);
-    vi.mocked(notificationRepository.existsRecent).mockResolvedValue(false);
+    vi.mocked(notificationRepository.tryClaim)
+      .mockResolvedValueOnce({ id: 'claim-fail', bucket: new Date() })
+      .mockResolvedValueOnce({ id: 'claim-ok', bucket: new Date() });
 
     const failingSender = vi.fn().mockRejectedValue(new Error('Send failed'));
     const successSender = vi.fn().mockResolvedValue(undefined);
@@ -182,16 +186,14 @@ describe('processAlertJob', () => {
       .mockReturnValueOnce(failingSender)
       .mockReturnValueOnce(successSender);
 
-    // Should not throw — partial success is OK
     await expect(processAlertJob(alertJob)).resolves.not.toThrow();
 
     expect(failingSender).toHaveBeenCalledOnce();
     expect(successSender).toHaveBeenCalledOnce();
-    // Only successful channel gets a notification record
-    expect(notificationRepository.create).toHaveBeenCalledOnce();
-    expect(notificationRepository.create).toHaveBeenCalledWith(
-      expect.objectContaining({ channelId: 'channel-ok' })
-    );
+    // Failed channel: claim released, never marked sent
+    expect(notificationRepository.releaseClaim).toHaveBeenCalledWith('claim-fail');
+    // Successful channel: marked sent
+    expect(notificationRepository.markSent).toHaveBeenCalledWith('claim-ok');
   });
 
   it('throws when ALL channels fail (triggers BullMQ retry)', async () => {
@@ -200,13 +202,16 @@ describe('processAlertJob', () => {
       mockChannel,
       channel2,
     ]);
-    vi.mocked(notificationRepository.existsRecent).mockResolvedValue(false);
+    vi.mocked(notificationRepository.tryClaim)
+      .mockResolvedValueOnce({ id: 'claim-1', bucket: new Date() })
+      .mockResolvedValueOnce({ id: 'claim-2', bucket: new Date() });
 
     const failingSender = vi.fn().mockRejectedValue(new Error('Send failed'));
     vi.mocked(getChannelSender).mockReturnValue(failingSender);
 
     await expect(processAlertJob(alertJob)).rejects.toThrow('All 2 alert channel(s) failed');
-    expect(notificationRepository.create).not.toHaveBeenCalled();
+    expect(notificationRepository.markSent).not.toHaveBeenCalled();
+    expect(notificationRepository.releaseClaim).toHaveBeenCalledTimes(2);
   });
 
   it('returns early without sending when no active channels', async () => {
@@ -215,7 +220,7 @@ describe('processAlertJob', () => {
     await processAlertJob(alertJob);
 
     expect(getChannelSender).not.toHaveBeenCalled();
-    expect(notificationRepository.create).not.toHaveBeenCalled();
+    expect(notificationRepository.tryClaim).not.toHaveBeenCalled();
   });
 
   it('throws when monitor is not found', async () => {
@@ -228,5 +233,13 @@ describe('processAlertJob', () => {
     vi.mocked(prisma.incident.findUnique).mockResolvedValue(null);
 
     await expect(processAlertJob(alertJob)).rejects.toThrow('Incident incident-1 not found');
+  });
+
+  it('passes kind=up for recovery alerts so it does not collide with the down claim', async () => {
+    await processAlertJob({ ...alertJob, type: 'up', durationMs: 12345 });
+
+    expect(notificationRepository.tryClaim).toHaveBeenCalledWith(
+      expect.objectContaining({ kind: 'up' })
+    );
   });
 });

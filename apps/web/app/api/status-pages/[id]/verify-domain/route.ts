@@ -59,7 +59,7 @@ export const POST = withAuth<Params>(async (_req, { teamId, role }, params) => {
   // Mark as verified in DB
   await statusPageRepository.verifyCustomDomain(teamId, params.id, true);
 
-  // Register in Redis for middleware routing
+  // Register in Redis for proxy routing
   try {
     const redis = getRedis();
     await redis.hset('custom_domains', page.customDomain, page.slug);

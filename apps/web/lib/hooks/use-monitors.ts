@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 import type { MonitorRow } from '@/lib/repositories/monitors';
 import type { CreateMonitorInput, UpdateMonitorInput } from '@/lib/validations/monitors';
 
@@ -13,7 +14,7 @@ export function useMonitorSummaries() {
   return useQuery<Record<string, MonitorSummary>>({
     queryKey: ['monitor-summaries'],
     queryFn: async () => {
-      const res = await fetch('/api/monitors/summaries');
+      const res = await apiFetch('/api/monitors/summaries');
       if (!res.ok) throw new Error('Failed to fetch monitor summaries');
       return res.json();
     },
@@ -25,7 +26,7 @@ export function useMonitors() {
   return useQuery<MonitorRow[]>({
     queryKey: ['monitors'],
     queryFn: async () => {
-      const res = await fetch('/api/monitors');
+      const res = await apiFetch('/api/monitors');
       if (!res.ok) throw new Error('Failed to fetch monitors');
       return res.json();
     },
@@ -37,7 +38,7 @@ export function useMonitor(id: string) {
   return useQuery<MonitorRow>({
     queryKey: ['monitors', id],
     queryFn: async () => {
-      const res = await fetch(`/api/monitors/${id}`);
+      const res = await apiFetch(`/api/monitors/${id}`);
       if (!res.ok) throw new Error('Failed to fetch monitor');
       return res.json();
     },
@@ -48,7 +49,7 @@ export function useCreateMonitor() {
   const queryClient = useQueryClient();
   return useMutation<MonitorRow, Error, CreateMonitorInput>({
     mutationFn: async (data) => {
-      const res = await fetch('/api/monitors', {
+      const res = await apiFetch('/api/monitors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -69,7 +70,7 @@ export function useUpdateMonitor(id: string) {
   const queryClient = useQueryClient();
   return useMutation<MonitorRow, Error, UpdateMonitorInput>({
     mutationFn: async (data) => {
-      const res = await fetch(`/api/monitors/${id}`, {
+      const res = await apiFetch(`/api/monitors/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -91,7 +92,7 @@ export function useDeleteMonitor(id: string) {
   const queryClient = useQueryClient();
   return useMutation<void, Error>({
     mutationFn: async () => {
-      const res = await fetch(`/api/monitors/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/monitors/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete monitor');
     },
     onSuccess: () => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 
 interface GenerateReportInput {
   periodStart: string;
@@ -16,7 +17,7 @@ interface GenerateReportResult {
 export function useGenerateReport() {
   return useMutation<GenerateReportResult, Error, GenerateReportInput>({
     mutationFn: async (data) => {
-      const res = await fetch('/api/reports/generate', {
+      const res = await apiFetch('/api/reports/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

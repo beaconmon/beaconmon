@@ -2,9 +2,28 @@ import { checkResultRepository, statusPageWorkerRepository } from '@beaconmon/db
 import { assembleStatusPageCacheData } from '@beaconmon/types';
 import type { StatusPageCacheData } from '@beaconmon/types';
 import type { Redis } from 'ioredis';
+import { createStatusPageIdHasher } from './hash.js';
 
 const UPTIME_HASH_KEY = 'uptime:90d';
 const CACHE_TTL_SECONDS = 300;
+
+// v2 = payloads use opaque hashed IDs instead of raw DB primary keys.
+// Bumping this key invalidates pre-hash caches.
+export const STATUS_PAGE_CACHE_PREFIX = 'statuspage:v2';
+
+let _hashSecret: string | null = null;
+function getStatusPageHashSecret(): string {
+  if (_hashSecret === null) {
+    const secret = process.env.STATUS_PAGE_HASH_SECRET;
+    if (!secret || secret.length < 16) {
+      throw new Error(
+        'STATUS_PAGE_HASH_SECRET must be set to a value of at least 16 characters'
+      );
+    }
+    _hashSecret = secret;
+  }
+  return _hashSecret;
+}
 
 export async function warmStatusPageCache(
   slug: string,
@@ -37,10 +56,13 @@ export async function warmStatusPageCache(
     checkResultRepository.getDailyUptimeStats(monitorIds, 90).catch(() => new Map()),
   ]);
 
-  const data = assembleStatusPageCacheData(dbData, uptimeMap, dailyStatsMap);
+  const idHasher = createStatusPageIdHasher(slug, getStatusPageHashSecret());
+  const data = assembleStatusPageCacheData(dbData, uptimeMap, dailyStatsMap, idHasher);
 
   // Write to cache (fire and forget — never block the caller on Redis)
-  redis.set(`statuspage:${slug}`, JSON.stringify(data), 'EX', CACHE_TTL_SECONDS).catch(() => {});
+  redis
+    .set(`${STATUS_PAGE_CACHE_PREFIX}:${slug}`, JSON.stringify(data), 'EX', CACHE_TTL_SECONDS)
+    .catch(() => {});
 
   return data;
 }

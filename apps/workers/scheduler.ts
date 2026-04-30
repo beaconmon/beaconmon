@@ -377,11 +377,16 @@ async function runRetentionCleanup(): Promise<void> {
   logger.info({ service: 'scheduler' }, 'Starting per-plan retention cleanup');
 
   try {
-    // Find all teams and their effective plan, grouped with their monitor IDs.
+    // Pull trialEndsAt + subscription.status alongside team.plan so we can use
+    // the *effective* plan (matches getEffectivePlan used elsewhere). Without
+    // this, a team whose Pro/Business trial expired keeps the longer retention
+    // window until the Paddle webhook eventually flips team.plan to 'free'.
     const teams = await prisma.team.findMany({
       select: {
         id: true,
         plan: true,
+        trialEndsAt: true,
+        subscription: { select: { status: true } },
         monitors: { select: { id: true } },
       },
     });
@@ -391,7 +396,8 @@ async function runRetentionCleanup(): Promise<void> {
     for (const team of teams) {
       if (team.monitors.length === 0) continue;
 
-      const historyDays = PLAN_LIMITS[team.plan as keyof typeof PLAN_LIMITS].historyDays;
+      const effectivePlan = getEffectivePlan(team);
+      const historyDays = PLAN_LIMITS[effectivePlan].historyDays;
       // Business plan is already handled by partition purge (365 days)
       if (historyDays >= 365) continue;
 

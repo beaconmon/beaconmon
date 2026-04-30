@@ -14,6 +14,7 @@ import { AlertCircle } from 'lucide-react';
 import { useStatusPage, useUpdateStatusPage } from '@/lib/hooks/use-status-pages';
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 
 export default function StatusPageEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -32,7 +33,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
 
   const verifyDomain = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/status-pages/${id}/verify-domain`, { method: 'POST' });
+      const res = await apiFetch(`/api/status-pages/${id}/verify-domain`, { method: 'POST' });
       const body = (await res.json()) as { error?: string; message?: string };
       if (!res.ok) throw new Error(body.message ?? body.error ?? 'Verification failed');
       return body;

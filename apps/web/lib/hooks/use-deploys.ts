@@ -1,13 +1,14 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 import type { DeployEventRow } from '@/lib/repositories/deploy-events';
 
 export function useDeploys(monitorId: string) {
   return useQuery<DeployEventRow[]>({
     queryKey: ['deploys', monitorId],
     queryFn: async () => {
-      const res = await fetch(`/api/monitors/${monitorId}/deploys?limit=50`);
+      const res = await apiFetch(`/api/monitors/${monitorId}/deploys?limit=50`);
       if (!res.ok) throw new Error('Failed to fetch deploys');
       return res.json();
     },
@@ -25,7 +26,7 @@ export function useStartDeploy(monitorId: string) {
   const queryClient = useQueryClient();
   return useMutation<DeployEventRow, Error, CreateDeployInput>({
     mutationFn: async (data) => {
-      const res = await fetch(`/api/monitors/${monitorId}/deploy`, {
+      const res = await apiFetch(`/api/monitors/${monitorId}/deploy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -46,7 +47,7 @@ export function useEndDeploy(monitorId: string) {
   const queryClient = useQueryClient();
   return useMutation<DeployEventRow | null, Error>({
     mutationFn: async () => {
-      const res = await fetch(`/api/monitors/${monitorId}/deploy/end`, { method: 'POST' });
+      const res = await apiFetch(`/api/monitors/${monitorId}/deploy/end`, { method: 'POST' });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error((err as { error?: string }).error ?? 'Failed to end deploy');

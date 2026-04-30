@@ -38,14 +38,25 @@ export const paddle = new Proxy({} as Paddle, {
   },
 });
 
-// Returns priceId for the given plan — used by billing page to initialize overlay
+// Returns priceId for the given plan — used by billing page to initialize overlay.
+// Routed through the validated env so a missing/typoed var fails loud (not silent).
 export function getPriceId(plan: 'pro' | 'business'): string {
-  const id =
-    plan === 'pro'
-      ? process.env['PADDLE_PRO_PRICE_ID']
-      : process.env['PADDLE_BUSINESS_PRICE_ID'];
-  if (!id) throw new Error(`Missing PADDLE_${plan.toUpperCase()}_PRICE_ID`);
-  return id;
+  const env = getPaddleEnv();
+  return plan === 'pro' ? env.PADDLE_PRO_PRICE_ID : env.PADDLE_BUSINESS_PRICE_ID;
+}
+
+/**
+ * Map a Paddle price ID to one of our plan tiers. Throws via Zod if either
+ * `PADDLE_PRO_PRICE_ID` or `PADDLE_BUSINESS_PRICE_ID` is missing — by routing
+ * through the validated env (instead of reading process.env directly), we avoid
+ * a silent failure mode where a paid Paddle event would map to `free`.
+ */
+export function planFromPaddlePriceId(priceId: string | null | undefined): 'free' | 'pro' | 'business' {
+  if (!priceId) return 'free';
+  const env = getPaddleEnv();
+  if (priceId === env.PADDLE_PRO_PRICE_ID) return 'pro';
+  if (priceId === env.PADDLE_BUSINESS_PRICE_ID) return 'business';
+  return 'free';
 }
 
 // Generates a one-time portal session URL for the customer
