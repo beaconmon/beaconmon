@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 import type { EscalationPolicyRow, EscalationStepInput } from '@/lib/repositories/escalation-policies';
 
 export type { EscalationPolicyRow };
@@ -9,7 +10,7 @@ export function useEscalationPolicies() {
   return useQuery<EscalationPolicyRow[]>({
     queryKey: ['escalation-policies'],
     queryFn: async () => {
-      const res = await fetch('/api/escalation-policies');
+      const res = await apiFetch('/api/escalation-policies');
       if (!res.ok) throw new Error('Failed to fetch escalation policies');
       return res.json();
     },
@@ -24,7 +25,7 @@ export function useCreateEscalationPolicy() {
     { name: string; steps: EscalationStepInput[] }
   >({
     mutationFn: async (data) => {
-      const res = await fetch('/api/escalation-policies', {
+      const res = await apiFetch('/api/escalation-policies', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -47,7 +48,7 @@ export function useUpdateEscalationPolicy(id: string) {
     { name?: string; steps?: EscalationStepInput[] }
   >({
     mutationFn: async (data) => {
-      const res = await fetch(`/api/escalation-policies/${id}`, {
+      const res = await apiFetch(`/api/escalation-policies/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -66,7 +67,7 @@ export function useDeleteEscalationPolicy(id: string) {
   const queryClient = useQueryClient();
   return useMutation<void, Error>({
     mutationFn: async () => {
-      const res = await fetch(`/api/escalation-policies/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/escalation-policies/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete policy');
     },
     onSuccess: () => {

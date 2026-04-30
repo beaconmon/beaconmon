@@ -9,6 +9,13 @@ export const dynamic = 'force-dynamic';
 // Workers write every 30s, so 90s gives 3 missed beats before we flag it.
 const HEARTBEAT_STALE_MS = 90_000;
 
+// Scheduler writes scheduler:last_run after every tick (every 10s). A scheduler
+// process can be alive (heartbeating) but stuck inside its inner loop and not
+// actually enqueuing — so we also fail the health check on a stale last-run
+// regardless of the worker heartbeat. 5 min = 30× the tick interval, which
+// avoids flapping on transient lag.
+const SCHEDULER_LAST_RUN_STALE_MS = 5 * 60 * 1000;
+
 type WorkerName = 'check' | 'alert' | 'content' | 'scheduler';
 
 interface WorkerStatus {
@@ -85,6 +92,21 @@ export async function GET() {
     errors.push('db_unavailable');
   }
 
+  // ── Scheduler liveness ────────────────────────────────────────────────────────
+  // Catches the "process alive but inner loop stalled" case that worker
+  // heartbeats alone can miss.
+  let schedulerStaleMs: number | null = null;
+  if (schedulerLastRun) {
+    schedulerStaleMs = Date.now() - new Date(schedulerLastRun).getTime();
+    if (schedulerStaleMs > SCHEDULER_LAST_RUN_STALE_MS) {
+      errors.push('scheduler_stalled');
+    }
+  } else if (queues !== null) {
+    // Redis is reachable (queues populated) but no last-run key yet. On a fresh
+    // deploy the scheduler may not have ticked; treat as stalled if Redis works.
+    errors.push('scheduler_stalled');
+  }
+
   const isHealthy = errors.length === 0;
 
   const body = {
@@ -93,6 +115,7 @@ export async function GET() {
     db: dbOk ? 'ok' : 'error',
     queues: queues ?? 'unavailable',
     schedulerLastRun: schedulerLastRun ?? null,
+    schedulerStaleMs,
     workers: workers ?? 'unavailable',
   };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 
 export interface StatusPageRow {
   id: string;
@@ -16,7 +17,7 @@ export function useStatusPages() {
   return useQuery<StatusPageRow[]>({
     queryKey: ['status-pages'],
     queryFn: async () => {
-      const res = await fetch('/api/status-pages');
+      const res = await apiFetch('/api/status-pages');
       if (!res.ok) throw new Error('Failed to fetch status pages');
       return res.json();
     },
@@ -32,7 +33,7 @@ export function useStatusPage(id: string) {
   return useQuery<StatusPageDetail>({
     queryKey: ['status-pages', id],
     queryFn: async () => {
-      const res = await fetch(`/api/status-pages/${id}`);
+      const res = await apiFetch(`/api/status-pages/${id}`);
       if (!res.ok) throw new Error('Failed to fetch status page');
       return res.json();
     },
@@ -44,7 +45,7 @@ export function useCreateStatusPage() {
   const queryClient = useQueryClient();
   return useMutation<StatusPageRow, Error, { name: string; slug: string }>({
     mutationFn: async (data) => {
-      const res = await fetch('/api/status-pages', {
+      const res = await apiFetch('/api/status-pages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -72,7 +73,7 @@ export function useUpdateStatusPage(id: string) {
   const queryClient = useQueryClient();
   return useMutation<StatusPageDetail, Error, UpdateStatusPageInput>({
     mutationFn: async (data) => {
-      const res = await fetch(`/api/status-pages/${id}`, {
+      const res = await apiFetch(`/api/status-pages/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

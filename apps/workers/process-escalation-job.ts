@@ -40,18 +40,18 @@ export async function processEscalationJob(data: EscalationStepJob): Promise<voi
     return;
   }
 
-  // 3. Load the alert channel
-  const channel = await prisma.alertChannel.findUnique({
-    where: { id: step.channelId, isActive: true },
+  // 3. Load the alert channel — skip if user-disabled OR system-disabled (plan downgrade)
+  const channel = await prisma.alertChannel.findFirst({
+    where: { id: step.channelId, isActive: true, disabledAt: null },
     select: { id: true, type: true, config: true },
   });
 
   if (!channel) {
-    logger.warn({ service, incidentId, channelId: step.channelId }, 'Alert channel not found or inactive');
+    logger.warn({ service, incidentId, channelId: step.channelId }, 'Alert channel not found, inactive, or system-disabled');
     return;
   }
 
-  // 4. Idempotency check (same 5-minute window as the regular alert worker)
+  // 4. Idempotency fast path — already-delivered alert in the rolling window
   const alreadySent = await notificationRepository.existsRecent(
     teamId,
     incidentId,
@@ -67,13 +67,36 @@ export async function processEscalationJob(data: EscalationStepJob): Promise<voi
     return;
   }
 
-  // 5. Load monitor for the alert payload
+  // 5. Atomically reserve the (incident, channel, kind, bucket) slot. The
+  //    unique index in notifications enforces this across concurrent workers.
+  const claim = await notificationRepository.tryClaim({
+    teamId,
+    incidentId,
+    channelId: channel.id,
+    kind: 'down',
+  });
+
+  if (!claim) {
+    logger.debug(
+      { service, incidentId, channelId: channel.id, stepIndex },
+      'Notification claim lost to concurrent worker — skipping escalation step'
+    );
+    return;
+  }
+
+  // 6. Load monitor for the alert payload
   const monitor = await prisma.monitor.findUnique({
     where: { id: monitorId },
     select: { id: true, name: true, url: true },
   });
 
   if (!monitor) {
+    await notificationRepository.releaseClaim(claim.id).catch((releaseErr) => {
+      logger.error(
+        { service, incidentId, channelId: channel.id, err: releaseErr },
+        'Failed to release notification claim after missing monitor'
+      );
+    });
     logger.warn({ service, monitorId }, 'Monitor not found — cannot send escalation alert');
     return;
   }
@@ -84,17 +107,23 @@ export async function processEscalationJob(data: EscalationStepJob): Promise<voi
     type: 'down',
   };
 
-  // 6. Send via the channel sender
+  // 7. Send via the channel sender; release claim on failure so retries work.
   try {
     const sender = getChannelSender(channel.type);
     await sender(channel.config as Record<string, unknown>, payload);
-    await notificationRepository.create({ teamId, incidentId, channelId: channel.id });
+    await notificationRepository.markSent(claim.id);
 
     logger.info(
       { service, incidentId, channelId: channel.id, channelType: channel.type, stepIndex },
       'Escalation step alert sent'
     );
   } catch (err) {
+    await notificationRepository.releaseClaim(claim.id).catch((releaseErr) => {
+      logger.error(
+        { service, incidentId, channelId: channel.id, err: releaseErr },
+        'Failed to release notification claim after escalation send failure'
+      );
+    });
     logger.error(
       { service, incidentId, channelId: channel.id, stepIndex, err },
       'Escalation step alert send failed'

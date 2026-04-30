@@ -1,13 +1,14 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api-fetch';
 import type { MaintenanceWindowRow } from '@/lib/repositories/maintenance-windows';
 
 export function useMaintenanceWindows() {
   return useQuery<MaintenanceWindowRow[]>({
     queryKey: ['maintenance-windows'],
     queryFn: async () => {
-      const res = await fetch('/api/maintenance-windows');
+      const res = await apiFetch('/api/maintenance-windows');
       if (!res.ok) throw new Error('Failed to fetch maintenance windows');
       return res.json();
     },
@@ -25,7 +26,7 @@ export function useCreateMaintenanceWindow() {
   const queryClient = useQueryClient();
   return useMutation<MaintenanceWindowRow, Error, CreateMaintenanceWindowInput>({
     mutationFn: async (data) => {
-      const res = await fetch('/api/maintenance-windows', {
+      const res = await apiFetch('/api/maintenance-windows', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -46,7 +47,7 @@ export function useDeleteMaintenanceWindow() {
   const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
     mutationFn: async (id) => {
-      const res = await fetch(`/api/maintenance-windows/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/maintenance-windows/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete maintenance window');
     },
     onSuccess: () => {

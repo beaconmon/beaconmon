@@ -1,16 +1,13 @@
 import { EventName, type EventEntity } from '@paddle/paddle-node-sdk';
-import { prisma } from '@beaconmon/db';
+import { prisma, alertChannelRepository } from '@beaconmon/db';
 import { logger } from '@/lib/logger';
 import type { PlanTier } from '@beaconmon/types';
+import { planFromPaddlePriceId } from '@/lib/paddle';
 
 type OurSubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete';
 
-// Map Paddle price IDs to plan tiers
-function resolvePlan(priceId: string | null | undefined): PlanTier {
-  if (priceId === process.env['PADDLE_PRO_PRICE_ID']) return 'pro';
-  if (priceId === process.env['PADDLE_BUSINESS_PRICE_ID']) return 'business';
-  return 'free';
-}
+const resolvePlan = (priceId: string | null | undefined): PlanTier =>
+  planFromPaddlePriceId(priceId);
 
 // Map Paddle subscription status to our SubscriptionStatus enum
 function resolveStatus(paddleStatus: string): OurSubscriptionStatus {
@@ -121,6 +118,15 @@ export async function handlePaddleEvent(event: EventEntity): Promise<void> {
 
       if (capturedTeamId) {
         logger.info({ service: 'web', teamId: capturedTeamId, plan: teamPlan, status }, 'Subscription updated');
+        // Plan may have decreased the alertChannels cap — disable surplus oldest-first.
+        // No-op when the new plan still allows the team's current channel count.
+        const disabled = await alertChannelRepository.disableSurplusForPlan(capturedTeamId, teamPlan);
+        if (disabled.length > 0) {
+          logger.info(
+            { service: 'web', teamId: capturedTeamId, plan: teamPlan, disabledCount: disabled.length, disabledIds: disabled.map((c) => c.id) },
+            'Disabled surplus alert channels after plan change'
+          );
+        }
       }
       break;
     }
@@ -159,6 +165,14 @@ export async function handlePaddleEvent(event: EventEntity): Promise<void> {
 
       if (capturedTeamId) {
         logger.info({ service: 'web', teamId: capturedTeamId }, 'Subscription canceled — downgraded to free');
+        // Free has alertChannels=1 — disable everything beyond the first one.
+        const disabled = await alertChannelRepository.disableSurplusForPlan(capturedTeamId, 'free');
+        if (disabled.length > 0) {
+          logger.info(
+            { service: 'web', teamId: capturedTeamId, disabledCount: disabled.length, disabledIds: disabled.map((c) => c.id) },
+            'Disabled surplus alert channels after subscription cancel'
+          );
+        }
       }
       break;
     }

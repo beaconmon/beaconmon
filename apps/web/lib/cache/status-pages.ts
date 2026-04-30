@@ -1,8 +1,6 @@
 import { getRedis } from '@/lib/redis';
-import { warmStatusPageCache } from '@beaconmon/status-pages';
+import { warmStatusPageCache, STATUS_PAGE_CACHE_PREFIX } from '@beaconmon/status-pages';
 import type { StatusPageCacheData } from '@beaconmon/types';
-
-const CACHE_TTL_SECONDS = 300;
 
 /**
  * Returns status page data, served from Redis cache when available.
@@ -11,7 +9,7 @@ const CACHE_TTL_SECONDS = 300;
  */
 export async function getStatusPageData(slug: string): Promise<StatusPageCacheData | null> {
   const redis = getRedis();
-  const cacheKey = `statuspage:${slug}`;
+  const cacheKey = `${STATUS_PAGE_CACHE_PREFIX}:${slug}`;
 
   // Try cache first
   try {

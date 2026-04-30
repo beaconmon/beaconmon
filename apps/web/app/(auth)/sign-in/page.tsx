@@ -21,7 +21,7 @@ import {
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') ?? '/overview';
+  const redirect = searchParams.get('redirect') ?? '/monitors';
   const resetSuccess = searchParams.get('reset') === '1';
 
   const [email, setEmail] = useState('');
@@ -54,7 +54,7 @@ function SignInForm() {
       return;
     }
     setLoading(true);
-    const res = await authClient.signIn.magicLink({ email, callbackURL: "/monitors" });
+    const res = await authClient.signIn.magicLink({ email, callbackURL: redirect });
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');

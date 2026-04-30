@@ -2,6 +2,7 @@ import Link from 'next/link';
 import NavBar from '@/components/marketing/NavBar';
 import DashboardPreview from '@/components/marketing/DashboardPreview';
 import CtaForm from '@/components/marketing/CtaForm';
+import { RevealObserver } from '@/components/reveal-observer';
 import {
   Accordion,
   AccordionContent,
@@ -597,31 +598,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* ====== SCROLL REVEAL ====== */}
       <RevealObserver />
     </>
-  );
-}
-
-/* Client component just for IntersectionObserver */
-function RevealObserver() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-(function(){
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      }
-    });
-  },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-})();
-        `,
-      }}
-    />
   );
 }

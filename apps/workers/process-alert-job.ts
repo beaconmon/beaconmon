@@ -61,12 +61,17 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     durationMs,
   };
 
-  // 5. Send to each channel with per-channel idempotency and error isolation
+  // 5. Send to each channel with per-channel idempotency and error isolation.
+  //
+  //    Race protection (architecture rule #5): we use a claim-then-send pattern
+  //    backed by the unique index on (incident_id, channel_id, kind, sent_window_bucket).
+  //    Two concurrent retries can't both pass `tryClaim` for the same bucket.
   let successCount = 0;
   let failureCount = 0;
 
   for (const channel of channels) {
-    // 5a. Idempotency check (architecture rule #5)
+    // 5a. Fast path: skip if a delivered notification already exists in the
+    //     rolling window (handles spread-out retries after a long backoff).
     const alreadySent = await notificationRepository.existsRecent(
       teamId,
       incidentId,
@@ -79,17 +84,34 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
         { service: 'alert-worker', incidentId, channelId: channel.id, channelType: channel.type },
         'Notification already sent within window — skipping'
       );
-      successCount++; // counts as "handled"
+      successCount++;
       continue;
     }
 
-    // 5b. Get sender and dispatch
+    // 5b. Atomically reserve this (incident, channel, kind, bucket) slot.
+    //     If another worker beat us to it, skip — they'll do the send.
+    const claim = await notificationRepository.tryClaim({
+      teamId,
+      incidentId,
+      channelId: channel.id,
+      kind: type,
+    });
+
+    if (!claim) {
+      logger.debug(
+        { service: 'alert-worker', incidentId, channelId: channel.id, channelType: channel.type },
+        'Notification claim lost to concurrent worker — skipping'
+      );
+      successCount++;
+      continue;
+    }
+
+    // 5c. Send and finalize. Release the claim on send failure so the next
+    //     BullMQ retry can re-claim and retry the send.
     try {
       const sender = getChannelSender(channel.type);
       await sender(channel.config, payload);
-
-      // 5c. Insert notification record AFTER successful send
-      await notificationRepository.create({ teamId, incidentId, channelId: channel.id });
+      await notificationRepository.markSent(claim.id);
 
       logger.info(
         { service: 'alert-worker', incidentId, channelId: channel.id, channelType: channel.type },
@@ -98,6 +120,12 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
 
       successCount++;
     } catch (err) {
+      await notificationRepository.releaseClaim(claim.id).catch((releaseErr) => {
+        logger.error(
+          { service: 'alert-worker', incidentId, channelId: channel.id, err: releaseErr },
+          'Failed to release notification claim after send failure'
+        );
+      });
       logger.error(
         { service: 'alert-worker', incidentId, channelId: channel.id, channelType: channel.type, err },
         'Alert send failed for channel'

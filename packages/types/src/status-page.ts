@@ -72,24 +72,28 @@ export interface StatusPageDbData {
  * and a per-monitor daily stats map (90 entries each).
  * uptimeMap: Record<monitorId, uptimePercent> — missing entries default to 100.
  * dailyStatsMap: Map<monitorId, DailyUptimeStat[]> — missing entries get empty array.
+ * idHasher: optional opaque-ID hasher. When supplied, all monitor and incident
+ *   IDs in the returned payload are run through it (defense-in-depth: the
+ *   public payload should not leak raw DB primary keys). Defaults to identity.
  */
 export function assembleStatusPageCacheData(
   dbData: StatusPageDbData,
   uptimeMap: Record<string, number>,
-  dailyStatsMap: Map<string, DailyUptimeStat[]> = new Map()
+  dailyStatsMap: Map<string, DailyUptimeStat[]> = new Map(),
+  idHasher: (rawId: string) => string = (id) => id
 ): StatusPageCacheData {
   const monitors: StatusPageMonitorData[] = dbData.monitors.map((spm) => {
     const m = spm.monitor;
     const status = m.currentStatus as 'up' | 'down' | 'paused';
     return {
-      id: m.id,
+      id: idHasher(m.id),
       name: m.name,
       type: m.type,
       currentStatus: status,
       uptimePercent90d: uptimeMap[m.id] ?? 100,
       dailyStats: dailyStatsMap.get(m.id) ?? [],
       recentIncidents: m.incidents.map((inc) => ({
-        id: inc.id,
+        id: idHasher(inc.id),
         startedAt: inc.startedAt.toISOString(),
         resolvedAt: inc.resolvedAt ? inc.resolvedAt.toISOString() : null,
         durationMs:

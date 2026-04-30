@@ -12,10 +12,11 @@ export const heartbeatRepository = {
     });
   },
 
-  async recordHeartbeat(monitorId: string) {
+  async recordHeartbeat(monitorId: string): Promise<{ id: string; lastHeartbeatAt: Date | null }> {
     return prisma.monitor.update({
       where: { id: monitorId },
       data: { lastHeartbeatAt: new Date() },
+      select: { id: true, lastHeartbeatAt: true },
     });
   },
 };

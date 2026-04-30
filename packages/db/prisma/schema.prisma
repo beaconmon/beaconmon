@@ -68,6 +68,11 @@ enum ExpiryAlertType {
   domain
 }
 
+enum NotificationKind {
+  down
+  up
+}
+
 // ─── Teams & Users ────────────────────────────────────────────────────────────
 
 model Team {
@@ -345,6 +350,10 @@ model AlertChannel {
   type      AlertChannelType
   config    Json             @default("{}")
   isActive  Boolean          @default(true) @map("is_active")
+  // System-disabled (e.g. plan downgrade leaves surplus channels). Distinct from
+  // user-controlled `isActive`. Alert worker treats either as "skip".
+  disabledAt     DateTime? @map("disabled_at")
+  disabledReason String?   @map("disabled_reason")
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @updatedAt @map("updated_at")
 
@@ -358,17 +367,24 @@ model AlertChannel {
 // ─── Notifications (idempotency log) ─────────────────────────────────────────
 
 model Notification {
-  id         String   @id @default(cuid())
-  teamId     String   @map("team_id")
-  incidentId String   @map("incident_id")
-  channelId  String   @map("channel_id")
-  sentAt     DateTime @default(now()) @map("sent_at")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id               String           @id @default(cuid())
+  teamId           String           @map("team_id")
+  incidentId       String           @map("incident_id")
+  channelId        String           @map("channel_id")
+  kind             NotificationKind @default(down)
+  // 5-minute floored bucket (app-computed). The unique index below makes the
+  // (incidentId, channelId, kind, sentWindowBucket) tuple atomically claim-able
+  // so two concurrent retries can't both pass dedup and both send.
+  sentWindowBucket DateTime         @map("sent_window_bucket")
+  // Null = row is a "claim" placed before send; populated = send completed.
+  sentAt           DateTime?        @map("sent_at")
+  createdAt        DateTime         @default(now()) @map("created_at")
 
   team     Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
   incident Incident     @relation(fields: [incidentId], references: [id], onDelete: Cascade)
   channel  AlertChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
+  @@unique([incidentId, channelId, kind, sentWindowBucket], map: "notifications_idem_unique")
   @@index([incidentId, channelId, sentAt(sort: Desc)])
   @@map("notifications")
 }
