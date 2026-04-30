@@ -3,8 +3,10 @@
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
-import { Activity, AlertTriangle, Bell, Globe, Settings, Plus, Search } from 'lucide-react';
+import { Activity, AlertTriangle, Bell, Globe, Settings, Plus, Search, CreditCard, Users, Wrench } from 'lucide-react';
 import { useMonitors } from '@/lib/hooks/use-monitors';
+import { useIncidents } from '@/lib/hooks/use-incidents';
+import { useStatusPages } from '@/lib/hooks/use-status-pages';
 
 interface CommandPaletteProps {
   open: boolean;
@@ -19,6 +21,13 @@ const NAV_ITEMS = [
   { label: 'Settings',       href: '/settings/billing', icon: Settings },
 ];
 
+const SETTINGS_SHORTCUTS = [
+  { label: 'Settings — Billing',    href: '/settings/billing',    icon: CreditCard },
+  { label: 'Settings — Team',       href: '/settings/team',       icon: Users },
+  { label: 'Settings — Branding',   href: '/settings/branding',   icon: Settings },
+  { label: 'Maintenance Windows',   href: '/maintenance-windows', icon: Wrench },
+];
+
 function CmdGroupHeading({ children }: { children: React.ReactNode }) {
   return (
     <p className="px-4 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-brand-muted">
@@ -30,6 +39,8 @@ function CmdGroupHeading({ children }: { children: React.ReactNode }) {
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const router = useRouter();
   const { data: monitors } = useMonitors();
+  const { data: incidents } = useIncidents();
+  const { data: statusPages } = useStatusPages();
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -115,10 +126,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               <>
                 <CmdGroupHeading>Monitors</CmdGroupHeading>
                 <Command.Group>
-                  {monitors.map((m) => (
+                  {monitors.slice(0, 25).map((m) => (
                     <Command.Item
                       key={m.id}
-                      value={m.name}
+                      value={`monitor ${m.name} ${m.url} ${m.tags.join(' ')}`}
                       onSelect={() => navigate(`/monitors/${m.id}`)}
                       className="flex cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-brand-text data-[selected=true]:bg-brand-bg2 outline-none"
                     >
@@ -132,6 +143,63 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 </Command.Group>
               </>
             )}
+
+            {incidents && incidents.length > 0 && (
+              <>
+                <CmdGroupHeading>Recent incidents</CmdGroupHeading>
+                <Command.Group>
+                  {incidents.slice(0, 5).map((i) => (
+                    <Command.Item
+                      key={i.id}
+                      value={`incident ${i.monitor.name} ${i.id}`}
+                      onSelect={() => navigate(`/incidents`)}
+                      className="flex cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-brand-text data-[selected=true]:bg-brand-bg2 outline-none"
+                    >
+                      <AlertTriangle className={`h-4 w-4 shrink-0 ${i.resolvedAt ? 'text-brand-muted' : 'text-brand-red'}`} />
+                      <span className="truncate">{i.monitor.name}</span>
+                      <span className="ml-auto text-xs text-brand-muted">
+                        {i.resolvedAt ? 'resolved' : 'open'}
+                      </span>
+                    </Command.Item>
+                  ))}
+                </Command.Group>
+              </>
+            )}
+
+            {statusPages && statusPages.length > 0 && (
+              <>
+                <CmdGroupHeading>Status pages</CmdGroupHeading>
+                <Command.Group>
+                  {statusPages.slice(0, 5).map((sp) => (
+                    <Command.Item
+                      key={sp.id}
+                      value={`status-page ${sp.name} ${sp.slug}`}
+                      onSelect={() => navigate(`/status-pages/${sp.id}`)}
+                      className="flex cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-brand-text data-[selected=true]:bg-brand-bg2 outline-none"
+                    >
+                      <Globe className="h-4 w-4 shrink-0 text-brand-dim" />
+                      <span className="truncate">{sp.name}</span>
+                      <span className="ml-auto text-xs text-brand-muted font-mono">{sp.slug}</span>
+                    </Command.Item>
+                  ))}
+                </Command.Group>
+              </>
+            )}
+
+            <CmdGroupHeading>Settings</CmdGroupHeading>
+            <Command.Group>
+              {SETTINGS_SHORTCUTS.map(({ label, href, icon: Icon }) => (
+                <Command.Item
+                  key={href}
+                  value={label}
+                  onSelect={() => navigate(href)}
+                  className="flex cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-brand-text data-[selected=true]:bg-brand-bg2 outline-none"
+                >
+                  <Icon className="h-4 w-4 text-brand-dim" />
+                  {label}
+                </Command.Item>
+              ))}
+            </Command.Group>
           </Command.List>
         </Command>
       </div>

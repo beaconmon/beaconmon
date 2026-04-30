@@ -25,7 +25,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, X } from 'lucide-react';
+import { useState, type KeyboardEvent } from 'react';
 
 const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content'] as const;
 
@@ -42,6 +43,7 @@ const formSchema = z.object({
   keyword: z.string().optional(),
   keywordCondition: z.enum(['present', 'absent']).optional(),
   cssSelector: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 }).superRefine((data, ctx) => {
   if (data.type === 'http' || data.type === 'keyword' || data.type === 'content') {
     if (!data.url) {
@@ -264,6 +266,21 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
           />
         )}
 
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+              <FormControl>
+                <TagInput value={field.value ?? []} onChange={field.onChange} />
+              </FormControl>
+              <FormDescription>Group monitors with tags like &quot;production&quot; or &quot;customer-facing&quot;. Press Enter or comma to add.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {selectedType === 'http' && (
           <FormField
             control={form.control}
@@ -321,5 +338,65 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
         </Button>
       </form>
     </Form>
+  );
+}
+
+function TagInput({ value, onChange }: { value: string[]; onChange: (tags: string[]) => void }) {
+  const [draft, setDraft] = useState('');
+
+  function commit(raw: string) {
+    const next = raw.trim().replace(/^,+|,+$/g, '').trim();
+    if (!next) return;
+    if (value.includes(next)) {
+      setDraft('');
+      return;
+    }
+    if (value.length >= 20) return;
+    onChange([...value, next]);
+    setDraft('');
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      commit(draft);
+    } else if (e.key === 'Backspace' && draft === '' && value.length > 0) {
+      e.preventDefault();
+      onChange(value.slice(0, -1));
+    }
+  }
+
+  function remove(tag: string) {
+    onChange(value.filter((t) => t !== tag));
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent px-2 py-1.5 focus-within:ring-1 focus-within:ring-ring">
+      {value.map((tag) => (
+        <span
+          key={tag}
+          className="inline-flex items-center gap-1 rounded bg-brand-bg3 px-2 py-0.5 text-xs text-brand-text"
+        >
+          {tag}
+          <button
+            type="button"
+            onClick={() => remove(tag)}
+            className="text-brand-muted transition-colors hover:text-brand-red"
+            aria-label={`Remove tag ${tag}`}
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </span>
+      ))}
+      <input
+        type="text"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onBlur={() => commit(draft)}
+        placeholder={value.length === 0 ? 'production, api, customer-facing' : ''}
+        className="flex-1 min-w-[120px] bg-transparent text-sm outline-none placeholder:text-brand-muted"
+      />
+    </div>
   );
 }

@@ -19,6 +19,7 @@ function toFormValues(monitor: MonitorRow): Partial<MonitorFormValues> {
     responseTimeThresholdMs: monitor.responseTimeThresholdMs ?? undefined,
     keyword: monitor.keyword ?? undefined,
     keywordCondition: (monitor.keywordCondition ?? undefined) as MonitorFormValues['keywordCondition'],
+    tags: monitor.tags,
   };
 
   if (monitor.type === 'tcp') {
@@ -47,6 +48,7 @@ function buildApiPayload(data: MonitorFormValues): UpdateMonitorInput {
     responseTimeThresholdMs: data.responseTimeThresholdMs,
     keyword: data.keyword,
     keywordCondition: data.keywordCondition,
+    tags: data.tags,
   };
 
   if (data.type === 'tcp') {

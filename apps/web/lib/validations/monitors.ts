@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const tagSchema = z
+  .string()
+  .min(1)
+  .max(32)
+  .regex(/^[a-zA-Z0-9][a-zA-Z0-9 _-]*$/, 'Tag must be alphanumeric with -, _, or spaces');
+
 export const createMonitorSchema = z.object({
   name: z.string().min(1).max(100),
   url: z.string().url(),
@@ -11,6 +17,7 @@ export const createMonitorSchema = z.object({
   keywordCondition: z.enum(['present', 'absent']).optional(),
   config: z.record(z.string(), z.unknown()).optional(),
   isCompetitor: z.boolean().optional(),
+  tags: z.array(tagSchema).max(20).optional(),
 });
 
 export type CreateMonitorInput = z.infer<typeof createMonitorSchema>;

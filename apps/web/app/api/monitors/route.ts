@@ -6,8 +6,9 @@ import { logger } from '@/lib/logger';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
 
-export const GET = withAuth(async (_req, { teamId }) => {
-  const monitors = await monitorRepository.findAll(teamId);
+export const GET = withAuth(async (req, { teamId }) => {
+  const tag = new URL(req.url).searchParams.get('tag');
+  const monitors = await monitorRepository.findAll(teamId, tag ? { tag } : undefined);
   return Response.json(monitors);
 });
 

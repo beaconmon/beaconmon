@@ -18,6 +18,7 @@ function buildApiPayload(data: MonitorFormValues): CreateMonitorInput {
     responseTimeThresholdMs: data.responseTimeThresholdMs,
     keyword: data.keyword,
     keywordCondition: data.keywordCondition,
+    tags: data.tags,
   };
 
   if (data.type === 'tcp') {

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2, Tag } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +28,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
   const [customDomain, setCustomDomain] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>([]);
+  const [filterTag, setFilterTag] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
@@ -75,6 +77,10 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
   }
 
   const allMonitors = monitorsQ.data ?? [];
+  const allTags = Array.from(new Set(allMonitors.flatMap((m) => m.tags))).sort();
+  const visibleUnselected = allMonitors
+    .filter((m) => !selectedMonitorIds.includes(m.id))
+    .filter((m) => !filterTag || m.tags.includes(filterTag));
 
   function toggleMonitor(monitorId: string) {
     setSelectedMonitorIds((prev) =>
@@ -240,23 +246,57 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
             <p className="text-sm text-muted-foreground">No monitors yet.</p>
           ) : (
             <>
+              {allTags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Tag className="h-3 w-3 text-brand-muted" />
+                  <button
+                    type="button"
+                    onClick={() => setFilterTag(null)}
+                    className={cn(
+                      'rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider transition-colors',
+                      filterTag === null
+                        ? 'bg-brand-green/20 text-brand-green'
+                        : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
+                    )}
+                  >
+                    All
+                  </button>
+                  {allTags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setFilterTag(tag === filterTag ? null : tag)}
+                      className={cn(
+                        'rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors',
+                        tag === filterTag
+                          ? 'bg-brand-green/20 text-brand-green'
+                          : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
+                      )}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* Unselected monitors */}
               <div className="space-y-2">
-                {allMonitors
-                  .filter((m) => !selectedMonitorIds.includes(m.id))
-                  .map((monitor) => (
-                    <label
-                      key={monitor.id}
-                      className="flex items-center gap-3 rounded-md border border-brand-line px-3 py-2 cursor-pointer transition-colors duration-150 hover:bg-brand-bg3/50"
-                    >
-                      <Checkbox
-                        checked={false}
-                        onCheckedChange={() => toggleMonitor(monitor.id)}
-                      />
-                      <span className="text-sm text-brand-text">{monitor.name}</span>
-                      <span className="text-xs text-brand-muted font-mono truncate">{monitor.url}</span>
-                    </label>
-                  ))}
+                {visibleUnselected.map((monitor) => (
+                  <label
+                    key={monitor.id}
+                    className="flex items-center gap-3 rounded-md border border-brand-line px-3 py-2 cursor-pointer transition-colors duration-150 hover:bg-brand-bg3/50"
+                  >
+                    <Checkbox
+                      checked={false}
+                      onCheckedChange={() => toggleMonitor(monitor.id)}
+                    />
+                    <span className="text-sm text-brand-text">{monitor.name}</span>
+                    <span className="text-xs text-brand-muted font-mono truncate">{monitor.url}</span>
+                  </label>
+                ))}
+                {filterTag && visibleUnselected.length === 0 && (
+                  <p className="text-xs text-brand-muted px-1">No unselected monitors with tag &quot;{filterTag}&quot;.</p>
+                )}
               </div>
 
               {/* Selected monitors (ordered) */}

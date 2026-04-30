@@ -341,8 +341,29 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-10 animate-pulse rounded-lg bg-brand-bg3" />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-brand-line bg-brand-surface p-6 text-center">
+        <p className="text-sm text-brand-red">Failed to load SLO data.</p>
+        <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <QueryState isLoading={isLoading} isError={isError} error={null} onRetry={() => refetch()}>
+    <>
       {data && (
         <div className="space-y-5">
           {!data.config.sloTarget ? (
@@ -443,7 +464,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
           )}
         </div>
       )}
-    </QueryState>
+    </>
   );
 }
 
@@ -558,7 +579,21 @@ function DeploysTab({ monitorId, plan }: { monitorId: string; plan: string }) {
         <div className="border-b border-brand-line px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Deploy history</h2>
         </div>
-        <QueryState isLoading={isLoading} isError={isError} error={null} onRetry={() => refetch()} skeletonRows={4}>
+        {isLoading ? (
+          <div className="space-y-2 p-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-10 animate-pulse rounded-lg bg-brand-bg3" />
+            ))}
+          </div>
+        ) : isError ? (
+          <div className="p-6 text-center">
+            <p className="text-sm text-brand-red">Failed to load deploys.</p>
+            <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <>
           {!deploys || deploys.length === 0 ? (
             <p className="px-4 py-8 text-center text-sm text-brand-muted">No deploys recorded yet.</p>
           ) : (
@@ -604,7 +639,8 @@ function DeploysTab({ monitorId, plan }: { monitorId: string; plan: string }) {
               })}
             </div>
           )}
-        </QueryState>
+          </>
+        )}
       </div>
     </div>
   );
@@ -651,9 +687,9 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
   }
 
   return (
-    <div className="flex gap-5 flex-col lg:flex-row">
+    <div className="flex gap-5 flex-col md:flex-row">
       {/* Snapshot list */}
-      <div className="w-full lg:w-64 lg:shrink-0 rounded-lg border border-brand-line bg-brand-surface overflow-hidden">
+      <div className="w-full md:w-64 md:shrink-0 rounded-lg border border-brand-line bg-brand-surface overflow-hidden">
         <div className="border-b border-brand-line px-4 py-3 flex items-center justify-between">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Snapshots</h2>
           <span className="text-[10px] text-brand-muted">{snapshots.length} / {data?.planLimit}</span>
@@ -680,7 +716,7 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
       </div>
 
       {/* Diff viewer */}
-      <div className="min-w-0 flex-1 rounded-lg border border-brand-line bg-brand-surface overflow-hidden">
+      <div className="min-w-0 flex-1 rounded-lg border border-brand-line bg-brand-surface overflow-x-auto">
         <div className="border-b border-brand-line px-4 py-3 flex items-center gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
             {fromId ? 'Changes from previous snapshot' : 'Latest snapshot (no previous to compare)'}

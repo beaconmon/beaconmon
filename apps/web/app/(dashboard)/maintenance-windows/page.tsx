@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { format, isPast, isFuture, isWithinInterval } from 'date-fns';
-import { Wrench, Plus, Trash2 } from 'lucide-react';
+import { format, isFuture, isWithinInterval } from 'date-fns';
+import { Wrench, Plus, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,12 +17,15 @@ import {
 } from '@/components/ui/dialog';
 import { QueryState } from '@/components/dashboard/query-state';
 import { EmptyState } from '@/components/dashboard/empty-state';
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import {
   useMaintenanceWindows,
   useCreateMaintenanceWindow,
+  useUpdateMaintenanceWindow,
   useDeleteMaintenanceWindow,
 } from '@/lib/hooks/use-maintenance-windows';
 import { useMonitors } from '@/lib/hooks/use-monitors';
+import { useSession } from '@/lib/hooks/use-session';
 import type { MaintenanceWindowRow } from '@/lib/repositories/maintenance-windows';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -49,11 +52,13 @@ function durationLabel(startsAt: Date | string, endsAt: Date | string) {
 function WindowCard({
   window: w,
   monitorNames,
+  onEdit,
   onDelete,
   isDeleting,
 }: {
   window: MaintenanceWindowRow;
   monitorNames: Record<string, string>;
+  onEdit: () => void;
   onDelete: () => void;
   isDeleting: boolean;
 }) {
@@ -102,15 +107,27 @@ function WindowCard({
         </div>
 
         {status !== 'past' && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onDelete}
-            disabled={isDeleting}
-            className="shrink-0 text-brand-muted hover:text-brand-red"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onEdit}
+              className="text-brand-muted hover:text-brand-text"
+              aria-label="Edit window"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onDelete}
+              disabled={isDeleting}
+              className="text-brand-muted hover:text-brand-red"
+              aria-label="Delete window"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         )}
       </div>
     </div>
@@ -137,6 +154,116 @@ function toLocalDatetimeValue(d: Date) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+interface WindowFormProps {
+  startsAt: string;
+  endsAt: string;
+  reason: string;
+  selectedMonitors: string[];
+  monitorOptions: { id: string; name: string }[];
+  formError: string;
+  onChange: (next: {
+    startsAt?: string;
+    endsAt?: string;
+    reason?: string;
+    selectedMonitors?: string[];
+  }) => void;
+}
+
+function WindowForm({
+  startsAt,
+  endsAt,
+  reason,
+  selectedMonitors,
+  monitorOptions,
+  formError,
+  onChange,
+}: WindowFormProps) {
+  function toggleMonitor(id: string) {
+    const next = selectedMonitors.includes(id)
+      ? selectedMonitors.filter((m) => m !== id)
+      : [...selectedMonitors, id];
+    onChange({ selectedMonitors: next });
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-brand-dim">Start time</Label>
+          <Input
+            type="datetime-local"
+            value={startsAt}
+            onChange={(e) => onChange({ startsAt: e.target.value })}
+            className="h-8 text-sm"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-brand-dim">End time</Label>
+          <Input
+            type="datetime-local"
+            value={endsAt}
+            onChange={(e) => onChange({ endsAt: e.target.value })}
+            className="h-8 text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-brand-dim">Reason (optional)</Label>
+        <Textarea
+          value={reason}
+          onChange={(e) => onChange({ reason: e.target.value })}
+          placeholder="Planned database migration, routine deploy…"
+          className="h-20 resize-none text-sm"
+          maxLength={500}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-xs text-brand-dim">Monitors affected</Label>
+        {monitorOptions.length === 0 ? (
+          <p className="text-xs text-brand-muted">No monitors available.</p>
+        ) : (
+          <div className="max-h-48 overflow-y-auto rounded-md border border-brand-line divide-y divide-brand-line">
+            {monitorOptions.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => toggleMonitor(m.id)}
+                className={cn(
+                  'flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-brand-bg3/60',
+                  selectedMonitors.includes(m.id) && 'bg-brand-bg3'
+                )}
+              >
+                <div
+                  className={cn(
+                    'h-4 w-4 shrink-0 rounded border',
+                    selectedMonitors.includes(m.id)
+                      ? 'border-brand-green bg-brand-green'
+                      : 'border-brand-line bg-transparent'
+                  )}
+                >
+                  {selectedMonitors.includes(m.id) && (
+                    <svg viewBox="0 0 16 16" fill="none" className="h-full w-full text-brand-bg">
+                      <path d="M3.5 8l3 3 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </div>
+                <span className="truncate text-xs text-brand-dim">{m.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {selectedMonitors.length > 0 && (
+          <p className="text-[10px] text-brand-muted">{selectedMonitors.length} selected</p>
+        )}
+      </div>
+
+      {formError && <p className="text-xs text-brand-red">{formError}</p>}
+    </div>
+  );
+}
+
 function CreateWindowDialog({
   open,
   onClose,
@@ -147,12 +274,12 @@ function CreateWindowDialog({
   monitorOptions: { id: string; name: string }[];
 }) {
   const create = useCreateMaintenanceWindow();
-  const now = new Date();
-  const defaultStart = new Date(now.getTime() + 5 * 60 * 1000);
-  const defaultEnd = new Date(now.getTime() + 65 * 60 * 1000);
-
-  const [startsAt, setStartsAt] = useState(toLocalDatetimeValue(defaultStart));
-  const [endsAt, setEndsAt] = useState(toLocalDatetimeValue(defaultEnd));
+  const [startsAt, setStartsAt] = useState(() =>
+    toLocalDatetimeValue(new Date(Date.now() + 5 * 60 * 1000))
+  );
+  const [endsAt, setEndsAt] = useState(() =>
+    toLocalDatetimeValue(new Date(Date.now() + 65 * 60 * 1000))
+  );
   const [reason, setReason] = useState('');
   const [selectedMonitors, setSelectedMonitors] = useState<string[]>([]);
   const [formError, setFormError] = useState('');
@@ -163,12 +290,6 @@ function CreateWindowDialog({
     setReason('');
     setSelectedMonitors([]);
     setFormError('');
-  }
-
-  function toggleMonitor(id: string) {
-    setSelectedMonitors((prev) =>
-      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-    );
   }
 
   function handleSubmit() {
@@ -209,81 +330,20 @@ function CreateWindowDialog({
           <DialogTitle>New maintenance window</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-brand-dim">Start time</Label>
-              <Input
-                type="datetime-local"
-                value={startsAt}
-                onChange={(e) => setStartsAt(e.target.value)}
-                className="h-8 text-sm"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-brand-dim">End time</Label>
-              <Input
-                type="datetime-local"
-                value={endsAt}
-                onChange={(e) => setEndsAt(e.target.value)}
-                className="h-8 text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs text-brand-dim">Reason (optional)</Label>
-            <Textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Planned database migration, routine deploy…"
-              className="h-20 resize-none text-sm"
-              maxLength={500}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-xs text-brand-dim">Monitors affected</Label>
-            {monitorOptions.length === 0 ? (
-              <p className="text-xs text-brand-muted">No monitors available.</p>
-            ) : (
-              <div className="max-h-48 overflow-y-auto rounded-md border border-brand-line divide-y divide-brand-line">
-                {monitorOptions.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => toggleMonitor(m.id)}
-                    className={cn(
-                      'flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-brand-bg3/60',
-                      selectedMonitors.includes(m.id) && 'bg-brand-bg3'
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'h-4 w-4 shrink-0 rounded border',
-                        selectedMonitors.includes(m.id)
-                          ? 'border-brand-green bg-brand-green'
-                          : 'border-brand-line bg-transparent'
-                      )}
-                    >
-                      {selectedMonitors.includes(m.id) && (
-                        <svg viewBox="0 0 16 16" fill="none" className="h-full w-full text-brand-bg">
-                          <path d="M3.5 8l3 3 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="truncate text-xs text-brand-dim">{m.name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-            {selectedMonitors.length > 0 && (
-              <p className="text-[10px] text-brand-muted">{selectedMonitors.length} selected</p>
-            )}
-          </div>
-
-          {formError && <p className="text-xs text-brand-red">{formError}</p>}
-        </div>
+        <WindowForm
+          startsAt={startsAt}
+          endsAt={endsAt}
+          reason={reason}
+          selectedMonitors={selectedMonitors}
+          monitorOptions={monitorOptions}
+          formError={formError}
+          onChange={(next) => {
+            if (next.startsAt !== undefined) setStartsAt(next.startsAt);
+            if (next.endsAt !== undefined) setEndsAt(next.endsAt);
+            if (next.reason !== undefined) setReason(next.reason);
+            if (next.selectedMonitors !== undefined) setSelectedMonitors(next.selectedMonitors);
+          }}
+        />
 
         <DialogFooter>
           <Button variant="outline" onClick={() => { reset(); onClose(); }}>
@@ -298,14 +358,114 @@ function CreateWindowDialog({
   );
 }
 
+function EditWindowDialog({
+  open,
+  onClose,
+  window: w,
+  monitorOptions,
+}: {
+  open: boolean;
+  onClose: () => void;
+  window: MaintenanceWindowRow;
+  monitorOptions: { id: string; name: string }[];
+}) {
+  const update = useUpdateMaintenanceWindow(w.id);
+  const [startsAt, setStartsAt] = useState(() => toLocalDatetimeValue(new Date(w.startsAt)));
+  const [endsAt, setEndsAt] = useState(() => toLocalDatetimeValue(new Date(w.endsAt)));
+  const [reason, setReason] = useState(w.reason ?? '');
+  const [selectedMonitors, setSelectedMonitors] = useState<string[]>(w.monitorIds);
+  const [formError, setFormError] = useState('');
+
+  function handleSubmit() {
+    if (!startsAt || !endsAt) {
+      setFormError('Start and end times are required');
+      return;
+    }
+    if (new Date(endsAt) <= new Date(startsAt)) {
+      setFormError('End time must be after start time');
+      return;
+    }
+    if (selectedMonitors.length === 0) {
+      setFormError('Select at least one monitor');
+      return;
+    }
+    setFormError('');
+    update.mutate(
+      {
+        startsAt: new Date(startsAt).toISOString(),
+        endsAt: new Date(endsAt).toISOString(),
+        reason: reason || null,
+        monitorIds: selectedMonitors,
+      },
+      {
+        onSuccess: () => onClose(),
+        onError: (err) => setFormError(err.message),
+      }
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Edit maintenance window</DialogTitle>
+        </DialogHeader>
+
+        <WindowForm
+          startsAt={startsAt}
+          endsAt={endsAt}
+          reason={reason}
+          selectedMonitors={selectedMonitors}
+          monitorOptions={monitorOptions}
+          formError={formError}
+          onChange={(next) => {
+            if (next.startsAt !== undefined) setStartsAt(next.startsAt);
+            if (next.endsAt !== undefined) setEndsAt(next.endsAt);
+            if (next.reason !== undefined) setReason(next.reason);
+            if (next.selectedMonitors !== undefined) setSelectedMonitors(next.selectedMonitors);
+          }}
+        />
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={update.isPending}>
+            Save changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function MaintenanceWindowsPage() {
-  const windowsQ = useMaintenanceWindows();
-  const monitorsQ = useMonitors();
+  const sessionQ = useSession();
+  const plan = sessionQ.data?.plan;
+  const isFree = plan === 'free';
+
+  const windowsQ = useMaintenanceWindows({ enabled: plan !== undefined && !isFree });
+  const monitorsQ = useMonitors({ enabled: plan !== undefined && !isFree });
   const deleteWindow = useDeleteMaintenanceWindow();
   const [showCreate, setShowCreate] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  if (isFree) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-brand-text">Maintenance Windows</h1>
+          <p className="mt-1 text-sm text-brand-muted">
+            Schedule planned downtime to suppress alerts for selected monitors.
+          </p>
+        </div>
+        <UpgradePrompt currentPlan="free" limitReached="maintenance windows" />
+      </div>
+    );
+  }
 
   const windows = windowsQ.data ?? [];
   const monitors = monitorsQ.data ?? [];
@@ -364,6 +524,7 @@ export default function MaintenanceWindowsPage() {
                     key={w.id}
                     window={w}
                     monitorNames={monitorNames}
+                    onEdit={() => setEditingId(w.id)}
                     onDelete={() => handleDelete(w.id)}
                     isDeleting={deletingId === w.id}
                   />
@@ -379,6 +540,7 @@ export default function MaintenanceWindowsPage() {
                     key={w.id}
                     window={w}
                     monitorNames={monitorNames}
+                    onEdit={() => setEditingId(w.id)}
                     onDelete={() => handleDelete(w.id)}
                     isDeleting={deletingId === w.id}
                   />
@@ -394,6 +556,7 @@ export default function MaintenanceWindowsPage() {
                     key={w.id}
                     window={w}
                     monitorNames={monitorNames}
+                    onEdit={() => setEditingId(w.id)}
                     onDelete={() => handleDelete(w.id)}
                     isDeleting={deletingId === w.id}
                   />
@@ -409,6 +572,20 @@ export default function MaintenanceWindowsPage() {
         onClose={() => setShowCreate(false)}
         monitorOptions={monitorOptions}
       />
+
+      {editingId && (() => {
+        const w = windows.find((win) => win.id === editingId);
+        if (!w) return null;
+        return (
+          <EditWindowDialog
+            key={w.id}
+            open
+            onClose={() => setEditingId(null)}
+            window={w}
+            monitorOptions={monitorOptions}
+          />
+        );
+      })()}
     </div>
   );
 }
