@@ -22,15 +22,29 @@ export function useMonitorSummaries() {
   });
 }
 
-export function useMonitors() {
+export function useMonitors(opts?: { enabled?: boolean; tag?: string }) {
+  const tag = opts?.tag;
   return useQuery<MonitorRow[]>({
-    queryKey: ['monitors'],
+    queryKey: tag ? ['monitors', { tag }] : ['monitors'],
     queryFn: async () => {
-      const res = await apiFetch('/api/monitors');
+      const url = tag ? `/api/monitors?tag=${encodeURIComponent(tag)}` : '/api/monitors';
+      const res = await apiFetch(url);
       if (!res.ok) throw new Error('Failed to fetch monitors');
       return res.json();
     },
     refetchInterval: 30_000,
+    enabled: opts?.enabled ?? true,
+  });
+}
+
+export function useMonitorTags() {
+  return useQuery<string[]>({
+    queryKey: ['monitor-tags'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/monitors/tags');
+      if (!res.ok) throw new Error('Failed to fetch tags');
+      return res.json();
+    },
   });
 }
 
@@ -84,6 +98,36 @@ export function useUpdateMonitor(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['monitors'] });
       queryClient.invalidateQueries({ queryKey: ['monitors', id] });
+    },
+  });
+}
+
+export type BulkMonitorAction =
+  | { action: 'pause'; monitorIds: string[] }
+  | { action: 'resume'; monitorIds: string[] }
+  | { action: 'delete'; monitorIds: string[] }
+  | { action: 'set-interval'; monitorIds: string[]; intervalSeconds: number }
+  | { action: 'add-tag'; monitorIds: string[]; tag: string };
+
+export function useBulkMonitorAction() {
+  const queryClient = useQueryClient();
+  return useMutation<{ updated: number }, Error, BulkMonitorAction>({
+    mutationFn: async (input) => {
+      const res = await apiFetch('/api/monitors/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as { error?: string }).error ?? 'Bulk action failed');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['monitors'] });
+      queryClient.invalidateQueries({ queryKey: ['monitor-summaries'] });
+      queryClient.invalidateQueries({ queryKey: ['monitor-tags'] });
     },
   });
 }

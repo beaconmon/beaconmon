@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Breadcrumbs } from '@/components/dashboard/breadcrumbs';
 import { CommandPalette } from '@/components/command-palette';
+import { NotificationPopover } from '@/components/notifications/notification-popover';
 import { Providers } from '@/components/providers';
 import { TrialBanner } from '@/components/ui/trial-banner';
 import { useIncidents } from '@/lib/hooks/use-incidents';
@@ -70,6 +71,7 @@ function NavItem({
     <Link
       href={href}
       title={collapsed ? label : undefined}
+      aria-label={collapsed ? label : undefined}
       className={cn(
         'group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-all duration-150',
         collapsed ? 'justify-center px-2' : 'px-3',
@@ -187,6 +189,7 @@ function Sidebar({
         {!collapsed && <TeamCard />}
         <button
           onClick={onToggle}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           className={cn(
             'flex w-full items-center rounded-md py-2 text-xs text-brand-muted transition-colors hover:bg-brand-bg3/50 hover:text-brand-dim',
             collapsed ? 'justify-center px-2' : 'justify-start gap-2 px-3'
@@ -208,10 +211,8 @@ function Sidebar({
 
 function TopBar({
   onOpenCommandPalette,
-  incidentCount,
 }: {
   onOpenCommandPalette: () => void;
-  incidentCount: number;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -251,13 +252,8 @@ function TopBar({
         </Link>
       )}
 
-      {/* Bell */}
-      <button className="relative flex h-8 w-8 items-center justify-center rounded-md text-brand-muted transition-colors hover:bg-brand-bg3/50 hover:text-brand-text">
-        <Bell className="h-4 w-4" />
-        {incidentCount > 0 && (
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-brand-red" />
-        )}
-      </button>
+      {/* Notifications */}
+      <NotificationPopover />
 
       {/* Avatar dropdown */}
       <DropdownMenu>
@@ -308,7 +304,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar onOpenCommandPalette={() => setCmdOpen(true)} incidentCount={incidentCount} />
+        <TopBar onOpenCommandPalette={() => setCmdOpen(true)} />
         {session?.plan && session.teamCreatedAt && (
           <TrialBanner plan={session.plan} teamCreatedAt={session.teamCreatedAt} />
         )}

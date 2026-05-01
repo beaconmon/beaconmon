@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { withAuth } from '@/lib/api/with-auth';
 import { maintenanceWindowRepository } from '@/lib/repositories/maintenance-windows';
-import { ForbiddenError, ValidationError } from '@/lib/api/errors';
+import { ForbiddenError, PlanLimitError, ValidationError } from '@/lib/api/errors';
 import { logger } from '@/lib/logger';
 
 const createMaintenanceWindowSchema = z.object({
@@ -19,8 +19,11 @@ export const GET = withAuth(async (_req, { teamId }) => {
   return Response.json(windows);
 });
 
-export const POST = withAuth(async (req, { teamId, role }) => {
+export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (role === 'viewer') throw new ForbiddenError();
+  if (plan === 'free') {
+    throw new PlanLimitError('Maintenance windows require a Pro or Business plan');
+  }
 
   let body: unknown;
   try {

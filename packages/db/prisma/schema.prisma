@@ -88,19 +88,20 @@ model Team {
   reportBrandColor String? @map("report_brand_color")
   reportAgencyName String? @map("report_agency_name")
 
-  members            TeamMember[]
-  invitations        TeamInvitation[]
-  subscription       Subscription?
-  monitors           Monitor[]
-  alertChannels      AlertChannel[]
-  incidents          Incident[]
-  expiryAlerts       ExpiryAlert[]
-  notifications      Notification[]
-  statusPages        StatusPage[]
-  maintenanceWindows MaintenanceWindow[]
-  escalationPolicies EscalationPolicy[]
-  deployEvents       DeployEvent[]
-  contentSnapshots   ContentSnapshot[]
+  members                TeamMember[]
+  invitations            TeamInvitation[]
+  subscription           Subscription?
+  monitors               Monitor[]
+  alertChannels          AlertChannel[]
+  incidents              Incident[]
+  expiryAlerts           ExpiryAlert[]
+  notifications          Notification[]
+  statusPages            StatusPage[]
+  maintenanceWindows     MaintenanceWindow[]
+  escalationPolicies     EscalationPolicy[]
+  deployEvents           DeployEvent[]
+  contentSnapshots       ContentSnapshot[]
+  notificationReadStates NotificationReadState[]
 
   @@map("teams")
 }
@@ -114,9 +115,10 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  memberships TeamMember[]
-  sessions    Session[]
-  accounts    Account[]
+  memberships            TeamMember[]
+  sessions               Session[]
+  accounts               Account[]
+  notificationReadStates NotificationReadState[]
 
   @@map("users")
 }
@@ -260,6 +262,9 @@ model Monitor {
 
   // Type-specific config (port, selector, gracePeriodSeconds for heartbeat, etc.)
   config Json @default("{}")
+
+  // User-defined tags for filtering and grouping (e.g. "production", "us-east")
+  tags String[] @default([])
 
   deletedAt DateTime? @map("deleted_at")
 
@@ -449,6 +454,22 @@ model MaintenanceWindowMonitor {
 
   @@unique([windowId, monitorId])
   @@map("maintenance_window_monitors")
+}
+
+// ─── Notification feed read state ─────────────────────────────────────────────
+
+model NotificationReadState {
+  id         String   @id @default(cuid())
+  teamId     String   @map("team_id")
+  userId     String   @map("user_id")
+  lastSeenAt DateTime @map("last_seen_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("notification_read_state")
 }
 
 // ─── Escalation Policies ──────────────────────────────────────────────────────

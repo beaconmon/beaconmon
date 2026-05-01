@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api-fetch';
 import type { MaintenanceWindowRow } from '@/lib/repositories/maintenance-windows';
 
-export function useMaintenanceWindows() {
+export function useMaintenanceWindows(opts?: { enabled?: boolean }) {
   return useQuery<MaintenanceWindowRow[]>({
     queryKey: ['maintenance-windows'],
     queryFn: async () => {
@@ -12,6 +12,7 @@ export function useMaintenanceWindows() {
       if (!res.ok) throw new Error('Failed to fetch maintenance windows');
       return res.json();
     },
+    enabled: opts?.enabled ?? true,
   });
 }
 
@@ -34,6 +35,34 @@ export function useCreateMaintenanceWindow() {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error((err as { error?: string }).error ?? 'Failed to create maintenance window');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['maintenance-windows'] });
+    },
+  });
+}
+
+export interface UpdateMaintenanceWindowInput {
+  startsAt?: string;
+  endsAt?: string;
+  reason?: string | null;
+  monitorIds?: string[];
+}
+
+export function useUpdateMaintenanceWindow(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation<MaintenanceWindowRow, Error, UpdateMaintenanceWindowInput>({
+    mutationFn: async (data) => {
+      const res = await apiFetch(`/api/maintenance-windows/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as { error?: string }).error ?? 'Failed to update maintenance window');
       }
       return res.json();
     },
