@@ -3,6 +3,9 @@
 import { useState, useId } from 'react';
 import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getPasswordStrength, MIN_PASSWORD_STRENGTH } from '@/lib/validations/password';
+
+export { getPasswordStrength, MIN_PASSWORD_STRENGTH };
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
 
@@ -291,15 +294,6 @@ export function Checkbox({
   );
 }
 
-function getPasswordStrength(password: string): number {
-  if (!password) return 0;
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-  return score; // 0–4
-}
 
 const STRENGTH_LABEL = ['', 'Weak', 'Fair', 'Good', 'Strong'];
 const STRENGTH_COLOR = ['', 'bg-brand-red', 'bg-brand-amber', 'bg-brand-green/70', 'bg-brand-green'];

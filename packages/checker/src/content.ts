@@ -36,7 +36,7 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
       headersTimeout: timeoutMs,
       bodyTimeout: timeoutMs,
       headers: {
-        'user-agent': 'beaconmon/1.0 (+https://beaconmon.dev)',
+        'user-agent': 'beaconmon/1.0 (+https://beaconmon.com)',
         accept: 'text/html,application/xhtml+xml',
       },
     });

@@ -149,7 +149,6 @@ export default function TeamPage() {
   if (sessionQ.isLoading || membersQ.isLoading) {
     return (
       <div className="max-w-2xl space-y-4">
-        <Skeleton className="h-8 w-32" />
         <Skeleton className="h-48 rounded-lg" />
       </div>
     );
@@ -160,8 +159,6 @@ export default function TeamPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-semibold text-brand-text">Team</h1>
-
       {canManage && (
         <Card>
           <CardHeader className="pb-3">

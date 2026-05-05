@@ -61,6 +61,24 @@
   }
 }
 
+@layer base {
+  /* Date input calendar icon visibility */
+  input[type='date']::-webkit-calendar-picker-indicator,
+  input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+  .dark input[type='date']::-webkit-calendar-picker-indicator,
+  .dark input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+  input[type='date']::-webkit-calendar-picker-indicator:hover,
+  input[type='datetime-local']::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
 @keyframes pulse-green {
   0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 122, 0.4); }
   50% { box-shadow: 0 0 0 6px rgba(0, 229, 122, 0); }

@@ -32,7 +32,7 @@ async function runProbe(req: ProbeRequest): Promise<ProbeResponse> {
     const response = await fetch(req.url, {
       method: 'GET',
       headers: {
-        'user-agent': 'beaconmon-probe/1.0 (+https://beaconmon.dev)',
+        'user-agent': 'beaconmon-probe/1.0 (+https://beaconmon.com)',
       },
       signal: AbortSignal.timeout(req.timeoutMs),
     });

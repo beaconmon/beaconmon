@@ -284,15 +284,14 @@ async function scheduleChecks(): Promise<void> {
 
       if (monitor.type === 'content') {
         await contentQueue.add(
-          `content:${monitor.id}`,
+          `content:${monitor.id}:${now.getTime()}`,
           {
             monitorId: monitor.id,
             url: monitor.url,
             intervalSeconds: monitor.intervalSeconds,
             selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
             inMaintenance,
-          },
-          { jobId: `content:${monitor.id}` }
+          }
         );
       } else {
         const planRegionCount = PLAN_LIMITS[effectivePlan].regions;
@@ -300,7 +299,7 @@ async function scheduleChecks(): Promise<void> {
         const isHttpOrKeyword = monitor.type === 'http' || monitor.type === 'keyword';
 
         await checkQueue.add(
-          `check:${monitor.id}`,
+          `check:${monitor.id}:${now.getTime()}`,
           {
             monitorId: monitor.id,
             url: monitor.url,
@@ -313,8 +312,7 @@ async function scheduleChecks(): Promise<void> {
               keywordCondition: (monitor.keywordCondition ?? undefined) as 'present' | 'absent' | undefined,
             }),
             inMaintenance,
-          },
-          { jobId: `check:${monitor.id}` }
+          }
         );
       }
     }

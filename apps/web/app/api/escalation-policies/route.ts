@@ -1,14 +1,22 @@
 import { z } from 'zod';
 import { withAuth } from '@/lib/api/with-auth';
-import { escalationPolicyRepository } from '@/lib/repositories/escalation-policies';
+import {
+  escalationPolicyRepository,
+  EscalationValidationError,
+} from '@/lib/repositories/escalation-policies';
 import { ForbiddenError, ValidationError } from '@/lib/api/errors';
 import { logger } from '@/lib/logger';
 
-const escalationStepSchema = z.object({
-  stepOrder: z.number().int().min(0),
-  delayMinutes: z.number().int().min(0),
-  channelId: z.string().min(1),
-});
+const escalationStepSchema = z
+  .object({
+    stepOrder: z.number().int().min(0),
+    delayMinutes: z.number().int().min(0),
+    channelIds: z.array(z.string().min(1)).default([]),
+    userIds: z.array(z.string().min(1)).default([]),
+  })
+  .refine((s) => s.channelIds.length + s.userIds.length > 0, {
+    message: 'Each step must have at least one recipient (channel or user)',
+  });
 
 const createEscalationPolicySchema = z.object({
   name: z.string().min(1).max(100),
@@ -33,7 +41,20 @@ export const POST = withAuth(async (req, { teamId, role }) => {
   const parsed = createEscalationPolicySchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
-  const policy = await escalationPolicyRepository.create(teamId, parsed.data);
-  logger.info({ service: 'web', teamId, policyId: policy.id }, 'Escalation policy created');
-  return Response.json(policy, { status: 201 });
+  try {
+    const { policy, wasSetAsDefault } = await escalationPolicyRepository.create(
+      teamId,
+      parsed.data
+    );
+    logger.info(
+      { service: 'web', teamId, policyId: policy.id, wasSetAsDefault },
+      'Escalation policy created'
+    );
+    return Response.json({ ...policy, wasSetAsDefault }, { status: 201 });
+  } catch (err) {
+    if (err instanceof EscalationValidationError) {
+      throw new ValidationError(err.message);
+    }
+    throw err;
+  }
 });

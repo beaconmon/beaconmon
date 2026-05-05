@@ -70,18 +70,20 @@ export default function BillingPage() {
   const statusPagesQ = useStatusPages();
   const paddleReady = useRef(false);
   const [renewalDate, setRenewalDate] = useState<string | null>(null);
+  const [hasPaddleCustomer, setHasPaddleCustomer] = useState(false);
 
-  // Fetch subscription data for renewal date
+  // Fetch subscription data for renewal date and portal-button gating
   useEffect(() => {
     if (!sessionQ.data?.teamId) return;
     fetch('/api/billing/subscription')
       .then((r) => (r.ok ? r.json() : null))
-      .then((data: { currentPeriodEnd?: string; trialEndsAt?: string } | null) => {
+      .then((data: { currentPeriodEnd?: string; trialEndsAt?: string; hasPaddleCustomer?: boolean } | null) => {
         if (data?.currentPeriodEnd) {
           setRenewalDate(`Renews on ${format(new Date(data.currentPeriodEnd), 'MMM d, yyyy')}`);
         } else if (data?.trialEndsAt) {
           setRenewalDate(`Trial ends on ${format(new Date(data.trialEndsAt), 'MMM d, yyyy')}`);
         }
+        setHasPaddleCustomer(Boolean(data?.hasPaddleCustomer));
       })
       .catch(() => null);
   }, [sessionQ.data?.teamId]);
@@ -133,8 +135,6 @@ export default function BillingPage() {
       />
 
       <div className="max-w-xl space-y-6">
-        <h1 className="text-2xl font-semibold text-brand-text">Billing</h1>
-
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-3">
@@ -152,11 +152,13 @@ export default function BillingPage() {
             </div>
 
             {plan === 'business' ? (
-              <form action="/api/billing/portal" method="POST">
-                <Button variant="outline" type="submit">
-                  Manage subscription
-                </Button>
-              </form>
+              hasPaddleCustomer ? (
+                <form action="/api/billing/portal" method="POST">
+                  <Button variant="outline" type="submit">
+                    Manage subscription
+                  </Button>
+                </form>
+              ) : null
             ) : plan === 'pro' ? (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
@@ -166,11 +168,13 @@ export default function BillingPage() {
                   <Button onClick={() => handleUpgrade(businessPriceId)}>
                     Upgrade to Business — $49/mo
                   </Button>
-                  <form action="/api/billing/portal" method="POST">
-                    <Button variant="outline" type="submit">
-                      Manage subscription
-                    </Button>
-                  </form>
+                  {hasPaddleCustomer && (
+                    <form action="/api/billing/portal" method="POST">
+                      <Button variant="outline" type="submit">
+                        Manage subscription
+                      </Button>
+                    </form>
+                  )}
                 </div>
               </div>
             ) : (

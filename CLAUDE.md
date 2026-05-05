@@ -39,9 +39,9 @@ deep content change monitoring.
 │   │       └── repositories/    # All DB access goes here
 │   └── workers/
 │       ├── scheduler.ts         # Cron — enqueues check jobs + purges old partitions
-│       ├── check-worker.ts      # Consumes check:scheduled queue
-│       ├── content-worker.ts    # Consumes content:check queue
-│       └── alert-worker.ts      # Consumes alert:send queue
+│       ├── check-worker.ts      # Consumes check-scheduled queue
+│       ├── content-worker.ts    # Consumes content-check queue
+│       └── alert-worker.ts      # Consumes alert-send queue
 ├── packages/
 │   ├── db/                      # Prisma schema, client, migrations
 │   ├── queue/                   # BullMQ job definitions + typed queues
@@ -303,7 +303,7 @@ CREATE UNIQUE INDEX status_pages_custom_domain ON status_pages (custom_domain)
 All job definitions live in `packages/queue/`. TypeScript types are enforced.
 
 ```typescript
-// check:scheduled — enqueued by scheduler per active non-content monitor
+// check-scheduled — enqueued by scheduler per active non-content monitor
 type CheckJob = {
   monitorId: string;
   url: string;
@@ -312,14 +312,14 @@ type CheckJob = {
   timeoutMs: number;
 }
 
-// content:check — enqueued by scheduler for content monitors
+// content-check — enqueued by scheduler for content monitors
 type ContentCheckJob = {
   monitorId: string;
   url: string;
   intervalSeconds: number;
 }
 
-// alert:send — enqueued by check worker on status transition
+// alert-send — enqueued by check worker on status transition
 type AlertJob = {
   incidentId: string;
   monitorId: string;
@@ -328,7 +328,7 @@ type AlertJob = {
   durationMs?: number;   // only present for 'up' (recovery)
 }
 
-// report:generate — enqueued weekly for paid users (tier 2)
+// report-generate — enqueued weekly for paid users (tier 2)
 type ReportJob = {
   teamId: string;
   periodStart: string;
@@ -337,10 +337,10 @@ type ReportJob = {
 ```
 
 Queue configuration:
-- `check:scheduled` — concurrency: 50 per worker, attempts: 1 (no retries — wait for next interval)
-- `content:check` — concurrency: 10 per worker, attempts: 2
-- `alert:send` — concurrency: 10, attempts: 5, backoff: exponential (alerts must eventually send)
-- `report:generate` — concurrency: 2, attempts: 3
+- `check-scheduled` — concurrency: 50 per worker, attempts: 1 (no retries — wait for next interval)
+- `content-check` — concurrency: 10 per worker, attempts: 2
+- `alert-send` — concurrency: 10, attempts: 5, backoff: exponential (alerts must eventually send)
+- `report-generate` — concurrency: 2, attempts: 3
 
 ---
 

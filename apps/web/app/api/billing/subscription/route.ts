@@ -20,6 +20,7 @@ export async function GET(req: Request) {
       status: subscription.status,
       currentPeriodEnd: subscription.currentPeriodEnd?.toISOString() ?? null,
       trialEndsAt: subscription.trialEndsAt?.toISOString() ?? null,
+      hasPaddleCustomer: Boolean(subscription.paddleCustomerId),
     });
   } catch (err) {
     logger.error({ service: 'web', err, teamId: session.user.teamId }, 'Failed to fetch subscription');

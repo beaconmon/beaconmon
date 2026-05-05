@@ -9,7 +9,7 @@ import { useUpdateTeamSettings } from '@/lib/hooks/use-team';
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
-export default function BrandingPage() {
+export default function GeneralPage() {
   const { data: session } = useSession();
   const updateSettings = useUpdateTeamSettings();
 
@@ -48,8 +48,6 @@ export default function BrandingPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-semibold text-brand-text">Branding</h1>
-
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Report branding</CardTitle>
@@ -57,7 +55,6 @@ export default function BrandingPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
-            {/* Agency name */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-brand-text" htmlFor="agency-name">
                 Agency name
@@ -73,7 +70,6 @@ export default function BrandingPage() {
               />
             </div>
 
-            {/* Brand color */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-brand-text" htmlFor="brand-color">
                 Brand color
@@ -100,7 +96,6 @@ export default function BrandingPage() {
               )}
             </div>
 
-            {/* Logo URL */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-brand-text" htmlFor="logo-url">
                 Logo URL

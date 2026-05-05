@@ -13,7 +13,7 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
       headersTimeout: job.timeoutMs,
       bodyTimeout: job.timeoutMs,
       headers: {
-        'user-agent': 'beaconmon/1.0 (+https://beaconmon.dev)',
+        'user-agent': 'beaconmon/1.0 (+https://beaconmon.com)',
       },
     } as Parameters<typeof request>[1]);
 
@@ -29,7 +29,7 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
           success: false,
           statusCode,
           responseTimeMs,
-          errorType: 'invalid_keyword',
+          errorType: 'keyword_config_error',
           errorMessage: 'Keyword monitor has no keyword configured',
           type: job.type,
         };

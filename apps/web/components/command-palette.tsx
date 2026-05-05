@@ -18,13 +18,13 @@ const NAV_ITEMS = [
   { label: 'Incidents',      href: '/incidents',        icon: AlertTriangle },
   { label: 'Status Pages',   href: '/status-pages',     icon: Globe },
   { label: 'Alert Channels', href: '/alert-channels',   icon: Bell },
-  { label: 'Settings',       href: '/settings/billing', icon: Settings },
+  { label: 'Settings',       href: '/settings',         icon: Settings },
 ];
 
 const SETTINGS_SHORTCUTS = [
-  { label: 'Settings — Billing',    href: '/settings/billing',    icon: CreditCard },
+  { label: 'Settings — General',    href: '/settings/general',    icon: Settings },
   { label: 'Settings — Team',       href: '/settings/team',       icon: Users },
-  { label: 'Settings — Branding',   href: '/settings/branding',   icon: Settings },
+  { label: 'Settings — Billing',    href: '/settings/billing',    icon: CreditCard },
   { label: 'Maintenance Windows',   href: '/maintenance-windows', icon: Wrench },
 ];
 
