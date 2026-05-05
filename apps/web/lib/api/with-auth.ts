@@ -12,6 +12,22 @@ export interface AuthContext {
   role: TeamRole;
 }
 
+function readCookie(req: Request, name: string): string | null {
+  const header = req.headers.get('cookie');
+  if (!header) return null;
+  const prefix = `${name}=`;
+  for (const part of header.split('; ')) {
+    if (part.startsWith(prefix)) {
+      try {
+        return decodeURIComponent(part.slice(prefix.length));
+      } catch {
+        return null;
+      }
+    }
+  }
+  return null;
+}
+
 type RouteParams = { [key: string]: string | string[] | undefined };
 
 type AuthHandler<P extends RouteParams = RouteParams> = (
@@ -37,9 +53,14 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
 
     const userId = session.user.id;
 
-    // Resolve teamId: X-Team-Id header takes priority, else use session default.
+    // Resolve teamId. Priority:
+    //   1. X-Team-Id header (per-request override, server-to-server tools)
+    //   2. bm_active_team cookie (set by /api/team/switch — persists user's selected team)
+    //   3. session.user.teamId (most-recent membership baked into the session)
     const headerTeamId = req.headers.get('X-Team-Id');
-    const teamId = headerTeamId ?? session.user.teamId;
+    const cookieTeamId = readCookie(req, 'bm_active_team');
+    const overrideTeamId = headerTeamId ?? cookieTeamId;
+    const teamId = overrideTeamId ?? session.user.teamId;
 
     if (!teamId) {
       return Response.json(
@@ -48,13 +69,13 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
       );
     }
 
-    // If a different team was requested via header, verify membership fresh.
+    // If a different team was requested via header or cookie, verify membership fresh.
     let plan: PlanTier;
     let role: TeamRole;
 
-    if (headerTeamId && headerTeamId !== session.user.teamId) {
+    if (overrideTeamId && overrideTeamId !== session.user.teamId) {
       const membership = await prisma.teamMember.findUnique({
-        where: { teamId_userId: { teamId: headerTeamId, userId } },
+        where: { teamId_userId: { teamId: overrideTeamId, userId } },
         select: {
           role: true,
           team: {
