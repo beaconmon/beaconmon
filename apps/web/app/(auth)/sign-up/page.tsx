@@ -18,6 +18,8 @@ import {
   FieldNote,
   ErrorBanner,
   SocialButtons,
+  getPasswordStrength,
+  MIN_PASSWORD_STRENGTH,
 } from '@/components/auth';
 
 function SignUpForm() {
@@ -34,11 +36,18 @@ function SignUpForm() {
   const [error, setError] = useState('');
   const [magicSent, setMagicSent] = useState(false);
 
+  const passwordStrength = getPasswordStrength(password);
+  const passwordTooWeak = passwordStrength < MIN_PASSWORD_STRENGTH;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     if (!agreed) {
       setError('Please agree to the Terms of Service to continue.');
+      return;
+    }
+    if (passwordTooWeak) {
+      setError('Please choose a stronger password (8+ characters with a mix of upper/lowercase, numbers, or symbols).');
       return;
     }
     setLoading(true);
@@ -53,7 +62,7 @@ function SignUpForm() {
 
   async function handleSocial(provider: 'google' | 'github') {
     setLoading(true);
-    await authClient.signIn.social({ provider, callbackURL: '/overview' });
+    await authClient.signIn.social({ provider, callbackURL: '/monitors' });
   }
 
   async function handleMagicLink() {
@@ -62,7 +71,7 @@ function SignUpForm() {
       return;
     }
     setLoading(true);
-    const res = await authClient.signIn.magicLink({ email });
+    const res = await authClient.signIn.magicLink({ email, callbackURL: '/monitors' });
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');
@@ -149,7 +158,7 @@ function SignUpForm() {
             }
           />
 
-          <PrimaryBtn type="submit" disabled={loading}>
+          <PrimaryBtn type="submit" disabled={loading || passwordTooWeak || !agreed}>
             {loading ? 'Creating account…' : 'Create account'}
           </PrimaryBtn>
         </form>

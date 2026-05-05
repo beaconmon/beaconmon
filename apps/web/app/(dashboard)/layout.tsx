@@ -18,7 +18,6 @@ import {
   Plus,
   Search,
   Settings,
-  Users,
   Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -45,8 +44,7 @@ const NAV_ITEMS = [
   { href: '/alert-channels',         label: 'Alert Channels',     icon: Bell },
   { href: '/escalation-policies',    label: 'Escalations',        icon: GitBranch },
   { href: '/reports',                label: 'Reports',            icon: FileText },
-  { href: '/settings/team',          label: 'Team',               icon: Users },
-  { href: '/settings/billing',       label: 'Settings',           icon: Settings },
+  { href: '/settings',               label: 'Settings',           icon: Settings },
 ];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];

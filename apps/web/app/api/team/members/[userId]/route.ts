@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { Prisma } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { teamRepository } from '@/lib/repositories/teams';
+import { escalationPolicyRepository } from '@/lib/repositories/escalation-policies';
 import { logger } from '@/lib/logger';
 import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
 
@@ -81,6 +82,17 @@ export const DELETE = withAuth(async (_req, { teamId, role, userId: callerId }, 
     throw err;
   }
 
-  logger.info({ service: 'web', teamId, targetUserId, callerId }, 'Member removed');
+  // Null out this user's escalation-step recipient rows so the worker stops
+  // routing alerts to them; UI surfaces the row as "Removed user" until the
+  // owner cleans the policy up.
+  const removedRecipients = await escalationPolicyRepository.markUserRemovedFromTeam(
+    teamId,
+    targetUserId
+  );
+
+  logger.info(
+    { service: 'web', teamId, targetUserId, callerId, removedRecipients },
+    'Member removed'
+  );
   return new Response(null, { status: 204 });
 });

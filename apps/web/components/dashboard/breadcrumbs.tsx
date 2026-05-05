@@ -12,9 +12,11 @@ const SEGMENT_LABELS: Record<string, string> = {
   'escalation-policies':  'Escalation Policies',
   reports:                'Reports',
   settings:               'Settings',
+  general:                'General',
   billing:                'Billing',
-  branding:               'Branding',
   team:                   'Team',
+  'api-keys':             'API keys',
+  notifications:          'Notifications',
   new:                    'New',
   edit:                   'Edit',
 };

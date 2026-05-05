@@ -1,12 +1,14 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { magicLink, customSession } from 'better-auth/plugins';
+import { createAuthMiddleware, APIError } from 'better-auth/api';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { prisma } from '@beaconmon/db';
 import type { PlanTier } from '@beaconmon/types';
 import { nextCookies } from "better-auth/next-js";
 import { logger } from '@/lib/logger';
+import { isPasswordStrongEnough } from '@/lib/validations/password';
 
 const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1).optional(),
@@ -78,6 +80,20 @@ const options = {
       clientSecret: env.githubClientSecret as string,
     },
   },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      // Enforce password strength on email/password sign-up. Mirrors the
+      // client-side check in the sign-up form so direct API hits can't bypass it.
+      if (ctx.path !== '/sign-up/email') return;
+      const password = (ctx.body as { password?: unknown } | undefined)?.password;
+      if (typeof password !== 'string' || !isPasswordStrongEnough(password)) {
+        throw new APIError('BAD_REQUEST', {
+          message:
+            'Password is too weak. Use at least 8 characters with a mix of uppercase, numbers, or symbols.',
+        });
+      }
+    }),
+  },
   plugins: [
     magicLink({
       expiresIn: 600, // 10 minutes
@@ -126,8 +142,10 @@ export const auth = betterAuth({
     ...(options.plugins ?? []),
     customSession(
       async ({ user, session }) => {
-        // Embed the user's first team into every session response.
-        // "First team wins" — sufficient for the solo-founder MVP.
+        // Embed the user's most recent team membership into every session.
+        // "Most recent membership wins" — sufficient for the solo-founder MVP
+        // and ensures an invited user lands on the team they just joined,
+        // not the personal team auto-created at signup.
         const membership = await prisma.teamMember.findFirst({
           where: { userId: user.id },
           include: {
@@ -140,7 +158,7 @@ export const auth = betterAuth({
               },
             },
           },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: 'desc' },
         });
 
         // Resolve effective plan — downgrade to free if trial expired with no active subscription.

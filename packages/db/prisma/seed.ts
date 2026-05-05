@@ -96,7 +96,7 @@ async function main() {
       teamId: team.id,
       name: 'Email Alerts',
       type: 'email',
-      config: { email: 'demo@beaconmon.com' },
+      config: { recipients: ['demo@beaconmon.com'] },
       isActive: true,
     },
   });

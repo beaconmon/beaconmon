@@ -32,7 +32,7 @@ export const POST = withAuth(async (req, { teamId, role, plan }) => {
   }
 
   const reportQueue = getReportQueue();
-  const jobId = `report:${teamId}:${Date.now()}`;
+  const jobId = `report-${teamId}-${Date.now()}`;
 
   const job = await reportQueue.add(
     jobId,
