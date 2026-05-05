@@ -19,8 +19,10 @@ export const alertChannelRepository: {
   softDelete(teamId: string, id: string): Promise<number>;
 } = {
   async findAll(teamId) {
+    // Personal channels (userId IS NOT NULL) are routed via user-recipients on
+    // escalation steps; they don't appear in the team-wide channel list.
     const rows = await prisma.alertChannel.findMany({
-      where: { teamId, isActive: true },
+      where: { teamId, isActive: true, userId: null },
       select: {
         id: true,
         name: true,
@@ -57,14 +59,16 @@ export const alertChannelRepository: {
   },
 
   async countByTeam(teamId) {
+    // Plan limits apply to team channels only — personal channels piggyback on
+    // member seats, not channel cap.
     return prisma.alertChannel.count({
-      where: { teamId, isActive: true },
+      where: { teamId, isActive: true, userId: null },
     });
   },
 
   async softDelete(teamId, id) {
     const result = await prisma.alertChannel.updateMany({
-      where: { id, teamId, isActive: true },
+      where: { id, teamId, isActive: true, userId: null },
       data: { isActive: false },
     });
     return result.count;

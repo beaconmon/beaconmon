@@ -1,14 +1,22 @@
 import { z } from 'zod';
 import { withAuth } from '@/lib/api/with-auth';
-import { escalationPolicyRepository } from '@/lib/repositories/escalation-policies';
+import {
+  escalationPolicyRepository,
+  EscalationValidationError,
+} from '@/lib/repositories/escalation-policies';
 import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
 import { logger } from '@/lib/logger';
 
-const escalationStepSchema = z.object({
-  stepOrder: z.number().int().min(0),
-  delayMinutes: z.number().int().min(0),
-  channelId: z.string().min(1),
-});
+const escalationStepSchema = z
+  .object({
+    stepOrder: z.number().int().min(0),
+    delayMinutes: z.number().int().min(0),
+    channelIds: z.array(z.string().min(1)).default([]),
+    userIds: z.array(z.string().min(1)).default([]),
+  })
+  .refine((s) => s.channelIds.length + s.userIds.length > 0, {
+    message: 'Each step must have at least one recipient (channel or user)',
+  });
 
 const updateEscalationPolicySchema = z.object({
   name: z.string().min(1).max(100).optional(),
@@ -37,11 +45,17 @@ export const PATCH = withAuth(async (req, { teamId, role }, params) => {
   const parsed = updateEscalationPolicySchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
-  const policy = await escalationPolicyRepository.update(teamId, id, parsed.data);
-  if (!policy) throw new NotFoundError();
-
-  logger.info({ service: 'web', teamId, policyId: id }, 'Escalation policy updated');
-  return Response.json(policy);
+  try {
+    const policy = await escalationPolicyRepository.update(teamId, id, parsed.data);
+    if (!policy) throw new NotFoundError();
+    logger.info({ service: 'web', teamId, policyId: id }, 'Escalation policy updated');
+    return Response.json(policy);
+  } catch (err) {
+    if (err instanceof EscalationValidationError) {
+      throw new ValidationError(err.message);
+    }
+    throw err;
+  }
 });
 
 export const DELETE = withAuth(async (_req, { teamId, role }, params) => {

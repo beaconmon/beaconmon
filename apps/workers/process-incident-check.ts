@@ -32,7 +32,7 @@ async function enqueueEscalationSteps(
       `escalation:${incidentId}:step${step.stepOrder}`,
       { incidentId, monitorId, policyId, teamId, stepIndex: step.stepOrder },
       {
-        jobId: `escalation:${incidentId}:step${step.stepOrder}`,
+        jobId: `escalation-${incidentId}-step${step.stepOrder}`,
         delay: delayMs,
       }
     );
@@ -40,6 +40,51 @@ async function enqueueEscalationSteps(
   logger.info(
     { service: 'check-worker', incidentId, policyId, steps: policy.steps.length },
     'Escalation steps enqueued'
+  );
+}
+
+/**
+ * Resolve which escalation policy applies for this monitor's incident:
+ *   1. monitor.escalationPolicyId — explicit per-monitor policy
+ *   2. team.defaultEscalationPolicyId — team-level fallback
+ *   3. null — caller falls back to broadcast-all
+ */
+async function resolveEscalationPolicyId(
+  monitorEscalationPolicyId: string | null,
+  teamId: string
+): Promise<string | null> {
+  if (monitorEscalationPolicyId) return monitorEscalationPolicyId;
+  const team = await prisma.team.findUnique({
+    where: { id: teamId },
+    select: { defaultEscalationPolicyId: true },
+  });
+  return team?.defaultEscalationPolicyId ?? null;
+}
+
+async function dispatchDownAlert(params: {
+  incidentId: string;
+  monitorId: string;
+  teamId: string;
+  monitorEscalationPolicyId: string | null;
+  alertQueue: Queue<AlertJob>;
+  escalationQueue?: Queue<EscalationStepJob>;
+}): Promise<void> {
+  const { incidentId, monitorId, teamId, monitorEscalationPolicyId, alertQueue, escalationQueue } =
+    params;
+
+  const policyId = escalationQueue
+    ? await resolveEscalationPolicyId(monitorEscalationPolicyId, teamId)
+    : null;
+
+  if (policyId && escalationQueue) {
+    await enqueueEscalationSteps(incidentId, monitorId, teamId, policyId, escalationQueue);
+    return;
+  }
+
+  await alertQueue.add(
+    `alert:down:${monitorId}`,
+    { incidentId, monitorId, teamId, type: 'down' },
+    { jobId: `alert-down-${incidentId}` }
   );
 }
 
@@ -81,27 +126,14 @@ export async function processIncidentCheck(
         startedAt: result.checkedAt,
       });
 
-      if (monitor.escalationPolicyId && escalationQueue) {
-        // Use escalation policy instead of direct channel broadcast
-        await enqueueEscalationSteps(
-          incident.id,
-          monitorId,
-          monitor.teamId,
-          monitor.escalationPolicyId,
-          escalationQueue
-        );
-      } else {
-        await alertQueue.add(
-          `alert:down:${monitorId}`,
-          {
-            incidentId: incident.id,
-            monitorId,
-            teamId: monitor.teamId,
-            type: 'down',
-          },
-          { jobId: `alert:down:${incident.id}` }
-        );
-      }
+      await dispatchDownAlert({
+        incidentId: incident.id,
+        monitorId,
+        teamId: monitor.teamId,
+        monitorEscalationPolicyId: monitor.escalationPolicyId ?? null,
+        alertQueue,
+        escalationQueue,
+      });
 
       logger.info(
         { service, monitorId, incidentId: incident.id },
@@ -136,7 +168,7 @@ export async function processIncidentCheck(
             type: 'up',
             durationMs,
           },
-          { jobId: `alert:up:${resolved.id}` }
+          { jobId: `alert-up-${resolved.id}` }
         );
         logger.info(
           { service, monitorId, incidentId: resolved.id, durationMs },
@@ -255,26 +287,14 @@ export async function processMultiRegionIncidentCheck(
         startedAt: checkedAt,
       });
 
-      if (monitor.escalationPolicyId && escalationQueue) {
-        await enqueueEscalationSteps(
-          incident.id,
-          monitorId,
-          monitor.teamId,
-          monitor.escalationPolicyId,
-          escalationQueue
-        );
-      } else {
-        await alertQueue.add(
-          `alert:down:${monitorId}`,
-          {
-            incidentId: incident.id,
-            monitorId,
-            teamId: monitor.teamId,
-            type: 'down',
-          },
-          { jobId: `alert:down:${incident.id}` }
-        );
-      }
+      await dispatchDownAlert({
+        incidentId: incident.id,
+        monitorId,
+        teamId: monitor.teamId,
+        monitorEscalationPolicyId: monitor.escalationPolicyId ?? null,
+        alertQueue,
+        escalationQueue,
+      });
 
       logger.info(
         { service, monitorId, incidentId: incident.id, failCount, totalRegions: probeResults.length },
@@ -306,7 +326,7 @@ export async function processMultiRegionIncidentCheck(
             type: 'up',
             durationMs,
           },
-          { jobId: `alert:up:${resolved.id}` }
+          { jobId: `alert-up-${resolved.id}` }
         );
         logger.info(
           { service, monitorId, incidentId: resolved.id, durationMs },

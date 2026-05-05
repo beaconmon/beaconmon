@@ -17,10 +17,12 @@ export function useEscalationPolicies() {
   });
 }
 
+export type CreatedEscalationPolicy = EscalationPolicyRow & { wasSetAsDefault: boolean };
+
 export function useCreateEscalationPolicy() {
   const queryClient = useQueryClient();
   return useMutation<
-    EscalationPolicyRow,
+    CreatedEscalationPolicy,
     Error,
     { name: string; steps: EscalationStepInput[] }
   >({
@@ -32,7 +34,7 @@ export function useCreateEscalationPolicy() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((json as { error?: string }).error ?? 'Failed to create policy');
-      return json as EscalationPolicyRow;
+      return json as CreatedEscalationPolicy;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['escalation-policies'] });
