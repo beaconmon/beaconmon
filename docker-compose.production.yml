@@ -24,10 +24,8 @@ services:
   web:
     <<: *app
     command: ["pnpm", "run", "start:web"]
-    ports:
-      - "3000:3000"
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:3001/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
