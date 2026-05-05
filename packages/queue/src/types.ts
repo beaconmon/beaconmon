@@ -66,12 +66,12 @@ export interface EscalationStepJob {
 // ─── Queue name constants ─────────────────────────────────────────────────────
 
 export const QUEUE_NAMES = {
-  CHECK_SCHEDULED: 'check:scheduled',
-  CONTENT_CHECK: 'content:check',
-  ALERT_SEND: 'alert:send',
-  REPORT_GENERATE: 'report:generate',
-  ESCALATION_STEP: 'escalation:step',
-  SLO_BURN: 'slo:burn',
+  CHECK_SCHEDULED: 'check-scheduled',
+  CONTENT_CHECK: 'content-check',
+  ALERT_SEND: 'alert-send',
+  REPORT_GENERATE: 'report-generate',
+  ESCALATION_STEP: 'escalation-step',
+  SLO_BURN: 'slo-burn',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];

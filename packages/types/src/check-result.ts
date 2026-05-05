@@ -8,6 +8,7 @@ export type CheckErrorType =
   | 'ssl_error'
   | 'dns_error'
   | 'keyword_not_found'
+  | 'keyword_config_error'
   | 'unknown';
 
 export interface CheckResult {

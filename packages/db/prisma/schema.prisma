@@ -88,20 +88,25 @@ model Team {
   reportBrandColor String? @map("report_brand_color")
   reportAgencyName String? @map("report_agency_name")
 
-  members                TeamMember[]
-  invitations            TeamInvitation[]
-  subscription           Subscription?
-  monitors               Monitor[]
-  alertChannels          AlertChannel[]
-  incidents              Incident[]
-  expiryAlerts           ExpiryAlert[]
-  notifications          Notification[]
-  statusPages            StatusPage[]
-  maintenanceWindows     MaintenanceWindow[]
-  escalationPolicies     EscalationPolicy[]
-  deployEvents           DeployEvent[]
-  contentSnapshots       ContentSnapshot[]
-  notificationReadStates NotificationReadState[]
+  // Fallback escalation policy used when a monitor has no policy assigned.
+  defaultEscalationPolicyId String? @map("default_escalation_policy_id")
+
+  members                     TeamMember[]
+  invitations                 TeamInvitation[]
+  subscription                Subscription?
+  monitors                    Monitor[]
+  alertChannels               AlertChannel[]
+  incidents                   Incident[]
+  expiryAlerts                ExpiryAlert[]
+  notifications               Notification[]
+  statusPages                 StatusPage[]
+  maintenanceWindows          MaintenanceWindow[]
+  escalationPolicies          EscalationPolicy[]
+  defaultEscalationPolicy     EscalationPolicy?            @relation("TeamDefaultEscalationPolicy", fields: [defaultEscalationPolicyId], references: [id], onDelete: SetNull)
+  deployEvents                DeployEvent[]
+  contentSnapshots            ContentSnapshot[]
+  notificationReadStates      NotificationReadState[]
+  userNotificationPreferences UserNotificationPreference[]
 
   @@map("teams")
 }
@@ -115,10 +120,13 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  memberships            TeamMember[]
-  sessions               Session[]
-  accounts               Account[]
-  notificationReadStates NotificationReadState[]
+  memberships              TeamMember[]
+  sessions                 Session[]
+  accounts                 Account[]
+  notificationReadStates   NotificationReadState[]
+  alertChannels            AlertChannel[]
+  notificationPreferences  UserNotificationPreference[]
+  escalationStepRecipients EscalationStepRecipient[]
 
   @@map("users")
 }
@@ -202,16 +210,16 @@ model TeamInvitation {
 }
 
 model Subscription {
-  id                    String             @id @default(cuid())
-  teamId                String             @unique @map("team_id")
-  paddleCustomerId      String             @unique @map("paddle_customer_id")
-  paddleSubscriptionId  String?            @unique @map("paddle_subscription_id")
-  plan                  PlanTier           @default(free)
-  status                SubscriptionStatus @default(trialing)
-  trialEndsAt           DateTime?          @map("trial_ends_at")
-  currentPeriodEnd      DateTime?          @map("current_period_end")
-  createdAt             DateTime           @default(now()) @map("created_at")
-  updatedAt             DateTime           @updatedAt @map("updated_at")
+  id                   String             @id @default(cuid())
+  teamId               String             @unique @map("team_id")
+  paddleCustomerId     String             @unique @map("paddle_customer_id")
+  paddleSubscriptionId String?            @unique @map("paddle_subscription_id")
+  plan                 PlanTier           @default(free)
+  status               SubscriptionStatus @default(trialing)
+  trialEndsAt          DateTime?          @map("trial_ends_at")
+  currentPeriodEnd     DateTime?          @map("current_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -221,29 +229,29 @@ model Subscription {
 // ─── Monitors ─────────────────────────────────────────────────────────────────
 
 model Monitor {
-  id            String        @id @default(cuid())
-  teamId        String        @map("team_id")
-  name          String
-  url           String
-  type          MonitorType
-  isActive      Boolean       @default(true) @map("is_active")
-  currentStatus MonitorStatus @default(up) @map("current_status")
-  intervalSeconds Int         @default(300) @map("interval_seconds")
-  timeoutMs     Int           @default(30000) @map("timeout_ms")
-  nextCheckAt   DateTime?     @map("next_check_at")
-  lastCheckedAt DateTime?     @map("last_checked_at")
-  consecutiveFailures Int     @default(0) @map("consecutive_failures")
+  id                  String        @id @default(cuid())
+  teamId              String        @map("team_id")
+  name                String
+  url                 String
+  type                MonitorType
+  isActive            Boolean       @default(true) @map("is_active")
+  currentStatus       MonitorStatus @default(up) @map("current_status")
+  intervalSeconds     Int           @default(300) @map("interval_seconds")
+  timeoutMs           Int           @default(30000) @map("timeout_ms")
+  nextCheckAt         DateTime?     @map("next_check_at")
+  lastCheckedAt       DateTime?     @map("last_checked_at")
+  consecutiveFailures Int           @default(0) @map("consecutive_failures")
 
   // HTTP / keyword extras
-  responseTimeThresholdMs Int?             @map("response_time_threshold_ms")
+  responseTimeThresholdMs Int?              @map("response_time_threshold_ms")
   keyword                 String?
   keywordCondition        KeywordCondition? @map("keyword_condition")
 
   // Content monitor
-  contentSnapshot       String?   @map("content_snapshot")
-  contentLastChangedAt  DateTime? @map("content_last_changed_at")
-  requiresJs            Boolean   @default(false) @map("requires_js")
-  isCompetitor          Boolean   @default(false) @map("is_competitor")
+  contentSnapshot      String?   @map("content_snapshot")
+  contentLastChangedAt DateTime? @map("content_last_changed_at")
+  requiresJs           Boolean   @default(false) @map("requires_js")
+  isCompetitor         Boolean   @default(false) @map("is_competitor")
 
   // Heartbeat monitor
   lastHeartbeatAt DateTime? @map("last_heartbeat_at")
@@ -255,10 +263,10 @@ model Monitor {
   anomalyDetectionEnabled Boolean @default(false) @map("anomaly_detection_enabled")
 
   // SLO / Error Budget
-  sloTarget                  Decimal? @map("slo_target") @db.Decimal(6, 4)      // e.g. 0.9990 for 99.9%
-  sloWindowDays              Int?     @map("slo_window_days")                    // rolling window, default 30
-  sloBurnRateFastThreshold   Float?   @map("slo_burn_rate_fast_threshold")       // default 14.4
-  sloBurnRateSlowThreshold   Float?   @map("slo_burn_rate_slow_threshold")       // default 3.0
+  sloTarget                Decimal? @map("slo_target") @db.Decimal(6, 4) // e.g. 0.9990 for 99.9%
+  sloWindowDays            Int?     @map("slo_window_days") // rolling window, default 30
+  sloBurnRateFastThreshold Float?   @map("slo_burn_rate_fast_threshold") // default 14.4
+  sloBurnRateSlowThreshold Float?   @map("slo_burn_rate_slow_threshold") // default 3.0
 
   // Type-specific config (port, selector, gracePeriodSeconds for heartbeat, etc.)
   config Json @default("{}")
@@ -271,15 +279,15 @@ model Monitor {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  team               Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  escalationPolicy   EscalationPolicy?   @relation(fields: [escalationPolicyId], references: [id])
-  checkResults       CheckResult[]
-  incidents          Incident[]
-  expiryAlerts       ExpiryAlert[]
-  statusPageMonitors StatusPageMonitor[]
+  team                      Team                       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  escalationPolicy          EscalationPolicy?          @relation(fields: [escalationPolicyId], references: [id])
+  checkResults              CheckResult[]
+  incidents                 Incident[]
+  expiryAlerts              ExpiryAlert[]
+  statusPageMonitors        StatusPageMonitor[]
   maintenanceWindowMonitors MaintenanceWindowMonitor[]
-  deployEvents       DeployEvent[]
-  contentSnapshots   ContentSnapshot[]
+  deployEvents              DeployEvent[]
+  contentSnapshots          ContentSnapshot[]
 
   // Partial index (is_active = true) is created in migration 0001 as raw SQL
   @@map("monitors")
@@ -290,16 +298,16 @@ model Monitor {
 // Actual partitioned DDL is in migration 0002_check_results_partition.
 
 model CheckResult {
-  id            String   @id @default(cuid())
-  monitorId     String   @map("monitor_id")
-  checkedAt     DateTime @default(now()) @map("checked_at")
-  success       Boolean
-  statusCode    Int?     @map("status_code")
-  responseTimeMs Int?    @map("response_time_ms")
-  errorType     String?  @map("error_type")
-  errorMessage  String?  @map("error_message")
-  region        String?  // null = Railway-only check (SSL/TCP/domain)
-  maintenance   Boolean  @default(false) // true when check ran during a maintenance window
+  id             String   @id @default(cuid())
+  monitorId      String   @map("monitor_id")
+  checkedAt      DateTime @default(now()) @map("checked_at")
+  success        Boolean
+  statusCode     Int?     @map("status_code")
+  responseTimeMs Int?     @map("response_time_ms")
+  errorType      String?  @map("error_type")
+  errorMessage   String?  @map("error_message")
+  region         String? // null = Railway-only check (SSL/TCP/domain)
+  maintenance    Boolean  @default(false) // true when check ran during a maintenance window
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
@@ -331,14 +339,14 @@ model Incident {
 // ─── Expiry Alerts (SSL + domain) ─────────────────────────────────────────────
 
 model ExpiryAlert {
-  id           String          @id @default(cuid())
-  teamId       String          @map("team_id")
-  monitorId    String          @map("monitor_id")
-  type         ExpiryAlertType
-  daysRemaining Int            @map("days_remaining")
-  threshold    Int
-  sentAt       DateTime        @default(now()) @map("sent_at")
-  createdAt    DateTime        @default(now()) @map("created_at")
+  id            String          @id @default(cuid())
+  teamId        String          @map("team_id")
+  monitorId     String          @map("monitor_id")
+  type          ExpiryAlertType
+  daysRemaining Int             @map("days_remaining")
+  threshold     Int
+  sentAt        DateTime        @default(now()) @map("sent_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
@@ -349,23 +357,31 @@ model ExpiryAlert {
 // ─── Alert Channels ───────────────────────────────────────────────────────────
 
 model AlertChannel {
-  id        String           @id @default(cuid())
-  teamId    String           @map("team_id")
-  name      String
-  type      AlertChannelType
-  config    Json             @default("{}")
-  isActive  Boolean          @default(true) @map("is_active")
+  id             String           @id @default(cuid())
+  teamId         String           @map("team_id")
+  // When set, this is a personal channel owned by a specific user (e.g. their
+  // own email or Slack DM). Personal channels do NOT appear in the team-wide
+  // channel picker; they're targeted indirectly via user-recipients on
+  // escalation steps and the user's notification preferences.
+  userId         String?          @map("user_id")
+  name           String
+  type           AlertChannelType
+  config         Json             @default("{}")
+  isActive       Boolean          @default(true) @map("is_active")
   // System-disabled (e.g. plan downgrade leaves surplus channels). Distinct from
   // user-controlled `isActive`. Alert worker treats either as "skip".
-  disabledAt     DateTime? @map("disabled_at")
-  disabledReason String?   @map("disabled_reason")
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @updatedAt @map("updated_at")
+  disabledAt     DateTime?        @map("disabled_at")
+  disabledReason String?          @map("disabled_reason")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
 
-  team             Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  notifications    Notification[]
-  escalationSteps  EscalationStep[]
+  team                     Team                         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user                     User?                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications            Notification[]
+  escalationStepRecipients EscalationStepRecipient[]
+  primaryForPreferences    UserNotificationPreference[]
 
+  @@index([teamId, userId])
   @@map("alert_channels")
 }
 
@@ -397,17 +413,17 @@ model Notification {
 // ─── Status Pages ─────────────────────────────────────────────────────────────
 
 model StatusPage {
-  id                    String   @id @default(cuid())
-  teamId                String   @map("team_id")
-  name                  String
-  slug                  String   @unique
-  customDomain          String?  @map("custom_domain")
-  customDomainVerified  Boolean  @default(false) @map("custom_domain_verified")
-  isPublic              Boolean  @default(true) @map("is_public")
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @updatedAt @map("updated_at")
+  id                   String   @id @default(cuid())
+  teamId               String   @map("team_id")
+  name                 String
+  slug                 String   @unique
+  customDomain         String?  @map("custom_domain")
+  customDomainVerified Boolean  @default(false) @map("custom_domain_verified")
+  isPublic             Boolean  @default(true) @map("is_public")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
-  team     Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team     Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitors StatusPageMonitor[]
 
   // Partial unique index (custom_domain IS NOT NULL) is created in migration 0001 as raw SQL
@@ -481,9 +497,10 @@ model EscalationPolicy {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  team     Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  steps    EscalationStep[]
-  monitors Monitor[]
+  team            Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  steps           EscalationStep[]
+  monitors        Monitor[]
+  defaultForTeams Team[]           @relation("TeamDefaultEscalationPolicy")
 
   @@map("escalation_policies")
 }
@@ -493,13 +510,54 @@ model EscalationStep {
   policyId     String @map("policy_id")
   stepOrder    Int    @map("step_order")
   delayMinutes Int    @map("delay_minutes")
-  channelId    String @map("channel_id")
 
-  policy  EscalationPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
-  channel AlertChannel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  policy     EscalationPolicy          @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  recipients EscalationStepRecipient[]
 
   @@unique([policyId, stepOrder])
   @@map("escalation_steps")
+}
+
+// Each step can target multiple recipients in parallel: direct alert channels
+// AND/OR specific users (whose alerts route through their personal primary
+// channel at send time). Either channelId or userId is set, not both.
+// `removedAt` is stamped (and userId nulled) when a user is removed from the
+// team — the row is preserved for UI continuity ("Removed user").
+model EscalationStepRecipient {
+  id        String    @id @default(cuid())
+  stepId    String    @map("step_id")
+  channelId String?   @map("channel_id")
+  userId    String?   @map("user_id")
+  removedAt DateTime? @map("removed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  step    EscalationStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  channel AlertChannel?  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([stepId])
+  @@index([userId])
+  @@map("escalation_step_recipients")
+}
+
+// Per-user notification routing within a team. When a user appears as a
+// recipient on an escalation step, the worker resolves their primary channel
+// here. Null primaryChannelId means: fall back to the user's account email
+// (lazily upserted into a personal alert channel on first use).
+model UserNotificationPreference {
+  id               String   @id @default(cuid())
+  userId           String   @map("user_id")
+  teamId           String   @map("team_id")
+  primaryChannelId String?  @map("primary_channel_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team           Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  primaryChannel AlertChannel? @relation(fields: [primaryChannelId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, teamId])
+  @@map("user_notification_preferences")
 }
 
 // ─── Performance Alerts (anomaly detection) ────────────────────────────────────
@@ -543,12 +601,12 @@ model DeployEvent {
 // ─── Content Snapshots (history for content monitors) ─────────────────────────
 
 model ContentSnapshot {
-  id           String   @id @default(cuid())
-  monitorId    String   @map("monitor_id")
-  teamId       String   @map("team_id")
-  content      String
-  capturedAt   DateTime @default(now()) @map("captured_at")
-  diffSummary  String?  @map("diff_summary") // reserved for future AI summaries
+  id          String   @id @default(cuid())
+  monitorId   String   @map("monitor_id")
+  teamId      String   @map("team_id")
+  content     String
+  capturedAt  DateTime @default(now()) @map("captured_at")
+  diffSummary String?  @map("diff_summary") // reserved for future AI summaries
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
