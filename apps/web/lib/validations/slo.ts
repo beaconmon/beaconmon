@@ -11,6 +11,7 @@ export const updateSloSchema = z.object({
     .int()
     .min(1)
     .max(90)
+    .nullable()
     .optional()
     .default(30),
   sloBurnRateFastThreshold: z

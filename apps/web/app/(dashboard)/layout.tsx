@@ -33,6 +33,7 @@ import { CommandPalette } from '@/components/command-palette';
 import { NotificationPopover } from '@/components/notifications/notification-popover';
 import { Providers } from '@/components/providers';
 import { TrialBanner } from '@/components/ui/trial-banner';
+import { TeamSwitcher } from '@/components/dashboard/team-switcher';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
@@ -104,37 +105,6 @@ function NavItem({
   );
 }
 
-function TeamCard() {
-  const { data: session } = useSession();
-  const plan = session?.plan ?? 'free';
-
-  return (
-    <div className="flex items-center gap-2.5 rounded-md px-3 py-2">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand-bg3 text-xs font-semibold text-brand-text">
-        W
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-xs font-medium text-brand-text">Your Workspace</p>
-        <p
-          className={cn(
-            'text-[10px] font-semibold uppercase tracking-wider',
-            plan === 'free' ? 'text-brand-amber' : 'text-brand-green'
-          )}
-        >
-          {plan}
-        </p>
-      </div>
-      {plan === 'free' && (
-        <Link
-          href="/settings/billing"
-          className="shrink-0 whitespace-nowrap text-[10px] text-brand-dim transition-colors hover:text-brand-green"
-        >
-          Upgrade →
-        </Link>
-      )}
-    </div>
-  );
-}
 
 function Sidebar({
   collapsed,
@@ -184,7 +154,7 @@ function Sidebar({
 
       {/* Team card + collapse toggle */}
       <div className="border-t border-brand-line p-2 space-y-1">
-        {!collapsed && <TeamCard />}
+        {!collapsed && <TeamSwitcher />}
         <button
           onClick={onToggle}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
