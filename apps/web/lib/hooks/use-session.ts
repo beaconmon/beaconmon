@@ -8,7 +8,9 @@ interface SessionInfo {
   teamId: string;
   plan: PlanTier;
   role: TeamRole;
+  teamName: string | null;
   teamCreatedAt: string | null;
+  trialEndsAt: string | null;
 }
 
 export function useSession() {

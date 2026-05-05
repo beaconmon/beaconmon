@@ -303,6 +303,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
   const [target, setTarget] = useState('');
   const [windowDays, setWindowDays] = useState('30');
   const [formError, setFormError] = useState('');
+  const [confirmRemove, setConfirmRemove] = useState(false);
 
   if (plan === 'free') {
     return (
@@ -337,7 +338,13 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
   function handleClear() {
     updateSlo.mutate(
       { sloTarget: null, sloWindowDays: null },
-      { onSuccess: () => setEditing(false) }
+      {
+        onSuccess: () => {
+          setEditing(false);
+          setConfirmRemove(false);
+        },
+        onError: (err) => setFormError(err.message),
+      }
     );
   }
 
@@ -406,9 +413,17 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                     </div>
                   ))}
                 </div>
-                <div className="pt-2 border-t border-brand-line">
+                <div className="flex gap-2 pt-2 border-t border-brand-line">
                   <Button variant="outline" size="sm" onClick={() => startEdit(data)}>
                     Edit SLO target
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setConfirmRemove(true)}
+                    className="text-brand-red hover:text-brand-red"
+                  >
+                    Remove SLO
                   </Button>
                 </div>
               </div>
@@ -454,16 +469,36 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                 <Button size="sm" variant="outline" onClick={() => setEditing(false)}>
                   Cancel
                 </Button>
-                {data.config.sloTarget && (
-                  <Button size="sm" variant="outline" onClick={handleClear} disabled={updateSlo.isPending} className="ml-auto text-brand-red hover:text-brand-red">
-                    Remove SLO
-                  </Button>
-                )}
               </div>
             </div>
           )}
         </div>
       )}
+
+      <Dialog open={confirmRemove} onOpenChange={setConfirmRemove}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Remove SLO?</DialogTitle>
+            <DialogDescription>
+              This clears the SLO target and window for this monitor. Burn-rate alerts
+              tied to this SLO will stop firing. You can set a new SLO at any time.
+            </DialogDescription>
+          </DialogHeader>
+          {formError && <p className="text-xs text-brand-red">{formError}</p>}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmRemove(false)} disabled={updateSlo.isPending}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleClear}
+              disabled={updateSlo.isPending}
+            >
+              {updateSlo.isPending ? 'Removing…' : 'Remove SLO'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -774,6 +809,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const router = useRouter();
   const [range, setRange] = useState<TimeRange>('24h');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [recentLimit, setRecentLimit] = useState(25);
 
   const sessionQ = useSession();
   const monitorQ = useMonitor(id);
@@ -902,7 +938,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                     {RANGES.map((r) => (
                       <button
                         key={r}
-                        onClick={() => setRange(r)}
+                        onClick={() => { setRange(r); setRecentLimit(25); }}
                         className={cn(
                           'rounded px-2 py-1 text-xs font-medium transition-colors',
                           range === r
@@ -1001,7 +1037,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                           </span>
                         ))}
                       </div>
-                      {results.slice(0, 50).map((r) => (
+                      {results.slice(0, recentLimit).map((r) => (
                         <div
                           key={r.id}
                           className="grid grid-cols-4 border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30"
@@ -1025,6 +1061,20 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                           </span>
                         </div>
                       ))}
+                      {results.length > recentLimit && (
+                        <div className="flex items-center justify-between gap-3 px-4 py-3">
+                          <span className="text-[10px] uppercase tracking-wider text-brand-muted">
+                            Showing {recentLimit} of {results.length}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setRecentLimit((n) => Math.min(n + 25, results.length))}
+                          >
+                            Load more
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </QueryState>

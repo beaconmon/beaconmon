@@ -1,29 +1,18 @@
-import { auth } from '@/lib/auth';
+import { withAuth } from '@/lib/api/with-auth';
 import { subscriptionRepository } from '@/lib/repositories/subscriptions';
-import { logger } from '@/lib/logger';
 
-export async function GET(req: Request) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session?.user?.teamId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+export const GET = withAuth(async (_req, { teamId }) => {
+  const subscription = await subscriptionRepository.findByTeamId(teamId);
+
+  if (!subscription) {
+    return Response.json(null);
   }
 
-  try {
-    const subscription = await subscriptionRepository.findByTeamId(session.user.teamId);
-
-    if (!subscription) {
-      return Response.json(null);
-    }
-
-    return Response.json({
-      plan: subscription.plan,
-      status: subscription.status,
-      currentPeriodEnd: subscription.currentPeriodEnd?.toISOString() ?? null,
-      trialEndsAt: subscription.trialEndsAt?.toISOString() ?? null,
-      hasPaddleCustomer: Boolean(subscription.paddleCustomerId),
-    });
-  } catch (err) {
-    logger.error({ service: 'web', err, teamId: session.user.teamId }, 'Failed to fetch subscription');
-    return Response.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+  return Response.json({
+    plan: subscription.plan,
+    status: subscription.status,
+    currentPeriodEnd: subscription.currentPeriodEnd?.toISOString() ?? null,
+    trialEndsAt: subscription.trialEndsAt?.toISOString() ?? null,
+    hasPaddleCustomer: Boolean(subscription.paddleCustomerId),
+  });
+});
