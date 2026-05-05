@@ -73,7 +73,7 @@ deep content change monitoring.
 | Styling | Tailwind CSS + shadcn/ui | Fast UI, accessible components |
 | Package manager | pnpm | Workspace linking, faster installs, stricter dep isolation |
 | Monorepo | Turborepo | Shared packages, parallel builds |
-| Deployment | Railway | Simple multi-service deploy from monorepo |
+| Deployment | Hetzner Cloud + Coolify | Self-hosted PaaS on a single VPS, Docker-managed multi-service stack. Postgres on Neon, Redis self-hosted in the stack. See `DEPLOY.md`. |
 | DNS/CDN | Cloudflare | SSL termination, DDoS, status page edge caching |
 
 ---
@@ -146,7 +146,7 @@ skip sending. This prevents duplicate alerts on worker retries.
 ### 6. Workers must handle SIGTERM gracefully
 Every worker process registers a SIGTERM handler that pauses the queue, waits for
 in-flight jobs to complete (10-second timeout), disconnects the DB, then exits.
-Railway sends SIGTERM on redeploy. Without this, you get corrupted check state.
+Coolify sends SIGTERM on redeploy. Without this, you get corrupted check state.
 
 ### 7. Never mark a monitor down on a single failed check
 A monitor transitions to `down` status only after 2 consecutive failed checks.
@@ -166,8 +166,8 @@ incident pipeline.
 ### 10. Content monitoring uses HTML-only parsing
 The `content-worker` uses `cheerio` to parse HTML. Never use Playwright or any
 headless browser in the worker fleet — it creates unacceptable memory pressure on
-Railway. The `requires_js` flag on monitors is reserved for a future browser-render
-tier and must not be acted on until that tier is built.
+the single-VPS Coolify stack. The `requires_js` flag on monitors is reserved for a
+future browser-render tier and must not be acted on until that tier is built.
 
 ### 11. check_results queries must respect plan retention limits
 Repository functions that query `check_results` must clamp the `from` date to the
@@ -178,8 +178,10 @@ beyond the plan limit even though the underlying partitions may contain it.
 
 ## Environment variables
 
-All services share the same variable schema. Use Railway environment variables in
-production. Use `.env.local` for local dev (gitignored). Never commit secrets.
+All services share the same variable schema. In production, set vars in Coolify's
+environment-variable UI for the stack — Coolify writes them to `.env` which
+`docker-compose.production.yml` interpolates. Use `.env.local` for local dev
+(gitignored). Never commit secrets.
 
 ```bash
 # Database
@@ -526,9 +528,17 @@ pnpm run typecheck
 
 ---
 
-## Deployment (Railway)
+## Deployment (Hetzner + Coolify)
 
-Five Railway services, all from the same repo:
+Full runbook lives in `DEPLOY.md`. Stack at a glance:
+
+- **Compute:** one Hetzner CX22 VPS in Ashburn (US-East) running Coolify, which orchestrates the seven app containers + Redis defined in `docker-compose.production.yml`.
+- **Postgres:** Neon (`aws-us-east-2`). Migrations run from a developer laptop against the direct URL; web + workers use the pooled URL at runtime.
+- **Redis:** self-hosted in the stack (AOF on, `noeviction` for BullMQ). Not Upstash — BullMQ's per-command billing pattern makes Upstash expensive.
+- **Edge:** Cloudflare proxies `beaconmon.com` to the Hetzner public IP. Coolify provisions the origin Let's Encrypt cert.
+- **CI:** GitHub Actions (`.github/workflows/ci.yml`) gates merges with typecheck + lint + tests + Docker build. Coolify auto-deploys on push to `main`.
+
+Seven services in the Compose stack, all from the same Docker image with different `command:` overrides:
 
 | Service | Start command | Scale |
 |---|---|---|
@@ -536,22 +546,22 @@ Five Railway services, all from the same repo:
 | check-worker | `pnpm run start:worker:checks` | Start 1, scale to N |
 | content-worker | `pnpm run start:worker:content` | 1 instance |
 | alert-worker | `pnpm run start:worker:alerts` | 1 instance |
+| escalation-worker | `pnpm run start:worker:escalation` | 1 instance |
+| report-worker | `pnpm run start:worker:report` | 1 instance |
 | scheduler | `pnpm run start:scheduler` | 1 instance (must be singleton) |
 
-Railway managed addons: PostgreSQL, Redis.
-Cloudflare: DNS, proxied A record to Railway web service.
-
 **Deploy checklist before going live:**
-- [ ] `DATABASE_URL_POOLED` points to PgBouncer, not raw Postgres
+- [ ] `DATABASE_URL` and `DATABASE_URL_POOLED` both point to the **Neon pooled URL** at runtime (only laptop migrations use the direct URL)
 - [ ] `ALERT_DRY_RUN=false` in production
 - [ ] Paddle webhook endpoint registered and `PADDLE_WEBHOOK_SECRET` set
-- [ ] `SENTRY_DSN` set in all Railway services (web + all workers)
-- [ ] `NEXT_PUBLIC_SENTRY_DSN` set in web service (client-side error capture)
-- [ ] `SENTRY_AUTH_TOKEN` set in CI/CD for source map uploads
+- [ ] `SENTRY_DSN` set in Coolify env vars (propagates to all services)
+- [ ] `NEXT_PUBLIC_SENTRY_DSN` set (client-side error capture)
+- [ ] `SENTRY_AUTH_TOKEN` set in GitHub Actions secrets if uploading source maps
 - [ ] Create a Sentry Cron Monitor with slug `beaconmon-scheduler` (or whatever `SENTRY_MONITOR_SLUG` is set to)
 - [ ] Health check endpoint responding at `/api/health` with all workers showing `alive: true`
 - [ ] Run `pnpm smoke-test` after deploy before flipping DNS
-- [ ] Self-monitoring: add your own app as a monitor after deploy
+- [ ] Self-monitoring: add `https://beaconmon.com` as a monitor after deploy
+- [ ] Hetzner backups enabled on the VPS
 
 **Observability / rate limiting added in production hardening:**
 - Worker heartbeats: each worker writes `worker:heartbeat:{name}` to Redis every 30s (TTL 120s)
@@ -642,7 +652,7 @@ Cloudflare: DNS, proxied A record to Railway web service.
   real trial. Trial state tracked in `teams.trial_ends_at` and `subscriptions.status`.
 
 - **HTML-only content monitoring.** Playwright adds ~300MB RAM per instance and
-  complicates Railway deployment. The vast majority of target use cases (pricing pages,
+  would dominate the single VPS. The vast majority of target use cases (pricing pages,
   legal disclaimers) are server-rendered. `requires_js` is reserved in the schema
   for a future browser-render tier.
 

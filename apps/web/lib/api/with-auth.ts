@@ -4,6 +4,7 @@ import { prisma } from '@beaconmon/db';
 import { ErrorCode } from '@beaconmon/types';
 import type { PlanTier, TeamRole } from '@beaconmon/types';
 import { AppError } from '@/lib/api/errors';
+import { ACTIVE_TEAM_COOKIE } from '@/lib/api/cookies';
 
 export interface AuthContext {
   userId: string;
@@ -58,7 +59,7 @@ export function withAuth<P extends RouteParams = RouteParams>(handler: AuthHandl
     //   2. bm_active_team cookie (set by /api/team/switch — persists user's selected team)
     //   3. session.user.teamId (most-recent membership baked into the session)
     const headerTeamId = req.headers.get('X-Team-Id');
-    const cookieTeamId = readCookie(req, 'bm_active_team');
+    const cookieTeamId = readCookie(req, ACTIVE_TEAM_COOKIE);
     const overrideTeamId = headerTeamId ?? cookieTeamId;
     const teamId = overrideTeamId ?? session.user.teamId;
 

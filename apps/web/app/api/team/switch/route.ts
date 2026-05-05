@@ -2,8 +2,7 @@ import { z } from 'zod';
 import { withAuth } from '@/lib/api/with-auth';
 import { teamRepository } from '@/lib/repositories/teams';
 import { ForbiddenError, ValidationError } from '@/lib/api/errors';
-
-export const ACTIVE_TEAM_COOKIE = 'bm_active_team';
+import { ACTIVE_TEAM_COOKIE } from '@/lib/api/cookies';
 
 const switchSchema = z.object({ teamId: z.string().min(1) });
 

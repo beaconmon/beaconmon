@@ -1,0 +1,111 @@
+# Production stack consumed by Coolify on the Hetzner host.
+#
+# Coolify injects environment variables from its UI into the .env file in the
+# project root, which Compose then interpolates into each service. Set vars
+# once at the stack level in Coolify and they propagate to every container.
+
+name: beaconmon
+
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: beaconmon:latest
+  restart: unless-stopped
+  env_file: .env
+  stop_grace_period: 15s
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  web:
+    <<: *app
+    command: ["pnpm", "run", "start:web"]
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  check-worker:
+    <<: *app
+    command: ["pnpm", "run", "start:worker:checks"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  content-worker:
+    <<: *app
+    command: ["pnpm", "run", "start:worker:content"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  alert-worker:
+    <<: *app
+    command: ["pnpm", "run", "start:worker:alerts"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  escalation-worker:
+    <<: *app
+    command: ["pnpm", "run", "start:worker:escalation"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  report-worker:
+    <<: *app
+    command: ["pnpm", "run", "start:worker:report"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
+  scheduler:
+    <<: *app
+    command: ["pnpm", "run", "start:scheduler"]
+    deploy:
+      replicas: 1
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # noeviction is mandatory for BullMQ — eviction would silently lose jobs.
+    # AOF gives us durability across restarts so in-flight jobs survive.
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - "512mb"
+      - --maxmemory-policy
+      - "noeviction"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  redis_data:

@@ -1,0 +1,54 @@
+# Build artifacts and dependencies
+node_modules
+**/node_modules
+.next
+**/.next
+dist
+**/dist
+out
+**/out
+.turbo
+**/.turbo
+coverage
+**/coverage
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Local env — secrets must come from Coolify, never the image.
+# Exclude env files at any depth: apps/web/.env.local is a symlink to the
+# repo-root .env.local for local dev. Without ** rules the symlink lands in
+# the image as a dangling link and breaks Next's env loader at build.
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# VCS, editor, OS
+.git
+.github
+.gitignore
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Docs and metadata not needed at runtime
+README.md
+DEPLOY.md
+CLAUDE.md
+.claude
+.claw
+
+# Local dev tooling
+docker-compose.yml
+docker-compose.override.yml
+
+# Test outputs
+*.log
+pino-*.ndjson
+
+# Cloudflare Workers app — deployed separately via wrangler
+apps/region-probe/.wrangler

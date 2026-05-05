@@ -28,23 +28,29 @@ const env = envSchema.parse({
   githubClientSecret: process.env['GITHUB_CLIENT_SECRET'],
 });
 
-if (!env.RESEND_API_KEY && env.NODE_ENV === 'production') {
+// Skip required-env enforcement during `next build` — Next.js sets
+// NODE_ENV=production while collecting page data, but runtime secrets
+// are only injected when the container actually starts.
+const isBuildPhase = process.env['NEXT_PHASE'] === 'phase-production-build';
+const enforceProdEnv = env.NODE_ENV === 'production' && !isBuildPhase;
+
+if (!env.RESEND_API_KEY && enforceProdEnv) {
   throw new Error('RESEND_API_KEY is required in production');
 }
 
-if (!env.googleClientId && env.NODE_ENV === 'production') {
+if (!env.googleClientId && enforceProdEnv) {
   throw new Error('GOOGLE_CLIENT_ID is required in production');
 }
 
-if (!env.googleClientSecret && env.NODE_ENV === 'production') {
+if (!env.googleClientSecret && enforceProdEnv) {
   throw new Error('GOOGLE_CLIENT_SECRET is required in production');
 }
 
-if (!env.githubClientId && env.NODE_ENV === 'production') {
+if (!env.githubClientId && enforceProdEnv) {
   throw new Error('GITHUB_CLIENT_ID is required in production');
 }
 
-if (!env.githubClientSecret && env.NODE_ENV === 'production') {
+if (!env.githubClientSecret && enforceProdEnv) {
   throw new Error('GITHUB_CLIENT_SECRET is required in production');
 }
 
