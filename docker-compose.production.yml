@@ -1,16 +1,26 @@
-# Production stack consumed by Coolify on the Hetzner host.
+# Production stack — images are pre-built in GitHub Actions and pushed to GHCR.
+# This file contains NO build: directives; the server only pulls and runs images.
 #
-# Coolify injects environment variables from its UI into the .env file in the
-# project root, which Compose then interpolates into each service. Set vars
-# once at the stack level in Coolify and they propagate to every container.
+# Required environment variables (set in Coolify/Dokploy UI or .env):
+#   GHCR_OWNER — your GitHub username/org (e.g. haimanotgetu)
+#
+# All other app env vars are loaded from env_file: .env as before.
 
 name: beaconmon
 
-x-app: &app
-  build:
-    context: .
-    dockerfile: Dockerfile
-  image: beaconmon:latest
+x-web: &web
+  image: ghcr.io/${GHCR_OWNER}/beaconmon-web:latest
+  restart: unless-stopped
+  env_file: .env
+  stop_grace_period: 15s
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-workers: &workers
+  image: ghcr.io/${GHCR_OWNER}/beaconmon-workers:latest
   restart: unless-stopped
   env_file: .env
   stop_grace_period: 15s
@@ -22,12 +32,11 @@ x-app: &app
 
 services:
   web:
-    <<: *app
-    command: ["pnpm", "run", "start:web"]
+    <<: *web
     ports:
       - "3000:3000"
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -37,35 +46,35 @@ services:
         condition: service_healthy
 
   check-worker:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:worker:checks"]
     depends_on:
       redis:
         condition: service_healthy
 
   content-worker:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:worker:content"]
     depends_on:
       redis:
         condition: service_healthy
 
   alert-worker:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:worker:alerts"]
     depends_on:
       redis:
         condition: service_healthy
 
   escalation-worker:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:worker:escalation"]
     depends_on:
       redis:
         condition: service_healthy
 
   report-worker:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:worker:report"]
     depends_on:
       redis:
@@ -73,7 +82,7 @@ services:
 
   # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
   scheduler:
-    <<: *app
+    <<: *workers
     command: ["pnpm", "run", "start:scheduler"]
     deploy:
       replicas: 1
