@@ -2,6 +2,7 @@
 // Data is served from Redis cache, NOT directly from Postgres.
 // See architecture rule #8 in CLAUDE.md.
 
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getStatusPageData } from '@/lib/cache/status-pages';
 import { SubscribeForm } from '@/components/status/subscribe-form';
@@ -42,16 +43,6 @@ const SP = {
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function formatDuration(ms: number): string {
-  const totalSeconds = Math.floor(ms / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  if (minutes > 0) return `${minutes}m ${seconds}s`;
-  return `${seconds}s`;
-}
-
 function relativeTime(date: Date, now: Date): string {
   const diffMs = now.getTime() - date.getTime();
   const diffSec = Math.floor(diffMs / 1000);
@@ -333,7 +324,7 @@ export default async function StatusPage({ params }: Props) {
               </div>
             </div>
           </div>
-          <a href="/" style={{
+          <Link href="/" style={{
             fontSize: 12, color: SP.gray400, textDecoration: 'none',
             display: 'inline-flex', alignItems: 'center', gap: 6,
           }}>
@@ -354,7 +345,7 @@ export default async function StatusPage({ params }: Props) {
                 Beaconmon
               </span>
             </span>
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -724,7 +715,7 @@ export default async function StatusPage({ params }: Props) {
           </span>
           <div>
             Powered by Beaconmon ·{' '}
-            <a href="/" style={{ color: SP.gray500, textDecoration: 'none' }}>beaconmon.com</a>
+            <Link href="/" style={{ color: SP.gray500, textDecoration: 'none' }}>beaconmon.com</Link>
           </div>
           <div style={{
             fontFamily: 'JetBrains Mono, ui-monospace, monospace',

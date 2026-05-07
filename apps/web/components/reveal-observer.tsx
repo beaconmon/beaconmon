@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function RevealObserver() {
   useEffect(() => {
-    var io = new IntersectionObserver(function (entries) {
+    const io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
           e.target.classList.add("in");

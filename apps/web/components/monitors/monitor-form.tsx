@@ -87,6 +87,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedType = form.watch('type');
   const intervalValue = form.watch('intervalSeconds');
   const intervalTooLow = Number(intervalValue) < minInterval;

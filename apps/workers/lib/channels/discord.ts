@@ -1,4 +1,4 @@
-import type { AlertPayload, ChannelSender } from './types.js';
+import type { ChannelSender } from './types.js';
 import { discordChannelConfigSchema } from '@beaconmon/types';
 import { logger } from '../logger.js';
 import { env } from '../env.js';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Bell, CheckCircle2, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,13 +25,8 @@ export default function NotificationsSettingsPage() {
   const prefsQ = useMyNotificationPreferences();
   const updatePref = useUpdateMyPrimaryChannel();
 
-  const [selected, setSelected] = useState<string>('');
-
-  useEffect(() => {
-    if (prefsQ.data?.primaryChannelId) {
-      setSelected(prefsQ.data.primaryChannelId);
-    }
-  }, [prefsQ.data?.primaryChannelId]);
+  const [userSelected, setSelected] = useState<string | null>(null);
+  const selected = userSelected ?? (prefsQ.data?.primaryChannelId ?? '');
 
   async function handleSave() {
     if (!selected || selected === prefsQ.data?.primaryChannelId) return;
@@ -53,7 +48,7 @@ export default function NotificationsSettingsPage() {
           <div className="flex-1 space-y-1 text-sm text-brand-text">
             <p className="font-medium">Routing alerts to specific teammates is a Pro feature.</p>
             <p className="text-xs text-brand-muted">
-              On the Free plan you can still set your own primary channel — it's only used once
+              On the Free plan you can still set your own primary channel — it&apos;s only used once
               you upgrade and a teammate adds you to an escalation step.
             </p>
             <Link

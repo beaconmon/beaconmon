@@ -8,8 +8,7 @@ import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue, createSloBurnQueue } from '@beaconmon/queue';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
-import { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from '@beaconmon/checker';
-import { warmStatusPageCache } from '@beaconmon/status-pages';
+import { evaluateCheckResult } from '@beaconmon/checker';
 
 const HEARTBEAT_KEY = 'worker:heartbeat:scheduler';
 // Sentry cron monitor slug — create a matching monitor in your Sentry project

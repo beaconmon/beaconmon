@@ -15,7 +15,6 @@ import {
   PrimaryBtn,
   Divider,
   Checkbox,
-  FieldNote,
   ErrorBanner,
   SocialButtons,
   getPasswordStrength,

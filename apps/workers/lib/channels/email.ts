@@ -4,7 +4,7 @@ import { render } from '@react-email/render';
 import { DowntimeAlert } from '../../emails/downtime-alert.js';
 import { emailChannelConfigSchema } from '@beaconmon/types';
 import { RecoveryAlert } from '../../emails/recovery-alert.js';
-import type { AlertPayload, ChannelSender } from './types.js';
+import type { ChannelSender } from './types.js';
 import { logger } from '../logger.js';
 import { env } from '../env.js';
 

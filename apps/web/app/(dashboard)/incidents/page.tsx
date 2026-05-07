@@ -169,9 +169,9 @@ export default function IncidentsPage() {
   const { data: incidents, isLoading, isError, error, refetch } = useIncidents();
   const { data: session } = useSession();
 
-  const all = incidents ?? [];
-  const ongoing = all.filter((i) => !i.resolvedAt);
-  const resolved = all.filter((i) => i.resolvedAt);
+  const all = useMemo(() => incidents ?? [], [incidents]);
+  const ongoing = useMemo(() => all.filter((i) => !i.resolvedAt), [all]);
+  const resolved = useMemo(() => all.filter((i) => i.resolvedAt), [all]);
 
   const filtered = useMemo(() => {
     if (filter === 'ongoing') return ongoing;

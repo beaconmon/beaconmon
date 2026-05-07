@@ -255,8 +255,9 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
 
-  // Auto-collapse sidebar on small screens
+  // Auto-collapse sidebar on small screens (runs once on mount; SSR renders collapsed=false then corrects client-side)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (window.innerWidth < 1024) setCollapsed(true);
   }, []);
   const { data: incidents } = useIncidents();

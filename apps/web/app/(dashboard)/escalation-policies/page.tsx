@@ -350,45 +350,26 @@ function PolicySheet({
   const createPolicy = useCreateEscalationPolicy();
   const updatePolicy = useUpdateEscalationPolicy(editing?.id ?? '');
 
-  const [name, setName] = useState('');
-  const [steps, setSteps] = useState<StepDraft[]>([]);
-  const [dragFrom, setDragFrom] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    setName(editing?.name ?? '');
+  const [name, setName] = useState(editing?.name ?? '');
+  const [steps, setSteps] = useState<StepDraft[]>(() => {
     if (editing && editing.steps.length > 0) {
-      setSteps(
-        editing.steps.map((s) => ({
-          key: s.id,
-          delayMinutes: s.delayMinutes,
-          recipients: s.recipients.map((r) => {
-            if (r.kind === 'channel') {
-              return {
-                kind: 'channel',
-                id: r.id,
-                channelId: r.channelId!,
-                label: r.channelName ?? 'Channel',
-              };
-            }
-            if (r.kind === 'user') {
-              return {
-                kind: 'user',
-                id: r.id,
-                userId: r.userId!,
-                label: r.userName ?? r.userEmail ?? 'Member',
-              };
-            }
-            return { kind: 'removed_user', id: r.id, label: 'Removed user' };
-          }),
-        }))
-      );
-    } else {
-      setSteps([
-        { key: crypto.randomUUID(), delayMinutes: 0, recipients: [] },
-      ]);
+      return editing.steps.map((s) => ({
+        key: s.id,
+        delayMinutes: s.delayMinutes,
+        recipients: s.recipients.map((r) => {
+          if (r.kind === 'channel') {
+            return { kind: 'channel' as const, id: r.id, channelId: r.channelId!, label: r.channelName ?? 'Channel' };
+          }
+          if (r.kind === 'user') {
+            return { kind: 'user' as const, id: r.id, userId: r.userId!, label: r.userName ?? r.userEmail ?? 'Member' };
+          }
+          return { kind: 'removed_user' as const, id: r.id, label: 'Removed user' };
+        }),
+      }));
     }
-  }, [open, editing]);
+    return [{ key: crypto.randomUUID(), delayMinutes: 0, recipients: [] }];
+  });
+  const [dragFrom, setDragFrom] = useState<number | null>(null);
 
   const channelOptions = useMemo<ChannelOption[]>(
     () => channelsQ.data?.map((ch) => ({ id: ch.id, name: ch.name })) ?? [],
@@ -785,6 +766,7 @@ export default function EscalationPoliciesPage() {
       </QueryState>
 
       <PolicySheet
+        key={sheetOpen ? (editingPolicy?.id ?? 'new') : 'closed'}
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         editing={editingPolicy}

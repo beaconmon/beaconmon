@@ -34,6 +34,7 @@ export function TrialBanner({ plan, teamCreatedAt }: TrialBannerProps) {
       // ignore parse errors
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisible(true);
   }, [plan, teamCreatedAt]);
 

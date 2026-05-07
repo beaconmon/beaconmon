@@ -1,4 +1,4 @@
-import { prisma, monitorRepository, alertChannelRepository } from '@beaconmon/db';
+import { monitorRepository, alertChannelRepository } from '@beaconmon/db';
 import { getChannelSender } from './lib/channels/index.js';
 import type { AlertPayload } from './lib/channels/types.js';
 import { logger } from './lib/logger.js';

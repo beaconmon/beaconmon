@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, use } from 'react';
 import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,17 +17,56 @@ import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api-fetch';
 
+type PageData = NonNullable<ReturnType<typeof useStatusPage>['data']>;
+type MonitorItem = NonNullable<ReturnType<typeof useMonitors>['data']>[number];
+
 export default function StatusPageEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const pageQ = useStatusPage(id);
   const monitorsQ = useMonitors();
+
+  if (pageQ.isLoading || monitorsQ.isLoading) {
+    return (
+      <div className="max-w-2xl space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-48 rounded-lg" />
+        <Skeleton className="h-64 rounded-lg" />
+      </div>
+    );
+  }
+
+  if (!pageQ.data) {
+    return <p className="text-sm text-brand-muted">Status page not found.</p>;
+  }
+
+  return (
+    <StatusPageEditorForm
+      key={pageQ.data.id}
+      id={id}
+      page={pageQ.data}
+      monitors={monitorsQ.data ?? []}
+    />
+  );
+}
+
+function StatusPageEditorForm({
+  id,
+  page,
+  monitors,
+}: {
+  id: string;
+  page: PageData;
+  monitors: MonitorItem[];
+}) {
   const update = useUpdateStatusPage(id);
   const queryClient = useQueryClient();
 
-  const [name, setName] = useState('');
-  const [customDomain, setCustomDomain] = useState('');
-  const [isPublic, setIsPublic] = useState(true);
-  const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>([]);
+  const [name, setName] = useState(page.name);
+  const [customDomain, setCustomDomain] = useState(page.customDomain ?? '');
+  const [isPublic, setIsPublic] = useState(page.isPublic);
+  const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>(
+    () => page.monitors.sort((a, b) => a.displayOrder - b.displayOrder).map((m) => m.monitorId)
+  );
   const [filterTag, setFilterTag] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -47,45 +86,15 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
     onError: (err: Error) => setVerifyError(err.message),
   });
 
-  useEffect(() => {
-    if (pageQ.data) {
-      setName(pageQ.data.name);
-      setCustomDomain(pageQ.data.customDomain ?? '');
-      setIsPublic(pageQ.data.isPublic);
-      setSelectedMonitorIds(
-        pageQ.data.monitors
-          .sort((a, b) => a.displayOrder - b.displayOrder)
-          .map((m) => m.monitorId)
-      );
-    }
-  }, [pageQ.data]);
-
-  const isLoading = pageQ.isLoading || monitorsQ.isLoading;
-
-  if (isLoading) {
-    return (
-      <div className="max-w-2xl space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-48 rounded-lg" />
-        <Skeleton className="h-64 rounded-lg" />
-      </div>
-    );
-  }
-
-  if (!pageQ.data) {
-    return <p className="text-sm text-brand-muted">Status page not found.</p>;
-  }
-
-  const allMonitors = monitorsQ.data ?? [];
-  const allTags = Array.from(new Set(allMonitors.flatMap((m) => m.tags))).sort();
-  const visibleUnselected = allMonitors
+  const allTags = Array.from(new Set(monitors.flatMap((m) => m.tags))).sort();
+  const visibleUnselected = monitors
     .filter((m) => !selectedMonitorIds.includes(m.id))
     .filter((m) => !filterTag || m.tags.includes(filterTag));
 
   function toggleMonitor(monitorId: string) {
     setSelectedMonitorIds((prev) =>
       prev.includes(monitorId)
-        ? prev.filter((id) => id !== monitorId)
+        ? prev.filter((mid) => mid !== monitorId)
         : [...prev, monitorId]
     );
   }
@@ -131,12 +140,12 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
     );
   }
 
-  const slug = pageQ.data.slug;
+  const slug = page.slug;
 
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-brand-text">{pageQ.data.name}</h1>
+        <h1 className="text-2xl font-semibold text-brand-text">{page.name}</h1>
         <a
           href={`/s/${slug}`}
           target="_blank"
@@ -184,7 +193,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
               onChange={(e) => setCustomDomain(e.target.value)}
               placeholder="status.mycompany.com"
             />
-            {customDomain && customDomain === pageQ.data?.customDomain && (
+            {customDomain && customDomain === page.customDomain && (
               <div className="rounded-md border bg-muted/30 px-3 py-3 space-y-2">
                 <p className="text-xs text-muted-foreground">
                   Add this DNS record at your domain registrar:
@@ -195,7 +204,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
                   <span className="font-semibold">{typeof window !== 'undefined' ? window.location.hostname : 'your-app-domain.com'}</span>
                 </div>
                 <div className="flex items-center gap-2 pt-1">
-                  {pageQ.data?.customDomainVerified ? (
+                  {page.customDomainVerified ? (
                     <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Verified
@@ -242,7 +251,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
           <CardTitle className="text-base">Monitors on this page</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {allMonitors.length === 0 ? (
+          {monitors.length === 0 ? (
             <p className="text-sm text-muted-foreground">No monitors yet.</p>
           ) : (
             <>
@@ -304,7 +313,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
                 <div className="space-y-2 pt-2 border-t border-brand-line">
                   <p className="text-xs text-brand-muted font-medium uppercase tracking-wide">Selected (displayed order)</p>
                   {selectedMonitorIds.map((mId, idx) => {
-                    const monitor = allMonitors.find((m) => m.id === mId);
+                    const monitor = monitors.find((m) => m.id === mId);
                     if (!monitor) return null;
                     return (
                       <div

@@ -117,8 +117,6 @@ export default function BillingPage() {
 
   const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'] ?? '';
   const businessPriceId = process.env['NEXT_PUBLIC_PADDLE_BUSINESS_PRICE_ID'] ?? '';
-  const isPaid = plan === 'pro' || plan === 'business';
-
   return (
     <>
       <Script

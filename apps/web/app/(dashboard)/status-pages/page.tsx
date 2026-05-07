@@ -21,7 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { QueryState } from '@/components/dashboard/query-state';
 import { EmptyState } from '@/components/dashboard/empty-state';
 import { useStatusPages, useCreateStatusPage } from '@/lib/hooks/use-status-pages';

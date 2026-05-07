@@ -101,7 +101,7 @@ export default function DashboardPreview() {
 }
 
 function MockRow({
-  dotColor,
+  dotColor: _dotColor,
   name,
   url,
   type,

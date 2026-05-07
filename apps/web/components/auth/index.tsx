@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState } from 'react';
 import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getPasswordStrength, MIN_PASSWORD_STRENGTH } from '@/lib/validations/password';

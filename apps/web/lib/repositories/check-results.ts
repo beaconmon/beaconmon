@@ -1,6 +1,6 @@
 import { prisma } from '@beaconmon/db';
 import { Prisma } from '@beaconmon/db';
-import { planRetentionCutoff, clampToPlanRetention, PLAN_LIMITS } from '@beaconmon/types';
+import { clampToPlanRetention, PLAN_LIMITS } from '@beaconmon/types';
 import type { PlanTier, DailyUptimeStat } from '@beaconmon/types';
 
 interface CheckResultsOptions {
