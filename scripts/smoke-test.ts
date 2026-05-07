@@ -22,7 +22,8 @@
 
 import { createServer } from 'node:http';
 import type { Server } from 'node:http';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../packages/db/generated/prisma/client/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { Redis } from 'ioredis';
 import { processCheckJob } from '../apps/workers/process-check-job.js';
 import { createAlertQueue } from '../packages/queue/src/queues.js';
@@ -46,7 +47,7 @@ if (!REDIS_URL) {
 
 process.env['DATABASE_URL'] = DATABASE_URL;
 
-const prisma = new PrismaClient({ log: [] });
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: DATABASE_URL }), log: [] });
 const redis = new Redis(REDIS_URL, { maxRetriesPerRequest: 1, lazyConnect: true });
 
 // Stub alert queue — smoke test doesn't send real alerts

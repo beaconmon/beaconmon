@@ -73,7 +73,7 @@ deep content change monitoring.
 | Styling | Tailwind CSS + shadcn/ui | Fast UI, accessible components |
 | Package manager | pnpm | Workspace linking, faster installs, stricter dep isolation |
 | Monorepo | Turborepo | Shared packages, parallel builds |
-| Deployment | Hetzner Cloud + Coolify | Self-hosted PaaS on a single VPS, Docker-managed multi-service stack. Postgres on Neon, Redis self-hosted in the stack. See `DEPLOY.md`. |
+| Deployment | Hetzner Cloud + Dokploy | Self-hosted PaaS on a single VPS, Docker-managed multi-service stack. Postgres on Neon, Redis self-hosted in the stack. |
 | DNS/CDN | Cloudflare | SSL termination, DDoS, status page edge caching |
 
 ---
@@ -146,7 +146,7 @@ skip sending. This prevents duplicate alerts on worker retries.
 ### 6. Workers must handle SIGTERM gracefully
 Every worker process registers a SIGTERM handler that pauses the queue, waits for
 in-flight jobs to complete (10-second timeout), disconnects the DB, then exits.
-Coolify sends SIGTERM on redeploy. Without this, you get corrupted check state.
+Dokploy sends SIGTERM on redeploy. Without this, you get corrupted check state.
 
 ### 7. Never mark a monitor down on a single failed check
 A monitor transitions to `down` status only after 2 consecutive failed checks.
@@ -166,7 +166,7 @@ incident pipeline.
 ### 10. Content monitoring uses HTML-only parsing
 The `content-worker` uses `cheerio` to parse HTML. Never use Playwright or any
 headless browser in the worker fleet — it creates unacceptable memory pressure on
-the single-VPS Coolify stack. The `requires_js` flag on monitors is reserved for a
+the single-VPS Dokploy stack. The `requires_js` flag on monitors is reserved for a
 future browser-render tier and must not be acted on until that tier is built.
 
 ### 11. check_results queries must respect plan retention limits
@@ -178,8 +178,8 @@ beyond the plan limit even though the underlying partitions may contain it.
 
 ## Environment variables
 
-All services share the same variable schema. In production, set vars in Coolify's
-environment-variable UI for the stack — Coolify writes them to `.env` which
+All services share the same variable schema. In production, set vars in Dokploy's
+environment-variable UI for the stack — Dokploy writes them to `.env` which
 `docker-compose.production.yml` interpolates. Use `.env.local` for local dev
 (gitignored). Never commit secrets.
 
@@ -224,10 +224,18 @@ R2_ACCOUNT_ID=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
 
+# Multi-location checks (Cloudflare Workers — deployed 2026-05-07)
+FEATURE_MULTI_LOCATION=true
+REGION_PROBE_SECRET=             # 32+ char shared secret; also set via: wrangler secret put REGION_PROBE_SECRET
+CF_PROBE_URL_US_EAST=https://beaconmon-probe-us-east.beaconmon.workers.dev
+CF_PROBE_URL_US_WEST=https://beaconmon-probe-us-west.beaconmon.workers.dev
+CF_PROBE_URL_EU_WEST=https://beaconmon-probe-eu-west.beaconmon.workers.dev
+CF_PROBE_URL_AP_SOUTHEAST=https://beaconmon-probe-ap-southeast.beaconmon.workers.dev
+CF_PROBE_URL_SA_EAST=https://beaconmon-probe-sa-east.beaconmon.workers.dev
+
 # Feature flags
 ALERT_DRY_RUN=false              # Set to true in dev to log alerts instead of sending
 FEATURE_SMS_ALERTS=false
-FEATURE_MULTI_LOCATION=false     # Post-launch: Cloudflare Workers multi-region checks
 FEATURE_HEARTBEAT=false          # Post-launch: inverse monitoring (your service pings us)
 FEATURE_AGENCY=false
 ```
@@ -528,15 +536,15 @@ pnpm run typecheck
 
 ---
 
-## Deployment (Hetzner + Coolify)
+## Deployment (Hetzner + Dokploy)
 
-Full runbook lives in `DEPLOY.md`. Stack at a glance:
+Stack at a glance:
 
-- **Compute:** one Hetzner CX22 VPS in Ashburn (US-East) running Coolify, which orchestrates the seven app containers + Redis defined in `docker-compose.production.yml`.
+- **Compute:** one Hetzner CPX22 VPS in Nuremberg running Dokploy, which orchestrates the seven app containers + Redis defined in `docker-compose.production.yml`.
 - **Postgres:** Neon (`aws-us-east-2`). Migrations run from a developer laptop against the direct URL; web + workers use the pooled URL at runtime.
 - **Redis:** self-hosted in the stack (AOF on, `noeviction` for BullMQ). Not Upstash — BullMQ's per-command billing pattern makes Upstash expensive.
-- **Edge:** Cloudflare proxies `beaconmon.com` to the Hetzner public IP. Coolify provisions the origin Let's Encrypt cert.
-- **CI:** GitHub Actions (`.github/workflows/ci.yml`) gates merges with typecheck + lint + tests + Docker build. Coolify auto-deploys on push to `main`.
+- **Edge:** Cloudflare proxies `beaconmon.com` to the Hetzner public IP. Dokploy provisions the origin Let's Encrypt cert.
+- **CI:** GitHub Actions (`.github/workflows/ci.yml`) gates merges with typecheck + lint + tests + Docker build. Dokploy auto-deploys on push to `main`.
 
 Seven services in the Compose stack, all from the same Docker image with different `command:` overrides:
 
@@ -554,7 +562,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [ ] `DATABASE_URL` and `DATABASE_URL_POOLED` both point to the **Neon pooled URL** at runtime (only laptop migrations use the direct URL)
 - [ ] `ALERT_DRY_RUN=false` in production
 - [ ] Paddle webhook endpoint registered and `PADDLE_WEBHOOK_SECRET` set
-- [ ] `SENTRY_DSN` set in Coolify env vars (propagates to all services)
+- [ ] `SENTRY_DSN` set in Dokploy env vars (propagates to all services)
 - [ ] `NEXT_PUBLIC_SENTRY_DSN` set (client-side error capture)
 - [ ] `SENTRY_AUTH_TOKEN` set in GitHub Actions secrets if uploading source maps
 - [ ] Create a Sentry Cron Monitor with slug `beaconmon-scheduler` (or whatever `SENTRY_MONITOR_SLUG` is set to)
@@ -652,7 +660,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
   real trial. Trial state tracked in `teams.trial_ends_at` and `subscriptions.status`.
 
 - **HTML-only content monitoring.** Playwright adds ~300MB RAM per instance and
-  would dominate the single VPS. The vast majority of target use cases (pricing pages,
+  would dominate the single Hetzner VPS. The vast majority of target use cases (pricing pages,
   legal disclaimers) are server-rendered. `requires_js` is reserved in the schema
   for a future browser-render tier.
 

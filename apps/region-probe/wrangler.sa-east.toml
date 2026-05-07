@@ -13,4 +13,4 @@ class_name = "ProbeDurableObject"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["ProbeDurableObject"]
+new_sqlite_classes = ["ProbeDurableObject"]
