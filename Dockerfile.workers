@@ -1,0 +1,57 @@
+# syntax=docker/dockerfile:1.7
+#
+# Workers-only image. No Next.js build step — workers run TypeScript source
+# directly via tsx, so the runner just needs node_modules + source files.
+
+############################################
+# Base — Node + pnpm + native build deps
+############################################
+FROM node:22-alpine AS base
+RUN apk add --no-cache libc6-compat openssl tini
+RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
+WORKDIR /app
+
+############################################
+# Deps — restore workspace dependencies
+# All package.json files are required for pnpm to correctly resolve the lockfile.
+############################################
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc package.json ./
+# All package.json stubs are required — pnpm validates the full workspace against the lockfile.
+COPY apps/web/package.json ./apps/web/
+COPY apps/workers/package.json ./apps/workers/
+COPY apps/region-probe/package.json ./apps/region-probe/
+COPY packages/checker/package.json ./packages/checker/
+COPY packages/db/package.json ./packages/db/
+COPY packages/logger/package.json ./packages/logger/
+COPY packages/queue/package.json ./packages/queue/
+COPY packages/status-pages/package.json ./packages/status-pages/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY packages/types/package.json ./packages/types/
+RUN --mount=type=cache,id=pnpm-workers,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+############################################
+# Runner — source + deps, no compile step
+# pnpm workspace symlinks in node_modules point into packages/; both are copied
+# so symlink targets resolve correctly at runtime.
+############################################
+FROM base AS runner
+ENV NODE_ENV=production
+
+# Copy full workspace output from deps (node_modules virtual store + workspace
+# config + per-package node_modules created by pnpm strict isolation)
+COPY --from=deps /app ./
+
+# Overlay with actual source (replaces the package.json stubs from deps stage)
+COPY packages ./packages
+COPY apps/workers ./apps/workers
+
+# Generate Prisma client against the real schema source
+RUN pnpm --filter @beaconmon/db exec prisma generate
+
+RUN addgroup -S app && adduser -S app -G app && chown -R app:app /app
+USER app
+
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["pnpm", "run", "start:worker:checks"]
