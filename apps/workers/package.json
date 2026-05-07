@@ -18,7 +18,7 @@
     "dev:report": "tsx watch --env-file=.env.local report-worker.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.ts\"",
-    "test": "vitest run",
+    "test": "vitest run --exclude '**/*.integration.test.ts'",
     "test:integration": "vitest run --reporter=verbose check-worker.integration.test.ts"
   },
   "dependencies": {

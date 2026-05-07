@@ -61,11 +61,15 @@ jobs:
 
       - run: pnpm --filter @beaconmon/db exec prisma generate
 
+      - run: pnpm --filter @beaconmon/db exec prisma migrate deploy
+
       - run: pnpm run typecheck
 
       - run: pnpm run lint
 
       - run: pnpm run test
+
+      - run: pnpm --filter @beaconmon/workers run test:integration
 
       - run: pnpm run build
 
