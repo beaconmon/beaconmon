@@ -33,8 +33,8 @@ x-workers: &workers
 services:
   web:
     <<: *web
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
