@@ -5,6 +5,7 @@ export default [
   { ignores: ['lib/env.ts', 'node_modules/', '**/*.js'] },
   js.configs.recommended,
   {
+    files: ['**/*.ts'],
     rules: {
       // Workers must use Pino (logger.info/warn/error), never console.*
       // console.log bypasses structured logging and loses context fields.
