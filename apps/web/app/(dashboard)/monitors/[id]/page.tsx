@@ -40,6 +40,7 @@ import { QueryState } from '@/components/dashboard/query-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useMonitor, useDeleteMonitor } from '@/lib/hooks/use-monitors';
+import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';
 import { useCheckResults, type TimeRange, type CheckResultRow } from '@/lib/hooks/use-check-results';
 import { useMonitorIncidents, useResolveIncident } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
@@ -819,6 +820,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const deleteMonitor = useDeleteMonitor(id);
 
   const monitor = monitorQ.data;
+  useBreadcrumbOverride(id, monitor?.name);
   const results = resultsQ.data ?? [];
   const incidents = (incidentsQ.data ?? []) as unknown as IncidentApiRow[];
   const channels = channelsQ.data ?? [];
@@ -829,12 +831,20 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const hasRegionData = results.some((r) => r.region != null);
   const isContentMonitor = monitor?.type === 'content';
 
-  const chartData = [...results]
-    .reverse()
-    .map((r) => ({
-      time: format(new Date(r.checkedAt), 'HH:mm'),
-      ms: r.responseTimeMs ?? 0,
+  // Group by checkedAt so multi-region rounds collapse to one point (avg across regions).
+  const chartData = (() => {
+    const byTs = new Map<string, number[]>();
+    [...results].reverse().forEach((r) => {
+      if (r.responseTimeMs == null) return;
+      const bucket = byTs.get(r.checkedAt) ?? [];
+      bucket.push(r.responseTimeMs);
+      byTs.set(r.checkedAt, bucket);
+    });
+    return [...byTs.entries()].map(([ts, msList]) => ({
+      time: format(new Date(ts), 'HH:mm'),
+      ms: Math.round(msList.reduce((a, b) => a + b, 0) / msList.length),
     }));
+  })();
 
   const stats = computeStats(results);
 
@@ -1030,8 +1040,8 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                     <p className="px-4 py-8 text-center text-sm text-brand-muted">No check results yet.</p>
                   ) : (
                     <div>
-                      <div className="grid grid-cols-4 border-b border-brand-line px-4 py-2">
-                        {['Time', 'Code', 'Response', 'Result'].map((h) => (
+                      <div className={cn('border-b border-brand-line px-4 py-2', hasRegionData ? 'grid grid-cols-5' : 'grid grid-cols-4')}>
+                        {['Time', ...(hasRegionData ? ['Region'] : []), 'Code', 'Response', 'Result'].map((h) => (
                           <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
                             {h}
                           </span>
@@ -1040,11 +1050,16 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                       {results.slice(0, recentLimit).map((r) => (
                         <div
                           key={r.id}
-                          className="grid grid-cols-4 border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30"
+                          className={cn('border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30', hasRegionData ? 'grid grid-cols-5' : 'grid grid-cols-4')}
                         >
                           <span className="font-mono text-xs text-brand-dim">
                             {format(new Date(r.checkedAt), 'MMM d, HH:mm:ss')}
                           </span>
+                          {hasRegionData && (
+                            <span className="font-mono text-xs text-brand-muted">
+                              {r.region ?? '—'}
+                            </span>
+                          )}
                           <span className={cn('font-mono text-sm font-semibold', statusCodeColor(r.statusCode))}>
                             {r.statusCode ?? '—'}
                           </span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import {
   Activity,
@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Breadcrumbs } from '@/components/dashboard/breadcrumbs';
+import { BreadcrumbProvider } from '@/lib/breadcrumb-context';
 import { CommandPalette } from '@/components/command-palette';
 import { NotificationPopover } from '@/components/notifications/notification-popover';
 import { Providers } from '@/components/providers';
@@ -183,12 +184,11 @@ function TopBar({
   onOpenCommandPalette: () => void;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const showAddMonitor = ADD_MONITOR_ROUTES.some((r) => pathname.startsWith(r));
 
   async function handleSignOut() {
     await authClient.signOut();
-    router.push('/sign-in');
+    window.location.href = '/sign-in';
   }
 
   return (
@@ -288,7 +288,9 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <Providers>
-      <DashboardShell>{children}</DashboardShell>
+      <BreadcrumbProvider>
+        <DashboardShell>{children}</DashboardShell>
+      </BreadcrumbProvider>
     </Providers>
   );
 }
