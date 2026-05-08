@@ -5,6 +5,7 @@ import { ForbiddenError, ValidationError } from '@/lib/api/errors';
 import { logger } from '@/lib/logger';
 
 const updateSettingsSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
   reportAgencyName: z.string().min(1).max(100).optional(),
   reportBrandColor: z
     .string()
@@ -26,11 +27,12 @@ export const PATCH = withAuth(async (req, { teamId, role }) => {
   const parsed = updateSettingsSchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
-  const { reportAgencyName, reportBrandColor, reportLogoUrl } = parsed.data;
+  const { name, reportAgencyName, reportBrandColor, reportLogoUrl } = parsed.data;
 
   await prisma.team.update({
     where: { id: teamId },
     data: {
+      ...(name !== undefined && { name }),
       ...(reportAgencyName !== undefined && { reportAgencyName }),
       ...(reportBrandColor !== undefined && { reportBrandColor }),
       ...(reportLogoUrl !== undefined && { reportLogoUrl }),

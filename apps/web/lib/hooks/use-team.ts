@@ -95,7 +95,7 @@ export function useUpdateTeamSettings() {
   return useMutation<
     { updated: boolean },
     Error,
-    { reportAgencyName?: string; reportBrandColor?: string; reportLogoUrl?: string | null }
+    { name?: string; reportAgencyName?: string; reportBrandColor?: string; reportLogoUrl?: string | null }
   >({
     mutationFn: async (data) => {
       const res = await apiFetch('/api/team/settings', {

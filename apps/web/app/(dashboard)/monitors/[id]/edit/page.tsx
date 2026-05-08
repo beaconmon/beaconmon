@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MonitorForm, type MonitorFormValues } from '@/components/monitors/monitor-form';
 import { useMonitor, useUpdateMonitor } from '@/lib/hooks/use-monitors';
+import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';
 import { useSession } from '@/lib/hooks/use-session';
 import type { MonitorRow } from '@/lib/repositories/monitors';
 import type { UpdateMonitorInput } from '@/lib/validations/monitors';
@@ -71,6 +72,7 @@ export default function EditMonitorPage({ params }: { params: Promise<{ id: stri
   const monitorQ = useMonitor(id);
   const sessionQ = useSession();
   const updateMonitor = useUpdateMonitor(id);
+  useBreadcrumbOverride(id, monitorQ.data?.name);
 
   const isLoading = monitorQ.isLoading || sessionQ.isLoading;
 

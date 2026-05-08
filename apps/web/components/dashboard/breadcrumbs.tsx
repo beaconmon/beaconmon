@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
+import { useBreadcrumbOverrides } from '@/lib/breadcrumb-context';
 
 const SEGMENT_LABELS: Record<string, string> = {
   monitors:               'Monitors',
@@ -27,6 +28,7 @@ function getLabel(segment: string): string {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
+  const overrides = useBreadcrumbOverrides();
   const segments = pathname.split('/').filter(Boolean);
 
   if (segments.length === 0) {
@@ -36,7 +38,7 @@ export function Breadcrumbs() {
   const crumbs = segments.map((seg, i) => {
     const href = '/' + segments.slice(0, i + 1).join('/');
     const isLast = i === segments.length - 1;
-    const label = getLabel(seg);
+    const label = overrides[seg] ?? getLabel(seg);
     return { href, label, isLast };
   });
 

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, use } from 'react';
-import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2, Tag } from 'lucide-react';
+import Image from 'next/image';
+import { ExternalLink, ChevronUp, ChevronDown, CheckCircle2, XCircle, Loader2, Tag, ArrowUpRight, Copy, Check } from 'lucide-react';
+import { DNS_PROVIDER_INFO } from '@/lib/dns-provider-info';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useStatusPage, useUpdateStatusPage } from '@/lib/hooks/use-status-pages';
+import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api-fetch';
@@ -24,6 +27,7 @@ export default function StatusPageEditorPage({ params }: { params: Promise<{ id:
   const { id } = use(params);
   const pageQ = useStatusPage(id);
   const monitorsQ = useMonitors();
+  useBreadcrumbOverride(id, pageQ.data?.name);
 
   if (pageQ.isLoading || monitorsQ.isLoading) {
     return (
@@ -71,6 +75,8 @@ function StatusPageEditorForm({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
+  const [badgeTab, setBadgeTab] = useState<'markdown' | 'html'>('markdown');
+  const [badgeCopied, setBadgeCopied] = useState(false);
 
   const verifyDomain = useMutation({
     mutationFn: async () => {
@@ -142,6 +148,21 @@ function StatusPageEditorForm({
 
   const slug = page.slug;
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const badgeUrl = `${origin}/api/badges/status-pages/${slug}`;
+  const pageUrl = `${origin}/s/${slug}`;
+  const badgeSnippets = {
+    markdown: `[![Status](${badgeUrl})](${pageUrl})`,
+    html: `<a href="${pageUrl}"><img src="${badgeUrl}" alt="Status" /></a>`,
+  };
+
+  function copyBadge() {
+    void navigator.clipboard.writeText(badgeSnippets[badgeTab]).then(() => {
+      setBadgeCopied(true);
+      setTimeout(() => setBadgeCopied(false), 1500);
+    });
+  }
+
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
@@ -195,9 +216,29 @@ function StatusPageEditorForm({
             />
             {customDomain && customDomain === page.customDomain && (
               <div className="rounded-md border bg-muted/30 px-3 py-3 space-y-2">
-                <p className="text-xs text-muted-foreground">
-                  Add this DNS record at your domain registrar:
-                </p>
+                {(() => {
+                  const provider = page.detectedDnsProvider ? DNS_PROVIDER_INFO[page.detectedDnsProvider] : null;
+                  return provider ? (
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">
+                        Add this DNS record at your domain registrar:
+                      </p>
+                      <a
+                        href={provider.buildUrl(customDomain)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs font-medium text-brand-green hover:underline"
+                      >
+                        Open {provider.label}
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Add this DNS record at your domain registrar:
+                    </p>
+                  );
+                })()}
                 <div className="font-mono text-xs bg-background rounded px-2 py-1.5 border">
                   <span className="text-muted-foreground">CNAME</span>{' '}
                   <span className="font-semibold">{customDomain}</span>{' → '}
@@ -242,6 +283,45 @@ function StatusPageEditorForm({
               onCheckedChange={setIsPublic}
             />
             <Label htmlFor="sp-public">Public</Label>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Status Badge</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Embed a live status badge in your README or website.
+          </p>
+          <Image src={`/api/badges/status-pages/${slug}`} alt="Status badge preview" height={20} width={200} unoptimized style={{ width: 'auto', height: '20px' }} />
+          <div className="space-y-2">
+            <div className="flex gap-1 border-b border-brand-line">
+              {(['markdown', 'html'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setBadgeTab(tab)}
+                  className={cn(
+                    'px-3 py-1.5 text-xs font-medium transition-colors border-b-2 -mb-px',
+                    badgeTab === tab
+                      ? 'border-brand-green text-brand-green'
+                      : 'border-transparent text-brand-muted hover:text-brand-text'
+                  )}
+                >
+                  {tab === 'markdown' ? 'Markdown' : 'HTML'}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 font-mono text-xs bg-muted rounded px-2 py-1.5 border truncate">
+                {badgeSnippets[badgeTab]}
+              </code>
+              <Button size="sm" variant="outline" className="shrink-0 h-7 w-7 p-0" onClick={copyBadge}>
+                {badgeCopied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

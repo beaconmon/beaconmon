@@ -232,6 +232,7 @@ export default function FeaturesPage() {
                   '90-day uptime history bars',
                   'Active incident banners',
                   'Scheduled maintenance windows',
+                  'Embeddable status badge (Markdown + HTML)',
                   'No Beaconmon branding on paid plans',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">

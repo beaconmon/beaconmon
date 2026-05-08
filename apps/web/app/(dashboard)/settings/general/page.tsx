@@ -12,6 +12,12 @@ const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 export default function GeneralPage() {
   const { data: session } = useSession();
   const updateSettings = useUpdateTeamSettings();
+  const updateTeamName = useUpdateTeamSettings();
+
+  const sessionTeamName = session?.teamName ?? '';
+  const [teamNameOverride, setTeamNameOverride] = useState<string | null>(null);
+  const teamName = teamNameOverride ?? sessionTeamName;
+  const [teamNameSaved, setTeamNameSaved] = useState(false);
 
   const [agencyName, setAgencyName] = useState('');
   const [brandColor, setBrandColor] = useState('#1e40af');
@@ -20,6 +26,18 @@ export default function GeneralPage() {
   const [saved, setSaved] = useState(false);
 
   const isViewer = session?.role === 'viewer';
+
+  async function handleTeamNameSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!teamName.trim()) return;
+    setTeamNameSaved(false);
+    try {
+      await updateTeamName.mutateAsync({ name: teamName.trim() });
+      setTeamNameSaved(true);
+    } catch {
+      // error shown via mutation state
+    }
+  }
 
   function handleColorBlur() {
     if (brandColor && !HEX_RE.test(brandColor)) {
@@ -48,6 +66,44 @@ export default function GeneralPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Workspace</CardTitle>
+          <CardDescription>The name that appears across your dashboard and team switcher.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={(e) => void handleTeamNameSubmit(e)} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-brand-text" htmlFor="team-name">
+                Workspace name
+              </label>
+              <Input
+                id="team-name"
+                type="text"
+                placeholder={session?.teamName ?? 'My Workspace'}
+                value={teamName}
+                onChange={(e) => { setTeamNameOverride(e.target.value); setTeamNameSaved(false); }}
+                disabled={isViewer}
+                maxLength={100}
+              />
+            </div>
+            {isViewer ? (
+              <p className="text-xs text-brand-muted">Contact an admin to update workspace settings.</p>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Button type="submit" disabled={updateTeamName.isPending || !teamName.trim()}>
+                  {updateTeamName.isPending ? 'Saving…' : 'Save'}
+                </Button>
+                {teamNameSaved && <p className="text-sm text-brand-green">Saved.</p>}
+                {updateTeamName.isError && (
+                  <p className="text-sm text-red-400">{updateTeamName.error?.message}</p>
+                )}
+              </div>
+            )}
+          </form>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Report branding</CardTitle>

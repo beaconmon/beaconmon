@@ -1,6 +1,8 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { statusPageRepository } from '@/lib/repositories/status-pages';
 import { getRedis } from '@/lib/redis';
+import { detectDnsProvider } from '@/lib/dns-provider-detect';
+import { STATUS_PAGE_CACHE_PREFIX } from '@beaconmon/status-pages';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
 import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/api/errors';
@@ -43,10 +45,17 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
     rest.customDomain !== undefined &&
     rest.customDomain !== existing.customDomain;
 
+  const detectedDnsProvider = rest.customDomain
+    ? await detectDnsProvider(rest.customDomain)
+    : domainChanging
+      ? null
+      : undefined;
+
   const updateData = {
     ...rest,
-    // Reset verified flag whenever domain changes (including being cleared)
+    // Reset verified flag and re-detect provider whenever domain changes
     ...(domainChanging && { customDomainVerified: false }),
+    ...(detectedDnsProvider !== undefined && { detectedDnsProvider }),
   };
 
   let updated: Awaited<ReturnType<typeof statusPageRepository.update>>;
@@ -59,6 +68,17 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
     throw err;
   }
 
+  const redis = getRedis();
+
+  // Invalidate status page cache whenever monitors or public settings change
+  if (updated && (monitorIds !== undefined || rest.isPublic !== undefined)) {
+    try {
+      await redis.del(`${STATUS_PAGE_CACHE_PREFIX}:${updated.slug}`);
+    } catch (err) {
+      logger.warn({ service: 'web', teamId, statusPageId: params.id, err }, 'Failed to invalidate status page cache');
+    }
+  }
+
   // Remove old custom domain from Redis when domain changes or page is made private
   const shouldRemoveDomain =
     (domainChanging && existing.customDomain) ||
@@ -66,7 +86,6 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
 
   if (shouldRemoveDomain && existing.customDomain) {
     try {
-      const redis = getRedis();
       await redis.hdel('custom_domains', existing.customDomain);
     } catch (err) {
       logger.warn({ service: 'web', teamId, statusPageId: params.id, err }, 'Failed to remove old custom domain from Redis');
