@@ -34,6 +34,10 @@ const FEATURES = [
     heading: 'SLO tracking with burn-rate alerts',
     body: 'Set per-monitor uptime targets. Beaconmon tracks your error budget in real time and fires burn-rate alerts before your SLO period is blown. Fast and slow burn thresholds are both configurable.',
   },
+  {
+    heading: 'Status badge for READMEs',
+    body: 'Embed a live status badge in any GitHub README, docs site, or internal wiki. One line of Markdown or HTML — the badge updates automatically as your monitors change state.',
+  },
 ];
 
 const WEBHOOK_PREVIEW = {
