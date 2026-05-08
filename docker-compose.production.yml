@@ -10,6 +10,7 @@ name: beaconmon
 
 x-web: &web
   image: ghcr.io/${GHCR_OWNER}/beaconmon-web:latest
+  pull_policy: always
   restart: unless-stopped
   env_file: .env
   stop_grace_period: 15s
@@ -21,6 +22,7 @@ x-web: &web
 
 x-workers: &workers
   image: ghcr.io/${GHCR_OWNER}/beaconmon-workers:latest
+  pull_policy: always
   restart: unless-stopped
   env_file: .env
   stop_grace_period: 15s
