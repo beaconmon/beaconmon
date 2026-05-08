@@ -121,7 +121,7 @@ export default function ForEcommercePage() {
                 What Beaconmon does for your store
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Set up monitors for your homepage, product pages, cart, and checkout separately. Know exactly which part of the funnel is broken — not just that "the site is down."
+                Set up monitors for your homepage, product pages, cart, and checkout separately. Know exactly which part of the funnel is broken — not just that &ldquo;the site is down.&rdquo;
               </p>
             </div>
             <ul className="space-y-5">

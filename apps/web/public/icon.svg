@@ -4,21 +4,33 @@
   <style>
     .bg { fill: #0f172a; }
     .signal { stroke: #06b6d4; }
+    .signal-dot { fill: #06b6d4; }
     @media (prefers-color-scheme: light) {
       .bg { fill: #f0f9ff; }
       .signal { stroke: #0284c7; }
-    }
-  </style>
-  <rect class="bg" width="32" height="32" rx="7"/>
-  <path class="signal" d="M4 22a12 12 0 0 0 24 0" fill="none" stroke-width="2" stroke-linecap="round" opacity=".28"/>
-  <path class="signal" d="M8 22a8 8 0 0 0 16 0" fill="none" stroke-width="2.2" stroke-linecap="round" opacity=".62"/>
-  <path class="signal" d="M12 22a4 4 0 0 0 8 0" fill="none" stroke-width="2.5" stroke-linecap="round"/>
-  <path class="signal" stroke-width="2" stroke-linecap="round" opacity=".45" d="M16 24.5V28"/>
-  <circle cx="16" cy="22" r="2.5" fill="#06b6d4" class="signal-dot"/>
-  <style>
-    .signal-dot { fill: #06b6d4; }
-    @media (prefers-color-scheme: light) {
       .signal-dot { fill: #0284c7; }
     }
+    @keyframes pulse-outer {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes pulse-mid {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    @keyframes pulse-inner {
+      0%, 100% { opacity: 0.75; }
+      50% { opacity: 1; }
+    }
+    .arc-outer { animation: pulse-outer 2s ease-in-out infinite; }
+    .arc-mid   { animation: pulse-mid   2s ease-in-out infinite; animation-delay: -0.45s; }
+    .arc-inner { animation: pulse-inner 2s ease-in-out infinite; animation-delay: -0.9s; }
+    .dot-pulse { animation: pulse-inner 2s ease-in-out infinite; animation-delay: -1.35s; }
   </style>
+  <rect class="bg" width="32" height="32" rx="7"/>
+  <path class="signal arc-outer" d="M4 22a12 12 0 0 0 24 0" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+  <path class="signal arc-mid"   d="M8 22a8 8 0 0 0 16 0"  fill="none" stroke-width="2.8" stroke-linecap="round"/>
+  <path class="signal arc-inner" d="M12 22a4 4 0 0 0 8 0"  fill="none" stroke-width="3"   stroke-linecap="round"/>
+  <path class="signal" stroke-width="2.5" stroke-linecap="round" opacity=".7" d="M16 24.5V28"/>
+  <circle class="signal-dot dot-pulse" cx="16" cy="22" r="2.5"/>
 </svg>
