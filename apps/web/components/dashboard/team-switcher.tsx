@@ -61,11 +61,15 @@ export function TeamSwitcher() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamId }),
     });
-    if (!res.ok) return;
-    // All cached queries are team-scoped — drop them so the next route fetches
-    // for the new team. router.refresh() re-renders any server components.
+    if (!res.ok) {
+      console.error('Failed to switch teams', { status: res.status, teamId });
+      return;
+    }
+    // Drop all cached queries (team-scoped) and navigate to a safe root page.
+    // router.refresh() would re-render the current page (e.g. /monitors/[id])
+    // which belongs to the old team and would 403 under the new team context.
     await queryClient.invalidateQueries();
-    router.refresh();
+    router.push('/overview');
   }
 
   return (
