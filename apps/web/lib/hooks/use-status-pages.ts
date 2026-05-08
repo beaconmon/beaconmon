@@ -26,6 +26,7 @@ export function useStatusPages() {
 
 export interface StatusPageDetail extends StatusPageRow {
   customDomainVerified: boolean;
+  detectedDnsProvider: string | null;
   monitors: { monitorId: string; displayOrder: number }[];
 }
 

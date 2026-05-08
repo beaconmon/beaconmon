@@ -14,6 +14,7 @@ export interface StatusPageRow {
 
 export interface StatusPageDetail extends StatusPageRow {
   customDomainVerified: boolean;
+  detectedDnsProvider: string | null;
   monitors: { monitorId: string; displayOrder: number }[];
 }
 
@@ -30,6 +31,7 @@ const detailSelect = {
   slug: true,
   customDomain: true,
   customDomainVerified: true,
+  detectedDnsProvider: true,
   isPublic: true,
   createdAt: true,
   updatedAt: true,
@@ -102,7 +104,7 @@ export const statusPageRepository: {
   update(
     teamId: string,
     id: string,
-    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; isPublic?: boolean },
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; isPublic?: boolean },
     monitorIds?: string[]
   ): Promise<StatusPageDetail | null>;
 } = {
@@ -167,7 +169,7 @@ export const statusPageRepository: {
   async update(
     teamId: string,
     id: string,
-    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; isPublic?: boolean },
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; isPublic?: boolean },
     monitorIds?: string[]
   ) {
     return prisma.$transaction(async (tx) => {
@@ -189,6 +191,7 @@ export const statusPageRepository: {
           ...(data.name !== undefined && { name: data.name }),
           ...(data.customDomain !== undefined && { customDomain: data.customDomain }),
           ...(data.customDomainVerified !== undefined && { customDomainVerified: data.customDomainVerified }),
+          ...(data.detectedDnsProvider !== undefined && { detectedDnsProvider: data.detectedDnsProvider }),
           ...(data.isPublic !== undefined && { isPublic: data.isPublic }),
         },
       });

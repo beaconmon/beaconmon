@@ -47,6 +47,7 @@ export const checkResultRepository = {
         responseTimeMs: true,
         errorType: true,
         errorMessage: true,
+        region: true,
       },
       orderBy: { checkedAt: 'desc' },
       take: options.limit,
