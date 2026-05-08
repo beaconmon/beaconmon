@@ -2,10 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import LogoMark from './LogoMark';
+
+const SOLUTIONS_LINKS: [string, string][] = [
+  ['/for/agencies', 'Agencies'],
+  ['/for/freelancers', 'Freelancers'],
+  ['/for/ecommerce', 'E-commerce'],
+  ['/for/developers', 'Developers'],
+];
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -52,24 +61,43 @@ export default function NavBar() {
       }`}
     >
       <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 flex items-center justify-between h-16">
-        {/* Logo */}
         <Link href="/" className="inline-flex items-center gap-[10px] font-bold text-[16px] tracking-[-0.01em]">
-          <span className="relative inline-flex items-center justify-center w-[22px] h-[22px]">
-            <span className="absolute w-[22px] h-[22px] rounded-full border-[1.5px] border-brand-green opacity-40 animate-logo-pulse" />
-            <span className="absolute w-2 h-2 rounded-full bg-brand-green shadow-[0_0_10px_#00E57A]" />
-          </span>
+          <LogoMark />
           <span>Beaconmon</span>
         </Link>
 
-        {/* Nav links */}
         <div className="flex gap-8 text-sm text-brand-dim max-[880px]:hidden">
-          <Link href="#features" className="hover:text-brand-text transition-colors duration-150">Features</Link>
-          <Link href="#pricing" className="hover:text-brand-text transition-colors duration-150">Pricing</Link>
-          <Link href="#status" className="hover:text-brand-text transition-colors duration-150">Status Pages</Link>
-          <Link href="#docs" className="hover:text-brand-text transition-colors duration-150">Docs</Link>
+          <div
+            className="relative"
+            onMouseEnter={() => setSolutionsOpen(true)}
+            onMouseLeave={() => setSolutionsOpen(false)}
+          >
+            <button className="flex items-center gap-1 hover:text-brand-text transition-colors duration-150 cursor-default">
+              Solutions
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M3 4.5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {solutionsOpen && (
+              <div className="absolute top-full left-0 pt-3">
+                <div className="bg-[rgba(10,10,15,0.97)] border border-brand-line-soft rounded-xl p-1.5 min-w-[170px] shadow-xl">
+                  {SOLUTIONS_LINKS.map(([href, label]) => (
+                    <Link
+                      key={label}
+                      href={href}
+                      className="block px-3 py-2 text-sm text-brand-dim hover:text-brand-text hover:bg-white/5 rounded-lg transition-colors duration-150"
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          <Link href="/features" className="hover:text-brand-text transition-colors duration-150">Features</Link>
+          <Link href="/pricing" className="hover:text-brand-text transition-colors duration-150">Pricing</Link>
         </div>
 
-        {/* CTA */}
         <div className="flex items-center gap-5">
           <Link href="/sign-in" className="text-sm text-brand-dim hover:text-brand-text transition-colors duration-150 max-[880px]:hidden">
             Sign in
@@ -98,41 +126,39 @@ export default function NavBar() {
           </button>
         </div>
 
-        {/* Mobile menu drawer */}
         {menuOpen && (
           <div
             id="mobile-menu"
             className="max-[880px]:block hidden absolute top-16 left-0 right-0 border-b border-brand-line-soft bg-[rgba(10,10,15,0.97)] backdrop-blur-[10px] px-5 py-4"
           >
             <div className="flex flex-col gap-1">
-              <Link
-                href="#features"
-                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                href="#pricing"
-                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <Link
-                href="#status"
-                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Status Pages
-              </Link>
-              <Link
-                href="#docs"
-                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Docs
-              </Link>
+              <p className="py-1 text-[11px] tracking-[0.08em] uppercase text-brand-muted font-semibold">Solutions</p>
+              {SOLUTIONS_LINKS.map(([href, label]) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="py-2 pl-2 text-sm text-brand-dim hover:text-brand-text transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              ))}
+              <div className="border-t border-brand-line-soft mt-2 pt-2">
+                <Link
+                  href="/features"
+                  className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+              </div>
               <div className="border-t border-brand-line-soft mt-3 pt-3">
                 <Link
                   href="/sign-in"

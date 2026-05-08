@@ -1,7 +1,8 @@
-import Link from 'next/link';
 import NavBar from '@/components/marketing/NavBar';
 import DashboardPreview from '@/components/marketing/DashboardPreview';
 import CtaForm from '@/components/marketing/CtaForm';
+import CheckIcon from '@/components/marketing/CheckIcon';
+import PricingCard, { PRICING_TIERS } from '@/components/marketing/PricingCard';
 import { RevealObserver } from '@/components/reveal-observer';
 import {
   Accordion,
@@ -9,17 +10,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-
-/* ─────────────────────────────────────────────
-   Small helpers
-───────────────────────────────────────────── */
-function CheckIcon() {
-  return (
-    <span className="inline-flex items-center justify-center w-[14px] h-[14px] rounded-full bg-[rgba(0,229,122,0.15)] text-brand-green text-[9px] shrink-0">
-      ✓
-    </span>
-  );
-}
 
 /* ─────────────────────────────────────────────
    Page
@@ -383,69 +373,7 @@ export default function LandingPage() {
             <p className="text-brand-dim text-[17px]">Start free. Upgrade when you need more.</p>
           </div>
           <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5 items-stretch">
-            {/* FREE */}
-            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 px-7 flex flex-col relative">
-              <div className="text-[13px] text-brand-muted font-semibold tracking-[0.08em] uppercase mb-3">Free</div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-[44px] font-extrabold tracking-[-0.03em]">$0</span>
-                <span className="text-brand-muted text-[14px]">/ month</span>
-              </div>
-              <p className="text-brand-dim text-[14px] mb-7 leading-[1.4] min-h-[40px]">For hobby projects and side sites.</p>
-              <ul className="space-y-0 mb-7 flex-1">
-                {['5 monitors', '5-minute check intervals', 'Email alerts', '1 status page', 'SSL & domain expiry alerts', '7-day history'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-[10px] py-2 text-[14px] text-brand-dim border-t border-brand-line-soft first:border-t-0">
-                    <CheckIcon />
-                    <span>{i === 0 ? <strong className="text-brand-text font-medium">{f}</strong> : f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/sign-up" className="inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-bg2 text-brand-text border border-brand-line hover:bg-brand-bg3 hover:border-brand-muted transition-all">
-                Start free — no card needed
-              </Link>
-            </div>
-
-            {/* PRO */}
-            <div className="reveal relative bg-[linear-gradient(180deg,rgba(0,229,122,0.04),#0E0E14_40%)] border border-[rgba(0,229,122,0.3)] rounded-2xl p-8 px-7 flex flex-col translate-y-[-6px] max-[880px]:translate-y-0 shadow-[0_20px_40px_-20px_rgba(0,229,122,0.2)]">
-              <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-brand-green text-[#001a0c] text-[11px] font-bold px-3 py-1 rounded-full tracking-[0.04em] uppercase whitespace-nowrap">Recommended</div>
-              <div className="text-[13px] text-brand-green font-semibold tracking-[0.08em] uppercase mb-3">Pro</div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-[44px] font-extrabold tracking-[-0.03em]">$15</span>
-                <span className="text-brand-muted text-[14px]">/ month</span>
-              </div>
-              <p className="text-brand-dim text-[14px] mb-7 leading-[1.4] min-h-[40px]">For freelancers with real client work.</p>
-              <ul className="space-y-0 mb-7 flex-1">
-                {['25 monitors', '1-minute check intervals', 'Email + Slack + webhook alerts', '3 status pages (custom domain)', '90-day history', 'Priority support'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-[10px] py-2 text-[14px] text-brand-dim border-t border-brand-line-soft first:border-t-0">
-                    <CheckIcon />
-                    <span>{i === 0 ? <strong className="text-brand-text font-medium">{f}</strong> : f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/sign-up" className="inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-green text-[#001a0c] shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]">
-                Start 14-day trial
-              </Link>
-            </div>
-
-            {/* BUSINESS */}
-            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 px-7 flex flex-col relative">
-              <div className="text-[13px] text-brand-muted font-semibold tracking-[0.08em] uppercase mb-3">Business</div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-[44px] font-extrabold tracking-[-0.03em]">$49</span>
-                <span className="text-brand-muted text-[14px]">/ month</span>
-              </div>
-              <p className="text-brand-dim text-[14px] mb-7 leading-[1.4] min-h-[40px]">For agencies managing many clients.</p>
-              <ul className="space-y-0 mb-7 flex-1">
-                {['Unlimited monitors', '30-second check intervals', 'All alert channels incl. SMS', 'Unlimited status pages', 'Heartbeat monitoring', '1-year history', 'Multi-client agency dashboard'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-[10px] py-2 text-[14px] text-brand-dim border-t border-brand-line-soft first:border-t-0">
-                    <CheckIcon />
-                    <span>{i === 0 ? <strong className="text-brand-text font-medium">{f}</strong> : f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/sign-up" className="inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-bg2 text-brand-text border border-brand-line hover:bg-brand-bg3 hover:border-brand-muted transition-all">
-                Start 14-day trial
-              </Link>
-            </div>
+            {PRICING_TIERS.map((t) => <PricingCard key={t.tier} {...t} />)}
           </div>
           <p className="text-center mt-8 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
             All plans include SSL monitoring, domain expiry alerts, and public status pages. Annual billing saves 20%. No contracts. Cancel anytime.
@@ -544,59 +472,6 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
-
-      {/* ====== FOOTER ====== */}
-      <footer className="border-t border-brand-line-soft pt-14 pb-8 bg-brand-bg1">
-        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="grid grid-cols-[1.4fr_repeat(3,1fr)] max-[880px]:grid-cols-2 max-[520px]:grid-cols-1 gap-12 max-[880px]:gap-8 mb-12">
-            {/* Brand */}
-            <div>
-              <Link href="/" className="inline-flex items-center gap-[10px] font-bold text-[16px] tracking-[-0.01em]">
-                <span className="relative inline-flex items-center justify-center w-[22px] h-[22px]">
-                  <span className="absolute w-[22px] h-[22px] rounded-full border-[1.5px] border-brand-green opacity-40 animate-logo-pulse" />
-                  <span className="absolute w-2 h-2 rounded-full bg-brand-green shadow-[0_0_10px_#00E57A]" />
-                </span>
-                <span>Beaconmon</span>
-              </Link>
-              <p className="text-[13px] text-brand-muted mt-[14px] max-w-[260px]">Know before your users do.</p>
-            </div>
-            {/* Product */}
-            <div>
-              <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Product</h4>
-              <ul className="space-y-0">
-                {([['#features', 'Features'], ['#pricing', 'Pricing'], ['/changelog', 'Changelog']] as [string, string][]).map(([href, label]) => (
-                  <li key={label} className="py-[6px]"><Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            {/* Resources */}
-            <div>
-              <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Resources</h4>
-              <ul className="space-y-0">
-                {([['/docs', 'Documentation'], ['/docs/api', 'API'], ['/status', 'Status']] as [string, string][]).map(([href, label]) => (
-                  <li key={label} className="py-[6px]"><Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            {/* Company */}
-            <div>
-              <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Company</h4>
-              <ul className="space-y-0">
-                {([['/about', 'About'], ['/blog', 'Blog'], ['https://twitter.com/beaconmon', 'Twitter / X'], ['/contact', 'Contact']] as [string, string][]).map(([href, label]) => (
-                  <li key={label} className="py-[6px]"><Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="pt-6 border-t border-brand-line-soft flex justify-between flex-wrap gap-4 text-[13px] text-brand-muted">
-            <div>© 2026 Beaconmon</div>
-            <div className="flex gap-6">
-              <Link href="/privacy" className="hover:text-brand-dim transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-brand-dim transition-colors">Terms of Service</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       <RevealObserver />
     </>

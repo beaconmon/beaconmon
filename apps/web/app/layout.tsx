@@ -16,6 +16,11 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Beaconmon — Uptime Monitoring',
   description: 'Website uptime and performance monitoring',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+  },
 };
 
 export default function RootLayout({
