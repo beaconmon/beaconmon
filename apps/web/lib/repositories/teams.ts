@@ -26,9 +26,16 @@ export interface MembershipRow {
   role: string;
 }
 
+export interface TeamPlanInfo {
+  plan: string;
+  trialEndsAt: Date | null;
+  subscription: { status: string } | null;
+}
+
 export const teamRepository: {
   findById(teamId: string): Promise<TeamRow | null>;
   findCreatedAt(teamId: string): Promise<Date | null>;
+  findPlanInfo(teamId: string): Promise<TeamPlanInfo | null>;
   findMembers(teamId: string): Promise<TeamMemberRow[]>;
   findUserMemberships(userId: string): Promise<MembershipRow[]>;
   isMember(teamId: string, userId: string): Promise<boolean>;
@@ -56,6 +63,18 @@ export const teamRepository: {
       select: { createdAt: true },
     });
     return row?.createdAt ?? null;
+  },
+
+  async findPlanInfo(teamId) {
+    const row = await prisma.team.findUnique({
+      where: { id: teamId },
+      select: {
+        plan: true,
+        trialEndsAt: true,
+        subscription: { select: { status: true } },
+      },
+    });
+    return row as TeamPlanInfo | null;
   },
 
   async findMembers(teamId) {

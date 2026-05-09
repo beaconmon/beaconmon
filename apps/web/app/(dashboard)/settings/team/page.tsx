@@ -148,7 +148,7 @@ export default function TeamPage() {
 
   if (sessionQ.isLoading || membersQ.isLoading) {
     return (
-      <div className="max-w-2xl space-y-4">
+      <div className="space-y-4">
         <Skeleton className="h-48 rounded-lg" />
       </div>
     );
@@ -158,7 +158,7 @@ export default function TeamPage() {
   const invitations = invitationsQ.data ?? [];
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="space-y-6">
       {canManage && (
         <Card>
           <CardHeader className="pb-3">
@@ -207,9 +207,9 @@ export default function TeamPage() {
                       {format(new Date(member.joinedAt), 'MMM d, yyyy')}
                     </td>
                     {canManage && (
-                      <td className="px-6 py-3 text-right space-x-2">
+                      <td className="px-6 py-3">
                         {showActions && (
-                          <>
+                          <div className="flex items-center justify-end gap-2">
                             {!isOwner && (
                               <Select
                                 value={member.role}
@@ -237,7 +237,7 @@ export default function TeamPage() {
                             >
                               Remove
                             </Button>
-                          </>
+                          </div>
                         )}
                       </td>
                     )}

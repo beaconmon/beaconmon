@@ -224,6 +224,10 @@ R2_ACCOUNT_ID=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
 
+# Slack OAuth (incoming-webhook scope)
+SLACK_CLIENT_ID=
+SLACK_CLIENT_SECRET=
+
 # Multi-location checks (Cloudflare Workers — deployed 2026-05-07)
 FEATURE_MULTI_LOCATION=true
 REGION_PROBE_SECRET=             # 32+ char shared secret; also set via: wrangler secret put REGION_PROBE_SECRET
