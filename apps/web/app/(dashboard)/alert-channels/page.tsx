@@ -105,7 +105,14 @@ function DeleteButton({ channel }: { channel: AlertChannelRow }) {
 
 export default function AlertChannelsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [notification, setNotification] = useState<{ success: boolean; message: string } | null>(null);
+  const [notification, setNotification] = useState<{ success: boolean; message: string } | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get('success');
+    const err = params.get('error');
+    const key = success ?? err ?? null;
+    return key && SLACK_MESSAGES[key] ? { success: !!success, message: SLACK_MESSAGES[key]! } : null;
+  });
   const { data: channels, isLoading, isError, error, refetch } = useAlertChannels();
 
   useEffect(() => {
@@ -114,7 +121,6 @@ export default function AlertChannelsPage() {
     const err = params.get('error');
     const key = success ?? err ?? null;
     if (key && SLACK_MESSAGES[key]) {
-      setNotification({ success: !!success, message: SLACK_MESSAGES[key]! });
       window.history.replaceState({}, '', window.location.pathname);
       if (success) refetch();
     }
