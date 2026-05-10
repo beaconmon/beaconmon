@@ -119,7 +119,7 @@ export default function VsUptimeRobotPage() {
           </Link>
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
-            Beaconmon vs UptimeRobot —<br />
+            Beaconmon vs UptimeRobot<br />
             <span className="text-brand-green">an honest comparison.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">

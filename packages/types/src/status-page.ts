@@ -28,6 +28,7 @@ export interface StatusPageCacheData {
   overallStatus: StatusPageOverallStatus;
   monitors: StatusPageMonitorData[];
   cachedAt: string;
+  hideBranding?: boolean;
 }
 
 /**
@@ -80,7 +81,8 @@ export function assembleStatusPageCacheData(
   dbData: StatusPageDbData,
   uptimeMap: Record<string, number>,
   dailyStatsMap: Map<string, DailyUptimeStat[]> = new Map(),
-  idHasher: (rawId: string) => string = (id) => id
+  idHasher: (rawId: string) => string = (id) => id,
+  hideBranding = false
 ): StatusPageCacheData {
   const monitors: StatusPageMonitorData[] = dbData.monitors.map((spm) => {
     const m = spm.monitor;
@@ -111,5 +113,6 @@ export function assembleStatusPageCacheData(
     overallStatus: computeOverallStatus(monitors),
     monitors,
     cachedAt: new Date().toISOString(),
+    ...(hideBranding ? { hideBranding: true } : {}),
   };
 }

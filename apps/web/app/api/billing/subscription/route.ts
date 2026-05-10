@@ -11,8 +11,10 @@ export const GET = withAuth(async (_req, { teamId }) => {
   return Response.json({
     plan: subscription.plan,
     status: subscription.status,
+    billingPeriod: subscription.billingPeriod,
     currentPeriodEnd: subscription.currentPeriodEnd?.toISOString() ?? null,
     trialEndsAt: subscription.trialEndsAt?.toISOString() ?? null,
     hasPaddleCustomer: Boolean(subscription.paddleCustomerId),
+    paddleSubscriptionId: subscription.paddleSubscriptionId,
   });
 });

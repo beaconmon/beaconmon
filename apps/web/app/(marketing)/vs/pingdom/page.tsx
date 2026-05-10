@@ -113,11 +113,11 @@ export default function VsPingdomPage() {
           </Link>
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
-            Beaconmon vs Pingdom —<br />
+            Beaconmon vs Pingdom<br />
             <span className="text-brand-green">an honest comparison.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            Pingdom is a solid enterprise monitoring tool — but it has no free plan, charges extra for status pages, and lacks domain expiry and content monitoring. Beaconmon covers all of that starting at $0.
+            Pingdom is a solid enterprise monitoring tool, but it has no free plan, charges extra for status pages, and lacks domain expiry and content monitoring. Beaconmon covers all of that starting at $0.
           </p>
         </div>
       </section>

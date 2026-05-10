@@ -50,6 +50,11 @@ enum SubscriptionStatus {
   incomplete
 }
 
+enum BillingPeriod {
+  monthly
+  annual
+}
+
 enum ResolutionType {
   automatic
   manual
@@ -216,6 +221,7 @@ model Subscription {
   paddleSubscriptionId String?            @unique @map("paddle_subscription_id")
   plan                 PlanTier           @default(free)
   status               SubscriptionStatus @default(trialing)
+  billingPeriod        BillingPeriod      @default(monthly) @map("billing_period")
   trialEndsAt          DateTime?          @map("trial_ends_at")
   currentPeriodEnd     DateTime?          @map("current_period_end")
   createdAt            DateTime           @default(now()) @map("created_at")

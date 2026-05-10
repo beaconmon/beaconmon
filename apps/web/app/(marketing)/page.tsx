@@ -45,7 +45,7 @@ export default function LandingPage() {
                 <span className="text-brand-green">Before your clients do.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon monitors your websites every 30 seconds and alerts you instantly via email, Slack, or SMS — so you&apos;re always the first to know.
+                Beaconmon monitors your websites every 30 seconds and alerts you instantly via email, Slack, or SMS, so you&apos;re always the first to know.
               </p>
 
               <CtaForm />
@@ -93,7 +93,7 @@ export default function LandingPage() {
               I found out my client&apos;s store was down because they called me. Not my monitoring tool.
             </blockquote>
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
-              It&apos;s happened to every freelancer and agency at least once. The site goes down at 2am on a Friday. By the time anyone notices, the damage is done — lost sales, lost trust, a very uncomfortable conversation.
+              It&apos;s happened to every freelancer and agency at least once. The site goes down at 2am on a Friday. By the time anyone notices, the damage is done: lost sales, lost trust, an uncomfortable conversation with the client.
             </p>
             <span className="text-brand-green text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
@@ -113,7 +113,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-2">
             {[
               {
-                num: '01 — Add your sites',
+                num: '01. Add your sites',
                 icon: (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -124,7 +124,7 @@ export default function LandingPage() {
                 body: 'Beaconmon starts monitoring immediately. About 30 seconds per site — no agents, no DNS config, no code changes.',
               },
               {
-                num: '02 — Get alerted instantly',
+                num: '02. Get alerted instantly',
                 icon: (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
@@ -135,7 +135,7 @@ export default function LandingPage() {
                 body: 'Down, slow, SSL expiring, domain renewing — Beaconmon fires an alert. Email, Slack, SMS, or webhook. Usually within 60 seconds.',
               },
               {
-                num: '03 — Share your status',
+                num: '03. Share your status',
                 icon: (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />

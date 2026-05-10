@@ -154,7 +154,7 @@ export default function ForAgenciesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Add monitoring to every retainer.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Start with 5 monitors free. Business plan starts at $49/mo for unlimited monitors.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Start with 5 monitors free. Business plan starts at $59/mo for unlimited monitors.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

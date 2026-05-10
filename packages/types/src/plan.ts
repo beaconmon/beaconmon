@@ -2,7 +2,7 @@ export type PlanTier = 'free' | 'pro' | 'business';
 
 export const PLAN_LIMITS = {
   free: {
-    monitors: 5,
+    monitors: 10,
     checkIntervalSeconds: 300, // 5 minutes minimum
     historyDays: 7,
     statusPages: 1,

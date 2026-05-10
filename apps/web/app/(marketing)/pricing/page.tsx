@@ -1,5 +1,5 @@
 import NavBar from '@/components/marketing/NavBar';
-import PricingCard, { PRICING_TIERS } from '@/components/marketing/PricingCard';
+import PricingToggle from '@/components/marketing/PricingToggle';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import {
@@ -16,16 +16,17 @@ export const metadata: Metadata = {
 };
 
 const FEATURE_MATRIX = [
-  { feature: 'Monitors', free: '5', pro: '25', business: 'Unlimited' },
+  { feature: 'Monitors', free: '10', pro: '25', business: 'Unlimited' },
   { feature: 'Check frequency', free: '5 min', pro: '1 min', business: '30 sec' },
   { feature: 'Monitor types', free: 'All 6', pro: 'All 6', business: 'All 6' },
   { feature: 'Alert channels', free: '1', pro: '5', business: 'Unlimited' },
   { feature: 'Email alerts', free: '✓', pro: '✓', business: '✓' },
   { feature: 'Slack alerts', free: '—', pro: '✓', business: '✓' },
   { feature: 'Webhook alerts', free: '—', pro: '✓', business: '✓' },
-  { feature: 'SMS alerts', free: '—', pro: '—', business: '✓' },
+  { feature: 'SMS alerts', free: '—', pro: '—', business: 'Soon' },
   { feature: 'Status pages', free: '1', pro: '3', business: 'Unlimited' },
   { feature: 'Custom status page domain', free: '—', pro: '✓', business: '✓' },
+  { feature: 'Remove "Powered by" badge', free: '—', pro: '✓', business: '✓' },
   { feature: 'SSL expiry alerts', free: '✓', pro: '✓', business: '✓' },
   { feature: 'Domain expiry alerts', free: '✓', pro: '✓', business: '✓' },
   { feature: 'Multi-location checks', free: '—', pro: '✓', business: '✓' },
@@ -33,7 +34,7 @@ const FEATURE_MATRIX = [
   { feature: 'Heartbeat monitoring', free: '—', pro: '—', business: '✓' },
   { feature: 'History', free: '7 days', pro: '90 days', business: '1 year' },
   { feature: 'Team members', free: '1', pro: '5', business: 'Unlimited' },
-  { feature: 'Multi-client agency dashboard', free: '—', pro: '—', business: '✓' },
+  { feature: 'Agency dashboard', free: '—', pro: '—', business: 'Soon' },
   { feature: 'Priority support', free: '—', pro: '✓', business: '✓' },
 ];
 
@@ -46,7 +47,7 @@ const BILLING_FAQ = [
   {
     id: 'trial',
     q: 'How does the 14-day trial work?',
-    a: 'When you sign up, your account starts on a full Pro trial automatically. All Pro features are available immediately. If you don\'t upgrade before 14 days, your account reverts to the Free plan — no charge.',
+    a: 'When you sign up, your account starts on a 14-day trial automatically — Pro features if you sign up normally, Business features if you click the Business trial button. All features for your trial tier are available immediately. If you don\'t upgrade before 14 days, your account reverts to the Free plan — no charge.',
   },
   {
     id: 'switch-plans',
@@ -104,9 +105,7 @@ export default function PricingPage() {
       {/* Pricing cards */}
       <section className="pb-[80px]">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5 items-stretch">
-            {PRICING_TIERS.map((t) => <PricingCard key={t.tier} {...t} />)}
-          </div>
+          <PricingToggle />
           <p className="text-center mt-8 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
             All plans include SSL monitoring, domain expiry alerts, and public status pages. Annual billing saves 20%. No contracts. Cancel anytime.
           </p>
@@ -194,7 +193,7 @@ export default function PricingPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Start free. Upgrade when you&apos;re ready.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">5 monitors, no card, no time limit.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors, no card, no time limit.</p>
           <CtaForm className="mx-auto" />
         </div>
       </section>
