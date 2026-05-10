@@ -14,8 +14,8 @@ Slack, or webhook. Includes public status pages, SSL/domain expiry warnings, and
 deep content change monitoring.
 
 **Target users:** freelancers, agencies, small e-commerce businesses.
-**Business model:** freemium subscription — Free / Pro ($15/mo) / Business ($49/mo).
-**Trial:** 14-day Pro trial, no card required. Auto-starts at signup.
+**Business model:** freemium subscription — Free / Pro ($19/mo, $15/mo annual) / Business ($59/mo, $47/mo annual).
+**Trial:** 14-day trial, no card required. Pro trial auto-starts at signup; Business trial starts when clicking the Business CTA (/sign-up?plan=business → POST /api/billing/set-trial-plan).
 **Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Paddle, Resend.
 
 ---
@@ -200,8 +200,13 @@ PADDLE_API_KEY=
 PADDLE_WEBHOOK_SECRET=
 PADDLE_PRO_PRICE_ID=
 PADDLE_BUSINESS_PRICE_ID=
+PADDLE_PRO_ANNUAL_PRICE_ID=
+PADDLE_BUSINESS_ANNUAL_PRICE_ID=
 NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=
 NEXT_PUBLIC_PADDLE_PRO_PRICE_ID=
+NEXT_PUBLIC_PADDLE_BUSINESS_PRICE_ID=
+NEXT_PUBLIC_PADDLE_PRO_ANNUAL_PRICE_ID=
+NEXT_PUBLIC_PADDLE_BUSINESS_ANNUAL_PRICE_ID=
 
 # Email
 RESEND_API_KEY=re_...
@@ -453,7 +458,7 @@ export const features = {
 ```typescript
 export const PLAN_LIMITS = {
   free: {
-    monitors: 5,
+    monitors: 10,
     checkIntervalSeconds: 300,   // 5 minutes minimum
     historyDays: 7,
     statusPages: 1,
@@ -660,7 +665,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
   repository clamps queries to the plan's `historyDays` limit.
 
 - **14-day Pro trial, no card required.** Highest-converting approach for freemium.
-  The free plan limits (5 monitors, 5-min interval) are too restrictive to act as a
+  The free plan limits (10 monitors, 5-min interval) are too restrictive to act as a
   real trial. Trial state tracked in `teams.trial_ends_at` and `subscriptions.status`.
 
 - **HTML-only content monitoring.** Playwright adds ~300MB RAM per instance and

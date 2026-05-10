@@ -57,7 +57,8 @@ export async function warmStatusPageCache(
   ]);
 
   const idHasher = createStatusPageIdHasher(slug, getStatusPageHashSecret());
-  const data = assembleStatusPageCacheData(dbData, uptimeMap, dailyStatsMap, idHasher);
+  const hideBranding = !!(dbData.team && dbData.team.plan !== 'free');
+  const data = assembleStatusPageCacheData(dbData, uptimeMap, dailyStatsMap, idHasher, hideBranding);
 
   // Write to cache (fire and forget — never block the caller on Redis)
   redis

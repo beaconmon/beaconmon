@@ -45,6 +45,7 @@ async function findStatusPageDataBySlug(slug: string) {
     select: {
       slug: true,
       name: true,
+      team: { select: { plan: true } },
       monitors: {
         orderBy: { displayOrder: 'asc' },
         select: {

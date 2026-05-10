@@ -30,7 +30,7 @@ const config: Config = {
   				'line-soft': '#1B1B26',
   				text:        '#ECECF1',
   				dim:         '#B4B4C4',
-  				muted:       '#63636F',
+  				muted:       '#8C8C9D',
   				green:       '#00E57A',
   				'green-dim': '#00B862',
   				red:         '#FF4444',

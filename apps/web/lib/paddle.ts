@@ -6,6 +6,8 @@ const paddleEnvSchema = z.object({
   PADDLE_WEBHOOK_SECRET: z.string().min(1),
   PADDLE_PRO_PRICE_ID: z.string().min(1),
   PADDLE_BUSINESS_PRICE_ID: z.string().min(1),
+  PADDLE_PRO_ANNUAL_PRICE_ID: z.string().min(1),
+  PADDLE_BUSINESS_ANNUAL_PRICE_ID: z.string().min(1),
   NODE_ENV: z.enum(['production', 'development', 'test']).optional(),
 });
 
@@ -38,25 +40,27 @@ export const paddle = new Proxy({} as Paddle, {
   },
 });
 
-// Returns priceId for the given plan — used by billing page to initialize overlay.
-// Routed through the validated env so a missing/typoed var fails loud (not silent).
-export function getPriceId(plan: 'pro' | 'business'): string {
+export function getPriceId(plan: 'pro' | 'business', period: 'monthly' | 'annual' = 'monthly'): string {
   const env = getPaddleEnv();
+  if (period === 'annual') {
+    return plan === 'pro' ? env.PADDLE_PRO_ANNUAL_PRICE_ID : env.PADDLE_BUSINESS_ANNUAL_PRICE_ID;
+  }
   return plan === 'pro' ? env.PADDLE_PRO_PRICE_ID : env.PADDLE_BUSINESS_PRICE_ID;
 }
 
-/**
- * Map a Paddle price ID to one of our plan tiers. Throws via Zod if either
- * `PADDLE_PRO_PRICE_ID` or `PADDLE_BUSINESS_PRICE_ID` is missing — by routing
- * through the validated env (instead of reading process.env directly), we avoid
- * a silent failure mode where a paid Paddle event would map to `free`.
- */
 export function planFromPaddlePriceId(priceId: string | null | undefined): 'free' | 'pro' | 'business' {
   if (!priceId) return 'free';
   const env = getPaddleEnv();
-  if (priceId === env.PADDLE_PRO_PRICE_ID) return 'pro';
-  if (priceId === env.PADDLE_BUSINESS_PRICE_ID) return 'business';
+  if (priceId === env.PADDLE_PRO_PRICE_ID || priceId === env.PADDLE_PRO_ANNUAL_PRICE_ID) return 'pro';
+  if (priceId === env.PADDLE_BUSINESS_PRICE_ID || priceId === env.PADDLE_BUSINESS_ANNUAL_PRICE_ID) return 'business';
   return 'free';
+}
+
+export function billingPeriodFromPaddlePriceId(priceId: string | null | undefined): 'monthly' | 'annual' {
+  if (!priceId) return 'monthly';
+  const env = getPaddleEnv();
+  if (priceId === env.PADDLE_PRO_ANNUAL_PRICE_ID || priceId === env.PADDLE_BUSINESS_ANNUAL_PRICE_ID) return 'annual';
+  return 'monthly';
 }
 
 // Generates a one-time portal session URL for the customer

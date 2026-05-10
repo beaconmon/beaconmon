@@ -87,7 +87,7 @@ const ENTRIES: Entry[] = [
     date: 'December 2025',
     tag: 'Feature',
     title: 'Beaconmon launches',
-    body: 'Six monitor types (HTTP, SSL, domain, TCP, keyword, content), three alert channels (email, Slack, webhook), public status pages, and a clean dashboard. Free plan with 5 monitors. Pro at $15/mo, Business at $49/mo. 14-day trial on all paid plans, no card required.',
+    body: 'Six monitor types (HTTP, SSL, domain, TCP, keyword, content), three alert channels (email, Slack, webhook), public status pages, and a clean dashboard. Free plan with 5 monitors. Pro at $19/mo, Business at $59/mo. 14-day trial on all paid plans, no card required.',
   },
 ];
 

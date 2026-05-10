@@ -324,28 +324,29 @@ export default async function StatusPage({ params }: Props) {
               </div>
             </div>
           </div>
-          <Link href="/" style={{
-            fontSize: 12, color: SP.gray400, textDecoration: 'none',
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-          }}>
-            <span>Powered by</span>
-            {/* Inline logo */}
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-              <span style={{ position: 'relative', width: 13, height: 13, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="sp-beacon-pulse" style={{
-                  position: 'absolute', inset: 0, borderRadius: '50%',
-                  border: `1.5px solid ${SP.green}`, opacity: 0.4,
-                }} />
-                <span style={{
-                  width: 6.5, height: 6.5, borderRadius: '50%',
-                  background: SP.green,
-                }} />
+          {!data.hideBranding && (
+            <Link href="/" style={{
+              fontSize: 12, color: SP.gray400, textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+            }}>
+              <span>Powered by</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ position: 'relative', width: 13, height: 13, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span className="sp-beacon-pulse" style={{
+                    position: 'absolute', inset: 0, borderRadius: '50%',
+                    border: `1.5px solid ${SP.green}`, opacity: 0.4,
+                  }} />
+                  <span style={{
+                    width: 6.5, height: 6.5, borderRadius: '50%',
+                    background: SP.green,
+                  }} />
+                </span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: SP.gray500, letterSpacing: -0.2 }}>
+                  Beaconmon
+                </span>
               </span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: SP.gray500, letterSpacing: -0.2 }}>
-                Beaconmon
-              </span>
-            </span>
-          </Link>
+            </Link>
+          )}
         </div>
       </header>
 
@@ -713,10 +714,12 @@ export default async function StatusPage({ params }: Props) {
               Beaconmon
             </span>
           </span>
-          <div>
-            Powered by Beaconmon ·{' '}
-            <Link href="/" style={{ color: SP.gray500, textDecoration: 'none' }}>beaconmon.com</Link>
-          </div>
+          {!data.hideBranding && (
+            <div>
+              Powered by Beaconmon ·{' '}
+              <Link href="/" style={{ color: SP.gray500, textDecoration: 'none' }}>beaconmon.com</Link>
+            </div>
+          )}
           <div style={{
             fontFamily: 'JetBrains Mono, ui-monospace, monospace',
             fontSize: 10, color: SP.gray400,

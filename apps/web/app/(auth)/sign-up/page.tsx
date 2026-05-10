@@ -26,6 +26,7 @@ function SignUpForm() {
 
   const searchParams = useSearchParams();
   const emailParam = searchParams.get('email') ?? '';
+  const planParam = searchParams.get('plan');
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState(emailParam);
@@ -55,6 +56,19 @@ function SignUpForm() {
     if (res.error) {
       setError(res.error.message ?? 'Sign up failed. Please try again.');
     } else {
+      const allowedPlans = ['business'] as const;
+      if (allowedPlans.includes(planParam as (typeof allowedPlans)[number])) {
+        const planRes = await fetch('/api/billing/set-trial-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: planParam }),
+        });
+        if (!planRes.ok) {
+          setError('Account created but failed to activate your trial plan. Please contact support.');
+          setLoading(false);
+          return;
+        }
+      }
       router.push('/overview');
     }
   }
@@ -89,7 +103,9 @@ function SignUpForm() {
 
         <div>
           <h1 className="text-xl font-bold text-brand-text">Create your account</h1>
-          <p className="mt-1 text-sm text-brand-dim">14-day Pro trial · no card required</p>
+          <p className="mt-1 text-sm text-brand-dim">
+            {planParam === 'business' ? '14-day Business trial · no card required' : '14-day Pro trial · no card required'}
+          </p>
         </div>
 
         <SocialButtons onGoogle={() => handleSocial('google')} onGitHub={() => handleSocial('github')} loading={loading} />

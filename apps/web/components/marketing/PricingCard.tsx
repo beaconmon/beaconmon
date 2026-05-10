@@ -4,6 +4,7 @@ import CheckIcon from './CheckIcon';
 export type PricingTier = {
   tier: string;
   price: string;
+  priceSuffix?: string;
   tagline: string;
   features: string[];
   ctaLabel: string;
@@ -19,7 +20,7 @@ export const PRICING_TIERS: PricingTier[] = [
     price: '$0',
     tagline: 'For hobby projects and side sites.',
     features: [
-      '5 monitors',
+      '10 monitors',
       '5-minute check intervals',
       'Email alerts',
       '1 status page',
@@ -31,43 +32,45 @@ export const PRICING_TIERS: PricingTier[] = [
   },
   {
     tier: 'Pro',
-    price: '$15',
-    tagline: 'For freelancers with real client work.',
+    price: '$19',
+    tagline: 'For indie founders and growing SaaS products.',
     features: [
       '25 monitors',
       '1-minute check intervals',
       'Email + Slack + webhook alerts',
       '3 status pages (custom domain)',
       '90-day history',
+      'SLO tracking',
       'Priority support',
     ],
     ctaLabel: 'Start 14-day trial',
     ctaHref: '/sign-up',
     highlighted: true,
-    badge: 'Recommended',
+    badge: 'Most popular',
     elevated: true,
   },
   {
     tier: 'Business',
-    price: '$49',
-    tagline: 'For agencies managing many clients.',
+    price: '$59',
+    tagline: 'For agencies managing multiple clients.',
     features: [
       'Unlimited monitors',
       '30-second check intervals',
-      'All alert channels incl. SMS',
+      'Email + Slack + webhook alerts',
       'Unlimited status pages',
       'Heartbeat monitoring',
       '1-year history',
-      'Multi-client agency dashboard',
+      'Priority support',
     ],
     ctaLabel: 'Start 14-day trial',
-    ctaHref: '/sign-up',
+    ctaHref: '/sign-up?plan=business',
   },
 ];
 
 export default function PricingCard({
   tier,
   price,
+  priceSuffix,
   tagline,
   features,
   ctaLabel,
@@ -92,10 +95,13 @@ export default function PricingCard({
       <h3 className={`text-[13px] font-semibold tracking-[0.08em] uppercase mb-3 ${highlighted ? 'text-brand-green' : 'text-brand-muted'}`}>
         {tier}
       </h3>
-      <div className="flex items-baseline gap-1 mb-2">
+      <div className="flex items-baseline gap-1 mb-1">
         <span className="text-[44px] font-extrabold tracking-[-0.03em]">{price}</span>
         <span className="text-brand-muted text-[14px]">/ month</span>
       </div>
+      {priceSuffix && (
+        <p className="text-brand-muted text-[12px] mb-1">{priceSuffix}</p>
+      )}
       <p className="text-brand-dim text-[14px] mb-7 leading-[1.4] min-h-[40px]">{tagline}</p>
       <ul className="space-y-0 mb-7 flex-1" aria-label="Plan features">
         {features.map((f, i) => (

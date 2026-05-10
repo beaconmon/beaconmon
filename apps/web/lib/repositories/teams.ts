@@ -42,6 +42,7 @@ export const teamRepository: {
   countMembers(teamId: string): Promise<number>;
   removeMember(teamId: string, userId: string): Promise<void>;
   updateMemberRole(teamId: string, userId: string, role: string): Promise<void>;
+  updatePlan(teamId: string, plan: string): Promise<void>;
 } = {
   async findById(teamId) {
     const row = await prisma.team.findUnique({
@@ -137,6 +138,13 @@ export const teamRepository: {
     await prisma.teamMember.update({
       where: { teamId_userId: { teamId, userId } },
       data: { role: role as 'owner' | 'admin' | 'viewer' },
+    });
+  },
+
+  async updatePlan(teamId, plan) {
+    await prisma.team.update({
+      where: { id: teamId },
+      data: { plan: plan as 'free' | 'pro' | 'business' },
     });
   },
 };
