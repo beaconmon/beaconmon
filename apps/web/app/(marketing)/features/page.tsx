@@ -104,7 +104,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            Everything you need to know what&apos;s broken —
+            Everything you need to know what&apos;s broken
             <span className="text-brand-green"> before anyone else does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
