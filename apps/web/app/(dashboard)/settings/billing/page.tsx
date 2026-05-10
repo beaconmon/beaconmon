@@ -66,6 +66,43 @@ function BillingPeriodToggle({
   );
 }
 
+function SwitchConfirmDialog({
+  planKey,
+  selectedPeriod,
+  switchError,
+  switching,
+  onConfirm,
+  onCancel,
+}: {
+  planKey: 'pro' | 'business';
+  selectedPeriod: 'monthly' | 'annual';
+  switchError: string | null;
+  switching: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="rounded-lg border border-brand-line bg-brand-bg2 p-4 space-y-3">
+      <p className="text-sm text-brand-dim">
+        {selectedPeriod === 'annual'
+          ? `Switch to annual billing? You'll be charged ${ANNUAL_PRICES[planKey]?.amount} today, prorated for the remainder of your current period.`
+          : `Switch to monthly billing? Changes take effect at the start of your next billing period.`}
+      </p>
+      {switchError && (
+        <p className="text-sm text-red-500">{switchError}</p>
+      )}
+      <div className="flex gap-2">
+        <Button size="sm" onClick={onConfirm} disabled={switching}>
+          {switching ? 'Switching…' : 'Confirm'}
+        </Button>
+        <Button size="sm" variant="ghost" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function UsageStat({
   label,
   used,
@@ -204,26 +241,6 @@ export default function BillingPage() {
     setSwitchError(null);
   };
 
-  const SwitchConfirmDialog = ({ planKey }: { planKey: 'pro' | 'business' }) => (
-    <div className="rounded-lg border border-brand-line bg-brand-bg2 p-4 space-y-3">
-      <p className="text-sm text-brand-dim">
-        {selectedPeriod === 'annual'
-          ? `Switch to annual billing? You'll be charged ${ANNUAL_PRICES[planKey]?.amount} today, prorated for the remainder of your current period.`
-          : `Switch to monthly billing? Changes take effect at the start of your next billing period.`}
-      </p>
-      {switchError && (
-        <p className="text-sm text-red-500">{switchError}</p>
-      )}
-      <div className="flex gap-2">
-        <Button size="sm" onClick={handleSwitchInterval} disabled={switching}>
-          {switching ? 'Switching…' : 'Confirm'}
-        </Button>
-        <Button size="sm" variant="ghost" onClick={() => { setConfirmSwitch(false); setSelectedPeriod(currentBillingPeriod); setSwitchError(null); }}>
-          Cancel
-        </Button>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -269,7 +286,7 @@ export default function BillingPage() {
                     Switch to {selectedPeriod} billing
                   </Button>
                 )}
-                {confirmSwitch && <SwitchConfirmDialog planKey="business" />}
+                {confirmSwitch && <SwitchConfirmDialog planKey="business" selectedPeriod={selectedPeriod} switchError={switchError} switching={switching} onConfirm={handleSwitchInterval} onCancel={() => { setConfirmSwitch(false); setSelectedPeriod(currentBillingPeriod); setSwitchError(null); }} />}
                 {!periodChanged && (
                   <form action="/api/billing/portal" method="POST">
                     <Button variant="outline" type="submit">
@@ -285,7 +302,7 @@ export default function BillingPage() {
                     Switch to {selectedPeriod} billing
                   </Button>
                 )}
-                {confirmSwitch && <SwitchConfirmDialog planKey="pro" />}
+                {confirmSwitch && <SwitchConfirmDialog planKey="pro" selectedPeriod={selectedPeriod} switchError={switchError} switching={switching} onConfirm={handleSwitchInterval} onCancel={() => { setConfirmSwitch(false); setSelectedPeriod(currentBillingPeriod); setSwitchError(null); }} />}
                 <p className="text-sm text-muted-foreground">
                   Upgrade to Business for unlimited monitors, 30-second checks, and 365-day history.
                   {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['business']?.amount} (${ANNUAL_PRICES['business']?.monthly})`}
