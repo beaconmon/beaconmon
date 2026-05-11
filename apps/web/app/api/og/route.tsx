@@ -5,8 +5,8 @@ export const runtime = 'nodejs';
 
 const MONITORS = [
   { label: 'beaconmon.com', time: '42ms', up: true },
-  { label: 'api.acme.com', time: '118ms', up: true },
-  { label: 'checkout.store.io', time: '—', up: false },
+  { label: 'api.example.com', time: '118ms', up: true },
+  { label: 'checkout.example.io', time: '—', up: false },
   { label: 'ssl.example.com', time: '89ms', up: true },
 ];
 
