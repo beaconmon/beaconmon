@@ -4,9 +4,11 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        // Block all crawlers from auth, dashboard, API, and status sub-routes
         userAgent: '*',
-        allow: '/',
+        allow: [
+          '/',
+          '/api/og',
+        ],
         disallow: [
           '/api/',
           '/sign-in',
