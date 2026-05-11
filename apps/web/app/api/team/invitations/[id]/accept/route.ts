@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth';
 import { invitationRepository } from '@/lib/repositories/invitations';
 import { logger } from '@/lib/logger';
 import { ErrorCode } from '@beaconmon/types';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 export async function POST(
   req: Request,
@@ -46,5 +47,14 @@ export async function POST(
   }
 
   logger.info({ service: 'web', teamId: invitation.teamId, userId }, 'Invitation accepted');
+  try {
+    getPostHogClient().capture({
+      distinctId: userId,
+      event: 'team_invitation_accepted',
+      properties: { team_id: invitation.teamId, role: invitation.role },
+    });
+  } catch (err) {
+    logger.error({ service: 'web', err }, 'PostHog capture failed for team_invitation_accepted');
+  }
   return Response.json({ teamId: invitation.teamId });
 }

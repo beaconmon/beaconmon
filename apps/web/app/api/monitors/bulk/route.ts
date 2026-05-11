@@ -5,6 +5,7 @@ import { tagSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
 import { logger } from '@/lib/logger';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 const bulkSchema = z.discriminatedUnion('action', [
   z.object({
@@ -73,6 +74,12 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     { service: 'web', teamId, action: data.action, count: result.count },
     'Bulk monitor action'
   );
+
+  getPostHogClient().capture({
+    distinctId: teamId,
+    event: 'monitors_bulk_actioned',
+    properties: { action: data.action, monitor_count: result.count },
+  });
 
   return Response.json({ updated: result.count });
 });

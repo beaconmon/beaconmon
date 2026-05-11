@@ -4,6 +4,7 @@ import { teamRepository } from '@/lib/repositories/teams';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
 import type { PlanTier } from '@beaconmon/types';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 interface SlackState {
   teamId: string;
@@ -107,6 +108,7 @@ export async function GET(req: Request) {
     return Response.redirect(`${channelsUrl}?error=slack_failed`);
   }
 
+  let channelId = '';
   try {
     const plan = await resolveTeamPlan(payload.teamId);
     const limits = PLAN_LIMITS[plan];
@@ -123,9 +125,20 @@ export async function GET(req: Request) {
       config: { webhookUrl },
     });
     logger.info({ service: 'web', teamId: payload.teamId, channelId: channel.id }, 'Slack channel connected via OAuth');
+    channelId = channel.id;
   } catch (err) {
     logger.error({ service: 'web', err, teamId: payload.teamId }, 'Failed to create Slack alert channel');
     return Response.redirect(`${channelsUrl}?error=slack_failed`);
+  }
+
+  try {
+    getPostHogClient().capture({
+      distinctId: payload.teamId,
+      event: 'slack_channel_connected',
+      properties: { channel_id: channelId },
+    });
+  } catch (err) {
+    logger.error({ service: 'web', err, teamId: payload.teamId }, 'PostHog capture failed for slack_channel_connected');
   }
 
   return Response.redirect(`${channelsUrl}?success=slack_connected`);

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { analytics } from '@/lib/analytics';
 import {
   AuthShell,
   AuthPanel,
@@ -38,12 +39,15 @@ function SignInForm() {
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Invalid email or password.');
+      analytics.signInFailed({ method: 'email', error: res.error.code ?? 'invalid_credentials' });
     } else {
+      analytics.userSignedIn({ method: 'email' });
       router.push(redirect);
     }
   }
 
   async function handleSocial(provider: 'google' | 'github') {
+    analytics.signInSocialAttempted({ provider });
     setLoading(true);
     await authClient.signIn.social({ provider, callbackURL: redirect });
   }
@@ -58,7 +62,9 @@ function SignInForm() {
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');
+      analytics.signInFailed({ method: 'magic_link', error: res.error.code ?? 'magic_link_error' });
     } else {
+      analytics.magicLinkSent({ context: 'sign_in' });
       setMagicSent(true);
       router.push(`/verify?email=${encodeURIComponent(email)}`);
     }

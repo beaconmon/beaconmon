@@ -12,6 +12,7 @@ import { useStatusPages } from '@/lib/hooks/use-status-pages';
 import Script from 'next/script';
 import { useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
+import { analytics } from '@/lib/analytics';
 
 declare global {
   interface Window {
@@ -186,6 +187,7 @@ export default function BillingPage() {
 
     if (!priceId) return;
 
+    analytics.checkoutOpened({ plan, billing_period: selectedPeriod });
     window.Paddle.Checkout.open({
       items: [{ priceId }],
       customData: { teamId },
@@ -206,6 +208,7 @@ export default function BillingPage() {
         setSwitchError(data.error ?? 'Failed to switch billing interval. Please try again.');
         return;
       }
+      analytics.billingIntervalSwitched({ plan, from: currentBillingPeriod, to: selectedPeriod });
       setCurrentBillingPeriod(selectedPeriod);
       setConfirmSwitch(false);
     } catch {

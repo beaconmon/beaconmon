@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger';
 import { PLAN_LIMITS, ErrorCode } from '@beaconmon/types';
 import { sendInvitationEmail } from '@/lib/email/send-invitation';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 const sendInviteSchema = z.object({
   email: z.string().email(),
@@ -80,5 +81,10 @@ export const POST = withAuth(async (req, { teamId, plan, role, userId }) => {
   await sendInvitationEmail({ teamId, userId, invitation, token });
 
   logger.info({ service: 'web', teamId, invitationId: invitation.id }, 'Invitation sent');
+  getPostHogClient().capture({
+    distinctId: userId,
+    event: 'team_invitation_sent',
+    properties: { team_id: teamId, role: inviteRole },
+  });
   return Response.json(invitation, { status: 201 });
 });

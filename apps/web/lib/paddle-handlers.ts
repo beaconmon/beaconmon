@@ -4,6 +4,7 @@ import { logger } from '@/lib/logger';
 import type { PlanTier } from '@beaconmon/types';
 import { planFromPaddlePriceId, billingPeriodFromPaddlePriceId } from '@/lib/paddle';
 import { subscriptionRepository } from '@/lib/repositories/subscriptions';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 type OurSubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete';
 
@@ -47,6 +48,20 @@ export async function handlePaddleEvent(event: EventEntity): Promise<void> {
       });
 
       logger.info({ service: 'web', teamId, plan: resolvePlan(priceId), status: resolveStatus(sub.status) }, 'Subscription created');
+
+      try {
+        getPostHogClient().capture({
+          distinctId: teamId,
+          event: 'subscription_created',
+          properties: {
+            plan: resolvePlan(priceId),
+            billing_period: billingPeriodFromPaddlePriceId(priceId),
+            status: resolveStatus(sub.status),
+          },
+        });
+      } catch (err) {
+        logger.error({ service: 'web', err, teamId }, 'PostHog capture failed for subscription_created');
+      }
       break;
     }
 
@@ -77,6 +92,20 @@ export async function handlePaddleEvent(event: EventEntity): Promise<void> {
 
       logger.info({ service: 'web', teamId: result.teamId, plan: teamPlan, status }, 'Subscription updated');
 
+      try {
+        getPostHogClient().capture({
+          distinctId: result.teamId,
+          event: 'subscription_updated',
+          properties: {
+            plan: teamPlan,
+            billing_period: billingPeriodFromPaddlePriceId(priceId),
+            status,
+          },
+        });
+      } catch (err) {
+        logger.error({ service: 'web', err, teamId: result.teamId }, 'PostHog capture failed for subscription_updated');
+      }
+
       const disabled = await alertChannelRepository.disableSurplusForPlan(result.teamId, teamPlan);
       if (disabled.length > 0) {
         logger.info(
@@ -101,6 +130,16 @@ export async function handlePaddleEvent(event: EventEntity): Promise<void> {
       }
 
       logger.info({ service: 'web', teamId: result.teamId }, 'Subscription canceled — downgraded to free');
+
+      try {
+        getPostHogClient().capture({
+          distinctId: result.teamId,
+          event: 'subscription_canceled',
+          properties: { plan: 'free' },
+        });
+      } catch (err) {
+        logger.error({ service: 'web', err, teamId: result.teamId }, 'PostHog capture failed for subscription_canceled');
+      }
 
       const disabled = await alertChannelRepository.disableSurplusForPlan(result.teamId, 'free');
       if (disabled.length > 0) {

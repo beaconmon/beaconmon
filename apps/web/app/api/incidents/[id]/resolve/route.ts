@@ -2,6 +2,7 @@ import { withAuth } from '@/lib/api/with-auth';
 import { incidentRepository } from '@/lib/repositories/incidents';
 import { logger } from '@/lib/logger';
 import { ForbiddenError, NotFoundError } from '@/lib/api/errors';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 type Params = { id: string; [key: string]: string };
 
@@ -12,5 +13,14 @@ export const PATCH = withAuth<Params>(async (_req, { teamId, role }, params) => 
   if (result.count === 0) throw new NotFoundError('Not found or already resolved');
 
   logger.info({ service: 'web', teamId, incidentId: params.id }, 'Incident manually resolved');
+  try {
+    getPostHogClient().capture({
+      distinctId: teamId,
+      event: 'incident_resolved',
+      properties: { incident_id: params.id, resolution_type: 'manual' },
+    });
+  } catch (err) {
+    logger.error({ service: 'web', err }, 'PostHog capture failed for incident_resolved');
+  }
   return Response.json({ resolved: true });
 });

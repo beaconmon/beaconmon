@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { analytics } from '@/lib/analytics';
 import {
   AuthShell,
   AuthPanel,
@@ -55,6 +56,7 @@ function SignUpForm() {
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Sign up failed. Please try again.');
+      analytics.signUpFailed({ method: 'email', error: res.error.code ?? 'signup_error' });
     } else {
       const allowedPlans = ['business'] as const;
       if (allowedPlans.includes(planParam as (typeof allowedPlans)[number])) {
@@ -69,13 +71,20 @@ function SignUpForm() {
           return;
         }
       }
+      analytics.userSignedUp({ plan: planParam, method: 'email' });
       router.push('/overview');
     }
   }
 
   async function handleSocial(provider: 'google' | 'github') {
+    analytics.signUpSocialAttempted({ provider });
     setLoading(true);
-    await authClient.signIn.social({ provider, callbackURL: '/monitors' });
+    try {
+      await authClient.signIn.social({ provider, callbackURL: '/monitors' });
+    } catch {
+      setLoading(false);
+      analytics.signUpSocialFailed({ provider });
+    }
   }
 
   async function handleMagicLink() {
@@ -88,7 +97,9 @@ function SignUpForm() {
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');
+      analytics.signUpFailed({ method: 'magic_link', error: res.error.code ?? 'magic_link_error' });
     } else {
+      analytics.magicLinkSent({ context: 'sign_up' });
       setMagicSent(true);
       router.push(`/verify?email=${encodeURIComponent(email)}`);
     }

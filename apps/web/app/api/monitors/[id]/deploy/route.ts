@@ -4,6 +4,7 @@ import { deployEventRepository } from '@/lib/repositories/deploy-events';
 import { createDeployEventSchema } from '@/lib/validations/deploy-events';
 import { logger } from '@/lib/logger';
 import { ForbiddenError, NotFoundError, PlanLimitError, ValidationError } from '@/lib/api/errors';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 type Params = { id: string; [key: string]: string };
 
@@ -30,6 +31,12 @@ export const POST = withAuth<Params>(async (req, { teamId, plan, role }, params)
     { service: 'web', teamId, monitorId: params.id, deployId: deploy.id },
     'Deploy event created'
   );
+
+  getPostHogClient().capture({
+    distinctId: teamId,
+    event: 'deploy_event_started',
+    properties: { monitor_id: params.id, deploy_id: deploy.id },
+  });
 
   return Response.json(deploy, { status: 201 });
 });

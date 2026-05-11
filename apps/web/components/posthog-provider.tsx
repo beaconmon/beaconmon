@@ -5,15 +5,8 @@ import { PostHogProvider, usePostHog } from 'posthog-js/react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 
-if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-    api_host: '/ingest',
-    ui_host: 'https://us.posthog.com',
-    person_profiles: 'identified_only',
-    capture_pageview: false,
-    capture_pageleave: true,
-  });
-}
+// PostHog is initialized in instrumentation-client.ts (Next.js 15.3+).
+// This file only provides the React context wrapper and page view tracking.
 
 function PostHogPageView() {
   const pathname = usePathname();
