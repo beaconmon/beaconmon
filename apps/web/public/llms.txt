@@ -1,0 +1,45 @@
+# Beaconmon
+
+> Beaconmon is a website uptime and performance monitoring service for freelancers and agencies.
+
+Beaconmon checks your websites every 30 seconds and sends instant alerts when something breaks — downtime, slow responses, SSL certificate expiry, domain expiry, or unexpected content changes. It is designed for freelancers, agencies, and small e-commerce businesses who manage multiple client sites.
+
+## What Beaconmon does
+
+- **HTTP uptime monitoring** — checks every 30 seconds (Business plan) or 1 minute (Pro), alerts on non-2xx responses or slow load times
+- **SSL certificate monitoring** — tiered warnings at 30, 14, and 7 days before expiry
+- **Domain expiry tracking** — WHOIS-based alerts at 30, 14, and 7 days before renewal
+- **TCP port monitoring** — verifies any port is open and accepting connections
+- **Keyword monitoring** — confirms a word or phrase is (or isn't) present in the page body
+- **Content change detection** — notifies when any HTML content changes at a CSS selector
+
+## Alert channels
+
+Email, Slack, webhook. SMS available on Business plan.
+
+## Public status pages
+
+Every plan includes public status pages showing 90-day uptime history, active incidents, and incident history. Custom domains supported.
+
+## Pricing
+
+- **Free** — 10 monitors, 5-minute check interval, 1 status page, no credit card required
+- **Pro** — $19/month (or $15/month annual) — 25 monitors, 1-minute checks, 5 alert channels, 3 status pages
+- **Business** — $59/month (or $47/month annual) — unlimited monitors, 30-second checks, unlimited everything, SLO tracking, multi-location checks
+
+All plans include a 14-day Pro trial with no credit card required.
+
+## Key pages
+
+- Homepage: https://beaconmon.com
+- Features: https://beaconmon.com/features
+- Pricing: https://beaconmon.com/pricing
+- About: https://beaconmon.com/about
+- vs UptimeRobot: https://beaconmon.com/vs/uptimerobot
+- vs Pingdom: https://beaconmon.com/vs/pingdom
+- vs Better Uptime: https://beaconmon.com/vs/better-uptime
+- vs StatusCake: https://beaconmon.com/vs/statuscake
+- Sign up: https://beaconmon.com/sign-up
+- Privacy Policy: https://beaconmon.com/privacy
+- Terms of Service: https://beaconmon.com/terms
+- Security: https://beaconmon.com/security
