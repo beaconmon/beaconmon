@@ -13,7 +13,9 @@ export function RevealObserver() {
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
 
+    // Add reveal-js class via JS so SSR HTML never ships opacity:0 (prevents CLS)
     document.querySelectorAll(".reveal").forEach(function (el) {
+      el.classList.add("reveal-js");
       io.observe(el);
     });
 

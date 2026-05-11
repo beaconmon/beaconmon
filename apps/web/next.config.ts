@@ -4,6 +4,19 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  trailingSlash: false,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
+      },
+    ];
+  },
   // Must point to monorepo root so Next.js traces shared packages (packages/db, etc.)
   // into the standalone output rather than trying to bundle them from app-relative paths.
   outputFileTracingRoot: path.resolve(__dirname, '../../'),
