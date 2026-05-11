@@ -2,6 +2,14 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Uptime Monitoring Features: HTTP, SSL, Domain, Content | Beaconmon',
+  description:
+    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection. Multi-location checks and SLO tracking — free for 10 monitors.',
+  alternates: { canonical: 'https://beaconmon.com/features' },
+};
 
 const MONITOR_TYPES = [
   {
@@ -318,7 +326,7 @@ export default function FeaturesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Ready to set up your first monitor?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 5 monitors. Pro and Business trials start the moment you sign up — no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro and Business trials start the moment you sign up — no card required.</p>
           <CtaForm className="mx-auto mb-5" />
           <Link href="/pricing" className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
             See pricing →

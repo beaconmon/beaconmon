@@ -72,7 +72,7 @@ export default function ForEcommercePage() {
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
-            Free forever for 5 monitors. 14-day Business trial, no card required.
+            Free forever for 10 monitors. 14-day Business trial, no card required.
           </p>
         </div>
       </section>
@@ -155,7 +155,7 @@ export default function ForEcommercePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Start monitoring your store in 5 minutes.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 5 monitors. Pro plan at $15/mo for 25 monitors and 30-second checks.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro plan at $15/mo for 210 monitors and 30-second checks.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

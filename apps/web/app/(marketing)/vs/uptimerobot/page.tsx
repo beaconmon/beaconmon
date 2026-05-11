@@ -7,13 +7,15 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Beaconmon vs UptimeRobot (2026) — Honest Comparison',
-  description: 'UptimeRobot vs Beaconmon: check frequency, pricing, domain expiry, content monitoring, and status pages compared side-by-side.',
+  description:
+    'UptimeRobot vs Beaconmon: check frequency, pricing, domain expiry, content monitoring, and status pages compared side-by-side. Try free, no card needed.',
+  alternates: { canonical: 'https://beaconmon.com/vs/uptimerobot' },
 };
 
 const TABLE_ROWS = [
   {
     feature: 'Free tier monitors',
-    beaconmon: '5 monitors',
+    beaconmon: '10 monitors',
     competitor: '50 monitors',
     beaconmonGood: false,
   },
@@ -212,8 +214,20 @@ export default function VsUptimeRobotPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">5 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+        </div>
+      </section>
+
+      {/* See also */}
+      <section className="py-12 border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
+          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
+          <div className="flex flex-wrap justify-center gap-4 text-[14px]">
+            <Link href="/vs/pingdom" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Pingdom</Link>
+            <Link href="/vs/better-uptime" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Better Uptime</Link>
+            <Link href="/vs/statuscake" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs StatusCake</Link>
+          </div>
         </div>
       </section>
 

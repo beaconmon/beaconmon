@@ -4,8 +4,10 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About — Beaconmon',
-  description: 'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable monitoring for the people who build the web.',
+  title: 'About Beaconmon — Uptime Monitoring Built for Freelancers',
+  description:
+    'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
+  alternates: { canonical: 'https://beaconmon.com/about' },
 };
 
 const PHILOSOPHY = [
@@ -38,8 +40,7 @@ export default function AboutPage() {
             right: '-5%',
             width: 600,
             height: 600,
-            background: 'radial-gradient(circle, rgba(0,229,122,0.12), transparent 60%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(circle, rgba(0,229,122,0.08) 0%, rgba(0,229,122,0.03) 40%, transparent 70%)',
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
@@ -97,7 +98,7 @@ export default function AboutPage() {
           <div className="reveal flex items-center justify-between max-[640px]:flex-col max-[640px]:gap-6 max-[640px]:text-center">
             <div>
               <p className="text-[20px] font-bold tracking-[-0.02em] mb-2">Ready to try it?</p>
-              <p className="text-brand-dim text-[15px]">Free for 5 monitors. No card required.</p>
+              <p className="text-brand-dim text-[15px]">Free for 10 monitors. No card required.</p>
             </div>
             <div className="flex gap-4 flex-wrap max-[640px]:justify-center">
               <Link

@@ -2,6 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import PricingToggle from '@/components/marketing/PricingToggle';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import {
   Accordion,
   AccordionContent,
@@ -11,8 +12,10 @@ import {
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pricing — Beaconmon',
-  description: 'Simple, transparent pricing. Start free. Upgrade when you need more monitors, faster checks, or more status pages.',
+  title: 'Uptime Monitoring Pricing — Free, Pro & Business | Beaconmon',
+  description:
+    'Simple, transparent pricing. 10 monitors free forever. Upgrade to Pro ($19/mo) for 1-minute checks, or Business ($59/mo) for 30-second checks and unlimited monitors. Annual billing saves 20%. No credit card required.',
+  alternates: { canonical: 'https://beaconmon.com/pricing' },
 };
 
 const FEATURE_MATRIX = [
@@ -71,9 +74,55 @@ const BILLING_FAQ = [
   },
 ];
 
+const MONTHLY = { '@type': 'QuantitativeValue', value: '1', unitCode: 'MON' };
+
+const PRICING_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Beaconmon',
+  description:
+    'Website uptime and performance monitoring for freelancers and agencies. HTTP, SSL, domain, TCP, keyword, and content change monitoring.',
+  url: 'https://beaconmon.com',
+  offers: {
+    '@type': 'AggregateOffer',
+    lowPrice: '0',
+    highPrice: '59',
+    priceCurrency: 'USD',
+    offerCount: 3,
+    offers: [
+      { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
+      {
+        '@type': 'Offer',
+        name: 'Pro',
+        price: '19',
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '19',
+          priceCurrency: 'USD',
+          referenceQuantity: MONTHLY,
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Business',
+        price: '59',
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '59',
+          priceCurrency: 'USD',
+          referenceQuantity: MONTHLY,
+        },
+      },
+    ],
+  },
+};
+
 export default function PricingPage() {
   return (
     <>
+      <JsonLd data={PRICING_SCHEMA} />
       <NavBar />
 
       {/* Hero */}

@@ -6,14 +6,16 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Better Uptime (2026) — Comparison for Freelancers & Agencies',
-  description: 'Better Uptime vs Beaconmon compared: on-call scheduling, pricing, content monitoring, and which tool is actually built for your use case.',
+  title: 'Better Uptime Alternative — Beaconmon for Freelancers & Agencies',
+  description:
+    'Better Uptime vs Beaconmon: on-call scheduling, pricing, content monitoring, and which tool is actually built for your use case. Try free, no card needed.',
+  alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
 };
 
 const TABLE_ROWS = [
   {
     feature: 'Free plan',
-    beaconmon: '✓ 5 monitors',
+    beaconmon: '✓ 10 monitors',
     competitor: '✓ 3 monitors',
     beaconmonGood: true,
   },
@@ -85,7 +87,7 @@ const SWITCH_REASONS = [
   'Content change monitoring is a Beaconmon-only feature in this comparison.',
   'You don\'t need on-call scheduling for a one-person or small team setup.',
   'SLO / error budget tracking is included in Beaconmon Pro; not available in Better Uptime.',
-  'Beaconmon\'s free plan includes 5 monitors vs 3 in Better Uptime.',
+  'Beaconmon\'s free plan includes 10 monitors vs 3 in Better Uptime.',
 ];
 
 export default function VsBetterUptimePage() {
@@ -206,8 +208,20 @@ export default function VsBetterUptimePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">5 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+        </div>
+      </section>
+
+      {/* See also */}
+      <section className="py-12 border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
+          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
+          <div className="flex flex-wrap justify-center gap-4 text-[14px]">
+            <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
+            <Link href="/vs/pingdom" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Pingdom</Link>
+            <Link href="/vs/statuscake" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs StatusCake</Link>
+          </div>
         </div>
       </section>
 

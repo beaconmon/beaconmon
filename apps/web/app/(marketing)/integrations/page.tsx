@@ -216,7 +216,7 @@ export default function IntegrationsPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Ready to get alerted in the right place?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Set up monitoring in 5 minutes. Free forever for 5 monitors.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Set up monitoring in 5 minutes. Free forever for 10 monitors.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

@@ -66,7 +66,7 @@ export default function ForAgenciesPage() {
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
-            Free forever for 5 monitors. 14-day Business trial, no card required.
+            Free forever for 10 monitors. 14-day Business trial, no card required.
           </p>
         </div>
       </section>
@@ -154,7 +154,7 @@ export default function ForAgenciesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Add monitoring to every retainer.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Start with 5 monitors free. Business plan starts at $59/mo for unlimited monitors.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Start with 10 monitors free. Business plan starts at $59/mo for unlimited monitors.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

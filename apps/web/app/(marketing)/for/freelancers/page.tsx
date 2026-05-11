@@ -25,7 +25,7 @@ const FEATURES = [
   },
   {
     heading: 'Affordable from the start',
-    body: 'Free plan covers 5 monitors — enough to get started. Pro is $15/mo. Most freelancers find the Pro plan covers all their client work comfortably.',
+    body: 'Free plan covers 10 monitors — enough to get started. Pro is $15/mo. Most freelancers find the Pro plan covers all their client work comfortably.',
   },
 ];
 
@@ -66,7 +66,7 @@ export default function ForFreelancersPage() {
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
-            Free forever for 5 monitors. No credit card required.
+            Free forever for 10 monitors. No credit card required.
           </p>
         </div>
       </section>
@@ -154,7 +154,7 @@ export default function ForFreelancersPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Set up in 5 minutes. Free to start.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">5 monitors free forever. Pro plan at $15/mo for up to 25 monitors.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. Pro plan at $15/mo for up to 210 monitors.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

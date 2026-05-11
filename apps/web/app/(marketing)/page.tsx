@@ -4,25 +4,68 @@ import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import PricingCard, { PRICING_TIERS } from '@/components/marketing/PricingCard';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
+import Link from 'next/link';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import type { Metadata } from 'next';
 
-/* ─────────────────────────────────────────────
-   Page
-───────────────────────────────────────────── */
+export const metadata: Metadata = {
+  title: 'Uptime Monitoring for Freelancers & Agencies | Beaconmon',
+  description:
+    'Beaconmon is a website monitoring service that checks your sites every 30 seconds and alerts you the moment something breaks — downtime, SSL expiry, domain expiry, or content changes.',
+  alternates: { canonical: 'https://beaconmon.com' },
+};
+
+const SOFTWARE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Beaconmon',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  url: 'https://beaconmon.com',
+  description:
+    'Website uptime and performance monitoring service. Checks URLs every 30 seconds, monitors SSL certificates, domain expiry, TCP ports, keywords, and content changes. Sends alerts via email, Slack, or webhook.',
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'Free',
+      price: '0',
+      priceCurrency: 'USD',
+      description: '10 monitors, 5-minute check interval, 1 status page',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Pro',
+      price: '19',
+      priceCurrency: 'USD',
+      description: '25 monitors, 1-minute check interval, 3 status pages',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Business',
+      price: '59',
+      priceCurrency: 'USD',
+      description: 'Unlimited monitors, 30-second check interval, unlimited status pages',
+    },
+  ],
+};
+
 export default function LandingPage() {
   return (
     <>
+      <JsonLd data={SOFTWARE_SCHEMA} />
+
       {/* ====== NAV ====== */}
       <NavBar />
 
       {/* ====== HERO ====== */}
       <section className="relative py-[100px] max-[1024px]:py-16 overflow-hidden">
-        {/* green radial glow */}
+        {/* green radial glow — no filter:blur to avoid GPU compositor layer */}
         <div
           aria-hidden
           className="absolute pointer-events-none"
@@ -31,8 +74,7 @@ export default function LandingPage() {
             right: '-10%',
             width: 800,
             height: 800,
-            background: 'radial-gradient(circle, rgba(0,229,122,0.18), transparent 60%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(circle, rgba(0,229,122,0.10) 0%, rgba(0,229,122,0.04) 40%, transparent 70%)',
           }}
         />
 
@@ -45,12 +87,12 @@ export default function LandingPage() {
                 <span className="text-brand-green">Before your clients do.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon monitors your websites every 30 seconds and alerts you instantly via email, Slack, or SMS, so you&apos;re always the first to know.
+                Beaconmon is a website monitoring service that checks your sites every 30 seconds and alerts you the moment something breaks — downtime, SSL expiry, domain expiry, or content changes.
               </p>
 
               <CtaForm />
               <p className="mt-[14px] text-[13px] text-brand-muted">
-                Free forever for 5 monitors. No credit card required.
+                Free forever for 10 monitors. No credit card required.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-x-6 gap-y-[10px] text-[13px] text-brand-dim">
@@ -70,7 +112,7 @@ export default function LandingPage() {
       <section className="border-t border-b border-brand-line-soft py-11">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <p className="text-center text-[12px] tracking-[0.08em] uppercase text-brand-muted mb-6">
-            Trusted by teams and freelancers building on
+            Built for developers working with
           </p>
           <div className="flex justify-between items-center gap-8 flex-wrap">
             <span className="text-[17px] font-semibold tracking-[-0.01em] text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">shopify</span>
@@ -300,7 +342,7 @@ export default function LandingPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Powerful monitoring. Without the enterprise price tag.</h2>
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Powerful uptime monitoring. Without the enterprise price tag.</h2>
             <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">A quick side-by-side with the incumbents.</p>
           </div>
           <div className="reveal max-w-[920px] mx-auto overflow-x-auto border border-brand-line rounded-[14px] bg-brand-bg1">
@@ -309,8 +351,12 @@ export default function LandingPage() {
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">UptimeRobot</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Pingdom</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
+                    <Link href="/vs/uptimerobot" className="hover:text-brand-dim transition-colors">UptimeRobot</Link>
+                  </th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
+                    <Link href="/vs/pingdom" className="hover:text-brand-dim transition-colors">Pingdom</Link>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -347,7 +393,7 @@ export default function LandingPage() {
                   },
                   {
                     feat: 'Starting price',
-                    bm: <span className="font-mono">$15/mo</span>,
+                    bm: <span className="font-mono">$19/mo</span>,
                     ur: <span className="font-mono">$7/mo</span>,
                     p: <span className="font-mono">$15/mo</span>,
                   },

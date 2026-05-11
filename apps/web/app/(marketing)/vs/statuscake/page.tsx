@@ -7,13 +7,15 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Beaconmon vs StatusCake (2026) — Uptime Monitoring Comparison',
-  description: 'StatusCake vs Beaconmon: pricing, check frequency, content monitoring, and which tool makes more sense for agencies and freelancers.',
+  description:
+    'StatusCake vs Beaconmon: pricing, check frequency, content monitoring, and which tool makes more sense for agencies and freelancers. Try free, no card needed.',
+  alternates: { canonical: 'https://beaconmon.com/vs/statuscake' },
 };
 
 const TABLE_ROWS = [
   {
     feature: 'Free tier monitors',
-    beaconmon: '5 monitors',
+    beaconmon: '10 monitors',
     competitor: '10 monitors',
     beaconmonGood: false,
   },
@@ -206,8 +208,20 @@ export default function VsStatusCakePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">5 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+        </div>
+      </section>
+
+      {/* See also */}
+      <section className="py-12 border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
+          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
+          <div className="flex flex-wrap justify-center gap-4 text-[14px]">
+            <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
+            <Link href="/vs/pingdom" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Pingdom</Link>
+            <Link href="/vs/better-uptime" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Better Uptime</Link>
+          </div>
         </div>
       </section>
 
