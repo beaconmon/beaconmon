@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MonitorForm, type MonitorFormValues } from '@/components/monitors/monitor-form';
 import { useCreateMonitor } from '@/lib/hooks/use-monitors';
 import { useSession } from '@/lib/hooks/use-session';
+import { analytics } from '@/lib/analytics';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { CreateMonitorInput } from '@/lib/validations/monitors';
 
@@ -55,6 +56,11 @@ export default function NewMonitorPage() {
     const payload = buildApiPayload(data);
     createMonitor.mutate(payload, {
       onSuccess: (monitor) => {
+        try {
+          analytics.monitorCreated({ type: payload.type, intervalSeconds: payload.intervalSeconds });
+        } catch {
+          // analytics failure must not block navigation
+        }
         router.push(`/monitors/${monitor.id}`);
       },
       onError: (err) => {

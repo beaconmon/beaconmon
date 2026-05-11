@@ -34,6 +34,7 @@ import { CommandPalette } from '@/components/command-palette';
 import { NotificationPopover } from '@/components/notifications/notification-popover';
 import { Providers } from '@/components/providers';
 import { TrialBanner } from '@/components/ui/trial-banner';
+import { analytics } from '@/lib/analytics';
 import { TeamSwitcher } from '@/components/dashboard/team-switcher';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
@@ -188,6 +189,7 @@ function TopBar({
 
   async function handleSignOut() {
     await authClient.signOut();
+    analytics.reset();
     window.location.href = '/sign-in';
   }
 
@@ -263,6 +265,12 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const { data: incidents } = useIncidents();
   const { data: session } = useSession();
   const incidentCount = (incidents ?? []).filter((i) => !i.resolvedAt).length;
+
+  useEffect(() => {
+    if (session?.userId) {
+      analytics.identify(session.userId, { plan: session.plan, teamId: session.teamId });
+    }
+  }, [session?.userId, session?.plan, session?.teamId]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-bg">

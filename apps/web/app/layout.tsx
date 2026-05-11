@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { JsonLd } from '@/components/json-ld';
+import { PHProvider } from '@/components/posthog-provider';
 import './globals.css';
 
 const inter = Inter({
@@ -59,7 +60,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`dark ${inter.variable} ${mono.variable}`}>
       <body>
         <JsonLd data={SITE_SCHEMA} />
-        {children}
+        <PHProvider>{children}</PHProvider>
       </body>
     </html>
   );
