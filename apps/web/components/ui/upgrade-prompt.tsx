@@ -1,18 +1,31 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/lib/hooks/use-session';
 import type { PlanTier } from '@beaconmon/types';
 
+type FreemiusCheckoutHandler = {
+  open: (opts: {
+    name?: string;
+    plan_id: number;
+    billing_cycle?: 'monthly' | 'annual' | 'lifetime';
+    user_email?: string;
+    readonly_user?: boolean;
+    success?: (response: unknown) => void;
+  }) => void;
+  close?: () => void;
+};
+
 declare global {
   interface Window {
-    Paddle?: {
-      Initialize: (opts: { token: string }) => void;
-      Checkout: {
-        open: (opts: { items: { priceId: string }[]; customData: Record<string, string> }) => void;
-      };
+    FS?: {
+      Checkout: new (opts: {
+        product_id: string;
+        public_key?: string;
+        sandbox?: boolean;
+      }) => FreemiusCheckoutHandler;
     };
   }
 }
@@ -30,37 +43,44 @@ const PLAN_LABEL: Record<PlanTier, string> = {
 
 export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps) {
   const { data: session } = useSession();
-  const paddleReady = useRef(false);
+  const handlerRef = useRef<FreemiusCheckoutHandler | null>(null);
+
+  useEffect(() => {
+    return () => {
+      handlerRef.current?.close?.();
+    };
+  }, []);
+
+  function ensureHandler(): FreemiusCheckoutHandler | null {
+    if (handlerRef.current) return handlerRef.current;
+    const productId = process.env['NEXT_PUBLIC_FREEMIUS_PRODUCT_ID'];
+    if (!productId || !window.FS) return null;
+    const sandbox = process.env['NEXT_PUBLIC_FREEMIUS_SANDBOX'] === 'true';
+    handlerRef.current = new window.FS.Checkout({ product_id: productId, ...(sandbox && { sandbox: true }) });
+    return handlerRef.current;
+  }
 
   function handleUpgrade() {
-    const proPriceId = process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID'];
-    const teamId = session?.teamId;
-    if (!proPriceId || !teamId || !window.Paddle) {
-      // Paddle not loaded or session missing — surface an actionable message
+    const proPlanId = process.env['NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID'];
+    const email = session?.email;
+    const handler = ensureHandler();
+    if (!proPlanId || !email || !handler) {
       alert('Unable to start checkout. Please refresh the page and try again.');
       return;
     }
 
-    window.Paddle.Checkout.open({
-      items: [{ priceId: proPriceId }],
-      customData: { teamId },
+    handler.open({
+      name: 'Pro Monthly',
+      plan_id: Number(proPlanId),
+      billing_cycle: 'monthly',
+      user_email: email,
+      readonly_user: true,
     });
   }
 
   return (
     <>
-      <Script
-        src="https://cdn.paddle.com/paddle/v2/paddle.js"
-        onLoad={() => {
-          if (window.Paddle && !paddleReady.current) {
-            const token = process.env['NEXT_PUBLIC_PADDLE_CLIENT_TOKEN'];
-            if (token) {
-              window.Paddle.Initialize({ token });
-              paddleReady.current = true;
-            }
-          }
-        }}
-      />
+      <Script src="https://checkout.freemius.com/js/v1/" strategy="lazyOnload" />
       <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm">
         <p className="font-medium text-amber-900">
           You&apos;ve reached the {limitReached} limit on the {PLAN_LABEL[currentPlan]} plan.
@@ -68,11 +88,7 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
         <p className="mt-1 text-amber-700">
           Upgrade to Pro for more {limitReached} and higher limits.
         </p>
-        <Button
-          size="sm"
-          className="mt-3"
-          onClick={handleUpgrade}
-        >
+        <Button size="sm" className="mt-3" onClick={handleUpgrade}>
           Upgrade to Pro
         </Button>
       </div>

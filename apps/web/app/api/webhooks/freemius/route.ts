@@ -1,12 +1,12 @@
 import { logger } from '@/lib/logger';
-import { verifyWebhook } from '@/lib/paddle';
-import { handlePaddleEvent } from '@/lib/paddle-handlers';
+import { verifyWebhook } from '@/lib/freemius';
+import { handleFreemiusEvent } from '@/lib/freemius-handlers';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const rawBody = await req.text();
-  const signature = req.headers.get('paddle-signature') ?? '';
+  const signature = req.headers.get('x-signature') ?? '';
 
   let event;
   try {
@@ -19,13 +19,13 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Invalid webhook payload' }, { status: 400 });
   }
 
-  logger.info({ service: 'web', eventType: event.eventType }, 'Paddle webhook received');
+  logger.info({ service: 'web', eventType: event.type }, 'Freemius webhook received');
 
   try {
-    await handlePaddleEvent(event);
+    await handleFreemiusEvent(event);
   } catch (err) {
-    logger.error({ service: 'web', err, eventType: event.eventType }, 'Paddle webhook handler failed');
-    // Return 200 to prevent Paddle retries on our logic errors
+    logger.error({ service: 'web', err, eventType: event.type }, 'Freemius webhook handler failed');
+    // Return 200 to prevent Freemius retries on our logic errors
   }
 
   return Response.json({ received: true });

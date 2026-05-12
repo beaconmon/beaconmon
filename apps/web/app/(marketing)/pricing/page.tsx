@@ -60,7 +60,7 @@ const BILLING_FAQ = [
   {
     id: 'payment-methods',
     q: 'What payment methods do you accept?',
-    a: 'All major credit and debit cards (Visa, Mastercard, Amex). Payments are processed by Paddle, our Merchant of Record, so you never share card details directly with Beaconmon.',
+    a: 'All major credit and debit cards (Visa, Mastercard, Amex) and PayPal. Payments are processed by Freemius, Inc., our Merchant of Record, so you never share card details directly with Beaconmon.',
   },
   {
     id: 'annual',
@@ -202,7 +202,7 @@ export default function PricingPage() {
                 Billing<br />questions?
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.6]">
-                Payments are handled by Paddle — a trusted Merchant of Record used by thousands of SaaS companies. They handle tax, compliance, and card processing on our behalf.
+                Payments are handled by Freemius, Inc. — a trusted Merchant of Record used by thousands of SaaS companies. They handle tax, compliance, and card processing on our behalf.
               </p>
             </div>
             <div className="reveal">

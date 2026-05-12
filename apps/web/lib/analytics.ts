@@ -42,10 +42,6 @@ export const analytics = {
     posthog.capture('checkout_opened', props);
   },
 
-  billingIntervalSwitched(props: { plan: string; from: 'monthly' | 'annual'; to: 'monthly' | 'annual' }) {
-    posthog.capture('billing_interval_switched', props);
-  },
-
   signInFailed(props: { method: 'email' | 'magic_link'; error: string }) {
     posthog.capture('sign_in_failed', props);
   },

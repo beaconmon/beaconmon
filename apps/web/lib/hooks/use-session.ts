@@ -8,6 +8,7 @@ interface SessionInfo {
   teamId: string;
   plan: PlanTier;
   role: TeamRole;
+  email: string | null;
   teamName: string | null;
   teamCreatedAt: string | null;
   trialEndsAt: string | null;

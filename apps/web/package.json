@@ -17,7 +17,6 @@
     "@beaconmon/status-pages": "workspace:*",
     "@beaconmon/types": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
-    "@paddle/paddle-node-sdk": "^3.8.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-dialog": "^1.1.15",

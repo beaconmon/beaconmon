@@ -14,13 +14,26 @@ import { useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { analytics } from '@/lib/analytics';
 
+type FreemiusCheckoutHandler = {
+  open: (opts: {
+    name?: string;
+    plan_id: number;
+    billing_cycle?: 'monthly' | 'annual' | 'lifetime';
+    user_email?: string;
+    readonly_user?: boolean;
+    success?: (response: unknown) => void;
+  }) => void;
+  close?: () => void;
+};
+
 declare global {
   interface Window {
-    Paddle?: {
-      Initialize: (opts: { token: string }) => void;
-      Checkout: {
-        open: (opts: { items: { priceId: string }[]; customData: Record<string, string> }) => void;
-      };
+    FS?: {
+      Checkout: new (opts: {
+        product_id: string;
+        public_key?: string;
+        sandbox?: boolean;
+      }) => FreemiusCheckoutHandler;
     };
   }
 }
@@ -67,43 +80,6 @@ function BillingPeriodToggle({
   );
 }
 
-function SwitchConfirmDialog({
-  planKey,
-  selectedPeriod,
-  switchError,
-  switching,
-  onConfirm,
-  onCancel,
-}: {
-  planKey: 'pro' | 'business';
-  selectedPeriod: 'monthly' | 'annual';
-  switchError: string | null;
-  switching: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
-}) {
-  return (
-    <div className="rounded-lg border border-brand-line bg-brand-bg2 p-4 space-y-3">
-      <p className="text-sm text-brand-dim">
-        {selectedPeriod === 'annual'
-          ? `Switch to annual billing? You'll be charged ${ANNUAL_PRICES[planKey]?.amount} today, prorated for the remainder of your current period.`
-          : `Switch to monthly billing? Changes take effect at the start of your next billing period.`}
-      </p>
-      {switchError && (
-        <p className="text-sm text-red-500">{switchError}</p>
-      )}
-      <div className="flex gap-2">
-        <Button size="sm" onClick={onConfirm} disabled={switching}>
-          {switching ? 'Switching…' : 'Confirm'}
-        </Button>
-        <Button size="sm" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 function UsageStat({
   label,
   used,
@@ -142,79 +118,86 @@ export default function BillingPage() {
   const monitorsQ = useMonitors();
   const channelsQ = useAlertChannels();
   const statusPagesQ = useStatusPages();
-  const paddleReady = useRef(false);
+  const handlerRef = useRef<FreemiusCheckoutHandler | null>(null);
   const [renewalDate, setRenewalDate] = useState<string | null>(null);
   const [subscriptionError, setSubscriptionError] = useState(false);
-  const [hasPaddleCustomer, setHasPaddleCustomer] = useState(false);
-  const [currentBillingPeriod, setCurrentBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  const [hasFreemiusCustomer, setHasFreemiusCustomer] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'monthly' | 'annual'>('monthly');
-  const [confirmSwitch, setConfirmSwitch] = useState(false);
-  const [switching, setSwitching] = useState(false);
-  const [switchError, setSwitchError] = useState<string | null>(null);
+  const [fsReady, setFsReady] = useState(false);
 
   useEffect(() => {
     if (!sessionQ.data?.teamId) return;
     fetch('/api/billing/subscription')
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load subscription'))))
-      .then((data: { currentPeriodEnd?: string; trialEndsAt?: string; hasPaddleCustomer?: boolean; billingPeriod?: 'monthly' | 'annual' }) => {
+      .then((data: { currentPeriodEnd?: string; trialEndsAt?: string; hasFreemiusCustomer?: boolean; billingPeriod?: 'monthly' | 'annual' } | null) => {
+        if (!data) return;
         setSubscriptionError(false);
         if (data.currentPeriodEnd) {
           setRenewalDate(`Renews on ${format(new Date(data.currentPeriodEnd), 'MMM d, yyyy')}`);
         } else if (data.trialEndsAt) {
           setRenewalDate(`Trial ends on ${format(new Date(data.trialEndsAt), 'MMM d, yyyy')}`);
         }
-        setHasPaddleCustomer(Boolean(data.hasPaddleCustomer));
-        const period = data.billingPeriod ?? 'monthly';
-        setCurrentBillingPeriod(period);
-        setSelectedPeriod(period);
+        setHasFreemiusCustomer(Boolean(data.hasFreemiusCustomer));
+        setSelectedPeriod(data.billingPeriod ?? 'monthly');
       })
       .catch(() => {
         setSubscriptionError(true);
       });
   }, [sessionQ.data?.teamId]);
 
+  useEffect(() => {
+    return () => {
+      handlerRef.current?.close?.();
+    };
+  }, []);
+
+  function ensureHandler(): FreemiusCheckoutHandler | null {
+    if (handlerRef.current) return handlerRef.current;
+    const productId = process.env['NEXT_PUBLIC_FREEMIUS_PRODUCT_ID'];
+    if (!productId || !window.FS) return null;
+    const sandbox = process.env['NEXT_PUBLIC_FREEMIUS_SANDBOX'] === 'true';
+    handlerRef.current = new window.FS.Checkout({ product_id: productId, ...(sandbox && { sandbox: true }) });
+    return handlerRef.current;
+  }
+
   function handleUpgrade(plan: 'pro' | 'business') {
-    const teamId = sessionQ.data?.teamId;
-    if (!teamId || !window.Paddle) return;
+    const email = sessionQ.data?.email;
+    const handler = ensureHandler();
+    if (!email || !handler) {
+      alert('Checkout is still loading. Please try again in a moment.');
+      return;
+    }
 
-    const priceId = selectedPeriod === 'annual'
-      ? (plan === 'pro'
-          ? process.env['NEXT_PUBLIC_PADDLE_PRO_ANNUAL_PRICE_ID']
-          : process.env['NEXT_PUBLIC_PADDLE_BUSINESS_ANNUAL_PRICE_ID'])
-      : (plan === 'pro'
-          ? process.env['NEXT_PUBLIC_PADDLE_PRO_PRICE_ID']
-          : process.env['NEXT_PUBLIC_PADDLE_BUSINESS_PRICE_ID']);
+    const planId = plan === 'pro'
+      ? process.env['NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID']
+      : process.env['NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID'];
 
-    if (!priceId) return;
+    if (!planId) {
+      alert('Checkout configuration is missing. Please contact support.');
+      return;
+    }
 
     analytics.checkoutOpened({ plan, billing_period: selectedPeriod });
-    window.Paddle.Checkout.open({
-      items: [{ priceId }],
-      customData: { teamId },
+    handler.open({
+      name: `${plan === 'pro' ? 'Pro' : 'Business'} ${selectedPeriod === 'annual' ? 'Annual' : 'Monthly'}`,
+      plan_id: Number(planId),
+      billing_cycle: selectedPeriod === 'annual' ? 'annual' : 'monthly',
+      user_email: email,
+      readonly_user: true,
     });
   }
 
-  async function handleSwitchInterval() {
-    setSwitching(true);
-    setSwitchError(null);
+  async function handleManageSubscription() {
     try {
-      const res = await fetch('/api/billing/switch-interval', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ period: selectedPeriod }),
-      });
+      const res = await fetch('/api/billing/portal', { method: 'POST' });
       if (!res.ok) {
-        const data = await res.json().catch(() => ({})) as { error?: string };
-        setSwitchError(data.error ?? 'Failed to switch billing interval. Please try again.');
+        alert('Unable to open subscription management. Please try again.');
         return;
       }
-      analytics.billingIntervalSwitched({ plan, from: currentBillingPeriod, to: selectedPeriod });
-      setCurrentBillingPeriod(selectedPeriod);
-      setConfirmSwitch(false);
+      const { url } = await res.json() as { url: string };
+      window.open(url, '_blank');
     } catch {
-      setSwitchError('Network error. Please try again.');
-    } finally {
-      setSwitching(false);
+      alert('Unable to open subscription management. Please try again.');
     }
   }
 
@@ -235,30 +218,9 @@ export default function BillingPage() {
   const channelCount = channelsQ.data?.length ?? 0;
   const statusPageCount = statusPagesQ.data?.length ?? 0;
 
-  const isPaid = plan === 'pro' || plan === 'business';
-  const periodChanged = isPaid && hasPaddleCustomer && selectedPeriod !== currentBillingPeriod;
-
-  const handlePeriodChange = (period: 'monthly' | 'annual') => {
-    setSelectedPeriod(period);
-    setConfirmSwitch(false);
-    setSwitchError(null);
-  };
-
-
   return (
     <>
-      <Script
-        src="https://cdn.paddle.com/paddle/v2/paddle.js"
-        onLoad={() => {
-          if (window.Paddle && !paddleReady.current) {
-            const token = process.env['NEXT_PUBLIC_PADDLE_CLIENT_TOKEN'];
-            if (token) {
-              window.Paddle.Initialize({ token });
-              paddleReady.current = true;
-            }
-          }
-        }}
-      />
+      <Script src="https://checkout.freemius.com/js/v1/" strategy="lazyOnload" onLoad={() => setFsReady(true)} />
 
       <div className="max-w-xl space-y-6">
         <Card>
@@ -280,47 +242,32 @@ export default function BillingPage() {
               {renewalDate && <p>{renewalDate}</p>}
             </div>
 
-            <BillingPeriodToggle selectedPeriod={selectedPeriod} onPeriodChange={handlePeriodChange} />
+            <BillingPeriodToggle selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 
-            {plan === 'business' && hasPaddleCustomer ? (
+            {plan === 'business' && hasFreemiusCustomer ? (
               <div className="space-y-3">
-                {periodChanged && !confirmSwitch && (
-                  <Button variant="outline" size="sm" onClick={() => setConfirmSwitch(true)}>
-                    Switch to {selectedPeriod} billing
-                  </Button>
-                )}
-                {confirmSwitch && <SwitchConfirmDialog planKey="business" selectedPeriod={selectedPeriod} switchError={switchError} switching={switching} onConfirm={handleSwitchInterval} onCancel={() => { setConfirmSwitch(false); setSelectedPeriod(currentBillingPeriod); setSwitchError(null); }} />}
-                {!periodChanged && (
-                  <form action="/api/billing/portal" method="POST">
-                    <Button variant="outline" type="submit">
-                      Manage subscription
-                    </Button>
-                  </form>
-                )}
+                <p className="text-sm text-muted-foreground">
+                  To change your billing interval or payment method, open your Freemius portal.
+                </p>
+                <Button variant="outline" onClick={handleManageSubscription}>
+                  Manage subscription
+                </Button>
               </div>
             ) : plan === 'pro' ? (
               <div className="space-y-3">
-                {periodChanged && !confirmSwitch && (
-                  <Button variant="outline" size="sm" onClick={() => setConfirmSwitch(true)}>
-                    Switch to {selectedPeriod} billing
-                  </Button>
-                )}
-                {confirmSwitch && <SwitchConfirmDialog planKey="pro" selectedPeriod={selectedPeriod} switchError={switchError} switching={switching} onConfirm={handleSwitchInterval} onCancel={() => { setConfirmSwitch(false); setSelectedPeriod(currentBillingPeriod); setSwitchError(null); }} />}
                 <p className="text-sm text-muted-foreground">
                   Upgrade to Business for unlimited monitors, 30-second checks, and 365-day history.
                   {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['business']?.amount} (${ANNUAL_PRICES['business']?.monthly})`}
                   {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['business']}`}
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Button onClick={() => handleUpgrade('business')}>
+                  <Button disabled={!fsReady} onClick={() => handleUpgrade('business')}>
                     Upgrade to Business — {selectedPeriod === 'annual' ? ANNUAL_PRICES['business']?.amount : MONTHLY_PRICES['business']}
                   </Button>
-                  {hasPaddleCustomer && !periodChanged && (
-                    <form action="/api/billing/portal" method="POST">
-                      <Button variant="outline" type="submit">
-                        Manage subscription
-                      </Button>
-                    </form>
+                  {hasFreemiusCustomer && (
+                    <Button variant="outline" onClick={handleManageSubscription}>
+                      Manage subscription
+                    </Button>
                   )}
                 </div>
               </div>
@@ -330,10 +277,10 @@ export default function BillingPage() {
                   Upgrade to Pro for 25 monitors, 1-minute checks, and 90-day history.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Button onClick={() => handleUpgrade('pro')}>
+                  <Button disabled={!fsReady} onClick={() => handleUpgrade('pro')}>
                     Upgrade to Pro — {selectedPeriod === 'annual' ? `${ANNUAL_PRICES['pro']?.amount}` : MONTHLY_PRICES['pro']}
                   </Button>
-                  <Button variant="outline" onClick={() => handleUpgrade('business')}>
+                  <Button variant="outline" disabled={!fsReady} onClick={() => handleUpgrade('business')}>
                     Business — {selectedPeriod === 'annual' ? `${ANNUAL_PRICES['business']?.amount}` : MONTHLY_PRICES['business']}
                   </Button>
                 </div>

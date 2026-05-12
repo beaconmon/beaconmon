@@ -47,13 +47,13 @@ export default function TermsPage() {
 
             <h2>4. Billing and payment</h2>
             <p>
-              Paid plans are billed through Paddle, our Merchant of Record. Paddle handles payment processing, invoicing, and tax compliance on our behalf. By subscribing to a paid plan, you agree to Paddle&apos;s{' '}
-              <a href="https://www.paddle.com/legal/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
+              Paid plans are billed through Freemius, Inc., our Merchant of Record. Freemius handles payment processing, invoicing, and tax compliance on our behalf. By subscribing to a paid plan, you agree to Freemius&apos;s{' '}
+              <a href="https://freemius.com/terms/" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
             </p>
             <ul>
               <li>All prices are in USD. Annual prices are charged upfront.</li>
               <li>Upgrades take effect immediately and are prorated. Downgrades take effect at the end of the current billing period.</li>
-              <li>Refunds are handled by Paddle in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee — see our <a href="/refund-policy">Refund Policy</a> for full details.</li>
+              <li>Refunds are handled by Freemius in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee — see our <a href="/refund-policy">Refund Policy</a> for full details.</li>
             </ul>
 
             <h2>5. Cancellation</h2>

@@ -16,7 +16,7 @@ deep content change monitoring.
 **Target users:** freelancers, agencies, small e-commerce businesses.
 **Business model:** freemium subscription — Free / Pro ($19/mo, $15/mo annual) / Business ($59/mo, $47/mo annual).
 **Trial:** 14-day trial, no card required. Pro trial auto-starts at signup; Business trial starts when clicking the Business CTA (/sign-up?plan=business → POST /api/billing/set-trial-plan).
-**Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Paddle, Resend.
+**Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Freemius, Resend.
 
 ---
 
@@ -35,7 +35,7 @@ deep content change monitoring.
 │   │   │   └── monitors/        # Domain-specific components
 │   │   └── lib/
 │   │       ├── auth.ts          # Better Auth config
-│   │       ├── paddle.ts        # Paddle client + webhook helpers
+│   │       ├── freemius.ts      # Freemius helpers + webhook verification
 │   │       └── repositories/    # All DB access goes here
 │   └── workers/
 │       ├── scheduler.ts         # Cron — enqueues check jobs + purges old partitions
@@ -64,7 +64,7 @@ deep content change monitoring.
 | ORM | Prisma | Type safety, migration management |
 | Queue | BullMQ + Redis | Reliable job processing, retry logic, concurrency control |
 | Auth | Better Auth | Email magic link + credentials, session-based |
-| Billing | Paddle | Subscriptions, webhooks, customer portal. MoR — no tax handling needed |
+| Billing | Freemius | Subscriptions, webhooks, hosted user dashboard. MoR — no tax handling needed. Payouts via PayPal / Payoneer / Wise / wire |
 | Email | Resend | Transactional email, React Email templates |
 | SMS | Twilio | Alert SMS (tier 2 — Business plan only) |
 | HTML parsing | cheerio | Content monitoring, lightweight, no browser needed |
@@ -195,18 +195,18 @@ REDIS_URL=redis://...
 BETTER_AUTH_SECRET=
 BETTER_AUTH_URL=https://yourdomain.com
 
-# Paddle
-PADDLE_API_KEY=
-PADDLE_WEBHOOK_SECRET=
-PADDLE_PRO_PRICE_ID=
-PADDLE_BUSINESS_PRICE_ID=
-PADDLE_PRO_ANNUAL_PRICE_ID=
-PADDLE_BUSINESS_ANNUAL_PRICE_ID=
-NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=
-NEXT_PUBLIC_PADDLE_PRO_PRICE_ID=
-NEXT_PUBLIC_PADDLE_BUSINESS_PRICE_ID=
-NEXT_PUBLIC_PADDLE_PRO_ANNUAL_PRICE_ID=
-NEXT_PUBLIC_PADDLE_BUSINESS_ANNUAL_PRICE_ID=
+# Freemius
+# Freemius models monthly/annual as a billing_cycle integer (1 = monthly, 12 = annual),
+# so there is only one plan ID per tier — not two like Paddle had.
+FREEMIUS_API_KEY=
+FREEMIUS_WEBHOOK_SECRET=
+FREEMIUS_PRODUCT_ID=
+FREEMIUS_PRO_PLAN_ID=
+FREEMIUS_BUSINESS_PLAN_ID=
+FREEMIUS_SANDBOX=false
+NEXT_PUBLIC_FREEMIUS_PRODUCT_ID=
+NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID=
+NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID=
 
 # Email
 RESEND_API_KEY=re_...
@@ -378,7 +378,7 @@ All API routes live under `apps/web/app/api/`.
 /api/status-pages/[slug]/data        GET — public, rate-limited, Redis-cached
 /api/team/invitations                GET (list), POST (send invite)
 /api/team/invitations/[token]/accept POST — public endpoint, accepts invite
-/api/webhooks/paddle                 POST — Paddle webhook handler
+/api/webhooks/freemius               POST — Freemius webhook handler
 /api/health                          GET — queue depth, worker status (internal monitoring)
 ```
 
@@ -570,7 +570,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
 **Deploy checklist before going live:**
 - [ ] `DATABASE_URL` and `DATABASE_URL_POOLED` both point to the **Neon pooled URL** at runtime (only laptop migrations use the direct URL)
 - [ ] `ALERT_DRY_RUN=false` in production
-- [ ] Paddle webhook endpoint registered and `PADDLE_WEBHOOK_SECRET` set
+- [ ] Freemius webhook endpoint registered at `/api/webhooks/freemius` and `FREEMIUS_WEBHOOK_SECRET` set
 - [ ] `SENTRY_DSN` set in Dokploy env vars (propagates to all services)
 - [ ] `NEXT_PUBLIC_SENTRY_DSN` set (client-side error capture)
 - [ ] `SENTRY_AUTH_TOKEN` set in GitHub Actions secrets if uploading source maps
@@ -597,8 +597,8 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [x] Better Auth setup (email magic link)
 - [x] Team auto-creation on signup + 14-day Pro trial
 - [x] Team invitation flow (`team_invitations` table, email invite link)
-- [x] Paddle subscription integration (`subscriptions` table, customer portal)
-- [x] Paddle billing gates (plan limits enforced at API layer + scheduler throttle)
+- [x] Freemius subscription integration (`subscriptions` table, hosted user dashboard)
+- [x] Freemius billing gates (plan limits enforced at API layer + scheduler throttle)
 - [x] Monitor CRUD API (all 6 types)
 - [x] Per-monitor pause/unpause (`is_active` toggle)
 - [x] BullMQ queue setup (packages/queue)

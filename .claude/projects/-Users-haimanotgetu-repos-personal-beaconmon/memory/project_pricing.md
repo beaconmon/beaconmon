@@ -23,4 +23,4 @@ Pricing structure locked in 2026-05-10:
 
 **Business trial flow:** Business CTA links to `/sign-up?plan=business`. After email signup, client calls `POST /api/billing/set-trial-plan` with `{plan: 'business'}` to upgrade the auto-created Pro trial team to Business. Route is at `apps/web/app/api/billing/set-trial-plan/route.ts`.
 
-**How to apply:** When creating Paddle prices, use exactly these amounts: Pro monthly $19, Pro annual $180/yr, Business monthly $59, Business annual $564/yr. Do not change prices without discussion.
+**How to apply:** When creating Freemius plans, use exactly these amounts: Pro monthly $19, Pro annual $180/yr, Business monthly $59, Business annual $564/yr. Note that Freemius models monthly/annual as a `billing_cycle` (1 or 12) at checkout, not as separate plan IDs — so the 4 Paddle price IDs collapsed to 2 Freemius plan IDs (FREEMIUS_PRO_PLAN_ID, FREEMIUS_BUSINESS_PLAN_ID). Do not change prices without discussion.

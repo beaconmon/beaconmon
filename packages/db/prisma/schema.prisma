@@ -215,17 +215,17 @@ model TeamInvitation {
 }
 
 model Subscription {
-  id                   String             @id @default(cuid())
-  teamId               String             @unique @map("team_id")
-  paddleCustomerId     String             @unique @map("paddle_customer_id")
-  paddleSubscriptionId String?            @unique @map("paddle_subscription_id")
-  plan                 PlanTier           @default(free)
-  status               SubscriptionStatus @default(trialing)
-  billingPeriod        BillingPeriod      @default(monthly) @map("billing_period")
-  trialEndsAt          DateTime?          @map("trial_ends_at")
-  currentPeriodEnd     DateTime?          @map("current_period_end")
-  createdAt            DateTime           @default(now()) @map("created_at")
-  updatedAt            DateTime           @updatedAt @map("updated_at")
+  id                     String             @id @default(cuid())
+  teamId                 String             @unique @map("team_id")
+  freemiusUserId         String             @unique @map("freemius_user_id")
+  freemiusSubscriptionId String?            @unique @map("freemius_subscription_id")
+  plan                   PlanTier           @default(free)
+  status                 SubscriptionStatus @default(trialing)
+  billingPeriod          BillingPeriod      @default(monthly) @map("billing_period")
+  trialEndsAt            DateTime?          @map("trial_ends_at")
+  currentPeriodEnd       DateTime?          @map("current_period_end")
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 

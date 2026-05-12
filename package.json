@@ -18,6 +18,7 @@
     "db:seed": "pnpm --filter @beaconmon/db run seed",
     "db:studio": "pnpm --filter @beaconmon/db run studio",
     "start:web": "pnpm --filter @beaconmon/web run start",
+    "web:dev": "pnpm --filter @beaconmon/web run dev",
     "start:worker:checks": "pnpm --filter @beaconmon/workers run start:check",
     "start:worker:content": "pnpm --filter @beaconmon/workers run start:content",
     "start:worker:alerts": "pnpm --filter @beaconmon/workers run start:alert",
