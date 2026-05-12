@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             <p>We collect the following categories of personal data:</p>
             <ul>
               <li><strong>Account data:</strong> Email address, name (optional), and hashed password when you create an account.</li>
-              <li><strong>Billing data:</strong> Payment and subscription information is processed by Paddle (our Merchant of Record). We do not store full card numbers; we receive and store only a customer reference, subscription status, and plan tier from Paddle.</li>
+              <li><strong>Billing data:</strong> Payment and subscription information is processed by Freemius, Inc. (our Merchant of Record). We do not store full card numbers; we receive and store only a customer reference, subscription status, and plan tier from Freemius.</li>
               <li><strong>Usage data:</strong> Monitor configurations (URLs, check settings), check results, alert channel configurations, and status page settings you create.</li>
               <li><strong>Log data:</strong> Server logs including IP addresses, browser user agents, and request timestamps, retained for up to 30 days for security and debugging purposes.</li>
               <li><strong>Cookies:</strong> We use a single session cookie to keep you logged in. We do not use advertising or tracking cookies.</li>
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
             <h2>4. Third-party processors</h2>
             <p>We share data with the following sub-processors, each bound by a data processing agreement:</p>
             <ul>
-              <li><strong>Paddle</strong> — payment processing and subscription management (Merchant of Record). Paddle may be the data controller for billing data in certain jurisdictions.</li>
+              <li><strong>Freemius, Inc.</strong> — payment processing and subscription management (Merchant of Record). Freemius may be the data controller for billing data in certain jurisdictions.</li>
               <li><strong>Resend</strong> — transactional email delivery (alert and account emails).</li>
               <li><strong>Cloudflare</strong> — CDN, DDoS protection, and edge caching for status pages.</li>
               <li><strong>Neon</strong> — managed PostgreSQL database hosting (your monitor data, check results, and account data are stored here).</li>

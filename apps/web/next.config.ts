@@ -3,6 +3,11 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
+  // Expose FREEMIUS_SANDBOX to client components so the checkout overlay
+  // can switch between sandbox and production without a separate NEXT_PUBLIC_ var.
+  env: {
+    NEXT_PUBLIC_FREEMIUS_SANDBOX: process.env.FREEMIUS_SANDBOX ?? 'false',
+  },
   output: 'standalone',
   trailingSlash: false,
   skipTrailingSlashRedirect: true,

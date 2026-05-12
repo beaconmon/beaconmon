@@ -23,7 +23,7 @@ const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/res
  *
  * Bypassed paths:
  *   - /api/auth/*  — better-auth has its own origin-based CSRF
- *   - /api/webhooks/*  — verified by webhook signature (Paddle, etc.)
+ *   - /api/webhooks/*  — verified by webhook signature (Freemius, etc.)
  *   - /api/team/invitations/{token}/accept  — public, token-bound
  *   - /api/status-pages/{slug}/data  — GET only, public
  */

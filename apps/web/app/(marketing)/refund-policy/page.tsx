@@ -55,7 +55,7 @@ export default function RefundPolicyPage() {
 
             <h2>7. How refunds are processed</h2>
             <p>
-              Payments are processed by <strong>Paddle</strong>, our Merchant of Record. Refunds are returned to the original payment method. Processing times depend on your bank or card issuer but typically take 5&ndash;10 business days to appear on your statement.
+              Payments are processed by <strong>Freemius, Inc.</strong>, our Merchant of Record. Refunds are returned to the original payment method. Processing times depend on your bank or card issuer but typically take 5&ndash;10 business days to appear on your statement.
             </p>
 
             <h2>8. Contact</h2>

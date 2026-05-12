@@ -10,33 +10,34 @@ export interface SubscriptionRow {
   billingPeriod: 'monthly' | 'annual';
   currentPeriodEnd: Date | null;
   trialEndsAt: Date | null;
-  paddleCustomerId: string | null;
-  paddleSubscriptionId: string | null;
+  freemiusUserId: string | null;
+  freemiusSubscriptionId: string | null;
 }
 
-export interface PaddleSubscriptionCreateData {
-  paddleCustomerId: string;
-  paddleSubscriptionId: string;
+export interface FreemiusSubscriptionCreateData {
+  freemiusUserId: string;
+  freemiusSubscriptionId: string;
   plan: PlanTier;
   billingPeriod: 'monthly' | 'annual';
   status: SubscriptionStatus;
   currentPeriodEnd: Date | null;
 }
 
-export interface PaddleSubscriptionUpdateData {
+export interface FreemiusSubscriptionUpdateData {
   plan: PlanTier;
   billingPeriod: 'monthly' | 'annual';
   status: SubscriptionStatus;
   currentPeriodEnd: Date | null;
-  paddleSubscriptionId: string;
+  freemiusSubscriptionId: string;
 }
 
 export const subscriptionRepository: {
   findByTeamId(teamId: string): Promise<SubscriptionRow | null>;
+  findTeamIdByOwnerEmail(email: string): Promise<string | null>;
   updateBillingPeriod(teamId: string, billingPeriod: 'monthly' | 'annual'): Promise<void>;
-  createFromPaddleEvent(teamId: string, data: PaddleSubscriptionCreateData): Promise<void>;
-  updateFromPaddleEvent(paddleCustomerId: string, data: PaddleSubscriptionUpdateData): Promise<{ teamId: string } | null>;
-  cancelFromPaddleEvent(paddleCustomerId: string): Promise<{ teamId: string } | null>;
+  createFromFreemiusEvent(teamId: string, data: FreemiusSubscriptionCreateData): Promise<void>;
+  updateFromFreemiusEvent(freemiusUserId: string, data: FreemiusSubscriptionUpdateData): Promise<{ teamId: string } | null>;
+  cancelFromFreemiusEvent(freemiusUserId: string): Promise<{ teamId: string } | null>;
 } = {
   async findByTeamId(teamId) {
     const row = await prisma.subscription.findUnique({
@@ -48,11 +49,26 @@ export const subscriptionRepository: {
         billingPeriod: true,
         currentPeriodEnd: true,
         trialEndsAt: true,
-        paddleCustomerId: true,
-        paddleSubscriptionId: true,
+        freemiusUserId: true,
+        freemiusSubscriptionId: true,
       },
     });
     return row as SubscriptionRow | null;
+  },
+
+  // First-event team lookup: Freemius has no metadata passthrough, so on
+  // subscription.created we resolve the team via the buyer email — which
+  // matches the team owner's user email (set during signup).
+  async findTeamIdByOwnerEmail(email) {
+    const membership = await prisma.teamMember.findFirst({
+      where: {
+        role: 'owner',
+        user: { email },
+      },
+      select: { teamId: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    return membership?.teamId ?? null;
   },
 
   async updateBillingPeriod(teamId, billingPeriod) {
@@ -62,22 +78,22 @@ export const subscriptionRepository: {
     });
   },
 
-  async createFromPaddleEvent(teamId, data) {
+  async createFromFreemiusEvent(teamId, data) {
     await prisma.$transaction(async (tx) => {
       await tx.subscription.upsert({
         where: { teamId },
         create: {
           teamId,
-          paddleCustomerId: data.paddleCustomerId,
-          paddleSubscriptionId: data.paddleSubscriptionId,
+          freemiusUserId: data.freemiusUserId,
+          freemiusSubscriptionId: data.freemiusSubscriptionId,
           plan: data.plan,
           billingPeriod: data.billingPeriod,
           status: data.status,
           currentPeriodEnd: data.currentPeriodEnd,
         },
         update: {
-          paddleCustomerId: data.paddleCustomerId,
-          paddleSubscriptionId: data.paddleSubscriptionId,
+          freemiusUserId: data.freemiusUserId,
+          freemiusSubscriptionId: data.freemiusSubscriptionId,
           plan: data.plan,
           billingPeriod: data.billingPeriod,
           status: data.status,
@@ -91,11 +107,11 @@ export const subscriptionRepository: {
     });
   },
 
-  async updateFromPaddleEvent(paddleCustomerId, data) {
+  async updateFromFreemiusEvent(freemiusUserId, data) {
     let capturedTeamId: string | undefined;
     await prisma.$transaction(async (tx) => {
       const existing = await tx.subscription.findUnique({
-        where: { paddleCustomerId },
+        where: { freemiusUserId },
         select: { teamId: true },
       });
       if (!existing) return;
@@ -107,7 +123,7 @@ export const subscriptionRepository: {
           billingPeriod: data.billingPeriod,
           status: data.status,
           currentPeriodEnd: data.currentPeriodEnd,
-          paddleSubscriptionId: data.paddleSubscriptionId,
+          freemiusSubscriptionId: data.freemiusSubscriptionId,
         },
       });
       await tx.team.update({
@@ -118,11 +134,11 @@ export const subscriptionRepository: {
     return capturedTeamId ? { teamId: capturedTeamId } : null;
   },
 
-  async cancelFromPaddleEvent(paddleCustomerId) {
+  async cancelFromFreemiusEvent(freemiusUserId) {
     let capturedTeamId: string | undefined;
     await prisma.$transaction(async (tx) => {
       const existing = await tx.subscription.findUnique({
-        where: { paddleCustomerId },
+        where: { freemiusUserId },
         select: { teamId: true },
       });
       if (!existing) return;

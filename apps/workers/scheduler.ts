@@ -377,7 +377,7 @@ async function runRetentionCleanup(): Promise<void> {
     // Pull trialEndsAt + subscription.status alongside team.plan so we can use
     // the *effective* plan (matches getEffectivePlan used elsewhere). Without
     // this, a team whose Pro/Business trial expired keeps the longer retention
-    // window until the Paddle webhook eventually flips team.plan to 'free'.
+    // window until the Freemius webhook eventually flips team.plan to 'free'.
     const teams = await prisma.team.findMany({
       select: {
         id: true,
