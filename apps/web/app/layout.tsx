@@ -26,12 +26,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'Beaconmon',
-    images: [{ url: '/api/og', width: 1200, height: 630, alt: 'Beaconmon — Uptime Monitoring for Freelancers & Agencies' }],
+    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon monitors your website 24/7 and alerts you when it goes down' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@beaconmon',
-    images: [{ url: '/api/og', width: 1200, height: 630, alt: 'Beaconmon — Uptime Monitoring for Freelancers & Agencies' }],
+    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon monitors your website 24/7 and alerts you when it goes down' }],
   },
 };
 
