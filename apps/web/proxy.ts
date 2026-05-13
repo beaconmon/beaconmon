@@ -89,6 +89,7 @@ export default async function proxy(req: NextRequest) {
   if (host === `www.${appHost}`) {
     const redirectUrl = new URL(req.url);
     redirectUrl.hostname = appHost;
+    redirectUrl.port = '';
     return NextResponse.redirect(redirectUrl, 301);
   }
 

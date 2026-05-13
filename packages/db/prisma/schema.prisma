@@ -423,9 +423,10 @@ model StatusPage {
   teamId               String   @map("team_id")
   name                 String
   slug                 String   @unique
-  customDomain         String?  @map("custom_domain")
-  customDomainVerified Boolean  @default(false) @map("custom_domain_verified")
-  detectedDnsProvider  String?  @map("detected_dns_provider")
+  customDomain          String?  @map("custom_domain")
+  customDomainVerified  Boolean  @default(false) @map("custom_domain_verified")
+  detectedDnsProvider   String?  @map("detected_dns_provider")
+  cloudflareHostnameId  String?  @map("cloudflare_hostname_id")
   isPublic             Boolean  @default(true) @map("is_public")
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @updatedAt @map("updated_at")

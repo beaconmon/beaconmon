@@ -15,6 +15,7 @@ export interface StatusPageRow {
 export interface StatusPageDetail extends StatusPageRow {
   customDomainVerified: boolean;
   detectedDnsProvider: string | null;
+  cloudflareHostnameId: string | null;
   monitors: { monitorId: string; displayOrder: number }[];
 }
 
@@ -32,6 +33,7 @@ const detailSelect = {
   customDomain: true,
   customDomainVerified: true,
   detectedDnsProvider: true,
+  cloudflareHostnameId: true,
   isPublic: true,
   createdAt: true,
   updatedAt: true,
@@ -100,11 +102,11 @@ export const statusPageRepository: {
   countByTeam(teamId: string): Promise<number>;
   slugExists(slug: string): Promise<boolean>;
   findById(teamId: string, id: string): Promise<StatusPageDetail | null>;
-  verifyCustomDomain(teamId: string, id: string, verified: boolean): Promise<BatchResult>;
+  verifyCustomDomain(teamId: string, id: string, verified: boolean, cloudflareHostnameId?: string | null): Promise<BatchResult>;
   update(
     teamId: string,
     id: string,
-    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; isPublic?: boolean },
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; cloudflareHostnameId?: string | null; isPublic?: boolean },
     monitorIds?: string[]
   ): Promise<StatusPageDetail | null>;
 } = {
@@ -159,17 +161,20 @@ export const statusPageRepository: {
     });
   },
 
-  async verifyCustomDomain(teamId: string, id: string, verified: boolean) {
+  async verifyCustomDomain(teamId: string, id: string, verified: boolean, cloudflareHostnameId?: string | null) {
     return prisma.statusPage.updateMany({
       where: { id, teamId },
-      data: { customDomainVerified: verified },
+      data: {
+        customDomainVerified: verified,
+        ...(cloudflareHostnameId !== undefined && { cloudflareHostnameId }),
+      },
     });
   },
 
   async update(
     teamId: string,
     id: string,
-    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; isPublic?: boolean },
+    data: { name?: string; customDomain?: string | null; customDomainVerified?: boolean; detectedDnsProvider?: string | null; cloudflareHostnameId?: string | null; isPublic?: boolean },
     monitorIds?: string[]
   ) {
     return prisma.$transaction(async (tx) => {
@@ -192,6 +197,7 @@ export const statusPageRepository: {
           ...(data.customDomain !== undefined && { customDomain: data.customDomain }),
           ...(data.customDomainVerified !== undefined && { customDomainVerified: data.customDomainVerified }),
           ...(data.detectedDnsProvider !== undefined && { detectedDnsProvider: data.detectedDnsProvider }),
+          ...(data.cloudflareHostnameId !== undefined && { cloudflareHostnameId: data.cloudflareHostnameId }),
           ...(data.isPublic !== undefined && { isPublic: data.isPublic }),
         },
       });

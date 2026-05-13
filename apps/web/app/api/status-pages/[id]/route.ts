@@ -2,6 +2,7 @@ import { withAuth } from '@/lib/api/with-auth';
 import { statusPageRepository } from '@/lib/repositories/status-pages';
 import { getRedis } from '@/lib/redis';
 import { detectDnsProvider } from '@/lib/dns-provider-detect';
+import { deleteCustomHostname } from '@/lib/cloudflare-saas';
 import { STATUS_PAGE_CACHE_PREFIX } from '@beaconmon/status-pages';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
@@ -54,7 +55,7 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
   const updateData = {
     ...rest,
     // Reset verified flag and re-detect provider whenever domain changes
-    ...(domainChanging && { customDomainVerified: false }),
+    ...(domainChanging && { customDomainVerified: false, cloudflareHostnameId: null }),
     ...(detectedDnsProvider !== undefined && { detectedDnsProvider }),
   };
 
@@ -79,7 +80,7 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
     }
   }
 
-  // Remove old custom domain from Redis when domain changes or page is made private
+  // Remove old custom domain from Redis and Cloudflare for SaaS when domain changes or page is made private
   const shouldRemoveDomain =
     (domainChanging && existing.customDomain) ||
     (rest.isPublic === false && existing.customDomain && existing.customDomainVerified);
@@ -89,6 +90,14 @@ export const PUT = withAuth<Params>(async (req, { teamId, role }, params) => {
       await redis.hdel('custom_domains', existing.customDomain);
     } catch (err) {
       logger.warn({ service: 'web', teamId, statusPageId: params.id, err }, 'Failed to remove old custom domain from Redis');
+    }
+
+    if (existing.cloudflareHostnameId) {
+      try {
+        await deleteCustomHostname(existing.cloudflareHostnameId);
+      } catch (err) {
+        logger.warn({ service: 'web', teamId, statusPageId: params.id, err }, 'Failed to delete custom hostname from Cloudflare for SaaS');
+      }
     }
   }
 

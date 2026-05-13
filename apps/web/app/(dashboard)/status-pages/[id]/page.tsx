@@ -242,7 +242,7 @@ function StatusPageEditorForm({
                 <div className="font-mono text-xs bg-background rounded px-2 py-1.5 border">
                   <span className="text-muted-foreground">CNAME</span>{' '}
                   <span className="font-semibold">{customDomain}</span>{' → '}
-                  <span className="font-semibold">{typeof window !== 'undefined' ? window.location.hostname : 'your-app-domain.com'}</span>
+                  <span className="font-semibold">{process.env['NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET'] ?? (typeof window !== 'undefined' ? window.location.hostname : 'your-app-domain.com')}</span>
                 </div>
                 <div className="flex items-center gap-2 pt-1">
                   {page.customDomainVerified ? (

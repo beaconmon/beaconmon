@@ -233,6 +233,16 @@ R2_SECRET_ACCESS_KEY=
 SLACK_CLIENT_ID=
 SLACK_CLIENT_SECRET=
 
+# Cloudflare for SaaS — custom status page domains
+# Zone must have Custom Hostnames (Cloudflare for SaaS) enabled.
+# API token needs Zone > Custom Hostnames > Edit permission.
+# CNAME target is the fallback origin A record you add in Cloudflare: custom-domains → Hetzner IP (proxied).
+# Users CNAME their domain to CUSTOM_DOMAIN_CNAME_TARGET; NEXT_PUBLIC_ exposes it to the dashboard UI.
+CLOUDFLARE_ZONE_ID=
+CLOUDFLARE_API_TOKEN=
+CUSTOM_DOMAIN_CNAME_TARGET=custom-domains.beaconmon.com
+NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET=custom-domains.beaconmon.com
+
 # Multi-location checks (Cloudflare Workers — deployed 2026-05-07)
 FEATURE_MULTI_LOCATION=true
 REGION_PROBE_SECRET=             # 32+ char shared secret; also set via: wrangler secret put REGION_PROBE_SECRET

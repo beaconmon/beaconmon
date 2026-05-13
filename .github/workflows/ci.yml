@@ -110,6 +110,7 @@ jobs:
             NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID=${{ secrets.NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID }}
             NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST=${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+            NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET=${{ secrets.NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET }}
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
 
