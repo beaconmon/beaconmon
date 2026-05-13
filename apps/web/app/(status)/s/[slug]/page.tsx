@@ -313,9 +313,9 @@ export default async function StatusPage({ params }: Props) {
               {initials}
             </div>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: SP.gray900, letterSpacing: -0.2 }}>
+              <h1 style={{ fontSize: 16, fontWeight: 600, color: SP.gray900, letterSpacing: -0.2, margin: 0 }}>
                 {data.name}
-              </div>
+              </h1>
               <div style={{
                 fontSize: 11, color: SP.gray400, marginTop: 1,
                 fontFamily: 'JetBrains Mono, ui-monospace, monospace',

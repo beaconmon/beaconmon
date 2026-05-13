@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { JsonLd } from '@/components/json-ld';
 import { PHProvider } from '@/components/posthog-provider';
@@ -17,21 +17,25 @@ const mono = JetBrains_Mono({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: 'Uptime Monitoring for Freelancers & Agencies | Beaconmon',
   description:
     'Know the second your site goes down. Beaconmon monitors every 30 seconds, alerts via email, Slack, or SMS, and includes status pages — free for 10 monitors.',
   metadataBase: new URL('https://beaconmon.com'),
-  alternates: { canonical: 'https://beaconmon.com' },
   openGraph: {
     type: 'website',
     siteName: 'Beaconmon',
-    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon monitors your website 24/7 and alerts you when it goes down' }],
+    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon website uptime monitoring — instant alerts when your site goes down' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@beaconmon',
-    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon monitors your website 24/7 and alerts you when it goes down' }],
+    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon website uptime monitoring — instant alerts when your site goes down' }],
   },
 };
 
