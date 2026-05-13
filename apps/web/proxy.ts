@@ -10,7 +10,7 @@ const PROTECTED_PATHS = ['/overview', '/monitors', '/incidents', '/status-pages'
 const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/reset-password'];
 
 /**
- * CSRF protection — double-submit cookie pattern.
+ * CSRF protection: double-submit cookie pattern.
  *
  * On every same-origin request we ensure a non-HttpOnly `bm_csrf` cookie is
  * set. The browser sends it on same-site requests; an attacker on a different
@@ -22,10 +22,10 @@ const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/res
  *   `x-csrf-token` header == `bm_csrf` cookie value
  *
  * Bypassed paths:
- *   - /api/auth/*  — better-auth has its own origin-based CSRF
- *   - /api/webhooks/*  — verified by webhook signature (Freemius, etc.)
- *   - /api/team/invitations/{token}/accept  — public, token-bound
- *   - /api/status-pages/{slug}/data  — GET only, public
+ *   - /api/auth/*: better-auth has its own origin-based CSRF
+ *   - /api/webhooks/*: verified by webhook signature (Freemius, etc.)
+ *   - /api/team/invitations/{token}/accept: public, token-bound
+ *   - /api/status-pages/{slug}/data: GET only, public
  */
 const CSRF_COOKIE = 'bm_csrf';
 const CSRF_HEADER = 'x-csrf-token';
@@ -85,6 +85,13 @@ export default async function proxy(req: NextRequest) {
     appHost = 'localhost';
   }
 
+  // Redirect www to apex
+  if (host === `www.${appHost}`) {
+    const redirectUrl = new URL(req.url);
+    redirectUrl.host = appHost;
+    return NextResponse.redirect(redirectUrl, 301);
+  }
+
   if (host === appHost || host === 'localhost' || host === '127.0.0.1') {
     const { pathname } = req.nextUrl;
     const method = req.method.toUpperCase();
@@ -138,7 +145,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   const url = req.nextUrl.clone();
-  url.pathname = `/${slug}`;
+  url.pathname = `/s/${slug}`;
   return NextResponse.rewrite(url);
 }
 

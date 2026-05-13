@@ -37,6 +37,21 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         ],
       },
+      // Long-term cache for public static assets (logo, OG image, fonts)
+      {
+        source: '/:path*\\.(:ext(svg|png|ico|webp|jpg|jpeg|woff2|woff|ttf))',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+      // PostHog static assets are proxied through /ingest/static/ and version-pinned by
+      // PostHog (?v=1.372.10), so a 7-day cache is safe and reduces repeat-visit load.
+      {
+        source: '/ingest/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
+        ],
+      },
     ];
   },
   // Must point to monorepo root so Next.js traces shared packages (packages/db, etc.)

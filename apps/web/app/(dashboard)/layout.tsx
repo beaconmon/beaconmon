@@ -36,6 +36,7 @@ import { Providers } from '@/components/providers';
 import { TrialBanner } from '@/components/ui/trial-banner';
 import { analytics } from '@/lib/analytics';
 import { TeamSwitcher } from '@/components/dashboard/team-switcher';
+import Logo from '@/components/logo';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
@@ -131,10 +132,7 @@ function Sidebar({
           collapsed ? 'justify-center px-2' : 'gap-2.5 px-4'
         )}
       >
-        <div className="relative flex h-6 w-6 shrink-0 items-center justify-center">
-          <span className="absolute h-6 w-6 rounded-full bg-brand-green opacity-20 animate-logo-pulse" />
-          <span className="h-2.5 w-2.5 rounded-full bg-brand-green" />
-        </div>
+        <Logo size={24} className="shrink-0" />
         {!collapsed && (
           <span className="text-sm font-semibold tracking-tight text-brand-text">Beaconmon</span>
         )}

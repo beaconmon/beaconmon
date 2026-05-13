@@ -53,6 +53,13 @@
     "tailwind-merge": "^2.6.0",
     "zod": "^4.3.6"
   },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "not dead"
+  ],
   "devDependencies": {
     "@beaconmon/tsconfig": "workspace:*",
     "@eslint/eslintrc": "^3.3.5",
