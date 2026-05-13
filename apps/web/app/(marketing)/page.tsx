@@ -21,6 +21,16 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://beaconmon.com' },
 };
 
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Beaconmon',
+  url: 'https://beaconmon.com',
+  description: 'Website uptime and performance monitoring for freelancers and agencies.',
+  email: 'hello@beaconmon.com',
+  sameAs: ['https://beaconmon.com'],
+};
+
 const SOFTWARE_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -58,7 +68,7 @@ const SOFTWARE_SCHEMA = {
 export default function LandingPage() {
   return (
     <>
-      <JsonLd data={SOFTWARE_SCHEMA} />
+      <JsonLd data={[ORGANIZATION_SCHEMA, SOFTWARE_SCHEMA]} />
 
       {/* ====== NAV ====== */}
       <NavBar />
@@ -82,12 +92,13 @@ export default function LandingPage() {
           <div className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] max-[1024px]:grid-cols-1 gap-16 max-[1024px]:gap-12 items-center">
             {/* Left */}
             <div>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Website uptime monitoring</span>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
                 Know when your site goes down.<br />
                 <span className="text-brand-green">Before your clients do.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon is a website monitoring service that checks your sites every 30 seconds and alerts you the moment something breaks — downtime, SSL expiry, domain expiry, or content changes.
+                Beaconmon is a website uptime monitoring service that checks your sites every 30 seconds and alerts you the moment something breaks — downtime, SSL expiry, domain expiry, or content changes.
               </p>
 
               <CtaForm />
@@ -145,6 +156,77 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ====== WHY IT MATTERS ====== */}
+      <section className="py-[100px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-14">
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Why it matters</span>
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
+              The cost of not knowing.
+            </h2>
+            <p className="text-brand-dim text-[17px] max-w-[520px] mx-auto">
+              Every minute your site is down and you don&apos;t know about it, something is being lost.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5">
+            {/* Card 1 — reputation */}
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="text-[19px] font-bold tracking-[-0.02em] mb-3 leading-[1.25]">
+                  Clients remember the outage, not the uptime.
+                </h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">
+                  Being the one who already knows — and already has a fix in progress — is what turns a one-off project into a long-term retainer. Beaconmon makes sure you&apos;re never the last person to find out.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2 — silent failures */}
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="text-[19px] font-bold tracking-[-0.02em] mb-3 leading-[1.25]">
+                  Most failures don&apos;t announce themselves.
+                </h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">
+                  An expired SSL shows a browser security warning. A lapsed domain takes the whole site offline. A broken checkout silently rejects every order. None of them email you — they just cost money, quietly, until someone complains.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3 — billable value */}
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="text-[19px] font-bold tracking-[-0.02em] mb-3 leading-[1.25]">
+                  Turn &ldquo;site maintenance&rdquo; into something you charge for.
+                </h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">
+                  Give every client a status page showing their uptime history. Add a monitoring package to every proposal. What used to be invisible background work becomes a visible, professional deliverable — and a reason clients stay.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ====== HOW IT WORKS ====== */}
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
@@ -174,7 +256,7 @@ export default function LandingPage() {
                   </svg>
                 ),
                 heading: 'The moment something breaks.',
-                body: 'Down, slow, SSL expiring, domain renewing — Beaconmon fires an alert. Email, Slack, SMS, or webhook. Usually within 60 seconds.',
+                body: 'Down, slow, SSL expiring, domain renewing — Beaconmon opens an incident and fires an alert. Email, Slack, SMS, or webhook. Usually within 60 seconds.',
               },
               {
                 num: '03. Share your status',
@@ -220,7 +302,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-6 max-[880px]:grid-cols-1 gap-4" style={{ gridAutoRows: 'minmax(240px,auto)' }}>
             {/* Large 1 — uptime */}
-            <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-2 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
+            <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
               <div className="p-7 pb-6">
                 <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green mb-[10px]">Uptime monitoring</span>
                 <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">30-second checks from multiple locations.</h3>
@@ -247,7 +329,7 @@ export default function LandingPage() {
             </div>
 
             {/* Large 2 — status pages */}
-            <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-2 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
+            <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
               <div className="p-7 pb-6">
                 <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green mb-[10px]">Public status pages</span>
                 <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">Status pages your clients will actually trust.</h3>
@@ -514,7 +596,11 @@ export default function LandingPage() {
           <p className="text-brand-dim text-[17px] mb-8">Set up in 5 minutes. Start free. No credit card.</p>
           <CtaForm className="mx-auto mb-4" />
           <p className="text-[13px] text-brand-muted">
-            Be among the first developers and agencies monitoring their sites with Beaconmon.
+            Be among the first developers and{' '}
+            <Link href="/for/agencies" className="underline underline-offset-2 hover:text-brand-dim transition-colors">
+              agencies
+            </Link>{' '}
+            monitoring their sites with Beaconmon.
           </p>
         </div>
       </section>

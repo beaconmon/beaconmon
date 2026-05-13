@@ -1,11 +1,27 @@
 import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Integrations — Beaconmon',
+  title: 'Alert Integrations — Email, Slack & Webhooks | Beaconmon',
+  description: 'Beaconmon sends downtime alerts via email, Slack, and webhooks. Route alerts to the tools your team already uses — or build your own automation on top of the JSON payload.',
+  alternates: { canonical: 'https://beaconmon.com/integrations' },
+};
+
+const INTEGRATIONS_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Beaconmon Alert Integrations',
   description: 'Beaconmon sends alerts via email, Slack, and webhooks. Connect your monitoring to the tools you already use.',
+  url: 'https://beaconmon.com/integrations',
+  numberOfItems: 3,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Email', description: 'Instant alert emails the moment a monitor goes down or recovers.' },
+    { '@type': 'ListItem', position: 2, name: 'Slack', description: 'Beaconmon posts to any Slack channel when a monitor changes state.' },
+    { '@type': 'ListItem', position: 3, name: 'Webhooks', description: 'Send a JSON payload to any URL when a monitor event fires.' },
+  ],
 };
 
 interface PreviewLine {
@@ -100,6 +116,7 @@ const COMING_SOON = [
 export default function IntegrationsPage() {
   return (
     <>
+      <JsonLd data={INTEGRATIONS_SCHEMA} />
       <NavBar />
 
       {/* Hero */}
@@ -191,6 +208,48 @@ export default function IntegrationsPage() {
                 </div>
                 <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2">{name}</h3>
                 <p className="text-brand-dim text-[13px] leading-[1.6]">{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-10">
+            <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">Alert integration FAQ</h2>
+          </div>
+          <div className="space-y-8">
+            {[
+              {
+                q: 'Can I send alerts to multiple channels at the same time?',
+                a: 'Yes. You can add as many alert channels as your plan allows (Pro: up to 5, Business: unlimited) and each monitor can notify any combination of them. Use email for your own inbox, Slack for your team, and a webhook for your ticketing system — all from the same monitor.',
+              },
+              {
+                q: 'What events trigger an alert?',
+                a: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks from multiple locations) and again when it recovers to UP. SSL and domain expiry warnings fire on a tiered schedule at 30, 14, and 7 days before expiry. You can choose to receive only DOWN alerts, only recovery alerts, or both.',
+              },
+              {
+                q: 'How do I connect Beaconmon to Slack?',
+                a: 'In the dashboard, go to Alert Channels → Add Channel → Slack. You\'ll be prompted to authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste — it\'s a single click.',
+              },
+              {
+                q: 'What does the webhook payload look like?',
+                a: 'The POST body is a JSON object with event (monitor.down or monitor.up), monitor_id, url, status_code, confirmed_locations (array of region slugs), incident_id, started_at, and optionally duration_ms on recovery. HTTPS only; Beaconmon does not follow redirects for security reasons.',
+              },
+              {
+                q: 'Can I use webhooks to connect to PagerDuty, Discord, or Jira?',
+                a: 'Yes — webhooks are designed for exactly this. Point the channel at a PagerDuty Events API URL to auto-create incidents, a Discord channel webhook URL for team notifications, or your own serverless function to open a Jira ticket. Any service that accepts an inbound HTTP POST will work.',
+              },
+              {
+                q: 'Is there a retry policy if my webhook endpoint is down?',
+                a: 'Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff. If all retries fail, the failure is logged and visible in the channel\'s delivery history so you can investigate.',
+              },
+            ].map(({ q, a }) => (
+              <div key={q} className="reveal border-b border-brand-line-soft pb-8 last:border-b-0 last:pb-0">
+                <h3 className="text-[16px] font-semibold tracking-[-0.01em] mb-3">{q}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.7]">{a}</p>
               </div>
             ))}
           </div>

@@ -1,6 +1,7 @@
 import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -9,6 +10,24 @@ export const metadata: Metadata = {
   description:
     'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection. Multi-location checks and SLO tracking — free for 10 monitors.',
   alternates: { canonical: 'https://beaconmon.com/features' },
+};
+
+const FEATURES_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Beaconmon Monitor Types',
+  description:
+    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection.',
+  url: 'https://beaconmon.com/features',
+  numberOfItems: 6,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.' },
+    { '@type': 'ListItem', position: 2, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.' },
+    { '@type': 'ListItem', position: 3, name: 'Domain Expiry Tracking', description: 'The worst outage is one you could have prevented.' },
+    { '@type': 'ListItem', position: 4, name: 'TCP Port Monitoring', description: 'Monitor any service that speaks TCP.' },
+    { '@type': 'ListItem', position: 5, name: 'Keyword Monitoring', description: 'Verify your pages say exactly what they should.' },
+    { '@type': 'ListItem', position: 6, name: 'Content Change Monitoring', description: 'Know the instant a page changes.' },
+  ],
 };
 
 const MONITOR_TYPES = [
@@ -20,9 +39,9 @@ const MONITOR_TYPES = [
       </svg>
     ),
     name: 'HTTP Monitoring',
-    tagline: 'Know the moment your site stops responding.',
-    body: 'Beaconmon checks your URLs every 30 seconds (Business) or 1 minute (Pro). If the response is anything other than a 2xx, you\'re alerted within 60 seconds. Set custom request headers, follow redirects, and configure per-monitor response-time thresholds to catch slow sites before users notice.',
-    highlights: ['Response code validation', 'Response time thresholds', 'Custom request headers', 'Redirect following'],
+    tagline: 'Know the moment your site or API stops responding.',
+    body: 'Beaconmon checks your URLs every 30 seconds (Business) or 1 minute (Pro). If the response is anything other than a 2xx, you\'re alerted within 60 seconds. Set custom request headers, follow redirects, and configure per-monitor response-time thresholds to catch slow sites and APIs before users notice.',
+    highlights: ['Response code validation', 'Response time thresholds', 'Custom request headers', 'API endpoint monitoring'],
   },
   {
     icon: (
@@ -93,6 +112,7 @@ const MONITOR_TYPES = [
 export default function FeaturesPage() {
   return (
     <>
+      <JsonLd data={FEATURES_SCHEMA} />
       <NavBar />
 
       {/* Hero */}
@@ -112,11 +132,11 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            Everything you need to know what&apos;s broken
-            <span className="text-brand-green"> before anyone else does.</span>
+            All the website monitoring tools you need —
+            <span className="text-brand-green"> know what&apos;s broken before anyone else does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
-            Six monitor types. Multi-location checks. Public status pages. SLO tracking. All in one tool, built for freelancers and agencies.
+            Six monitor types. Multi-location checks. Incident management. Public status pages. SLO tracking. All in one tool, built for freelancers and agencies.
           </p>
         </div>
       </section>

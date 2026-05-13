@@ -1,5 +1,6 @@
 import NavBar from '@/components/marketing/NavBar';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -9,6 +10,25 @@ export const metadata: Metadata = {
     'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
   alternates: { canonical: 'https://beaconmon.com/about' },
 };
+
+const ABOUT_SCHEMA = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About Beaconmon',
+    description:
+      'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
+    url: 'https://beaconmon.com/about',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Beaconmon',
+    url: 'https://beaconmon.com',
+    description: 'Website uptime and performance monitoring for freelancers and agencies.',
+    email: 'hello@beaconmon.com',
+  },
+];
 
 const PHILOSOPHY = [
   {
@@ -28,6 +48,7 @@ const PHILOSOPHY = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={ABOUT_SCHEMA} />
       <NavBar />
 
       {/* Hero */}
