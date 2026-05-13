@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Refund Policy — Beaconmon',
   description: 'Beaconmon refund and cancellation policy for paid subscriptions.',
+  alternates: { canonical: 'https://beaconmon.com/refund-policy' },
 };
 
 export default function RefundPolicyPage() {

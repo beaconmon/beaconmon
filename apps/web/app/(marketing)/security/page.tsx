@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Security — Beaconmon',
   description: 'How Beaconmon handles your data: infrastructure, encryption, access controls, GDPR, and responsible disclosure.',
+  alternates: { canonical: 'https://beaconmon.com/security' },
 };
 
 const SECTIONS = [

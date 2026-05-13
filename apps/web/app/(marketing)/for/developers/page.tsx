@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring for Developers — Beaconmon',
   description: 'Beaconmon gives developers webhook alerts, TCP port monitoring, heartbeat checks for cron jobs, and an API to integrate monitoring into their workflow.',
+  alternates: { canonical: 'https://beaconmon.com/for/developers' },
 };
 
 const FEATURES = [

@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring for Freelancers — Beaconmon',
   description: 'Beaconmon helps freelancers catch downtime before their clients do — with instant alerts, SSL expiry warnings, and domain tracking on every site you manage.',
+  alternates: { canonical: 'https://beaconmon.com/for/freelancers' },
 };
 
 const FEATURES = [

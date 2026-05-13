@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon Alternatives & Comparisons — How Beaconmon Stacks Up',
   description: 'Honest, side-by-side comparisons of Beaconmon vs UptimeRobot, Pingdom, Better Uptime, and StatusCake. Find the right uptime monitoring tool for your needs.',
+  alternates: { canonical: 'https://beaconmon.com/vs' },
 };
 
 const COMPETITORS = [
@@ -138,6 +139,44 @@ export default function VsHubPage() {
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
                 <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-10">
+            <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">Common questions</h2>
+          </div>
+          <div className="space-y-8">
+            {[
+              {
+                q: 'Is Beaconmon cheaper than the alternatives?',
+                a: 'On a per-feature basis, yes. UptimeRobot\'s paid plan starts at $7/mo but lacks domain expiry and content monitoring. Pingdom has no free plan and starts at $15/mo for fewer monitors. Better Uptime starts at $25/mo. Beaconmon Pro is $15/mo with all monitor types, 5 regions, and custom-domain status pages included.',
+              },
+              {
+                q: 'Which tool should I choose if I just need basic ping checks?',
+                a: 'If you only need simple HTTP uptime monitoring for personal projects and you want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors) is better suited to people who will outgrow it and need the paid features.',
+              },
+              {
+                q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
+                a: 'Not yet. Better Uptime and PagerDuty are strong choices if you run on-call rotations with escalation policies. Beaconmon is designed for freelancers and small agencies where a Slack alert to the team is sufficient.',
+              },
+              {
+                q: 'Can I migrate my monitors from UptimeRobot or Pingdom?',
+                a: 'There\'s no one-click importer, but setup is fast — each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
+              },
+              {
+                q: 'What makes content change monitoring unique to Beaconmon?',
+                a: 'None of the competitors in this list — UptimeRobot, Pingdom, Better Uptime, or StatusCake — offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It\'s purpose-built for tracking competitor pricing, product availability, and legal terms.',
+              },
+            ].map(({ q, a }) => (
+              <div key={q} className="reveal border-b border-brand-line-soft pb-8 last:border-b-0 last:pb-0">
+                <h3 className="text-[16px] font-semibold tracking-[-0.01em] mb-3">{q}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.7]">{a}</p>
               </div>
             ))}
           </div>

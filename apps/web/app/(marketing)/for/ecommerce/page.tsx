@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring for E-commerce — Beaconmon',
   description: 'Beaconmon monitors your Shopify, WooCommerce, or custom store every 30 seconds. Know the moment your checkout goes down — before you lose another sale.',
+  alternates: { canonical: 'https://beaconmon.com/for/ecommerce' },
 };
 
 const FEATURES = [

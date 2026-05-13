@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring for Agencies — Beaconmon',
   description: 'Beaconmon helps agencies monitor every client site from one dashboard, with instant alerts, custom status pages, and domain expiry tracking.',
+  alternates: { canonical: 'https://beaconmon.com/for/agencies' },
 };
 
 const FEATURES = [
@@ -58,7 +59,7 @@ export default function ForAgenciesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">For Agencies</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px]">
-            Monitor every client site.<br />
+            Uptime monitoring for every client site.<br />
             <span className="text-brand-green">Know before they do.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
