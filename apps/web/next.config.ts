@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
       },
       // Long-term cache for public static assets (logo, OG image, fonts)
       {
-        source: '/:path*\\.(:ext(svg|png|ico|webp|jpg|jpeg|woff2|woff|ttf))',
+        source: '/:path*\\.(svg|png|ico|webp|jpg|jpeg|woff2|woff|ttf)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
         ],

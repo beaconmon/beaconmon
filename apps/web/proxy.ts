@@ -88,7 +88,7 @@ export default async function proxy(req: NextRequest) {
   // Redirect www to apex
   if (host === `www.${appHost}`) {
     const redirectUrl = new URL(req.url);
-    redirectUrl.host = appHost;
+    redirectUrl.hostname = appHost;
     return NextResponse.redirect(redirectUrl, 301);
   }
 
