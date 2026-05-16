@@ -8,6 +8,15 @@ export interface ContentSnapshotRecord {
   diffSummary: string | null;
 }
 
+export interface DigestSnapshotRow {
+  monitorId: string;
+  monitorName: string;
+  monitorUrl: string;
+  snapshotId: string;
+  capturedAt: Date;
+  content: string;
+}
+
 export const contentSnapshotWorkerRepository = {
   /**
    * Record a new snapshot for a content monitor and update the monitor's hot
@@ -68,6 +77,41 @@ export const contentSnapshotWorkerRepository = {
       },
     });
     return result.count;
+  },
+
+  /**
+   * Returns all content snapshots for a team's competitor monitors within a time window.
+   * Used by the daily digest worker to build the email body.
+   */
+  async findSnapshotsForDigest(
+    teamId: string,
+    windowStart: Date,
+    windowEnd: Date
+  ): Promise<DigestSnapshotRow[]> {
+    const rows = await prisma.contentSnapshot.findMany({
+      where: {
+        teamId,
+        capturedAt: { gte: windowStart, lte: windowEnd },
+        monitor: { isCompetitor: true, isActive: true, deletedAt: null },
+      },
+      select: {
+        id: true,
+        monitorId: true,
+        capturedAt: true,
+        content: true,
+        monitor: { select: { name: true, url: true } },
+      },
+      orderBy: { capturedAt: 'asc' },
+    });
+
+    return rows.map((r) => ({
+      monitorId: r.monitorId,
+      monitorName: r.monitor.name,
+      monitorUrl: r.monitor.url,
+      snapshotId: r.id,
+      capturedAt: r.capturedAt,
+      content: r.content,
+    }));
   },
 
   /**

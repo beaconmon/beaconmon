@@ -87,6 +87,8 @@ const mockMonitor = {
   keywordCondition: null,
   escalationPolicyId: null,
   anomalyDetectionEnabled: false,
+  isCompetitor: false,
+  instantAlerts: false,
 };
 
 const mockIncident = {

@@ -6,7 +6,7 @@ export const tagSchema = z
   .max(32)
   .regex(/^[a-zA-Z0-9][a-zA-Z0-9 _-]*$/, 'Tag must be alphanumeric with -, _, or spaces');
 
-export const createMonitorSchema = z.object({
+const monitorBaseSchema = z.object({
   name: z.string().min(1).max(100),
   url: z.string().url(),
   type: z.enum(['http', 'ssl', 'domain', 'tcp', 'keyword', 'content', 'heartbeat']),
@@ -17,12 +17,18 @@ export const createMonitorSchema = z.object({
   keywordCondition: z.enum(['present', 'absent']).optional(),
   config: z.record(z.string(), z.unknown()).optional(),
   isCompetitor: z.boolean().optional(),
+  instantAlerts: z.boolean().optional(),
   tags: z.array(tagSchema).max(20).optional(),
 });
 
+export const createMonitorSchema = monitorBaseSchema.refine(
+  (d) => !d.isCompetitor || d.type === 'content',
+  { message: 'isCompetitor is only supported for content monitors', path: ['isCompetitor'] }
+);
+
 export type CreateMonitorInput = z.infer<typeof createMonitorSchema>;
 
-export const updateMonitorSchema = createMonitorSchema.partial();
+export const updateMonitorSchema = monitorBaseSchema.partial();
 
 export type UpdateMonitorInput = z.infer<typeof updateMonitorSchema>;
 

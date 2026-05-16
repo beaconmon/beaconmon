@@ -6,10 +6,11 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createManagedWorker } from '@beaconmon/queue';
-import type { AlertJob, SloBurnAlertJob } from '@beaconmon/queue';
+import type { AlertJob, SloBurnAlertJob, CompetitorDigestJob } from '@beaconmon/queue';
 import { prisma } from '@beaconmon/db';
 import { processAlertJob } from './process-alert-job.js';
 import { processSloBurnJob } from './process-slo-burn-job.js';
+import { processCompetitorDigestJob } from './process-competitor-digest-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 
@@ -70,6 +71,36 @@ sloBurnWorker.on('failed', (job, err) => {
   );
   Sentry.captureException(err, {
     extra: { jobId: job?.id, monitorId: job?.data.monitorId, teamId: job?.data.teamId },
+  });
+});
+
+// Competitor digest worker (shares process with alert worker)
+const { worker: competitorDigestWorker } = createManagedWorker<CompetitorDigestJob>({
+  queueName: QUEUE_NAMES.COMPETITOR_DIGEST,
+  workerName: 'competitor-digest',
+  connection,
+  concurrency: 5,
+  logger,
+  processor: async (job) => {
+    const { teamId } = job.data;
+    logger.info(
+      { service: 'alert-worker', jobId: job.id, teamId },
+      'Processing competitor digest job'
+    );
+    await processCompetitorDigestJob(job.data);
+  },
+  onShutdown: async () => {
+    // Primary worker handles prisma + redis disconnect
+  },
+});
+
+competitorDigestWorker.on('failed', (job, err) => {
+  logger.error(
+    { service: 'alert-worker', jobId: job?.id, teamId: job?.data.teamId, err },
+    'Competitor digest job failed'
+  );
+  Sentry.captureException(err, {
+    extra: { jobId: job?.id, teamId: job?.data.teamId },
   });
 });
 

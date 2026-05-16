@@ -1,5 +1,6 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
+import { competitorRepository } from '@/lib/repositories/competitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
@@ -45,6 +46,19 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     const count = await monitorRepository.countByTeam(teamId);
     if (count >= limits.monitors) {
       throw new PlanLimitError(`Your plan allows a maximum of ${limits.monitors} monitors`);
+    }
+  }
+
+  // Check competitor monitor quota when creating a competitor monitor
+  if (data.isCompetitor) {
+    const competitorLimit = limits.competitorMonitors;
+    if (competitorLimit !== -1) {
+      const competitorCount = await competitorRepository.countActive(teamId);
+      if (competitorCount >= competitorLimit) {
+        throw new PlanLimitError(
+          `Your plan allows a maximum of ${competitorLimit} competitor monitor${competitorLimit !== 1 ? 's' : ''}`
+        );
+      }
     }
   }
 

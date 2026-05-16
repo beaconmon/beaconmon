@@ -6,7 +6,7 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
-import { createCheckQueue, createContentCheckQueue, createSloBurnQueue } from '@beaconmon/queue';
+import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createCompetitorDigestQueue } from '@beaconmon/queue';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult } from '@beaconmon/checker';
 
@@ -18,6 +18,7 @@ const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const checkQueue = createCheckQueue(connection);
 const contentQueue = createContentCheckQueue(connection);
 const sloBurnQueue = createSloBurnQueue(connection);
+const competitorDigestQueue = createCompetitorDigestQueue(connection);
 
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
@@ -210,6 +211,8 @@ async function scheduleChecks(): Promise<void> {
         teamId: true,
         currentStatus: true,
         consecutiveFailures: true,
+        isCompetitor: true,
+        instantAlerts: true,
         team: {
           select: {
             id: true,
@@ -290,6 +293,8 @@ async function scheduleChecks(): Promise<void> {
             intervalSeconds: monitor.intervalSeconds,
             selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
             inMaintenance,
+            isCompetitor: monitor.isCompetitor,
+            instantAlerts: monitor.instantAlerts,
           }
         );
       } else {
@@ -617,6 +622,54 @@ async function evaluateSloBurnRates(): Promise<void> {
   }
 }
 
+// Redis key that stores the UTC date string of the last competitor digest run ("2026-05-16")
+const DIGEST_LAST_RUN_KEY = 'scheduler:competitor_digest:last_run_date';
+// Target UTC hour to send the daily digest
+const DIGEST_TARGET_HOUR_UTC = 13;
+
+/**
+ * Enqueue a competitor digest job for each team that has at least one active competitor monitor.
+ * Uses a Redis date key so the digest fires once per calendar day at ~13:00 UTC.
+ */
+async function maybeEnqueueCompetitorDigests(): Promise<void> {
+  const now = new Date();
+  if (now.getUTCHours() < DIGEST_TARGET_HOUR_UTC) return;
+
+  const todayUtc = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const lastRunDate = await connection.get(DIGEST_LAST_RUN_KEY);
+  if (lastRunDate === todayUtc) return; // already ran today
+
+  try {
+    // Find all teams that have at least one active, non-deleted competitor monitor
+    const rows = await prisma.monitor.groupBy({
+      by: ['teamId'],
+      where: { isCompetitor: true, isActive: true, deletedAt: null },
+    });
+
+    if (rows.length === 0) {
+      await connection.set(DIGEST_LAST_RUN_KEY, todayUtc, 'EX', 60 * 60 * 48);
+      return;
+    }
+
+    const windowEnd = now.toISOString();
+    const windowStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+
+    for (const row of rows) {
+      await competitorDigestQueue.add(`digest:${row.teamId}:${todayUtc}`, {
+        teamId: row.teamId,
+        windowStart,
+        windowEnd,
+      }, { jobId: `digest:${row.teamId}:${todayUtc}` });
+    }
+
+    await connection.set(DIGEST_LAST_RUN_KEY, todayUtc, 'EX', 60 * 60 * 48);
+    logger.info({ service: 'scheduler', teamCount: rows.length }, 'Competitor digest jobs enqueued');
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Failed to enqueue competitor digest jobs');
+    Sentry.captureException(err);
+  }
+}
+
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   // Log which DB connection is in use so ops can verify pooling is configured correctly
@@ -660,6 +713,8 @@ async function main(): Promise<void> {
       void runContentSnapshotRetention();
       void expireStaleDeployEvents();
     }
+
+    void maybeEnqueueCompetitorDigests();
   }, 10_000);
 
   // Run immediately
@@ -680,6 +735,7 @@ const shutdown = async (signal: string) => {
   await checkQueue.close();
   await contentQueue.close();
   await sloBurnQueue.close();
+  await competitorDigestQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 

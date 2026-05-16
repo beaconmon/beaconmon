@@ -31,7 +31,7 @@ const TIMEOUT_MS = 30_000;
 const service = 'content-worker';
 
 export async function processContentCheckJob(data: ContentCheckJob): Promise<void> {
-  const { monitorId, url, selector } = data;
+  const { monitorId, url, selector, isCompetitor: _isCompetitor = false, instantAlerts: _instantAlerts = false } = data;
 
   // 1. Load monitor — bail if missing
   const monitor = await monitorRepository.findById(monitorId);
@@ -97,7 +97,15 @@ export async function processContentCheckJob(data: ContentCheckJob): Promise<voi
     return;
   }
 
-  // 7b. Notify all active channels
+  // 7b. Notify all active channels.
+  // Competitor monitors skip per-change notifications unless instant alerts is enabled —
+  // changes are batched into the daily digest instead. Use live DB values (not job payload)
+  // so a mid-flight toggle is respected.
+  if (monitor.isCompetitor && !monitor.instantAlerts) {
+    logger.info({ service, monitorId }, 'Competitor change recorded — skipping per-change alert (digest mode)');
+    return;
+  }
+
   await notifyContentChange(monitor.teamId, monitor.name, url, checkedAt);
 }
 

@@ -39,7 +39,8 @@ import { Label } from '@/components/ui/label';
 import { QueryState } from '@/components/dashboard/query-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
-import { useMonitor, useDeleteMonitor } from '@/lib/hooks/use-monitors';
+import { useMonitor, useDeleteMonitor, useUpdateMonitor } from '@/lib/hooks/use-monitors';
+import { Switch } from '@/components/ui/switch';
 import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';
 import { useCheckResults, type TimeRange, type CheckResultRow } from '@/lib/hooks/use-check-results';
 import { useMonitorIncidents, useResolveIncident } from '@/lib/hooks/use-incidents';
@@ -818,6 +819,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const incidentsQ = useMonitorIncidents(id);
   const channelsQ = useAlertChannels();
   const deleteMonitor = useDeleteMonitor(id);
+  const updateMonitor = useUpdateMonitor(id);
 
   const monitor = monitorQ.data;
   useBreadcrumbOverride(id, monitor?.name);
@@ -830,6 +832,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const multiLocationEnabled = process.env['NEXT_PUBLIC_FEATURE_MULTI_LOCATION'] === 'true';
   const hasRegionData = results.some((r) => r.region != null);
   const isContentMonitor = monitor?.type === 'content';
+  const isCompetitorMonitor = monitor?.isCompetitor === true;
 
   // Group by checkedAt so multi-region rounds collapse to one point (avg across regions).
   const chartData = (() => {
@@ -1153,6 +1156,26 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                 ))}
               </dl>
+            </SidebarCard>
+          )}
+
+          {isCompetitorMonitor && monitor && (
+            <SidebarCard title="Competitor settings">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-brand-dim">Instant alerts</p>
+                  <p className="mt-0.5 text-[11px] text-brand-muted leading-snug">
+                    Send an alert immediately on change instead of batching into the daily digest.
+                  </p>
+                </div>
+                <Switch
+                  checked={monitor.instantAlerts}
+                  disabled={updateMonitor.isPending}
+                  onCheckedChange={(checked) => {
+                    updateMonitor.mutate({ instantAlerts: checked });
+                  }}
+                />
+              </div>
             </SidebarCard>
           )}
 

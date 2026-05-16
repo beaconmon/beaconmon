@@ -57,7 +57,7 @@ const nextConfig: NextConfig = {
   // Must point to monorepo root so Next.js traces shared packages (packages/db, etc.)
   // into the standalone output rather than trying to bundle them from app-relative paths.
   outputFileTracingRoot: path.resolve(__dirname, '../../'),
-  serverExternalPackages: ['ioredis', '@prisma/client', 'pg', 'pg-connection-string', 'pgpass', 'split2', 'string_decoder', 'buffer', 'redis-parser', 'redis-errors'],
+  serverExternalPackages: ['bullmq', 'ioredis', '@prisma/client', 'pg', 'pg-connection-string', 'pgpass', 'split2', 'string_decoder', 'buffer', 'redis-parser', 'redis-errors'],
   transpilePackages: [
     '@beaconmon/db',
     '@beaconmon/queue',

@@ -18,6 +18,7 @@ export interface MonitorRow {
   keywordCondition: string | null;
   config: Record<string, unknown>;
   isCompetitor: boolean;
+  instantAlerts: boolean;
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -63,6 +64,7 @@ export const monitorRepository: {
         keywordCondition: true,
         config: true,
         isCompetitor: true,
+        instantAlerts: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -91,6 +93,7 @@ export const monitorRepository: {
         keywordCondition: true,
         config: true,
         isCompetitor: true,
+        instantAlerts: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -138,6 +141,7 @@ export const monitorRepository: {
         keywordCondition: true,
         config: true,
         isCompetitor: true,
+        instantAlerts: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -213,6 +217,7 @@ export const monitorRepository: {
         ...(data.keywordCondition !== undefined && { keywordCondition: data.keywordCondition }),
         ...(data.config !== undefined && { config: data.config as unknown as Prisma.InputJsonValue }),
         ...(data.isCompetitor !== undefined && { isCompetitor: data.isCompetitor }),
+        ...(data.instantAlerts !== undefined && { instantAlerts: data.instantAlerts }),
         ...(data.tags !== undefined && { tags: dedupeTags(data.tags) }),
       },
     });

@@ -7,6 +7,7 @@ import type {
   ReportJob,
   EscalationStepJob,
   SloBurnAlertJob,
+  CompetitorDigestJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -79,6 +80,18 @@ export function createEscalationQueue(connection: Redis): Queue<EscalationStepJo
       backoff: { type: 'exponential', delay: 2000 },
       removeOnComplete: { count: 200 },
       removeOnFail: { count: 500 },
+    },
+  });
+}
+
+export function createCompetitorDigestQueue(connection: Redis): Queue<CompetitorDigestJob> {
+  return new Queue<CompetitorDigestJob>(QUEUE_NAMES.COMPETITOR_DIGEST, {
+    connection,
+    defaultJobOptions: {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { count: 100 },
+      removeOnFail: { count: 200 },
     },
   });
 }

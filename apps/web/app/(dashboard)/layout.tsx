@@ -18,6 +18,7 @@ import {
   Plus,
   Search,
   Settings,
+  Telescope,
   Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -43,6 +44,7 @@ import { useSession } from '@/lib/hooks/use-session';
 
 const NAV_ITEMS = [
   { href: '/monitors',               label: 'Monitors',           icon: Activity },
+  { href: '/competitors',            label: 'Competitors',        icon: Telescope },
   { href: '/incidents',              label: 'Incidents',          icon: AlertTriangle },
   { href: '/maintenance-windows',    label: 'Maintenance',        icon: Wrench },
   { href: '/status-pages',           label: 'Status Pages',       icon: Globe },

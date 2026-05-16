@@ -258,6 +258,7 @@ model Monitor {
   contentLastChangedAt DateTime? @map("content_last_changed_at")
   requiresJs           Boolean   @default(false) @map("requires_js")
   isCompetitor         Boolean   @default(false) @map("is_competitor")
+  instantAlerts        Boolean   @default(false) @map("instant_alerts")
 
   // Heartbeat monitor
   lastHeartbeatAt DateTime? @map("last_heartbeat_at")
