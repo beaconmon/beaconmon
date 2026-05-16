@@ -4,48 +4,88 @@
 
 @layer base {
   :root {
+    /* shadcn semantic vars — light */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
+    --primary: 152 100% 45%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 220 14% 95%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 14% 95%;
     --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 94%;
+    --input: 220 13% 94%;
+    --ring: 152 100% 45%;
     --radius: 0.5rem;
+
+    /* brand palette — light */
+    --brand-bg:         #FFFFFF;
+    --brand-bg1:        #FFFFFF;
+    --brand-bg2:        #F4F5FA;
+    --brand-bg3:        #ECEEF8;
+    --brand-line:       #E2E4EF;
+    --brand-line-soft:  #E2E4EF;
+    --brand-text:       #111827;
+    --brand-dim:        #4B5268;
+    --brand-muted:      #808898;
+    --brand-green:      #00E57A;
+    --brand-green-dim:  #00B862;
+    --brand-green-fg:   #001a0c;
+    --brand-red:        #DC2626;
+    --brand-amber:      #B45309;
+    --brand-surface:    #FFFFFF;
+    --brand-outline:    #F0F2FA;
+    --brand-border2:    #E2E4EF;
   }
 
   .dark {
-    --background: 240 20% 5%;       /* #0A0A0F brand-bg */
-    --foreground: 240 15% 94%;      /* #ECECF1 brand-text */
-    --card: 240 17% 8%;             /* #111118 brand-surface */
+    /* shadcn semantic vars — dark */
+    --background: 240 20% 5%;
+    --foreground: 240 15% 94%;
+    --card: 240 17% 8%;
     --card-foreground: 240 15% 94%;
-    --popover: 240 16% 12%;         /* #1A1A24 brand-bg3 */
+    --popover: 240 16% 12%;
     --popover-foreground: 240 15% 94%;
-    --primary: 152 100% 45%;        /* #00E57A brand-green */
+    --primary: 152 100% 45%;
     --primary-foreground: 240 20% 5%;
-    --secondary: 240 16% 12%;       /* #1A1A24 brand-bg3 */
+    --secondary: 240 16% 12%;
     --secondary-foreground: 240 15% 94%;
-    --muted: 240 16% 12%;           /* #1A1A24 brand-bg3 */
-    --muted-foreground: 240 7% 63%; /* #9A9AA8 brand-dim */
-    --accent: 240 17% 16%;          /* #222230 brand-line */
+    --muted: 240 16% 12%;
+    --muted-foreground: 240 7% 63%;
+    --accent: 240 17% 16%;
     --accent-foreground: 240 15% 94%;
-    --destructive: 0 100% 63%;      /* #FF4444 brand-red */
+    --destructive: 0 100% 63%;
     --destructive-foreground: 240 15% 94%;
-    --border: 240 17% 16%;          /* #222230 brand-line */
-    --input: 240 17% 16%;           /* #222230 brand-line */
-    --ring: 152 100% 45%;           /* #00E57A brand-green */
+    --border: 240 17% 16%;
+    --input: 240 17% 16%;
+    --ring: 152 100% 45%;
+
+    /* brand palette — dark */
+    --brand-bg:         #0A0A0F;
+    --brand-bg1:        #0E0E14;
+    --brand-bg2:        #14141C;
+    --brand-bg3:        #1A1A24;
+    --brand-line:       #222230;
+    --brand-line-soft:  #1B1B26;
+    --brand-text:       #ECECF1;
+    --brand-dim:        #B4B4C4;
+    --brand-muted:      #8C8C9D;
+    --brand-green:      #00E57A;
+    --brand-green-dim:  #00B862;
+    --brand-green-fg:   #001a0c;
+    --brand-red:        #FF4444;
+    --brand-amber:      #F5B400;
+    --brand-surface:    #111118;
+    --brand-outline:    #1E1E2A;
+    --brand-border2:    #2A2A3A;
   }
 }
 

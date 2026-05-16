@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
 import { JsonLd } from '@/components/json-ld';
 import { PHProvider } from '@/components/posthog-provider';
 import './globals.css';
@@ -62,12 +63,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`dark ${inter.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${mono.variable}`}>
       <head>
         <JsonLd data={SITE_SCHEMA} />
       </head>
       <body>
-        <PHProvider>{children}</PHProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <PHProvider>{children}</PHProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

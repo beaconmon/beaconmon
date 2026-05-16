@@ -34,6 +34,7 @@ import { CommandPalette } from '@/components/command-palette';
 import { NotificationPopover } from '@/components/notifications/notification-popover';
 import { Providers } from '@/components/providers';
 import { TrialBanner } from '@/components/ui/trial-banner';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { analytics } from '@/lib/analytics';
 import { TeamSwitcher } from '@/components/dashboard/team-switcher';
 import Logo from '@/components/logo';
@@ -197,23 +198,11 @@ function TopBar({
         <Breadcrumbs />
       </div>
 
-      {/* ⌘K trigger */}
-      <button
-        onClick={onOpenCommandPalette}
-        className="hidden sm:flex items-center gap-2 rounded-md border border-brand-line bg-brand-bg2 px-3 py-1.5 text-xs text-brand-muted transition-colors hover:border-brand-line hover:text-brand-dim"
-      >
-        <Search className="h-3 w-3" />
-        <span>Search…</span>
-        <kbd className="inline-flex h-4 items-center rounded border border-brand-line bg-brand-bg px-1 text-[10px] text-brand-muted">
-          ⌘K
-        </kbd>
-      </button>
-
       {/* Add monitor */}
       {showAddMonitor && (
         <Link
           href="/monitors/new"
-          className="hidden sm:flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-bg transition-colors hover:bg-brand-green/90"
+          className="hidden sm:flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
         >
           <Plus className="h-3.5 w-3.5" />
           Add monitor
@@ -223,6 +212,18 @@ function TopBar({
       {/* Notifications */}
       <NotificationPopover />
 
+      {/* ⌘K trigger */}
+      <button
+        onClick={onOpenCommandPalette}
+        className="hidden sm:flex items-center gap-2 rounded-md border border-brand-line bg-brand-bg2 px-3 py-1.5 text-xs text-brand-muted transition-colors hover:border-brand-line hover:text-brand-dim w-56"
+      >
+        <Search className="h-3 w-3" />
+        <span>Search…</span>
+        <kbd className="inline-flex h-4 items-center rounded border border-brand-line bg-brand-bg px-1 text-[10px] text-brand-muted">
+          ⌘K
+        </kbd>
+      </button>
+
       {/* Avatar dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -230,13 +231,18 @@ function TopBar({
             U
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 border-brand-line bg-brand-bg3">
+        <DropdownMenuContent align="end" className="w-44 border-brand-line bg-brand-bg3">
           <DropdownMenuItem asChild className="cursor-pointer text-brand-dim hover:text-brand-text focus:text-brand-text">
             <Link href="/settings/billing">
               <CreditCard className="mr-2 h-3.5 w-3.5" />
               Billing
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator className="bg-brand-line" />
+          <div className="flex items-center justify-between px-2 py-1.5">
+            <span className="text-xs text-brand-muted">Theme</span>
+            <ThemeToggle />
+          </div>
           <DropdownMenuSeparator className="bg-brand-line" />
           <DropdownMenuItem
             className="cursor-pointer text-brand-dim hover:text-brand-text focus:text-brand-text"
