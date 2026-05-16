@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import LogoMark from './LogoMark';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 const SOLUTIONS_LINKS: [string, string][] = [
   ['/for/agencies', 'Agencies'],
@@ -56,7 +57,7 @@ export default function NavBar() {
     <nav
       className={`sticky top-0 z-50 transition-all duration-200 ${
         scrolled
-          ? 'bg-[rgba(10,10,15,0.85)] backdrop-blur-[10px] border-b border-brand-line-soft'
+          ? 'bg-white/85 dark:bg-[rgba(10,10,15,0.85)] backdrop-blur-[10px] border-b border-brand-line-soft'
           : 'bg-transparent border-b border-transparent backdrop-blur-[10px]'
       }`}
     >
@@ -80,7 +81,7 @@ export default function NavBar() {
             </button>
             {solutionsOpen && (
               <div className="absolute top-full left-0 pt-3">
-                <div className="bg-[rgba(10,10,15,0.97)] border border-brand-line-soft rounded-xl p-1.5 min-w-[170px] shadow-xl">
+                <div className="bg-white dark:bg-[rgba(10,10,15,0.97)] border border-brand-line-soft rounded-xl p-1.5 min-w-[170px] shadow-xl">
                   {SOLUTIONS_LINKS.map(([href, label]) => (
                     <Link
                       key={label}
@@ -99,12 +100,15 @@ export default function NavBar() {
         </div>
 
         <div className="flex items-center gap-5">
+          <div className="max-[880px]:hidden">
+            <ThemeToggle />
+          </div>
           <Link href="/sign-in" className="text-sm text-brand-dim hover:text-brand-text transition-colors duration-150 max-[880px]:hidden">
             Sign in
           </Link>
           <Link
             href="/sign-up"
-            className="inline-flex items-center justify-center h-[38px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-[#001a0c] shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] hover:shadow-[0_0_0_1px_rgba(0,229,122,0.5),0_8px_24px_rgba(0,229,122,0.35)] transition-all duration-[120ms] whitespace-nowrap"
+            className="inline-flex items-center justify-center h-[38px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] hover:shadow-[0_0_0_1px_rgba(0,229,122,0.5),0_8px_24px_rgba(0,229,122,0.35)] transition-all duration-[120ms] whitespace-nowrap"
           >
             Start free
           </Link>
@@ -129,7 +133,7 @@ export default function NavBar() {
         {menuOpen && (
           <div
             id="mobile-menu"
-            className="max-[880px]:block hidden absolute top-16 left-0 right-0 border-b border-brand-line-soft bg-[rgba(10,10,15,0.97)] backdrop-blur-[10px] px-5 py-4"
+            className="max-[880px]:block hidden absolute top-16 left-0 right-0 border-b border-brand-line-soft bg-white/97 dark:bg-[rgba(10,10,15,0.97)] backdrop-blur-[10px] px-5 py-4"
           >
             <div className="flex flex-col gap-1">
               <p className="py-1 text-[11px] tracking-[0.08em] uppercase text-brand-muted font-semibold">Solutions</p>
@@ -167,6 +171,10 @@ export default function NavBar() {
                 >
                   Sign in
                 </Link>
+              </div>
+              <div className="border-t border-brand-line-soft mt-3 pt-3 flex items-center gap-3">
+                <span className="text-[11px] tracking-[0.08em] uppercase text-brand-muted font-semibold">Theme</span>
+                <ThemeToggle />
               </div>
             </div>
           </div>
