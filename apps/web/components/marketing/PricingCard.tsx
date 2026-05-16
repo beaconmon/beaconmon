@@ -83,12 +83,12 @@ export default function PricingCard({
     <article
       className={`reveal relative rounded-2xl p-8 px-7 flex flex-col ${
         highlighted
-          ? 'bg-[linear-gradient(180deg,rgba(0,229,122,0.04),#0E0E14_40%)] border border-[rgba(0,229,122,0.3)] shadow-[0_20px_40px_-20px_rgba(0,229,122,0.2)]'
+          ? 'bg-[linear-gradient(180deg,rgba(0,200,102,0.06),#F8F9FC_40%)] dark:bg-[linear-gradient(180deg,rgba(0,229,122,0.04),#0E0E14_40%)] border border-[rgba(0,229,122,0.3)] shadow-[0_20px_40px_-20px_rgba(0,229,122,0.2)]'
           : 'bg-brand-bg1 border border-brand-line-soft'
       } ${elevated ? 'translate-y-[-6px] max-[880px]:translate-y-0' : ''}`}
     >
       {badge && (
-        <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-brand-green text-[#001a0c] text-[11px] font-bold px-3 py-1 rounded-full tracking-[0.04em] uppercase whitespace-nowrap">
+        <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-brand-green text-brand-green-fg text-[11px] font-bold px-3 py-1 rounded-full tracking-[0.04em] uppercase whitespace-nowrap">
           {badge}
         </div>
       )}
@@ -116,7 +116,7 @@ export default function PricingCard({
         aria-label={`Select ${tier} plan`}
         className={
           highlighted
-            ? 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-green text-[#001a0c] shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]'
+            ? 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]'
             : 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-bg2 text-brand-text border border-brand-line hover:bg-brand-bg3 hover:border-brand-muted transition-all'
         }
       >

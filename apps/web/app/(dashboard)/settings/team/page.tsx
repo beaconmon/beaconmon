@@ -21,8 +21,8 @@ import {
 import { ErrorCode } from '@beaconmon/types';
 
 const ROLE_COLORS: Record<string, string> = {
-  owner: 'bg-purple-950/60 text-purple-300 border-purple-800/50',
-  admin: 'bg-blue-950/60 text-blue-300 border-blue-800/50',
+  owner: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/50',
+  admin: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50',
   viewer: 'bg-brand-bg3 text-brand-dim border-brand-line',
 };
 

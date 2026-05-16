@@ -33,6 +33,7 @@ deep content change monitoring.
 │   │   ├── components/
 │   │   │   ├── ui/              # Shadcn/ui base components
 │   │   │   └── monitors/        # Domain-specific components
+│   │   ├── proxy.ts             # Next.js 16 middleware (replaces middleware.ts — Next.js 16 renamed it)
 │   │   └── lib/
 │   │       ├── auth.ts          # Better Auth config
 │   │       ├── freemius.ts      # Freemius helpers + webhook verification
@@ -222,6 +223,9 @@ SENTRY_DSN=
 NEXT_PUBLIC_SENTRY_DSN=        # Same value as SENTRY_DSN — needed for client-side capture
 SENTRY_AUTH_TOKEN=             # CI only — for source map uploads to Sentry
 SENTRY_MONITOR_SLUG=beaconmon-scheduler  # Sentry Cron Monitor slug for the scheduler
+
+# Status pages
+STATUS_PAGE_HASH_SECRET=          # 16+ char secret; hashes monitor IDs in public status page payloads. Required — warm-cache throws if missing.
 
 # Storage (tier 2 — reports)
 R2_BUCKET=

@@ -44,7 +44,7 @@ export default function ContactPage() {
           </p>
           <a
             href="mailto:hello@beaconmon.com"
-            className="inline-flex items-center justify-center h-14 px-8 text-[17px] font-semibold rounded-[12px] bg-brand-green text-[#001a0c] shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
+            className="inline-flex items-center justify-center h-14 px-8 text-[17px] font-semibold rounded-[12px] bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
           >
             hello@beaconmon.com
           </a>

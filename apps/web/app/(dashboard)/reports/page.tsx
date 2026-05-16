@@ -193,7 +193,7 @@ export default function ReportsPage() {
         {isPaid && !isViewer && (
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-bg transition-colors hover:bg-brand-green/90"
+            className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
           >
             Generate report
           </button>
@@ -209,7 +209,7 @@ export default function ReportsPage() {
           </p>
           <a
             href="/settings/billing"
-            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-bg transition-colors hover:bg-brand-green/90"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
           >
             Upgrade plan →
           </a>

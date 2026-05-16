@@ -677,7 +677,7 @@ export default function EscalationPoliciesPage() {
         <h1 className="text-2xl font-semibold text-brand-text">Escalation Policies</h1>
         <button
           onClick={openCreate}
-          className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-bg transition-colors hover:bg-brand-green/90"
+          className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
         >
           <Plus className="h-3.5 w-3.5" />
           New policy

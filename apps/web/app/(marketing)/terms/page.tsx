@@ -111,12 +111,12 @@ export default function TermsPage() {
           font-weight: 700;
           letter-spacing: -0.01em;
           margin: 2.5rem 0 0.75rem;
-          color: var(--color-brand-text, #f0f0f0);
+          color: var(--brand-text, #f0f0f0);
         }
         .prose-legal p, .prose-legal li {
           font-size: 15px;
           line-height: 1.75;
-          color: var(--color-brand-dim, #a0a0b0);
+          color: var(--brand-dim, #a0a0b0);
           margin-bottom: 0.75rem;
         }
         .prose-legal ul {
@@ -129,16 +129,16 @@ export default function TermsPage() {
           margin-bottom: 0.35rem;
         }
         .prose-legal strong {
-          color: var(--color-brand-text, #f0f0f0);
+          color: var(--brand-text, #f0f0f0);
           font-weight: 600;
         }
         .prose-legal a {
-          color: var(--color-brand-green, #00e57a);
+          color: var(--brand-green, #00e57a);
           text-decoration: underline;
           text-decoration-color: rgba(0,229,122,0.4);
         }
         .prose-legal a:hover {
-          text-decoration-color: var(--color-brand-green, #00e57a);
+          text-decoration-color: var(--brand-green, #00e57a);
         }
       `}</style>
     </>

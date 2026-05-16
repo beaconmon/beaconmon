@@ -222,7 +222,7 @@ export function PrimaryBtn({
     <button
       {...props}
       className={cn(
-        'w-full rounded-lg bg-brand-green px-4 py-2.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed',
+        'w-full rounded-lg bg-brand-green px-4 py-2.5 text-sm font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed',
         className
       )}
     >
