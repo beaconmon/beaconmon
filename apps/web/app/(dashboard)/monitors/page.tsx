@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { Activity, AlertCircle, Plus, Tag, Pause, Play, Trash2, Clock, Tag as TagIcon, X } from 'lucide-react';
+import { AlertCircle, Plus, Tag, Pause, Play, Trash2, Clock, Tag as TagIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QueryState } from '@/components/dashboard/query-state';
-import { EmptyState } from '@/components/dashboard/empty-state';
+import { DiscoverEmptyState } from '@/components/monitors/discover-empty-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -522,12 +522,7 @@ export default function MonitorsPage() {
         skeletonRows={5}
       >
         {monitors.length === 0 ? (
-          <EmptyState
-            icon={Activity}
-            title="No monitors yet"
-            description="Add your first monitor to start tracking uptime."
-            action={{ label: 'Add monitor', href: '/monitors/new' }}
-          />
+          <DiscoverEmptyState />
         ) : (
           <>
             {/* Down banner */}

@@ -31,6 +31,7 @@ export const monitorRepository: {
   findAll(teamId: string, opts?: { tag?: string }): Promise<MonitorRow[]>;
   findById(teamId: string, monitorId: string): Promise<MonitorRow | null>;
   create(teamId: string, data: CreateMonitorInput): Promise<MonitorRow>;
+  bulkCreate(teamId: string, inputs: CreateMonitorInput[]): Promise<MonitorRow[]>;
   update(teamId: string, monitorId: string, data: UpdateMonitorInput): Promise<BatchResult>;
   softDelete(teamId: string, monitorId: string): Promise<BatchResult>;
   countByTeam(teamId: string): Promise<number>;
@@ -143,6 +144,57 @@ export const monitorRepository: {
       },
     });
     return row as MonitorRow;
+  },
+
+  async bulkCreate(teamId, inputs) {
+    if (inputs.length === 0) return [];
+
+    const now = new Date();
+    const rows = await prisma.$transaction(
+      inputs.map((data) => {
+        const config = data.type === 'heartbeat'
+          ? { ...data.config, token: crypto.randomUUID() }
+          : (data.config ?? {});
+        return prisma.monitor.create({
+          data: {
+            teamId,
+            name: data.name,
+            url: data.url,
+            type: data.type,
+            intervalSeconds: data.intervalSeconds,
+            timeoutMs: data.timeoutMs ?? 30000,
+            responseTimeThresholdMs: data.responseTimeThresholdMs ?? null,
+            keyword: data.keyword ?? null,
+            keywordCondition: data.keywordCondition ?? null,
+            config: config as unknown as Prisma.InputJsonValue,
+            isCompetitor: data.isCompetitor ?? false,
+            tags: dedupeTags(data.tags),
+            nextCheckAt: now,
+          },
+          select: {
+            id: true,
+            name: true,
+            url: true,
+            type: true,
+            isActive: true,
+            currentStatus: true,
+            intervalSeconds: true,
+            timeoutMs: true,
+            lastCheckedAt: true,
+            nextCheckAt: true,
+            responseTimeThresholdMs: true,
+            keyword: true,
+            keywordCondition: true,
+            config: true,
+            isCompetitor: true,
+            tags: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+      })
+    );
+    return rows as MonitorRow[];
   },
 
   async update(teamId, monitorId, data) {
