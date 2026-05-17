@@ -47,7 +47,7 @@ function VerifyContent() {
         <div className="flex justify-center">
           <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-brand-green/20 bg-brand-green/10">
             <span className="absolute h-20 w-20 rounded-full border border-brand-green/20 animate-logo-pulse" />
-            <Mail className="h-8 w-8 text-brand-green" />
+            <Mail className="h-8 w-8 text-brand-green-ink" />
           </div>
         </div>
 
@@ -98,7 +98,7 @@ function VerifyContent() {
 
           <Link
             href="/sign-in"
-            className="block text-sm text-brand-muted hover:text-brand-green transition-colors"
+            className="block text-sm text-brand-muted hover:text-brand-green-ink transition-colors"
           >
             ← Wrong email? Go back
           </Link>

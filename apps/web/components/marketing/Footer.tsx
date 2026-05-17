@@ -31,7 +31,7 @@ const COMPARE_LINKS: [string, string][] = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-brand-line-soft pt-14 pb-8 bg-brand-bg1">
+    <footer className="border-t border-brand-line-soft pt-14 pb-8 bg-brand-bg-section dark:bg-brand-bg1">
       <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
         <div className="grid grid-cols-[1.4fr_repeat(4,1fr)] max-[1200px]:grid-cols-[1.4fr_repeat(3,1fr)] max-[880px]:grid-cols-[1.4fr_repeat(2,1fr)] max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-12 max-[880px]:gap-8 mb-12">
           <div className="max-[1024px]:col-span-1">

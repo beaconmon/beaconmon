@@ -65,7 +65,7 @@ export default function AboutPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-5">About</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-5">About</span>
           <h1 className="text-[clamp(40px,5.5vw,76px)] leading-[1.02] tracking-[-0.04em] font-extrabold mb-7 max-w-[820px]">
             Built by people who got paged at 2am for sites that were already up.
           </h1>
@@ -124,7 +124,7 @@ export default function AboutPage() {
             <div className="flex gap-4 flex-wrap max-[640px]:justify-center">
               <Link
                 href="/sign-up"
-                className="inline-flex items-center justify-center h-12 px-6 text-[15px] font-semibold rounded-[10px] bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
+                className="inline-flex items-center justify-center h-12 px-6 text-[15px] font-semibold rounded-[10px] bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
               >
                 Start free
               </Link>

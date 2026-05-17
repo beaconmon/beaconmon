@@ -57,10 +57,10 @@ export default function ForAgenciesPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">For Agencies</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For Agencies</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px]">
             Uptime monitoring for every client site.<br />
-            <span className="text-brand-green">Know before they do.</span>
+            <span className="text-brand-green-ink">Know before they do.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
             Beaconmon lets you watch every site you manage from one place — with instant alerts, client-facing status pages, and the domain expiry tracking that saves you from the worst kind of phone call.
@@ -83,7 +83,7 @@ export default function ForAgenciesPage() {
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
               It happens to every agency eventually. The site goes down overnight. The client wakes up, tries to check their store, and calls you in a panic. By the time you&apos;re up to speed, they&apos;ve already formed an opinion about how well you&apos;re managing their infrastructure.
             </p>
-            <span className="text-brand-green text-[15px] font-semibold inline-flex items-center gap-[10px]">
+            <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
               Beaconmon makes sure you&apos;re the one making that call, not receiving it.
             </span>
@@ -101,7 +101,7 @@ export default function ForAgenciesPage() {
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}
@@ -120,7 +120,7 @@ export default function ForAgenciesPage() {
               <p className="text-brand-dim text-[15px] leading-[1.65]">
                 Most agencies add Beaconmon to every new client retainer. It takes five minutes per site and pays for itself the first time it catches a late-night outage before the client does.
               </p>
-              <Link href="/pricing" className="inline-flex items-center gap-2 mt-6 text-[14px] text-brand-green hover:underline">
+              <Link href="/pricing" className="inline-flex items-center gap-2 mt-6 text-[14px] text-brand-green-ink hover:underline">
                 See Business plan pricing →
               </Link>
             </div>

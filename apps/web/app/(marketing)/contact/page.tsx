@@ -35,7 +35,7 @@ export default function ContactPage() {
 
       <section className="py-[120px] max-[640px]:py-[72px]">
         <div className="max-w-[600px] mx-auto px-8 max-[640px]:px-5 text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-5">Contact</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-5">Contact</span>
           <h1 className="text-[clamp(36px,4.5vw,56px)] leading-[1.08] tracking-[-0.035em] font-extrabold mb-6">
             We read every message.
           </h1>
@@ -44,7 +44,7 @@ export default function ContactPage() {
           </p>
           <a
             href="mailto:hello@beaconmon.com"
-            className="inline-flex items-center justify-center h-14 px-8 text-[17px] font-semibold rounded-[12px] bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
+            className="inline-flex items-center justify-center h-14 px-8 text-[17px] font-semibold rounded-[12px] bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]"
           >
             hello@beaconmon.com
           </a>
@@ -78,7 +78,7 @@ export default function ContactPage() {
               },
             ].map(({ heading, body }) => (
               <div key={heading} className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-7">
-                <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}

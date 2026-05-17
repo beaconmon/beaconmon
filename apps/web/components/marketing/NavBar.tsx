@@ -81,12 +81,12 @@ export default function NavBar() {
             </button>
             {solutionsOpen && (
               <div className="absolute top-full left-0 pt-3">
-                <div className="bg-white dark:bg-[rgba(10,10,15,0.97)] border border-brand-line-soft rounded-xl p-1.5 min-w-[170px] shadow-xl">
+                <div className="bg-white dark:bg-[#0E0E14] border border-brand-line rounded-xl p-1.5 min-w-[170px] shadow-lg dark:shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
                   {SOLUTIONS_LINKS.map(([href, label]) => (
                     <Link
                       key={label}
                       href={href}
-                      className="block px-3 py-2 text-sm text-brand-dim hover:text-brand-text hover:bg-white/5 rounded-lg transition-colors duration-150"
+                      className="block px-3 py-2 text-sm text-brand-dim hover:text-brand-text hover:bg-brand-bg-section dark:hover:bg-white/5 rounded-lg transition-colors duration-150"
                     >
                       {label}
                     </Link>
@@ -108,7 +108,7 @@ export default function NavBar() {
           </Link>
           <Link
             href="/sign-up"
-            className="inline-flex items-center justify-center h-[38px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] hover:shadow-[0_0_0_1px_rgba(0,229,122,0.5),0_8px_24px_rgba(0,229,122,0.35)] transition-all duration-[120ms] whitespace-nowrap"
+            className="inline-flex items-center justify-center h-[38px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(0,147,90,0.4),0_8px_22px_rgba(0,147,90,0.28)] transition-all duration-[120ms] whitespace-nowrap"
           >
             Start free
           </Link>
@@ -133,7 +133,7 @@ export default function NavBar() {
         {menuOpen && (
           <div
             id="mobile-menu"
-            className="max-[880px]:block hidden absolute top-16 left-0 right-0 border-b border-brand-line-soft bg-white/97 dark:bg-[rgba(10,10,15,0.97)] backdrop-blur-[10px] px-5 py-4"
+            className="max-[880px]:block hidden absolute top-16 left-0 right-0 border-b border-brand-line bg-white dark:bg-[#0E0E14] shadow-lg dark:shadow-[0_8px_24px_rgba(0,0,0,0.5)] px-5 py-4"
           >
             <div className="flex flex-col gap-1">
               <p className="py-1 text-[11px] tracking-[0.08em] uppercase text-brand-muted font-semibold">Solutions</p>

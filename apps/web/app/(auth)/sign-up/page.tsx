@@ -173,11 +173,11 @@ function SignUpForm() {
             label={
               <>
                 I agree to the{' '}
-                <Link href="/terms" className="text-brand-green hover:underline">
+                <Link href="/terms" className="text-brand-green-ink hover:underline">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy" className="text-brand-green hover:underline">
+                <Link href="/privacy" className="text-brand-green-ink hover:underline">
                   Privacy Policy
                 </Link>
               </>
@@ -195,14 +195,14 @@ function SignUpForm() {
           type="button"
           onClick={handleMagicLink}
           disabled={loading || magicSent}
-          className="w-full text-center text-sm text-brand-dim hover:text-brand-green transition-colors disabled:opacity-50"
+          className="w-full text-center text-sm text-brand-dim hover:text-brand-green-ink transition-colors disabled:opacity-50"
         >
           {magicSent ? 'Magic link sent — check your inbox' : 'Send me a magic link →'}
         </button>
 
         <p className="text-center text-xs text-brand-muted">
           Already have an account?{' '}
-          <Link href="/sign-in" className="text-brand-green hover:underline">
+          <Link href="/sign-in" className="text-brand-green-ink hover:underline">
             Sign in
           </Link>
         </p>

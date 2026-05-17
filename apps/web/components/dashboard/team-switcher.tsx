@@ -92,7 +92,7 @@ export function TeamSwitcher() {
               <p
                 className={cn(
                   'text-[10px] font-semibold uppercase tracking-wider',
-                  activePlan === 'free' ? 'text-brand-amber' : 'text-brand-green'
+                  activePlan === 'free' ? 'text-brand-amber' : 'text-brand-green-ink'
                 )}
               >
                 {activePlan}
@@ -130,7 +130,7 @@ export function TeamSwitcher() {
                 {t.teamName.trim().charAt(0).toUpperCase() || 'W'}
               </div>
               <span className="ml-2 flex-1 truncate text-xs">{t.teamName}</span>
-              {isActive && <Check className="ml-2 h-3.5 w-3.5 text-brand-green" />}
+              {isActive && <Check className="ml-2 h-3.5 w-3.5 text-brand-green-ink" />}
             </DropdownMenuItem>
           );
         })}

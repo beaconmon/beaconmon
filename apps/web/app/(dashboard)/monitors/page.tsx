@@ -151,7 +151,7 @@ function TagFilter({
         className={cn(
           'rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider transition-colors',
           active === null
-            ? 'bg-brand-green/20 text-brand-green'
+            ? 'bg-brand-green/20 text-brand-green-ink'
             : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
         )}
       >
@@ -164,7 +164,7 @@ function TagFilter({
           className={cn(
             'rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors',
             tag === active
-              ? 'bg-brand-green/20 text-brand-green'
+              ? 'bg-brand-green/20 text-brand-green-ink'
               : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
           )}
         >
@@ -216,7 +216,7 @@ function MonitorTableRow({
         {/* Name + URL */}
         <div className="min-w-0">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="truncate font-medium text-sm text-brand-text transition-colors group-hover:text-brand-green">
+            <span className="truncate font-medium text-sm text-brand-text transition-colors group-hover:text-brand-green-ink">
               {monitor.name}
             </span>
             {monitor.tags.length > 0 && (

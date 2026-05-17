@@ -92,7 +92,7 @@ export default function PricingCard({
           {badge}
         </div>
       )}
-      <h3 className={`text-[13px] font-semibold tracking-[0.08em] uppercase mb-3 ${highlighted ? 'text-brand-green' : 'text-brand-muted'}`}>
+      <h3 className={`text-[13px] font-semibold tracking-[0.08em] uppercase mb-3 ${highlighted ? 'text-brand-green-ink' : 'text-brand-muted'}`}>
         {tier}
       </h3>
       <div className="flex items-baseline gap-1 mb-1">
@@ -116,7 +116,7 @@ export default function PricingCard({
         aria-label={`Select ${tier} plan`}
         className={
           highlighted
-            ? 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]'
+            ? 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms]'
             : 'inline-flex items-center justify-center h-12 px-[22px] text-[15px] font-semibold rounded-[10px] bg-brand-bg2 text-brand-text border border-brand-line hover:bg-brand-bg3 hover:border-brand-muted transition-all'
         }
       >

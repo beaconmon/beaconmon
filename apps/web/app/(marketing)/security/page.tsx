@@ -116,7 +116,7 @@ export default function SecurityPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Security</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Security</span>
           <h1 className="text-[clamp(40px,5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[700px]">
             How we handle your data.
           </h1>
@@ -132,7 +132,7 @@ export default function SecurityPage() {
           <div className="space-y-16 pt-16">
             {SECTIONS.map(({ id, heading, items }) => (
               <div key={id} className="reveal">
-                <h2 className="text-[clamp(22px,2.8vw,30px)] font-bold tracking-[-0.025em] mb-8 pb-4 border-b border-brand-line-soft text-brand-green">
+                <h2 className="text-[clamp(22px,2.8vw,30px)] font-bold tracking-[-0.025em] mb-8 pb-4 border-b border-brand-line-soft text-brand-green-ink">
                   {heading}
                 </h2>
                 <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
@@ -159,7 +159,7 @@ export default function SecurityPage() {
             </p>
             <p className="text-brand-dim text-[15px] leading-[1.65] mb-6">
               Email:{' '}
-              <Link href="mailto:security@beaconmon.com" className="text-brand-green border-b border-[rgba(0,229,122,0.4)] hover:border-brand-green transition-colors">
+              <Link href="mailto:security@beaconmon.com" className="text-brand-green-ink border-b border-[rgba(0,229,122,0.4)] hover:border-brand-green transition-colors">
                 security@beaconmon.com
               </Link>
             </p>

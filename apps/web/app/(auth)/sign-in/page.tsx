@@ -112,7 +112,7 @@ function SignInForm() {
               <Label htmlFor="password">Password</Label>
               <Link
                 href="/forgot-password"
-                className="text-[11px] text-brand-muted hover:text-brand-green transition-colors"
+                className="text-[11px] text-brand-muted hover:text-brand-green-ink transition-colors"
               >
                 Forgot password?
               </Link>
@@ -139,14 +139,14 @@ function SignInForm() {
           type="button"
           onClick={handleMagicLink}
           disabled={loading || magicSent}
-          className="w-full text-center text-sm text-brand-dim hover:text-brand-green transition-colors disabled:opacity-50"
+          className="w-full text-center text-sm text-brand-dim hover:text-brand-green-ink transition-colors disabled:opacity-50"
         >
           {magicSent ? 'Magic link sent — check your inbox' : 'Send me a magic link →'}
         </button>
 
         <p className="text-center text-xs text-brand-muted">
           Don&apos;t have an account?{' '}
-          <Link href="/sign-up" className="text-brand-green hover:underline">
+          <Link href="/sign-up" className="text-brand-green-ink hover:underline">
             Start free →
           </Link>
         </p>

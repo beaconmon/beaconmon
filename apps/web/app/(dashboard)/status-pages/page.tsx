@@ -139,7 +139,7 @@ export default function StatusPagesPage() {
                     <TableCell>
                       <Link
                         href={`/status-pages/${page.id}`}
-                        className="font-medium text-sm text-brand-text hover:text-brand-green transition-colors duration-150"
+                        className="font-medium text-sm text-brand-text hover:text-brand-green-ink transition-colors duration-150"
                       >
                         {page.name}
                       </Link>
@@ -154,7 +154,7 @@ export default function StatusPagesPage() {
                       <span className={cn(
                         'inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-medium tracking-wider',
                         page.isPublic
-                          ? 'border-brand-green/30 bg-brand-green/10 text-brand-green'
+                          ? 'border-brand-green/30 bg-brand-green/10 text-brand-green-ink'
                           : 'border-brand-line bg-brand-bg3 text-brand-muted'
                       )}>
                         {page.isPublic ? 'Public' : 'Private'}

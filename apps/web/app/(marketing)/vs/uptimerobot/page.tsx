@@ -119,10 +119,10 @@ export default function VsUptimeRobotPage() {
           <Link href="/vs" className="inline-flex items-center gap-2 text-[13px] text-brand-muted hover:text-brand-dim transition-colors mb-6">
             <span>←</span> All comparisons
           </Link>
-          <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Comparison</span>
+          <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs UptimeRobot<br />
-            <span className="text-brand-green">an honest comparison.</span>
+            <span className="text-brand-green-ink">an honest comparison.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
             UptimeRobot&apos;s free plan (50 monitors) is genuinely hard to beat. But the moment you care about domain expiry, content monitoring, or faster checks — Beaconmon pulls ahead at a competitive price.
@@ -134,7 +134,7 @@ export default function VsUptimeRobotPage() {
       <section className="py-[60px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
-            <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green mb-3 block">Summary verdict</span>
+            <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
               If you only need basic HTTP pings and the 50-monitor free tier is useful to you, UptimeRobot is a solid choice. But if you manage client sites and need domain expiry warnings, content monitoring, custom-domain status pages, or faster check intervals — Beaconmon gives you significantly more for $8/mo more.
             </p>
@@ -153,7 +153,7 @@ export default function VsUptimeRobotPage() {
               <thead>
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft w-[40%]">Feature</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">UptimeRobot</th>
                 </tr>
               </thead>
@@ -161,7 +161,7 @@ export default function VsUptimeRobotPage() {
                 {TABLE_ROWS.map(({ feature, beaconmon, competitor, beaconmonGood }, i) => (
                   <tr key={feature}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
-                    <td className={`p-4 text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)] font-medium ${beaconmonGood ? 'text-brand-green' : 'text-brand-dim'} ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{beaconmon}</td>
+                    <td className={`p-4 text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)] font-medium ${beaconmonGood ? 'text-brand-green-ink' : 'text-brand-dim'} ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{beaconmon}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{competitor}</td>
                   </tr>
                 ))}

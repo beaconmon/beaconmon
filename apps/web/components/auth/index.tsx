@@ -119,7 +119,7 @@ export function AuthPanel({ variant = 'default' }: { variant?: PanelVariant }) {
             <span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
           </div>
           <div>
-            <p className="text-xs font-semibold text-brand-green">All systems operational</p>
+            <p className="text-xs font-semibold text-brand-green-ink">All systems operational</p>
             <p className="text-[11px] text-brand-dim mt-0.5">3 monitors · last checked 12s ago</p>
           </div>
         </div>
@@ -133,7 +133,7 @@ export function AuthPanel({ variant = 'default' }: { variant?: PanelVariant }) {
           { value: '99.9%', label: 'uptime' },
         ].map((s) => (
           <div key={s.label}>
-            <p className="text-sm font-bold text-brand-green">{s.value}</p>
+            <p className="text-sm font-bold text-brand-green-ink">{s.value}</p>
             <p className="text-[10px] uppercase tracking-wider text-brand-muted">{s.label}</p>
           </div>
         ))}
@@ -314,7 +314,7 @@ export function PasswordStrength({ password }: { password: string }) {
           />
         ))}
       </div>
-      <p className={cn('text-[11px]', strength >= 3 ? 'text-brand-green' : strength >= 2 ? 'text-brand-amber' : 'text-brand-red')}>
+      <p className={cn('text-[11px]', strength >= 3 ? 'text-brand-green-ink' : strength >= 2 ? 'text-brand-amber' : 'text-brand-red')}>
         {STRENGTH_LABEL[strength]}
       </p>
     </div>

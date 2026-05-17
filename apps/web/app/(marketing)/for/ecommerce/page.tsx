@@ -63,10 +63,10 @@ export default function ForEcommercePage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">For E-commerce</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For E-commerce</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Every minute of checkout downtime is a sale you&apos;ll never recover.<br />
-            <span className="text-brand-green">Beaconmon keeps that minute under 60 seconds.</span>
+            <span className="text-brand-green-ink">Beaconmon keeps that minute under 60 seconds.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
             30-second checks on your store, instant alerts when checkout breaks, and keyword monitoring to catch bad deploys before customers do.
@@ -86,7 +86,7 @@ export default function ForEcommercePage() {
             <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-4">
               {COST_OF_DOWNTIME.map(({ metric, value }) => (
                 <div key={metric} className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 flex flex-col gap-2">
-                  <span className="text-[clamp(28px,3.5vw,40px)] font-extrabold tracking-[-0.03em] text-brand-green">{value}</span>
+                  <span className="text-[clamp(28px,3.5vw,40px)] font-extrabold tracking-[-0.03em] text-brand-green-ink">{value}</span>
                   <span className="text-brand-dim text-[14px] leading-[1.5]">{metric}</span>
                 </div>
               ))}
@@ -105,7 +105,7 @@ export default function ForEcommercePage() {
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}

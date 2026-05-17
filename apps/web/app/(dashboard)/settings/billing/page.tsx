@@ -74,7 +74,7 @@ function BillingPeriodToggle({
         className={`px-3 py-1.5 text-sm rounded-md transition-colors flex items-center gap-1.5 ${selectedPeriod === 'annual' ? 'bg-brand-bg3 text-brand-text font-medium' : 'text-brand-muted hover:text-brand-dim'}`}
       >
         Annual
-        <span className="text-[10px] font-semibold text-brand-green bg-brand-green/10 px-1.5 py-0.5 rounded">−20%</span>
+        <span className="text-[10px] font-semibold text-brand-green-ink bg-brand-green/10 px-1.5 py-0.5 rounded">−20%</span>
       </button>
     </div>
   );

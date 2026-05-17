@@ -44,7 +44,7 @@ export default function NotificationsSettingsPage() {
     <div className="max-w-2xl space-y-6">
       {isFree && (
         <div className="flex items-start gap-2.5 rounded-md border border-brand-green/30 bg-brand-green/10 px-3.5 py-2.5">
-          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" />
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-ink" />
           <div className="flex-1 space-y-1 text-sm text-brand-text">
             <p className="font-medium">Routing alerts to specific teammates is a Pro feature.</p>
             <p className="text-xs text-brand-muted">
@@ -53,7 +53,7 @@ export default function NotificationsSettingsPage() {
             </p>
             <Link
               href="/settings/billing"
-              className="inline-block text-xs font-medium text-brand-green underline hover:text-brand-text"
+              className="inline-block text-xs font-medium text-brand-green-ink underline hover:text-brand-text"
             >
               Upgrade to Pro →
             </Link>
@@ -64,7 +64,7 @@ export default function NotificationsSettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <Bell className="h-4 w-4 text-brand-green" />
+            <Bell className="h-4 w-4 text-brand-green-ink" />
             Your primary channel
           </CardTitle>
           <CardDescription>
@@ -102,7 +102,7 @@ export default function NotificationsSettingsPage() {
                 <p className="text-sm text-red-400">{updatePref.error?.message}</p>
               )}
               {updatePref.isSuccess && (
-                <p className="flex items-center gap-1.5 text-xs text-brand-green">
+                <p className="flex items-center gap-1.5 text-xs text-brand-green-ink">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Saved
                 </p>
               )}

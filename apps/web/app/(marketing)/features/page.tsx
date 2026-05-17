@@ -130,10 +130,10 @@ export default function FeaturesPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Features</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
             All the website monitoring tools you need —
-            <span className="text-brand-green"> know what&apos;s broken before anyone else does.</span>
+            <span className="text-brand-green-ink"> know what&apos;s broken before anyone else does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
             Six monitor types. Multi-location checks. Incident management. Public status pages. SLO tracking. All in one tool, built for freelancers and agencies.
@@ -151,11 +151,11 @@ export default function FeaturesPage() {
           <div className="grid grid-cols-2 max-[880px]:grid-cols-1 gap-5">
             {MONITOR_TYPES.map(({ icon, name, tagline, body, highlights }) => (
               <div key={name} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <div className="w-12 h-12 rounded-[12px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green mb-5">
+                <div className="w-12 h-12 rounded-[12px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green-ink mb-5">
                   {icon}
                 </div>
                 <h3 className="text-[20px] font-bold tracking-[-0.02em] mb-2">{name}</h3>
-                <p className="text-brand-green text-[13px] font-semibold mb-4">{tagline}</p>
+                <p className="text-brand-green-ink text-[13px] font-semibold mb-4">{tagline}</p>
                 <p className="text-brand-dim text-[14px] leading-[1.65] mb-6">{body}</p>
                 <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
                   {highlights.map((h) => (
@@ -176,7 +176,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Multi-location</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Multi-location</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 One blip won&apos;t wake you at 3am.
               </h2>
@@ -228,7 +228,7 @@ export default function FeaturesPage() {
             <div className="order-2 max-[880px]:order-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4 border-b border-brand-line-soft text-[13px]">
                 <span className="font-semibold">status.yourcompany.com</span>
-                <span className="text-[11px] bg-[rgba(0,229,122,0.1)] text-brand-green px-2 py-[3px] rounded font-semibold border border-[rgba(0,229,122,0.2)]">All systems operational</span>
+                <span className="text-[11px] bg-[rgba(0,229,122,0.1)] text-brand-green-ink px-2 py-[3px] rounded font-semibold border border-[rgba(0,229,122,0.2)]">All systems operational</span>
               </div>
               <div className="px-5 py-4 space-y-3">
                 {['Marketing site', 'API', 'Checkout', 'Admin'].map((name, i) => (
@@ -247,7 +247,7 @@ export default function FeaturesPage() {
               </div>
             </div>
             <div className="order-1 max-[880px]:order-2">
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Public Status Pages</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Public Status Pages</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 A status page your clients will actually trust.
               </h2>
@@ -279,7 +279,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">SLO Tracking</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">SLO Tracking</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 Know your error budget before it runs out.
               </h2>

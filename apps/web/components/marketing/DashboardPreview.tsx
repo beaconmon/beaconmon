@@ -27,7 +27,7 @@ export default function DashboardPreview() {
         <div className="grid grid-cols-3 gap-px bg-brand-line-soft border-b border-brand-line-soft">
           {[
             { label: 'All monitors', value: '8', color: '' },
-            { label: 'Up', value: '7', color: 'text-brand-green' },
+            { label: 'Up', value: '7', color: 'text-brand-green-ink' },
             { label: 'Down', value: '1', color: 'text-brand-red' },
           ].map(({ label, value, color }) => (
             <div key={label} className="bg-brand-bg2 px-[18px] py-[14px]">
@@ -119,7 +119,7 @@ function MockRow({
 }) {
   const isUp = status === 'up' || status === 'ok';
   const pillClass = isUp
-    ? 'bg-[rgba(0,229,122,0.1)] text-brand-green border border-[rgba(0,229,122,0.25)]'
+    ? 'bg-[rgba(0,229,122,0.1)] text-brand-green-ink border border-[rgba(0,229,122,0.25)]'
     : 'bg-[rgba(255,68,68,0.1)] text-brand-red border border-[rgba(255,68,68,0.3)]';
   const dotClass = isUp ? 'bg-brand-green' : 'bg-brand-red';
 

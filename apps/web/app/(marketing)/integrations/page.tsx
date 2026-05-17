@@ -134,7 +134,7 @@ export default function IntegrationsPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Integrations</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Integrations</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
             Get alerted wherever your team works.
           </h1>
@@ -153,7 +153,7 @@ export default function IntegrationsPage() {
                 <div className="grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1">
                   {/* Left */}
                   <div className="p-10 max-[880px]:p-8 border-r border-brand-line-soft max-[880px]:border-r-0 max-[880px]:border-b">
-                    <div className="inline-block text-[11px] font-semibold px-2 py-[3px] rounded bg-[rgba(0,229,122,0.1)] text-brand-green border border-[rgba(0,229,122,0.2)] mb-5">
+                    <div className="inline-block text-[11px] font-semibold px-2 py-[3px] rounded bg-[rgba(0,229,122,0.1)] text-brand-green-ink border border-[rgba(0,229,122,0.2)] mb-5">
                       {plan}
                     </div>
                     <h2 className="text-[26px] font-bold tracking-[-0.025em] mb-4">{name}</h2>
@@ -180,7 +180,7 @@ export default function IntegrationsPage() {
                         ))}
                       </div>
                       {preview.footer && (
-                        <div className="px-4 py-3 border-t border-brand-line text-brand-green text-[11px]">
+                        <div className="px-4 py-3 border-t border-brand-line text-brand-green-ink text-[11px]">
                           {preview.footer}
                         </div>
                       )}

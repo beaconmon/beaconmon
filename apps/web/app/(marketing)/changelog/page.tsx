@@ -18,7 +18,7 @@ type Entry = {
 };
 
 const TAG_STYLES: Record<Tag, string> = {
-  Feature: 'bg-[rgba(0,229,122,0.1)] text-brand-green border border-[rgba(0,229,122,0.2)]',
+  Feature: 'bg-[rgba(0,229,122,0.1)] text-brand-green-ink border border-[rgba(0,229,122,0.2)]',
   Improvement: 'bg-[rgba(96,165,250,0.1)] text-blue-400 border border-[rgba(96,165,250,0.2)]',
   Fix: 'bg-[rgba(248,113,113,0.1)] text-red-400 border border-[rgba(248,113,113,0.2)]',
 };
@@ -114,7 +114,7 @@ export default function ChangelogPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Changelog</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Changelog</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[760px] mx-auto">
             What&apos;s new in Beaconmon.
           </h1>

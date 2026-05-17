@@ -59,7 +59,7 @@ function IncidentCard({
         <div className="flex items-center justify-between gap-3 mb-1">
           <Link
             href={`/monitors/${incident.monitorId}`}
-            className="font-medium text-sm text-brand-text transition-colors hover:text-brand-green truncate"
+            className="font-medium text-sm text-brand-text transition-colors hover:text-brand-green-ink truncate"
           >
             {incident.monitor.name}
           </Link>

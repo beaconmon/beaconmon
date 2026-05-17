@@ -27,23 +27,29 @@
     --radius: 0.5rem;
 
     /* brand palette — light */
-    --brand-bg:         #FFFFFF;
-    --brand-bg1:        #FFFFFF;
-    --brand-bg2:        #F4F5FA;
-    --brand-bg3:        #ECEEF8;
-    --brand-line:       #E2E4EF;
-    --brand-line-soft:  #E2E4EF;
-    --brand-text:       #111827;
-    --brand-dim:        #4B5268;
-    --brand-muted:      #808898;
-    --brand-green:      #00E57A;
-    --brand-green-dim:  #00B862;
-    --brand-green-fg:   #001a0c;
-    --brand-red:        #DC2626;
-    --brand-amber:      #B45309;
-    --brand-surface:    #FFFFFF;
-    --brand-outline:    #F0F2FA;
-    --brand-border2:    #E2E4EF;
+    --brand-bg:           #FFFFFF;
+    --brand-bg1:          #FFFFFF;
+    --brand-bg2:          #F4F5FA;
+    --brand-bg3:          #ECEEF8;
+    /* Tinted section bg so white cards visibly lift via shadow/border */
+    --brand-bg-section:   #F6F8FC;
+    --brand-line:         #E2E4EF;
+    /* Hairline divider — must be lighter than --brand-line for hierarchy */
+    --brand-line-soft:    #EEF0F6;
+    --brand-text:         #0F172A;
+    --brand-dim:          #475569;
+    --brand-muted:        #94A3B8;
+    /* Brand neon — reserved for filled CTAs (fails AA as text on white) */
+    --brand-green:        #00E57A;
+    --brand-green-dim:    #00B862;
+    --brand-green-fg:     #001a0c;
+    /* Deeper green for text/icons on white — passes WCAG AA */
+    --brand-green-ink:    #00B862;
+    --brand-red:          #DC2626;
+    --brand-amber:        #B45309;
+    --brand-surface:      #FFFFFF;
+    --brand-outline:      #F0F2FA;
+    --brand-border2:      #E2E4EF;
   }
 
   .dark {
@@ -69,23 +75,27 @@
     --ring: 152 100% 45%;
 
     /* brand palette — dark */
-    --brand-bg:         #0A0A0F;
-    --brand-bg1:        #0E0E14;
-    --brand-bg2:        #14141C;
-    --brand-bg3:        #1A1A24;
-    --brand-line:       #222230;
-    --brand-line-soft:  #1B1B26;
-    --brand-text:       #ECECF1;
-    --brand-dim:        #B4B4C4;
-    --brand-muted:      #8C8C9D;
-    --brand-green:      #00E57A;
-    --brand-green-dim:  #00B862;
-    --brand-green-fg:   #001a0c;
-    --brand-red:        #FF4444;
-    --brand-amber:      #F5B400;
-    --brand-surface:    #111118;
-    --brand-outline:    #1E1E2A;
-    --brand-border2:    #2A2A3A;
+    --brand-bg:           #0A0A0F;
+    --brand-bg1:          #0E0E14;
+    --brand-bg2:          #14141C;
+    --brand-bg3:          #1A1A24;
+    /* Tinted section bg in dark — slight lift from base; matches old --brand-bg1 */
+    --brand-bg-section:   #0E0E14;
+    --brand-line:         #222230;
+    --brand-line-soft:    #1B1B26;
+    --brand-text:         #ECECF1;
+    --brand-dim:          #B4B4C4;
+    --brand-muted:        #8C8C9D;
+    --brand-green:        #00E57A;
+    --brand-green-dim:    #00B862;
+    --brand-green-fg:     #001a0c;
+    /* Green-ink stays neon in dark — already AA on dark surfaces */
+    --brand-green-ink:    #00E57A;
+    --brand-red:          #FF4444;
+    --brand-amber:        #F5B400;
+    --brand-surface:      #111118;
+    --brand-outline:      #1E1E2A;
+    --brand-border2:      #2A2A3A;
   }
 }
 

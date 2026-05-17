@@ -30,14 +30,14 @@ function SentState({ email }: { email: string }) {
       <p className="text-xs text-brand-muted">
         Didn&apos;t receive it? Check your spam folder or{' '}
         <button
-          className="text-brand-green hover:underline"
+          className="text-brand-green-ink hover:underline"
           onClick={() => window.location.reload()}
         >
           try again
         </button>
         .
       </p>
-      <Link href="/sign-in" className="block text-sm text-brand-dim hover:text-brand-green transition-colors">
+      <Link href="/sign-in" className="block text-sm text-brand-dim hover:text-brand-green-ink transition-colors">
         ← Back to sign in
       </Link>
     </div>
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-xs font-medium text-brand-dim">Prefer no passwords?</p>
                 <p className="mt-0.5 text-[11px] text-brand-muted">
                   Use a{' '}
-                  <Link href="/sign-in" className="text-brand-green hover:underline">
+                  <Link href="/sign-in" className="text-brand-green-ink hover:underline">
                     magic link
                   </Link>{' '}
                   to sign in without a password.
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
               </div>
             </div>
 
-            <Link href="/sign-in" className="block text-center text-xs text-brand-muted hover:text-brand-green transition-colors">
+            <Link href="/sign-in" className="block text-center text-xs text-brand-muted hover:text-brand-green-ink transition-colors">
               ← Back to sign in
             </Link>
           </>

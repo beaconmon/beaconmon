@@ -227,7 +227,7 @@ function StatusPageEditorForm({
                         href={provider.buildUrl(customDomain)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs font-medium text-brand-green hover:underline"
+                        className="flex items-center gap-1 text-xs font-medium text-brand-green-ink hover:underline"
                       >
                         Open {provider.label}
                         <ArrowUpRight className="h-3 w-3" />
@@ -306,7 +306,7 @@ function StatusPageEditorForm({
                   className={cn(
                     'px-3 py-1.5 text-xs font-medium transition-colors border-b-2 -mb-px',
                     badgeTab === tab
-                      ? 'border-brand-green text-brand-green'
+                      ? 'border-brand-green text-brand-green-ink'
                       : 'border-transparent text-brand-muted hover:text-brand-text'
                   )}
                 >
@@ -344,7 +344,7 @@ function StatusPageEditorForm({
                     className={cn(
                       'rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider transition-colors',
                       filterTag === null
-                        ? 'bg-brand-green/20 text-brand-green'
+                        ? 'bg-brand-green/20 text-brand-green-ink'
                         : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
                     )}
                   >
@@ -358,7 +358,7 @@ function StatusPageEditorForm({
                       className={cn(
                         'rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors',
                         tag === filterTag
-                          ? 'bg-brand-green/20 text-brand-green'
+                          ? 'bg-brand-green/20 text-brand-green-ink'
                           : 'bg-brand-bg3 text-brand-muted hover:text-brand-text'
                       )}
                     >

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 type Status = 'up' | 'down' | 'paused' | 'warning' | 'ongoing' | 'resolved' | string;
 
 const STATUS_CONFIG: Record<string, { label: string; dot: string; text: string; pulse?: boolean }> = {
-  up:       { label: 'UP',       dot: 'bg-brand-green', text: 'text-brand-green', pulse: true },
+  up:       { label: 'UP',       dot: 'bg-brand-green', text: 'text-brand-green-ink', pulse: true },
   down:     { label: 'DOWN',     dot: 'bg-brand-red',   text: 'text-brand-red' },
   paused:   { label: 'PAUSED',   dot: 'bg-blue-400',    text: 'text-blue-400' },
   warning:  { label: 'WARNING',  dot: 'bg-brand-amber', text: 'text-brand-amber' },

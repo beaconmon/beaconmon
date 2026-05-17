@@ -92,7 +92,7 @@ export default function PricingToggle() {
             className={`px-5 py-2 text-[14px] rounded-lg transition-colors flex items-center gap-2 ${period === 'annual' ? 'bg-brand-bg3 text-brand-text font-semibold' : 'text-brand-muted hover:text-brand-dim'}`}
           >
             Annual
-            <span className="text-[11px] font-bold text-brand-green bg-brand-green/10 px-2 py-0.5 rounded-full">Save 20%</span>
+            <span className="text-[11px] font-bold text-brand-green-ink bg-brand-green/10 px-2 py-0.5 rounded-full">Save 20%</span>
           </button>
         </div>
       </div>

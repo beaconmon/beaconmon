@@ -122,7 +122,7 @@ function ResetForm() {
                   >
                     {met && <Check className="h-2.5 w-2.5 text-brand-bg" strokeWidth={3} />}
                   </span>
-                  <span className={cn('text-xs transition-colors', met ? 'text-brand-green' : 'text-brand-muted')}>
+                  <span className={cn('text-xs transition-colors', met ? 'text-brand-green-ink' : 'text-brand-muted')}>
                     {req.label}
                   </span>
                 </li>
@@ -135,7 +135,7 @@ function ResetForm() {
           </PrimaryBtn>
         </form>
 
-        <Link href="/sign-in" className="block text-center text-xs text-brand-muted hover:text-brand-green transition-colors">
+        <Link href="/sign-in" className="block text-center text-xs text-brand-muted hover:text-brand-green-ink transition-colors">
           ← Back to sign in
         </Link>
       </div>

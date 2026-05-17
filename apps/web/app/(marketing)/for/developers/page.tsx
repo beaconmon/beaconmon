@@ -92,10 +92,10 @@ export default function ForDevelopersPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">For Developers</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For Developers</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Monitoring that fits how developers actually work.<br />
-            <span className="text-brand-green">Not just ping checks.</span>
+            <span className="text-brand-green-ink">Not just ping checks.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
             TCP monitoring, heartbeats for cron jobs, webhook alerts you can pipe into anything, and keyword checks that catch broken deploys before users do.
@@ -112,7 +112,7 @@ export default function ForDevelopersPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center max-w-[1000px] mx-auto">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Webhooks</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Webhooks</span>
               <h2 className="text-[clamp(26px,3vw,38px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 Pipe alerts into anything.
               </h2>
@@ -140,7 +140,7 @@ export default function ForDevelopersPage() {
                   <div key={i} className={line.startsWith('//') ? 'text-brand-muted' : line === '{' || line === '}' ? 'text-brand-text' : ''}>
                     {line.startsWith('  "event"') || line.startsWith('  "type"') || line.startsWith('  "status_code"') ? (
                       <span>
-                        <span className="text-brand-green">{line.split(':')[0]}</span>
+                        <span className="text-brand-green-ink">{line.split(':')[0]}</span>
                         {':' + line.split(':').slice(1).join(':')}
                       </span>
                     ) : (
@@ -164,7 +164,7 @@ export default function ForDevelopersPage() {
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}

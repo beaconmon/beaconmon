@@ -141,7 +141,7 @@ export default function PricingPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Pricing</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Pricing</span>
           <h1 className="text-[clamp(40px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5">
             Simple pricing. No surprises.
           </h1>
@@ -174,7 +174,7 @@ export default function PricingPage() {
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft w-[40%]">Feature</th>
                   <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Free</th>
-                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-green font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)]">Pro</th>
+                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)]">Pro</th>
                   <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Business</th>
                 </tr>
               </thead>
@@ -182,9 +182,9 @@ export default function PricingPage() {
                 {FEATURE_MATRIX.map(({ feature, free, pro, business }, i) => (
                   <tr key={feature}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{free === '✓' ? <span className="text-brand-green font-semibold">✓</span> : free === '—' ? <span className="text-brand-muted">—</span> : free}</td>
-                    <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{pro === '✓' ? <span className="text-brand-green font-semibold">✓</span> : pro === '—' ? <span className="text-brand-muted">—</span> : <span className="text-brand-green font-semibold">{pro}</span>}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{business === '✓' ? <span className="text-brand-green font-semibold">✓</span> : business === '—' ? <span className="text-brand-muted">—</span> : business}</td>
+                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{free === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : free === '—' ? <span className="text-brand-muted">—</span> : free}</td>
+                    <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{pro === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : pro === '—' ? <span className="text-brand-muted">—</span> : <span className="text-brand-green-ink font-semibold">{pro}</span>}</td>
+                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{business === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : business === '—' ? <span className="text-brand-muted">—</span> : business}</td>
                   </tr>
                 ))}
               </tbody>

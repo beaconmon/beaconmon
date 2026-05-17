@@ -210,7 +210,7 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-brand-text">{m.preset.label}</span>
                         {m.matched && (
-                          <span className="rounded bg-brand-green/10 px-1 py-0.5 text-[10px] font-medium text-brand-green">
+                          <span className="rounded bg-brand-green/10 px-1 py-0.5 text-[10px] font-medium text-brand-green-ink">
                             detected
                           </span>
                         )}
@@ -247,7 +247,7 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
 
         {step === 'creating' && (
           <div className="flex flex-col items-center justify-center py-8 gap-3">
-            <Loader2 className="h-6 w-6 animate-spin text-brand-green" />
+            <Loader2 className="h-6 w-6 animate-spin text-brand-green-ink" />
             <p className="text-sm text-brand-dim">Setting up your competitor monitor…</p>
           </div>
         )}

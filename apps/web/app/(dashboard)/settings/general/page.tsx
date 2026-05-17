@@ -94,7 +94,7 @@ export default function GeneralPage() {
                 <Button type="submit" disabled={updateTeamName.isPending || !teamName.trim()}>
                   {updateTeamName.isPending ? 'Saving…' : 'Save'}
                 </Button>
-                {teamNameSaved && <p className="text-sm text-brand-green">Saved.</p>}
+                {teamNameSaved && <p className="text-sm text-brand-green-ink">Saved.</p>}
                 {updateTeamName.isError && (
                   <p className="text-sm text-red-400">{updateTeamName.error?.message}</p>
                 )}
@@ -175,7 +175,7 @@ export default function GeneralPage() {
                 <Button type="submit" disabled={updateSettings.isPending || Boolean(colorError)}>
                   {updateSettings.isPending ? 'Saving…' : 'Save branding'}
                 </Button>
-                {saved && <p className="text-sm text-brand-green">Saved.</p>}
+                {saved && <p className="text-sm text-brand-green-ink">Saved.</p>}
                 {updateSettings.isError && (
                   <p className="text-sm text-red-400">{updateSettings.error?.message}</p>
                 )}

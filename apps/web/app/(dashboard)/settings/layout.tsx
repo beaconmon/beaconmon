@@ -38,7 +38,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                     <Icon
                       className={cn(
                         'h-4 w-4 shrink-0',
-                        isActive ? 'text-brand-green' : 'text-brand-muted'
+                        isActive ? 'text-brand-green-ink' : 'text-brand-muted'
                       )}
                     />
                     <span>{label}</span>

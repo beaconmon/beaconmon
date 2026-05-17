@@ -113,10 +113,10 @@ export default function VsPingdomPage() {
           <Link href="/vs" className="inline-flex items-center gap-2 text-[13px] text-brand-muted hover:text-brand-dim transition-colors mb-6">
             <span>←</span> All comparisons
           </Link>
-          <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Comparison</span>
+          <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs Pingdom<br />
-            <span className="text-brand-green">an honest comparison.</span>
+            <span className="text-brand-green-ink">an honest comparison.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
             Pingdom is a solid enterprise monitoring tool, but it has no free plan, charges extra for status pages, and lacks domain expiry and content monitoring. Beaconmon covers all of that starting at $0.
@@ -128,7 +128,7 @@ export default function VsPingdomPage() {
       <section className="py-[60px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
-            <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green mb-3 block">Summary verdict</span>
+            <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
               Pingdom is built for teams that already have dedicated DevOps budgets. For freelancers and agencies paying out of pocket, you&apos;re getting fewer features at the same price point — no free plan, status pages cost extra, and key features like domain expiry tracking simply don&apos;t exist in Pingdom at any tier.
             </p>
@@ -147,7 +147,7 @@ export default function VsPingdomPage() {
               <thead>
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft w-[40%]">Feature</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Pingdom</th>
                 </tr>
               </thead>
@@ -155,7 +155,7 @@ export default function VsPingdomPage() {
                 {TABLE_ROWS.map(({ feature, beaconmon, competitor, beaconmonGood }, i) => (
                   <tr key={feature}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
-                    <td className={`p-4 text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)] font-medium ${beaconmonGood ? 'text-brand-green' : 'text-brand-dim'} ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{beaconmon}</td>
+                    <td className={`p-4 text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)] font-medium ${beaconmonGood ? 'text-brand-green-ink' : 'text-brand-dim'} ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{beaconmon}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < TABLE_ROWS.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{competitor}</td>
                   </tr>
                 ))}

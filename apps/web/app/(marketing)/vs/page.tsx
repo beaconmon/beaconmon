@@ -80,7 +80,7 @@ export default function VsHubPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Compare</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Compare</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
             How Beaconmon compares to the alternatives.
           </h1>
@@ -108,14 +108,14 @@ export default function VsHubPage() {
                   <div>
                     <span className="text-[32px] leading-none">{icon}</span>
                   </div>
-                  <span className="text-brand-green text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-brand-green-ink text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     Compare →
                   </span>
                 </div>
                 <h3 className="text-[20px] font-bold tracking-[-0.02em] mb-2">
                   Beaconmon vs {name}
                 </h3>
-                <p className="text-brand-green text-[13px] font-semibold mb-3">{tagline}</p>
+                <p className="text-brand-green-ink text-[13px] font-semibold mb-3">{tagline}</p>
                 <p className="text-brand-dim text-[14px] leading-[1.6]">{verdict}</p>
               </Link>
             ))}
@@ -137,7 +137,7 @@ export default function VsHubPage() {
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {DIFFERENTIATORS.map(({ heading, body }) => (
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}

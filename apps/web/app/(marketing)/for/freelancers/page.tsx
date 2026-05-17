@@ -57,10 +57,10 @@ export default function ForFreelancersPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">For Freelancers</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For Freelancers</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px]">
             Your clients hired you to keep things running.<br />
-            <span className="text-brand-green">Beaconmon makes sure you do.</span>
+            <span className="text-brand-green-ink">Beaconmon makes sure you do.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
             Website downtime is a client-trust emergency. Beaconmon monitors every site you manage and alerts you instantly — so you can act before your client notices.
@@ -83,7 +83,7 @@ export default function ForFreelancersPage() {
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
               For freelancers, one bad downtime event can cost you the client. You can&apos;t watch every site manually. You need monitoring that runs in the background and alerts you the moment something breaks.
             </p>
-            <span className="text-brand-green text-[15px] font-semibold inline-flex items-center gap-[10px]">
+            <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
               Know within 60 seconds. Always.
             </span>
@@ -101,7 +101,7 @@ export default function ForFreelancersPage() {
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
               <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
-                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green">{heading}</h3>
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
               </div>
             ))}
@@ -120,7 +120,7 @@ export default function ForFreelancersPage() {
               <p className="text-brand-dim text-[15px] leading-[1.65]">
                 Most freelancers start with Beaconmon after a bad downtime incident. Within a week it becomes something they add to every new client setup automatically.
               </p>
-              <Link href="/pricing" className="inline-flex items-center gap-2 mt-6 text-[14px] text-brand-green hover:underline">
+              <Link href="/pricing" className="inline-flex items-center gap-2 mt-6 text-[14px] text-brand-green-ink hover:underline">
                 See pricing →
               </Link>
             </div>

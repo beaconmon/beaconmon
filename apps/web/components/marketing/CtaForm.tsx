@@ -29,7 +29,7 @@ export default function CtaForm({ className = '' }: { className?: string }) {
       />
       <button
         type="submit"
-        className="inline-flex items-center justify-center h-[42px] px-4 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[0_0_0_1px_rgba(0,229,122,0.3),0_6px_20px_rgba(0,229,122,0.2)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms] whitespace-nowrap"
+        className="inline-flex items-center justify-center h-[42px] px-4 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms] whitespace-nowrap"
       >
         Start monitoring free →
       </button>

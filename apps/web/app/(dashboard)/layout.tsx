@@ -91,7 +91,7 @@ function NavItem({
       <Icon
         className={cn(
           'h-4 w-4 shrink-0 transition-colors',
-          isActive ? 'text-brand-green' : 'text-brand-muted group-hover:text-brand-dim'
+          isActive ? 'text-brand-green-ink' : 'text-brand-muted group-hover:text-brand-dim'
         )}
       />
       {!collapsed && (
@@ -211,20 +211,20 @@ function TopBar({
         </Link>
       )}
 
-      {/* Notifications */}
-      <NotificationPopover />
-
       {/* ⌘K trigger */}
       <button
         onClick={onOpenCommandPalette}
         className="hidden sm:flex items-center gap-2 rounded-md border border-brand-line bg-brand-bg2 px-3 py-1.5 text-xs text-brand-muted transition-colors hover:border-brand-line hover:text-brand-dim w-56"
       >
-        <Search className="h-3 w-3" />
-        <span>Search…</span>
+        <Search className="h-3 w-3 shrink-0" />
+        <span className="flex-1 text-left">Search…</span>
         <kbd className="inline-flex h-4 items-center rounded border border-brand-line bg-brand-bg px-1 text-[10px] text-brand-muted">
           ⌘K
         </kbd>
       </button>
+
+      {/* Notifications */}
+      <NotificationPopover />
 
       {/* Avatar dropdown */}
       <DropdownMenu>
@@ -291,7 +291,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
         {session?.plan && session.teamCreatedAt && (
           <TrialBanner plan={session.plan} teamCreatedAt={session.teamCreatedAt} />
         )}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-brand-bg-section p-4 lg:p-8">{children}</main>
       </div>
 
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />

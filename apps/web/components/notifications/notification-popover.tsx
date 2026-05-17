@@ -25,7 +25,7 @@ const ICONS: Record<FeedItemKind, React.ElementType> = {
 
 const ICON_COLORS: Record<FeedItemKind, string> = {
   'incident.opened': 'text-brand-red',
-  'incident.resolved': 'text-brand-green',
+  'incident.resolved': 'text-brand-green-ink',
   'expiry.warning': 'text-brand-amber',
   'deploy.started': 'text-brand-dim',
   'snapshot.changed': 'text-brand-dim',
@@ -143,7 +143,7 @@ export function NotificationPopover() {
               <button
                 onClick={handleMarkRead}
                 disabled={markRead.isPending}
-                className="text-[11px] text-brand-green transition-colors hover:text-brand-green/80 disabled:opacity-50"
+                className="text-[11px] text-brand-green-ink transition-colors hover:text-brand-green-ink/80 disabled:opacity-50"
               >
                 Mark all read
               </button>

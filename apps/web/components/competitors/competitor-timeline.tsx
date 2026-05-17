@@ -52,7 +52,7 @@ export function CompetitorTimeline({ items }: CompetitorTimelineProps) {
               <div className="mt-0.5">
                 <Link
                   href={`/monitors/${item.monitorId}?tab=snapshots`}
-                  className="text-xs text-brand-green hover:underline"
+                  className="text-xs text-brand-green-ink hover:underline"
                 >
                   View diff
                 </Link>

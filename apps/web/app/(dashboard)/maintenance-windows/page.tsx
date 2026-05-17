@@ -73,7 +73,7 @@ function WindowCard({
               className={cn(
                 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
                 status === 'active' && 'bg-brand-amber/15 text-brand-amber',
-                status === 'upcoming' && 'bg-brand-green/15 text-brand-green',
+                status === 'upcoming' && 'bg-brand-green/15 text-brand-green-ink',
                 status === 'past' && 'bg-brand-bg3 text-brand-muted'
               )}
             >

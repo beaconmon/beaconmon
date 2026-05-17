@@ -92,10 +92,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] max-[1024px]:grid-cols-1 gap-16 max-[1024px]:gap-12 items-center">
             {/* Left */}
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Website uptime monitoring</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Website uptime monitoring</span>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
                 Know when your site goes down.<br />
-                <span className="text-brand-green">Before your clients do.</span>
+                <span className="text-brand-green-ink">Before your clients do.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
                 Beaconmon is a website uptime monitoring service that checks your sites every 30 seconds and alerts you the moment something breaks — downtime, SSL expiry, domain expiry, or content changes.
@@ -120,7 +120,7 @@ export default function LandingPage() {
       </section>
 
       {/* ====== LOGO STRIP ====== */}
-      <section className="border-t border-b border-brand-line-soft py-11">
+      <section className="border-t border-b border-brand-line-soft bg-brand-bg-section py-11">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <p className="text-center text-[12px] tracking-[0.08em] uppercase text-brand-muted mb-6">
             Built for developers working with
@@ -148,7 +148,7 @@ export default function LandingPage() {
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
               It&apos;s happened to every freelancer and agency at least once. The site goes down at 2am on a Friday. By the time anyone notices, the damage is done: lost sales, lost trust, an uncomfortable conversation with the client.
             </p>
-            <span className="text-brand-green text-[15px] font-semibold inline-flex items-center gap-[10px]">
+            <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
               Beaconmon makes sure you&apos;re always first to know.
             </span>
@@ -160,7 +160,7 @@ export default function LandingPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Why it matters</span>
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Why it matters</span>
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
               The cost of not knowing.
             </h2>
@@ -172,7 +172,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5">
             {/* Card 1 — reputation */}
             <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
-              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green-ink shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
@@ -189,7 +189,7 @@ export default function LandingPage() {
 
             {/* Card 2 — silent failures */}
             <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
-              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green-ink shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   <line x1="12" y1="9" x2="12" y2="13" />
@@ -208,7 +208,7 @@ export default function LandingPage() {
 
             {/* Card 3 — billable value */}
             <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 flex flex-col gap-6">
-              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green shrink-0">
+              <span className="w-12 h-12 rounded-[14px] bg-[rgba(0,229,122,0.08)] border border-[rgba(0,229,122,0.15)] inline-flex items-center justify-center text-brand-green-ink shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23" />
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -228,7 +228,7 @@ export default function LandingPage() {
       </section>
 
       {/* ====== HOW IT WORKS ====== */}
-      <section className="py-[100px] border-t border-brand-line-soft">
+      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Three steps. Five minutes.</h2>
@@ -275,9 +275,9 @@ export default function LandingPage() {
               },
             ].map(({ num, icon, heading, body }) => (
               <div key={num} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px]">
-                <div className="font-mono text-[13px] text-brand-green mb-8 flex items-center justify-between">
+                <div className="font-mono text-[13px] text-brand-green-ink mb-8 flex items-center justify-between">
                   <span>{num}</span>
-                  <span className="w-9 h-9 bg-brand-bg3 border border-brand-line rounded-[9px] inline-flex items-center justify-center text-brand-green">
+                  <span className="w-9 h-9 bg-brand-bg3 border border-brand-line rounded-[9px] inline-flex items-center justify-center text-brand-green-ink">
                     {icon}
                   </span>
                 </div>
@@ -293,7 +293,7 @@ export default function LandingPage() {
       <section className="py-[100px]" id="features">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green mb-4">Features</span>
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
               Everything you need.<br />Nothing you don&apos;t.
             </h2>
@@ -304,17 +304,17 @@ export default function LandingPage() {
             {/* Large 1 — uptime */}
             <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
               <div className="p-7 pb-6">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green mb-[10px]">Uptime monitoring</span>
+                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Uptime monitoring</span>
                 <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">30-second checks from multiple locations.</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.55]">We check your site every 30 seconds from multiple regions. One blip doesn&apos;t trigger an alert — we confirm from two locations first to eliminate false alarms.</p>
               </div>
               <div className="mt-auto p-2 pt-0 flex items-end flex-1">
                 <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] p-[14px] mx-[10px] mb-[10px] w-full">
                   {[
-                    { name: 'acme-storefront.com', pct: '99.98%', width: '99.98%', color: 'bg-brand-green', textColor: 'text-brand-green' },
-                    { name: 'marquez.design', pct: '100.00%', width: '100%', color: 'bg-brand-green', textColor: 'text-brand-green' },
+                    { name: 'acme-storefront.com', pct: '99.98%', width: '99.98%', color: 'bg-brand-green', textColor: 'text-brand-green-ink' },
+                    { name: 'marquez.design', pct: '100.00%', width: '100%', color: 'bg-brand-green', textColor: 'text-brand-green-ink' },
                     { name: 'api.loomwave.io', pct: '97.14%', width: '97%', color: 'bg-brand-red', textColor: 'text-brand-red' },
-                    { name: 'greenhaus-coffee.com', pct: '99.90%', width: '99.9%', color: 'bg-brand-green', textColor: 'text-brand-green' },
+                    { name: 'greenhaus-coffee.com', pct: '99.90%', width: '99.9%', color: 'bg-brand-green', textColor: 'text-brand-green-ink' },
                   ].map(({ name, pct, width, color, textColor }, i) => (
                     <div key={i} className={`flex items-center justify-between py-[6px] text-[12px] ${i > 0 ? 'border-t border-brand-line-soft' : ''}`}>
                       <span className="text-brand-dim">{name}</span>
@@ -331,7 +331,7 @@ export default function LandingPage() {
             {/* Large 2 — status pages */}
             <div className="reveal col-span-3 max-[880px]:col-span-1 row-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
               <div className="p-7 pb-6">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green mb-[10px]">Public status pages</span>
+                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Public status pages</span>
                 <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">Status pages your clients will actually trust.</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.55]">Public status pages at your own domain. Show uptime history, active incidents, and scheduled maintenance. Looks professional. Takes 2 minutes to set up.</p>
               </div>
@@ -339,7 +339,7 @@ export default function LandingPage() {
                 <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] mx-[10px] mb-[10px] w-full overflow-hidden">
                   <div className="flex items-center justify-between px-[14px] py-[10px] border-b border-brand-line-soft text-[12px]">
                     <span className="font-semibold">status.marquez.design</span>
-                    <span className="text-[10px] bg-[rgba(0,229,122,0.1)] text-brand-green px-2 py-[3px] rounded font-semibold border border-[rgba(0,229,122,0.2)]">All systems operational</span>
+                    <span className="text-[10px] bg-[rgba(0,229,122,0.1)] text-brand-green-ink px-2 py-[3px] rounded font-semibold border border-[rgba(0,229,122,0.2)]">All systems operational</span>
                   </div>
                   <div className="px-[14px] py-[10px] pb-3 space-y-2">
                     {[
@@ -408,7 +408,7 @@ export default function LandingPage() {
             ].map(({ icon, heading, body }) => (
               <div key={heading} className="reveal col-span-3 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden min-h-[180px]">
                 <div className="p-7 pb-6">
-                  <span className="w-11 h-11 rounded-[11px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green mb-[18px]">
+                  <span className="w-11 h-11 rounded-[11px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green-ink mb-[18px]">
                     {icon}
                   </span>
                   <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">{heading}</h3>
@@ -432,7 +432,7 @@ export default function LandingPage() {
               <thead>
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
                     <Link href="/vs/uptimerobot" className="hover:text-brand-dim transition-colors">UptimeRobot</Link>
                   </th>
@@ -445,31 +445,31 @@ export default function LandingPage() {
                 {[
                   {
                     feat: 'Check frequency',
-                    bm: <span className="text-brand-green font-semibold font-mono">30 seconds</span>,
+                    bm: <span className="text-brand-green-ink font-semibold font-mono">30 seconds</span>,
                     ur: <span className="font-mono">5 minutes <span className="text-brand-muted">(free)</span></span>,
                     p: <span className="font-mono">1 minute</span>,
                   },
                   {
                     feat: 'Status pages',
-                    bm: <span className="text-brand-green font-semibold">✓ Included</span>,
+                    bm: <span className="text-brand-green-ink font-semibold">✓ Included</span>,
                     ur: 'Basic only',
                     p: '✓ Extra cost',
                   },
                   {
                     feat: 'SSL monitoring',
-                    bm: <span className="text-brand-green font-semibold">✓ Included</span>,
-                    ur: <span className="text-brand-green font-semibold">✓</span>,
-                    p: <span className="text-brand-green font-semibold">✓</span>,
+                    bm: <span className="text-brand-green-ink font-semibold">✓ Included</span>,
+                    ur: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    p: <span className="text-brand-green-ink font-semibold">✓</span>,
                   },
                   {
                     feat: 'Domain expiry',
-                    bm: <span className="text-brand-green font-semibold">✓ Included</span>,
+                    bm: <span className="text-brand-green-ink font-semibold">✓ Included</span>,
                     ur: <span className="text-brand-muted">—</span>,
                     p: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Heartbeat monitoring',
-                    bm: <span className="text-brand-green font-semibold">✓ Included</span>,
+                    bm: <span className="text-brand-green-ink font-semibold">✓ Included</span>,
                     ur: <span className="text-brand-muted">—</span>,
                     p: <span className="text-brand-muted">—</span>,
                   },
@@ -494,7 +494,7 @@ export default function LandingPage() {
       </section>
 
       {/* ====== PRICING ====== */}
-      <section className="py-[100px] border-t border-brand-line-soft" id="pricing">
+      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section" id="pricing">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Simple pricing. No surprises.</h2>
@@ -520,7 +520,7 @@ export default function LandingPage() {
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.6]">
                 The most common ones, answered plainly. Need more?{' '}
-                <a href="mailto:hello@beaconmon.com" className="text-brand-green border-b border-[rgba(0,229,122,0.4)] hover:border-brand-green transition-colors">
+                <a href="mailto:hello@beaconmon.com" className="text-brand-green-ink border-b border-[rgba(0,229,122,0.4)] hover:border-brand-green transition-colors">
                   Email us
                 </a>{' '}
                 — a real person reads every message.

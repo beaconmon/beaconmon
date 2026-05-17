@@ -130,7 +130,7 @@ function RecipientPicker({
           title={r.kind === 'removed_user' ? 'This user was removed from the team' : undefined}
         >
           {r.kind === 'channel' && <Hash className="h-3 w-3 text-brand-muted" />}
-          {r.kind === 'user' && <UserIcon className="h-3 w-3 text-brand-green" />}
+          {r.kind === 'user' && <UserIcon className="h-3 w-3 text-brand-green-ink" />}
           {r.kind === 'removed_user' && <AlertTriangle className="h-3 w-3" />}
           <span className="max-w-[140px] truncate">{r.label}</span>
           <button
@@ -689,7 +689,7 @@ export default function EscalationPoliciesPage() {
           role="status"
           className="flex items-start gap-2.5 rounded-md border border-brand-green/30 bg-brand-green/10 px-3.5 py-2.5"
         >
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" />
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-ink" />
           <p className="flex-1 text-sm text-brand-text">{defaultBanner}</p>
           <button
             type="button"

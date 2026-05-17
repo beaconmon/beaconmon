@@ -115,7 +115,7 @@ function InviteForm({ currentRole }: { currentRole: string }) {
             <button
               type="button"
               onClick={() => void handleResend()}
-              className="ml-2 underline text-brand-green"
+              className="ml-2 underline text-brand-green-ink"
               disabled={resendMutation.isPending}
             >
               {resendMutation.isPending ? 'Resending…' : 'Resend?'}
@@ -124,10 +124,10 @@ function InviteForm({ currentRole }: { currentRole: string }) {
         </div>
       )}
       {sendMutation.isSuccess && (
-        <p className="w-full mt-1 text-sm text-brand-green">Invitation sent.</p>
+        <p className="w-full mt-1 text-sm text-brand-green-ink">Invitation sent.</p>
       )}
       {resendMutation.isSuccess && (
-        <p className="w-full mt-1 text-sm text-brand-green">Invitation resent.</p>
+        <p className="w-full mt-1 text-sm text-brand-green-ink">Invitation resent.</p>
       )}
     </form>
   );

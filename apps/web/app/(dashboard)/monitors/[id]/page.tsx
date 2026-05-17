@@ -96,7 +96,7 @@ function UptimeRangeCard({ monitorId, range }: { monitorId: string; range: TimeR
   }
 
   const color =
-    pct == null ? 'text-brand-muted' : pct >= 99 ? 'text-brand-green' : pct >= 90 ? 'text-brand-amber' : 'text-brand-red';
+    pct == null ? 'text-brand-muted' : pct >= 99 ? 'text-brand-green-ink' : pct >= 90 ? 'text-brand-amber' : 'text-brand-red';
 
   return (
     <div className="rounded-lg border border-brand-line bg-brand-surface p-4">
@@ -123,7 +123,7 @@ function StatPill({ label, value }: { label: string; value: string }) {
 
 function statusCodeColor(code: number | null) {
   if (code == null) return 'text-brand-muted';
-  if (code < 300) return 'text-brand-green';
+  if (code < 300) return 'text-brand-green-ink';
   if (code < 400) return 'text-brand-amber';
   return 'text-brand-red';
 }
@@ -155,7 +155,7 @@ function ChartTooltip(props: TooltipProps) {
   return (
     <div className="rounded-md border border-brand-line bg-brand-bg3 px-3 py-2 text-xs shadow-lg">
       <p className="text-brand-muted">{label}</p>
-      <p className="font-mono font-semibold text-brand-green">{String(payload[0]?.value ?? 0)}ms</p>
+      <p className="font-mono font-semibold text-brand-green-ink">{String(payload[0]?.value ?? 0)}ms</p>
     </div>
   );
 }
@@ -269,7 +269,7 @@ function IncidentsTab({
 // ─── SLO tab ──────────────────────────────────────────────────────────────────
 
 function SloGauge({ pct }: { pct: number }) {
-  const color = pct >= 80 ? 'text-brand-green' : pct >= 40 ? 'text-brand-amber' : 'text-brand-red';
+  const color = pct >= 80 ? 'text-brand-green-ink' : pct >= 40 ? 'text-brand-amber' : 'text-brand-red';
   const strokeColor = pct >= 80 ? '#00E57A' : pct >= 40 ? '#F59E0B' : '#EF4444';
   const r = 36;
   const circ = 2 * Math.PI * r;
@@ -760,7 +760,7 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
           </h2>
           {diffQ.data && (
             <span className="ml-auto flex items-center gap-2">
-              <span className="text-[10px] font-semibold text-brand-green">+{diffQ.data.added}</span>
+              <span className="text-[10px] font-semibold text-brand-green-ink">+{diffQ.data.added}</span>
               <span className="text-[10px] font-semibold text-brand-red">-{diffQ.data.removed}</span>
               {diffQ.data.truncated && (
                 <span className="text-[10px] text-brand-amber">truncated</span>
@@ -785,7 +785,7 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
                   key={i}
                   className={cn(
                     'px-4 py-0.5 leading-relaxed whitespace-pre-wrap break-all',
-                    line.op === 'add' && 'bg-brand-green/10 text-brand-green',
+                    line.op === 'add' && 'bg-brand-green/10 text-brand-green-ink',
                     line.op === 'remove' && 'bg-brand-red/10 text-brand-red',
                     line.op === 'equal' && 'text-brand-dim'
                   )}
@@ -1072,7 +1072,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                           <span
                             className={cn(
                               'text-xs font-semibold uppercase tracking-wider',
-                              r.success ? 'text-brand-green' : 'text-brand-red'
+                              r.success ? 'text-brand-green-ink' : 'text-brand-red'
                             )}
                           >
                             {r.success ? 'OK' : 'Fail'}
@@ -1277,7 +1277,7 @@ function RegionsTab({ results }: { results: CheckResultRow[] }) {
               uptime == null
                 ? 'text-brand-muted'
                 : uptime >= 99
-                ? 'text-brand-green'
+                ? 'text-brand-green-ink'
                 : uptime >= 90
                 ? 'text-brand-amber'
                 : 'text-brand-red';
