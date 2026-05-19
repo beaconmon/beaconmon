@@ -15,6 +15,14 @@ const service = 'content-worker';
 // well above any legitimate change rate. Keyed by UTC date.
 const PER_MONITOR_DAILY_LIMIT = 50;
 const RATE_LIMIT_TTL_SECONDS = 60 * 60 * 24;
+const AI_LOCK_TTL_SECONDS = 300;
+
+// Atomic INCR+EXPIRE: avoids a TTL-less key if the process crashes between the two commands.
+const ATOMIC_INCR_EXPIRE_SCRIPT = `
+local count = redis.call('INCR', KEYS[1])
+if count == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end
+return count
+`;
 
 export interface AiAnalysisInput {
   monitorId: string;
@@ -57,6 +65,12 @@ export async function runAiAnalysisIfEligible(
   });
   if (effectivePlan === 'free') {
     logger.debug({ service, monitorId: input.monitorId }, 'AI skipped — free plan');
+    return null;
+  }
+
+  const lockAcquired = await tryAcquireAiLock(redis, input.monitorId);
+  if (!lockAcquired) {
+    logger.debug({ service, monitorId: input.monitorId }, 'AI skipped — another worker holds the lock for today');
     return null;
   }
 
@@ -111,18 +125,27 @@ function getEffectivePlan(team: {
   return plan;
 }
 
+async function tryAcquireAiLock(redis: Redis, monitorId: string): Promise<boolean> {
+  const dayKey = new Date().toISOString().slice(0, 10);
+  const key = `ai:lock:${monitorId}:${dayKey}`;
+  try {
+    const result = await redis.set(key, '1', 'EX', AI_LOCK_TTL_SECONDS, 'NX');
+    return result === 'OK';
+  } catch (err) {
+    // Fail-open: if Redis is unavailable, allow the call.
+    logger.warn({ service, monitorId, err }, 'AI lock check failed — allowing call');
+    return true;
+  }
+}
+
 async function consumeRateLimit(redis: Redis, monitorId: string): Promise<boolean> {
   const dayKey = new Date().toISOString().slice(0, 10);
   const key = `ai:monitor:${monitorId}:${dayKey}`;
   try {
-    const count = await redis.incr(key);
-    if (count === 1) {
-      await redis.expire(key, RATE_LIMIT_TTL_SECONDS);
-    }
+    const count = await redis.eval(ATOMIC_INCR_EXPIRE_SCRIPT, 1, key, String(RATE_LIMIT_TTL_SECONDS)) as number;
     return count <= PER_MONITOR_DAILY_LIMIT;
   } catch (err) {
-    // Fail-open: if Redis is unavailable, allow the call. The provider's
-    // own rate limits + the global feature flag are still in place.
+    // Fail-open: if Redis is unavailable, allow the call.
     logger.warn({ service, monitorId, err }, 'AI rate-limit check failed — allowing call');
     return true;
   }

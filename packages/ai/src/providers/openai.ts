@@ -30,6 +30,11 @@ export class OpenAiProvider implements AiProvider {
   ): Promise<AiCompletionResult<z.infer<T>>> {
     const jsonSchema = zodToJsonSchema(req.schema);
 
+    const requestOptions: { signal?: AbortSignal } = {};
+    if (req.timeoutMs != null) {
+      requestOptions.signal = AbortSignal.timeout(req.timeoutMs);
+    }
+
     let response: OpenAI.Chat.Completions.ChatCompletion;
     try {
       response = await this.client.chat.completions.create({
@@ -48,7 +53,7 @@ export class OpenAiProvider implements AiProvider {
             schema: jsonSchema as Record<string, unknown>,
           },
         },
-      });
+      }, requestOptions);
     } catch (err) {
       throw mapOpenAiError(err);
     }

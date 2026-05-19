@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { AiSchemaError } from '../errors.js';
 import type {
   AiCompletionRequest,
@@ -11,10 +11,9 @@ import type {
  * Used by tests and when AI_DRY_RUN=true so the rest of the pipeline can run
  * without hitting a real LLM.
  *
- * Strategy: build a minimal-but-typed object by inspecting the Zod schema. If
- * the schema is too exotic (no obvious default for a required field), throw
- * AiSchemaError — callers in dry-run mode should pass a content-diff-shaped
- * schema with known field defaults.
+ * Strategy: walk the Zod schema recursively to generate typed defaults for
+ * every field. Supports string, number, boolean, enum, array, and object
+ * schemas — the full set used across all AI use cases in this package.
  */
 export class NoopProvider implements AiProvider {
   readonly name = 'noop' as const;
@@ -23,11 +22,18 @@ export class NoopProvider implements AiProvider {
   async complete<T extends z.ZodTypeAny>(
     req: AiCompletionRequest<T>
   ): Promise<AiCompletionResult<z.infer<T>>> {
-    const stub = buildStub();
+    let stub: unknown;
+    try {
+      stub = buildStubFromSchema(req.schema);
+    } catch (err) {
+      throw new AiSchemaError(
+        `NoopProvider could not build a stub for schema: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
     const parsed = req.schema.safeParse(stub);
     if (!parsed.success) {
       throw new AiSchemaError(
-        `NoopProvider could not build a stub matching the provided schema: ${parsed.error.message}`
+        `NoopProvider stub failed schema validation: ${parsed.error.message}`
       );
     }
     return {
@@ -38,12 +44,49 @@ export class NoopProvider implements AiProvider {
   }
 }
 
-// Hard-coded shape matching the v1 use case (content-diff).
-// If we add a second use case with a different schema, extend this map.
-function buildStub(): Record<string, unknown> {
-  return {
-    summary: '[AI disabled]',
-    classification: 'copy',
-    confidence: 0,
-  };
+type ZodDef = { type: string };
+type ZodCheck = { _zod?: { def?: { check?: string; minimum?: number } } };
+
+function buildStubFromSchema(schema: z.ZodTypeAny): unknown {
+  const def = schema._def as ZodDef;
+  const type = def.type;
+
+  switch (type) {
+    case 'string': {
+      // minLength is exposed directly on ZodString instances in Zod 4
+      const minLen = (schema as z.ZodTypeAny & { minLength?: number | null }).minLength ?? 0;
+      return minLen > 0 ? 'stub' : '';
+    }
+    case 'number':
+      return 0;
+    case 'boolean':
+      return false;
+    case 'enum': {
+      const entries = (def as unknown as { entries: Record<string, unknown> }).entries;
+      return Object.values(entries)[0];
+    }
+    case 'array': {
+      const arrDef = def as unknown as { element: z.ZodTypeAny; checks?: ZodCheck[] };
+      const minLen = (arrDef.checks ?? []).reduce<number>((acc, c) => {
+        if (c._zod?.def?.check === 'min_length' && (c._zod.def.minimum ?? 0) > 0) {
+          return c._zod.def.minimum ?? 0;
+        }
+        return acc;
+      }, 0);
+      return minLen > 0 ? [buildStubFromSchema(arrDef.element)] : [];
+    }
+    case 'object': {
+      const shape = (def as unknown as { shape: Record<string, z.ZodTypeAny> }).shape;
+      const result: Record<string, unknown> = {};
+      for (const [key, fieldSchema] of Object.entries(shape)) {
+        result[key] = buildStubFromSchema(fieldSchema);
+      }
+      return result;
+    }
+    case 'optional':
+    case 'nullable':
+      return undefined;
+    default:
+      throw new Error(`unsupported schema type: ${type}`);
+  }
 }

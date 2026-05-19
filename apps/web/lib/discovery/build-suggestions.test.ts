@@ -202,7 +202,7 @@ describe('buildAiSuggestions', () => {
       return intent?.priority ?? 0;
     });
     for (let i = 1; i < priorities.length; i++) {
-      expect(priorities[i]).toBeLessThanOrEqual(priorities[i - 1]);
+      expect(priorities[i]!).toBeLessThanOrEqual(priorities[i - 1]!);
     }
   });
 

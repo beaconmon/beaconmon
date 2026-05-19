@@ -5,7 +5,7 @@ import { summarizeContentDiff } from './summarize.js';
 import { ContentDiffOutput, buildDiffPrompt } from './prompt.js';
 
 describe('summarizeContentDiff with NoopProvider', () => {
-  it('returns a deterministic stub matching the schema', async () => {
+  it('returns a stub that passes schema validation', async () => {
     const provider = new NoopProvider();
     const result = await summarizeContentDiff(
       provider,
@@ -15,12 +15,11 @@ describe('summarizeContentDiff with NoopProvider', () => {
 
     expect(result.model).toBe('noop');
     expect(result.usage).toEqual({ inputTokens: 0, outputTokens: 0 });
-    expect(result.data.summary).toBe('[AI disabled]');
-    expect(result.data.classification).toBe('copy');
-    expect(result.data.confidence).toBe(0);
-
-    // Stub must pass schema validation
+    // Stub must pass schema validation — specific values are schema-driven
     expect(() => ContentDiffOutput.parse(result.data)).not.toThrow();
+    expect(typeof result.data.summary).toBe('string');
+    expect(result.data.summary.length).toBeGreaterThan(0);
+    expect(typeof result.data.confidence).toBe('number');
   });
 });
 
@@ -40,6 +39,16 @@ describe('buildDiffPrompt', () => {
     // smaller than 2x the raw input.
     expect(prompt.length).toBeLessThan(20_000);
     expect(prompt).toContain('truncated');
+  });
+
+  it('byte-correctly truncates multi-byte CJK content', () => {
+    // Each CJK char is 3 UTF-8 bytes; 3000 chars = 9000 bytes > 8192 cap
+    const cjk = '中'.repeat(3_000);
+    const prompt = buildDiffPrompt(cjk, cjk);
+    expect(prompt).toContain('bytes');
+    // Prompt must be well under 2x 9000 bytes worth of content
+    const byteLen = new TextEncoder().encode(prompt).length;
+    expect(byteLen).toBeLessThan(20_000);
   });
 });
 

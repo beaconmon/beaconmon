@@ -23,5 +23,9 @@ export function createAiProvider(config: AiProviderConfig): AiProvider {
       return new DeepSeekProvider(config.apiKey, config.model);
     case 'noop':
       return new NoopProvider();
+    default: {
+      const _exhaustive: never = config.provider as never;
+      throw new Error(`createAiProvider: unknown provider "${String(_exhaustive)}"`);
+    }
   }
 }

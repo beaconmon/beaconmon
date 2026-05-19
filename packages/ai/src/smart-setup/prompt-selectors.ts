@@ -43,11 +43,36 @@ export type SelectorsOutput = z.infer<typeof SelectorsOutput>;
 
 const MAX_HTML_BYTES = 16 * 1024;
 
+const _encoder = new TextEncoder();
+
+function truncateToUtf8Bytes(str: string, maxBytes: number): { text: string; truncatedBytes: number } {
+  const full = _encoder.encode(str);
+  if (full.length <= maxBytes) return { text: str, truncatedBytes: 0 };
+  let lo = 0;
+  let hi = str.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    if (_encoder.encode(str.slice(0, mid)).length <= maxBytes) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  // Scan backward up to 512 bytes to avoid splitting inside an HTML tag.
+  let safeEnd = lo;
+  const scanStart = Math.max(0, lo - 512);
+  const lastClose = str.lastIndexOf('>', lo - 1);
+  if (lastClose >= scanStart) {
+    safeEnd = lastClose + 1;
+  }
+  return { text: str.slice(0, safeEnd), truncatedBytes: full.length - maxBytes };
+}
+
 export function buildSelectorsPrompt(pageHtml: string, intentName: string): string {
+  const { text: truncatedText, truncatedBytes } = truncateToUtf8Bytes(pageHtml, MAX_HTML_BYTES);
   const truncated =
-    pageHtml.length > MAX_HTML_BYTES
-      ? pageHtml.slice(0, MAX_HTML_BYTES) +
-        `\n…[truncated ${pageHtml.length - MAX_HTML_BYTES} chars]`
+    truncatedBytes > 0
+      ? truncatedText + `\n…[truncated ${truncatedBytes} bytes]`
       : pageHtml;
 
   return [

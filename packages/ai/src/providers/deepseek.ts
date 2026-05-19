@@ -29,8 +29,13 @@ export class DeepSeekProvider implements AiProvider {
   async complete<T extends z.ZodTypeAny>(
     req: AiCompletionRequest<T>
   ): Promise<AiCompletionResult<z.infer<T>>> {
+    const requestOptions: { signal?: AbortSignal } = {};
+    if (req.timeoutMs != null) {
+      requestOptions.signal = AbortSignal.timeout(req.timeoutMs);
+    }
+
     const jsonSchema = zodToJsonSchema(req.schema);
-    const systemWithSchema = `${req.system}\n\nRespond with valid JSON matching this schema:\n${JSON.stringify(jsonSchema, null, 2)}`;
+    const systemWithSchema = `${req.system}\n\nYou MUST return a JSON object that exactly matches this schema. Every field is required; never output null for a string field — use an empty string instead.\n\nSchema:\n${JSON.stringify(jsonSchema, null, 2)}`;
 
     let response: OpenAI.Chat.Completions.ChatCompletion;
     try {
@@ -43,7 +48,7 @@ export class DeepSeekProvider implements AiProvider {
           { role: 'user', content: req.user },
         ],
         response_format: { type: 'json_object' },
-      });
+      }, requestOptions);
     } catch (err) {
       throw mapDeepSeekError(err);
     }
@@ -64,7 +69,7 @@ export class DeepSeekProvider implements AiProvider {
       json = JSON.parse(message);
     } catch (err) {
       throw new AiSchemaError(
-        'DeepSeek returned non-JSON content despite json_schema response_format',
+        'DeepSeek returned non-JSON content despite json_object response_format',
         err
       );
     }

@@ -1,6 +1,6 @@
 import 'server-only';
 import * as cheerio from 'cheerio';
-import { createAiProvider, classifySite, proposeSelectors } from '@beaconmon/ai';
+import { classifySite, proposeSelectors } from '@beaconmon/ai';
 import type { ClassifyOutput } from '@beaconmon/ai';
 import { fetchPageHtml } from './page-fetch';
 import { pickBestSelector } from './selector-validate';
@@ -8,6 +8,7 @@ import { buildAiSuggestions } from './build-suggestions';
 import type { DiscoverResult, Suggestion } from './index';
 import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
+import { getWebAiProvider } from '@/lib/ai';
 
 export interface SmartSetupBudgets {
   classifyMs: number;
@@ -76,11 +77,7 @@ export async function runSmartSetupOrDegrade(input: SmartSetupInput): Promise<Sm
     ].slice(0, 200);
 
     // Phase 2: classify site (race against classifyMs)
-    const provider = createAiProvider({
-      provider: (process.env.AI_PROVIDER ?? 'noop') as 'anthropic' | 'openai' | 'deepseek' | 'noop',
-      apiKey: process.env.AI_API_KEY,
-      model: process.env.AI_MODEL,
-    });
+    const provider = getWebAiProvider();
 
     const classifyResult = await raceTimeout(
       classifySite(provider, { homepageText, urls: urlsForClassify }),

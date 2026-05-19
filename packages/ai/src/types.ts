@@ -9,6 +9,7 @@ export interface AiCompletionRequest<T extends z.ZodTypeAny = z.ZodTypeAny> {
   schemaName?: string;
   maxTokens?: number;
   temperature?: number;
+  timeoutMs?: number;
 }
 
 export interface AiUsage {

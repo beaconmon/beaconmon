@@ -1167,6 +1167,53 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
             </SidebarCard>
           )}
 
+          {isContentMonitor && monitor && (() => {
+            const smartSetup = (monitor.config as Record<string, unknown> | null)?.smartSetup as {
+              selectorChosen?: string;
+              selectorCandidates?: string[];
+              generatedAt?: string;
+              aiCategory?: string;
+            } | undefined;
+            if (!smartSetup) return null;
+            return (
+              <SidebarCard title="AI Setup">
+                <dl className="space-y-2.5">
+                  <div className="flex flex-col gap-0.5">
+                    <dt className="text-xs text-brand-muted">AI Selector</dt>
+                    <dd className="font-mono text-xs text-brand-dim break-all">
+                      {smartSetup.selectorChosen ? (
+                        <code>{smartSetup.selectorChosen}</code>
+                      ) : (
+                        'Full page'
+                      )}
+                    </dd>
+                  </div>
+                  {smartSetup.selectorCandidates && smartSetup.selectorCandidates.length > 0 && (
+                    <div className="flex flex-col gap-0.5">
+                      <dt className="text-xs text-brand-muted">Candidates</dt>
+                      <dd className="font-mono text-xs text-brand-dim break-all">
+                        {smartSetup.selectorCandidates.slice(0, 3).map((s, i) => (
+                          <span key={i}>
+                            {i > 0 && ', '}
+                            <code>{s}</code>
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
+                  {smartSetup.generatedAt && (
+                    <div className="flex items-center justify-between gap-2">
+                      <dt className="text-xs text-brand-muted">Generated</dt>
+                      <dd className="font-mono text-xs text-brand-dim">
+                        {formatDistanceToNow(new Date(smartSetup.generatedAt), { addSuffix: true })}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              </SidebarCard>
+            );
+          })()}
+
           {isCompetitorMonitor && monitor && (
             <SidebarCard title="Competitor settings">
               <div className="flex items-start justify-between gap-3">

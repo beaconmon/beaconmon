@@ -7,7 +7,8 @@ import { isHostnameSafe } from '@/lib/discovery/ssrf-guard';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { COMPETITOR_PRESETS } from '@/lib/competitor-presets';
 import { pickBestSelector } from '@/lib/discovery/selector-validate';
-import { createAiProvider, proposeSelectors } from '@beaconmon/ai';
+import { proposeSelectors } from '@beaconmon/ai';
+import { getWebAiProvider, isWebAiSmartSetupEnabled } from '@/lib/ai';
 import { logger } from '@/lib/logger';
 
 const detectSchema = z.object({
@@ -27,12 +28,12 @@ function excerptText(text: string): string {
 const AI_TIMEOUT_MS = 5_000;
 
 async function raceTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
-  let timer: ReturnType<typeof setTimeout>;
+  let timer: ReturnType<typeof setTimeout> | undefined;
   const sentinel = new Promise<null>((resolve) => { timer = setTimeout(() => resolve(null), ms); });
   try {
     return await Promise.race([promise, sentinel]);
   } finally {
-    clearTimeout(timer!);
+    clearTimeout(timer);
   }
 }
 
@@ -113,21 +114,13 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     return { preset, selector: preset.fallbackSelector, preview: '', matched: false };
   });
 
-  const aiEnabled =
-    process.env.FEATURE_AI_SMART_SETUP === 'true' &&
-    !!process.env.AI_PROVIDER &&
-    process.env.AI_PROVIDER !== 'noop' &&
-    (plan === 'pro' || plan === 'business');
+  const aiEnabled = isWebAiSmartSetupEnabled(plan);
 
   let matches = baseMatches.map((m) => ({ ...m, aiSelector: null as string | null, aiRationale: null as string | null }));
 
   if (aiEnabled) {
     try {
-      const provider = createAiProvider({
-        provider: (process.env.AI_PROVIDER ?? 'noop') as 'anthropic' | 'openai' | 'deepseek' | 'noop',
-        apiKey: process.env.AI_API_KEY,
-        model: process.env.AI_MODEL,
-      });
+      const provider = getWebAiProvider();
 
       const aiResults = await Promise.allSettled(
         COMPETITOR_PRESETS.map((preset) =>

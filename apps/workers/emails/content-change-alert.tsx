@@ -17,6 +17,7 @@ export interface ContentChangeAlertProps {
   monitorUrl: string;
   changedAt: Date;
   summary?: string;
+  classification?: string;
   diffUrl?: string;
 }
 
@@ -25,6 +26,7 @@ export function ContentChangeAlert({
   monitorUrl,
   changedAt,
   summary,
+  classification,
   diffUrl,
 }: ContentChangeAlertProps) {
   const formattedTime = changedAt.toUTCString();
@@ -37,7 +39,12 @@ export function ContentChangeAlert({
         <Container style={container}>
           <Section style={statusBanner}>
             <Text style={statusDot}>●</Text>
-            <Text style={statusText}>Content Changed</Text>
+            <Text style={statusText}>
+              Content Changed
+              {classification ? (
+                <span style={classificationTag}>{classification}</span>
+              ) : null}
+            </Text>
           </Section>
 
           <Heading style={heading}>Content Change Alert</Heading>
@@ -48,7 +55,9 @@ export function ContentChangeAlert({
 
           {summary ? (
             <Text style={summaryParagraph}>{summary}</Text>
-          ) : null}
+          ) : (
+            <Text style={mutedText}>AI summary not available for this change.</Text>
+          )}
 
           <Section style={detailsBox}>
             <Text style={detailRow}>
@@ -139,6 +148,25 @@ const summaryParagraph: React.CSSProperties = {
   fontSize: '14px',
   lineHeight: '1.6',
   margin: '-8px 0 20px',
+};
+
+const mutedText: React.CSSProperties = {
+  color: '#9ca3af',
+  fontSize: '13px',
+  fontStyle: 'italic',
+  margin: '-8px 0 20px',
+};
+
+const classificationTag: React.CSSProperties = {
+  backgroundColor: '#eff6ff',
+  color: '#2563eb',
+  fontSize: '10px',
+  fontWeight: '600',
+  textTransform: 'uppercase',
+  letterSpacing: '0.04em',
+  padding: '2px 6px',
+  borderRadius: '3px',
+  marginLeft: '8px',
 };
 
 const detailsBox: React.CSSProperties = {

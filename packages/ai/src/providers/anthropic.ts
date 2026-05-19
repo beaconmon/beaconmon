@@ -31,6 +31,11 @@ export class AnthropicProvider implements AiProvider {
   ): Promise<AiCompletionResult<z.infer<T>>> {
     const jsonSchema = zodToJsonSchema(req.schema);
 
+    const requestOptions: Anthropic.RequestOptions = {};
+    if (req.timeoutMs != null) {
+      requestOptions.signal = AbortSignal.timeout(req.timeoutMs);
+    }
+
     let response: Anthropic.Messages.Message;
     try {
       response = await this.client.messages.create({
@@ -57,7 +62,7 @@ export class AnthropicProvider implements AiProvider {
         ],
         tool_choice: { type: 'tool', name: TOOL_NAME },
         messages: [{ role: 'user', content: req.user }],
-      });
+      }, requestOptions);
     } catch (err) {
       throw mapAnthropicError(err);
     }

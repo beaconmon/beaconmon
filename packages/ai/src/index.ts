@@ -14,9 +14,6 @@ export {
   AiTimeoutError,
 } from './errors.js';
 export { createAiProvider } from './factory.js';
-export { AnthropicProvider } from './providers/anthropic.js';
-export { OpenAiProvider } from './providers/openai.js';
-export { NoopProvider } from './providers/noop.js';
 export {
   CONTENT_DIFF_SYSTEM_PROMPT,
   ContentDiffOutput,

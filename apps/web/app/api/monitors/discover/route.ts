@@ -7,6 +7,7 @@ import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { discoverMonitors } from '@/lib/discovery';
 import { isHostnameSafe } from '@/lib/discovery/ssrf-guard';
 import { runSmartSetupOrDegrade } from '@/lib/discovery/smart-setup';
+import { isWebAiSmartSetupEnabled } from '@/lib/ai';
 import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
 
@@ -110,11 +111,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
       // PostHog not configured locally — non-fatal
     }
 
-    const aiEnabled =
-      process.env.FEATURE_AI_SMART_SETUP === 'true' &&
-      !!process.env.AI_PROVIDER &&
-      process.env.AI_PROVIDER !== 'noop' &&
-      (plan === 'pro' || plan === 'business');
+    const aiEnabled = isWebAiSmartSetupEnabled(plan);
 
     if (!aiEnabled) {
       return Response.json(result);

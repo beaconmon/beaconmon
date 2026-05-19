@@ -3,6 +3,7 @@ import type { Redis } from 'ioredis';
 import type {
   CheckJob,
   ContentCheckJob,
+  ContentNotifyJob,
   AlertJob,
   ReportJob,
   EscalationStepJob,
@@ -32,6 +33,18 @@ export function createContentCheckQueue(
       backoff: { type: 'fixed', delay: 5000 },
       removeOnComplete: { count: 100 },
       removeOnFail: { count: 500 },
+    },
+  });
+}
+
+export function createContentNotifyQueue(connection: Redis): Queue<ContentNotifyJob> {
+  return new Queue<ContentNotifyJob>(QUEUE_NAMES.CONTENT_NOTIFY, {
+    connection,
+    defaultJobOptions: {
+      attempts: 5,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: { count: 500 },
+      removeOnFail: { count: 1000 },
     },
   });
 }

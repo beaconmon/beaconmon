@@ -61,9 +61,22 @@ export function buildDiffPrompt(previous: string, next: string): string {
   ].join('\n');
 }
 
+const _encoder = new TextEncoder();
+
 function truncate(input: string, maxBytes: number): string {
-  // Cheap byte cap — content is normalized whitespace text, so byte length ≈
-  // char length for ASCII pages. Good enough as a cost guard.
-  if (input.length <= maxBytes) return input;
-  return input.slice(0, maxBytes) + `\n…[truncated ${input.length - maxBytes} chars]`;
+  const full = _encoder.encode(input);
+  if (full.length <= maxBytes) return input;
+  // Binary-search for the largest char prefix whose UTF-8 encoding fits maxBytes.
+  let lo = 0;
+  let hi = input.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    if (_encoder.encode(input.slice(0, mid)).length <= maxBytes) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  const truncatedBytes = full.length - maxBytes;
+  return input.slice(0, lo) + `\n…[truncated ${truncatedBytes} bytes]`;
 }

@@ -33,7 +33,7 @@ export function defaultLimitForRange(range: TimeRange): number {
   }
 }
 
-export function useCheckResults(monitorId: string, range: TimeRange = '24h', limit = 500) {
+export function useCheckResults(monitorId: string, range: TimeRange = '24h', limit = defaultLimitForRange(range)) {
   return useQuery<CheckResultRow[]>({
     queryKey: ['check-results', monitorId, range, limit],
     queryFn: async () => {

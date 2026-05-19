@@ -1,40 +1,23 @@
-import * as React from 'react';
-import { z } from 'zod';
-import { Resend } from 'resend';
-import { render } from '@react-email/render';
-import type { Redis } from 'ioredis';
 import {
   monitorRepository,
   checkResultRepository,
-  alertChannelRepository,
   contentSnapshotWorkerRepository,
 } from '@beaconmon/db';
 import { runContentCheck } from '@beaconmon/checker';
-import type { ContentCheckJob } from '@beaconmon/queue';
-import { ContentChangeAlert } from './emails/content-change-alert.js';
+import type { ContentCheckJob, ContentNotifyJob } from '@beaconmon/queue';
+import type { Queue } from 'bullmq';
+import type { Redis } from 'ioredis';
 import { logger } from './lib/logger.js';
 import { env } from './lib/env.js';
 import { runAiAnalysisIfEligible } from './lib/ai-content-diff.js';
-
-const EmailChannelConfig = z.object({
-  recipients: z.array(z.string().email()),
-});
-
-const SlackChannelConfig = z.object({
-  webhookUrl: z.string().url(),
-});
-
-const WebhookChannelConfig = z.object({
-  url: z.string().url(),
-  secret: z.string().optional(),
-});
 
 const TIMEOUT_MS = 30_000;
 const service = 'content-worker';
 
 export async function processContentCheckJob(
   data: ContentCheckJob,
-  redis?: Redis
+  redis?: Redis,
+  notifyQueue?: Queue<ContentNotifyJob>
 ): Promise<void> {
   const { monitorId, url, selector, isCompetitor: _isCompetitor = false, instantAlerts: _instantAlerts = false } = data;
 
@@ -95,27 +78,11 @@ export async function processContentCheckJob(
   // 7. Content changed
   logger.info({ service, monitorId }, 'Content change detected');
 
-  // 7a. Persist new snapshot (history row + hot column) — abort before notifying
-  // so retries see no diff and don't double-notify.
   const previousContent = monitor.contentSnapshot;
-  let snapshotCreated: Awaited<ReturnType<typeof contentSnapshotWorkerRepository.recordChange>>;
-  try {
-    snapshotCreated = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
-  } catch (err) {
-    logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
-    return;
-  }
-  if (!snapshotCreated) {
-    logger.info({ service, monitorId }, 'Duplicate snapshot skipped by dedup guard');
-    return;
-  }
 
-  // 7b. AI summarize + classify (plan-gated, feature-flagged). Skipped when:
-  //   - FEATURE_AI_CONTENT_DIFF is off
-  //   - AI_DRY_RUN=true or AI_PROVIDER=noop
-  //   - team's effective plan is 'free'
-  //   - per-monitor daily rate limit reached
-  //   - no Redis client was passed (e.g. unit-test invocation)
+  // 7b. AI summarize + classify FIRST (no DB side-effects).
+  // Crash before recordChange → retry re-runs AI (one extra API call, no data loss).
+  // Crash after recordChange but before attachAiAnalysis → snapshot exists without summary, acceptable.
   let aiResult: Awaited<ReturnType<typeof runAiAnalysisIfEligible>> = null;
   if (redis) {
     aiResult = await runAiAnalysisIfEligible(redis, {
@@ -126,6 +93,20 @@ export async function processContentCheckJob(
       previousContent,
       nextContent: content,
     });
+  }
+
+  // 7a. Persist new snapshot (history row + hot column) — abort before notifying
+  // so retries see no diff and don't double-notify.
+  let snapshotCreated: Awaited<ReturnType<typeof contentSnapshotWorkerRepository.recordChange>>;
+  try {
+    snapshotCreated = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
+  } catch (err) {
+    logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
+    return;
+  }
+  if (!snapshotCreated) {
+    logger.info({ service, monitorId }, 'Duplicate snapshot skipped by dedup guard');
+    return;
   }
 
   if (aiResult) {
@@ -168,178 +149,18 @@ export async function processContentCheckJob(
     return;
   }
 
-  const appUrl = env.APP_URL;
-  await notifyContentChange(monitor.teamId, monitor.name, url, monitorId, checkedAt, aiResult?.summary, appUrl);
-}
-
-async function notifyContentChange(
-  teamId: string,
-  monitorName: string,
-  monitorUrl: string,
-  monitorId: string,
-  changedAt: Date,
-  summary?: string,
-  appUrl?: string
-): Promise<void> {
-  const channels = await alertChannelRepository.findActiveByTeamId(teamId);
-
-  if (channels.length === 0) {
-    logger.info({ service, teamId }, 'No active alert channels — nothing to notify');
-    return;
-  }
-
-  const diffUrl = appUrl ? `${appUrl}/monitors/${monitorId}?tab=snapshots` : undefined;
-
-  for (const channel of channels) {
-    try {
-      switch (channel.type) {
-        case 'email':
-          await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, diffUrl);
-          break;
-        case 'slack':
-          await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, diffUrl);
-          break;
-        case 'webhook':
-          await sendWebhookNotification(channel.config, monitorName, monitorUrl, changedAt, summary, diffUrl);
-          break;
-        default:
-          logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for content notification, skipping');
-      }
-      logger.info({ service, channelId: channel.id, channelType: channel.type }, 'Content change notification sent');
-    } catch (err) {
-      logger.error({ service, channelId: channel.id, channelType: channel.type, err }, 'Failed to send content change notification');
-    }
-  }
-}
-
-async function sendEmailNotification(
-  rawConfig: unknown,
-  monitorName: string,
-  monitorUrl: string,
-  changedAt: Date,
-  summary?: string,
-  diffUrl?: string
-): Promise<void> {
-  const config = EmailChannelConfig.parse(rawConfig);
-
-  if (env.ALERT_DRY_RUN) {
-    logger.info(
-      { service, channel: 'email', recipients: config.recipients, summary },
-      'ALERT_DRY_RUN — skipping content change email'
-    );
-    return;
-  }
-
-  if (!env.RESEND_API_KEY || !env.EMAIL_FROM) {
-    throw new Error('RESEND_API_KEY or EMAIL_FROM not set — cannot send email notification');
-  }
-
-  const html = await render(
-    React.createElement(ContentChangeAlert, { monitorName, monitorUrl, changedAt, summary, diffUrl })
-  );
-
-  const resend = new Resend(env.RESEND_API_KEY);
-  const { error } = await resend.emails.send({
-    from: env.EMAIL_FROM,
-    to: config.recipients,
-    subject: `Content change detected on '${monitorName}'`,
-    html,
-  });
-
-  if (error) {
-    throw new Error(`Resend API error: ${error.message}`);
-  }
-}
-
-async function sendSlackNotification(
-  rawConfig: unknown,
-  monitorName: string,
-  monitorUrl: string,
-  changedAt: Date,
-  summary?: string,
-  diffUrl?: string
-): Promise<void> {
-  const config = SlackChannelConfig.parse(rawConfig);
-
-  const slackFields: Array<{ title: string; value: string; short: boolean }> = [
-    { title: 'URL', value: monitorUrl, short: false },
-    { title: 'Detected at', value: changedAt.toUTCString(), short: true },
-  ];
-  if (summary) {
-    slackFields.unshift({ title: 'Summary', value: summary, short: false });
-  }
-
-  const slackPayload = {
-    attachments: [
-      {
-        color: '#2563eb',
-        title: `Content Changed: ${monitorName}`,
-        title_link: diffUrl,
-        text: summary,
-        fields: slackFields,
-        footer: 'Beaconmon',
-        ts: Math.floor(changedAt.getTime() / 1000),
-      },
-    ],
-  };
-
-  if (env.ALERT_DRY_RUN) {
-    logger.info(
-      { service, channel: 'slack', webhookUrl: config.webhookUrl, slackPayload },
-      'ALERT_DRY_RUN — skipping content change Slack notification'
-    );
-    return;
-  }
-
-  const response = await fetch(config.webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(slackPayload),
-  });
-
-  if (!response.ok) {
-    const body = await response.text().catch(() => '');
-    throw new Error(`Slack webhook returned ${response.status}: ${body}`);
-  }
-}
-
-async function sendWebhookNotification(
-  rawConfig: unknown,
-  monitorName: string,
-  monitorUrl: string,
-  changedAt: Date,
-  summary?: string,
-  diffUrl?: string
-): Promise<void> {
-  const config = WebhookChannelConfig.parse(rawConfig);
-
-  const webhookPayload = {
-    event: 'monitor.content_changed',
-    monitorName,
-    url: monitorUrl,
-    timestamp: changedAt.toISOString(),
-    ...(summary ? { summary } : {}),
-    ...(diffUrl ? { diffUrl } : {}),
-  };
-
-  const body = JSON.stringify(webhookPayload);
-
-  if (env.ALERT_DRY_RUN) {
-    logger.info(
-      { service, channel: 'webhook', targetUrl: config.url, webhookPayload },
-      'ALERT_DRY_RUN — skipping content change webhook'
-    );
-    return;
-  }
-
-  const response = await fetch(config.url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body,
-  });
-
-  if (!response.ok) {
-    const responseBody = await response.text().catch(() => '');
-    throw new Error(`Webhook returned ${response.status}: ${responseBody}`);
+  if (notifyQueue) {
+    await notifyQueue.add('content-notify', {
+      teamId: monitor.teamId,
+      monitorName: monitor.name,
+      monitorUrl: url,
+      monitorId,
+      changedAt: checkedAt.toISOString(),
+      summary: aiResult?.summary,
+      classification: aiResult?.classification,
+      appUrl: env.APP_URL,
+    });
+  } else {
+    logger.warn({ service, monitorId }, 'No notify queue provided — content change notification skipped');
   }
 }
