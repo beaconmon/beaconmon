@@ -6,12 +6,23 @@ import type { MonitorRow } from '@/lib/repositories/monitors';
 import type { CreateMonitorInput } from '@/lib/validations/monitors';
 
 export interface DiscoverySuggestion {
-  type: 'http' | 'ssl' | 'domain';
+  type: 'http' | 'ssl' | 'domain' | 'content';
   url: string;
   name: string;
   reason: string;
   defaultIntervalSeconds: number;
   checkedByDefault: boolean;
+  source?: 'sitemap' | 'ai' | 'ai+sitemap' | 'apex';
+  aiReason?: string;
+  selectorCandidates?: string[];
+  selectorChosen?: string | null;
+  classification?: 'pricing' | 'changelog' | 'feature' | 'docs' | 'legal' | 'other';
+  generatedAt?: string;
+}
+
+export interface AiClassification {
+  category: 'saas' | 'ecommerce' | 'marketing' | 'blog' | 'docs' | 'app' | 'other';
+  confidence: number;
 }
 
 export interface DiscoverResponse {
@@ -19,6 +30,10 @@ export interface DiscoverResponse {
   suggestions: DiscoverySuggestion[];
   warnings: string[];
   cappedByPlan: boolean;
+  degraded?: boolean;
+  aiClassification?: AiClassification;
+  aiModel?: string;
+  aiDurationMs?: number;
 }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
@@ -42,7 +57,7 @@ export function useDiscoverMonitors() {
 
 export interface BulkCreateInput {
   monitors: CreateMonitorInput[];
-  source?: 'discovery' | 'template' | 'import';
+  source?: 'discovery' | 'template' | 'import' | 'smart-setup';
 }
 
 export interface BulkCreateResponse {

@@ -34,6 +34,18 @@ const EnvSchema = z.object({
   R2_ACCESS_KEY_ID: z.string().optional(),
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   APP_URL: z.string().url().optional(), // used in report email links
+  // AI content-diff summaries + noise filter
+  AI_PROVIDER: z.enum(['anthropic', 'openai', 'deepseek', 'noop']).default('noop'),
+  AI_API_KEY: z.string().optional(),
+  AI_MODEL: z.string().optional(), // provider defaults apply when unset
+  AI_DRY_RUN: z
+    .string()
+    .transform((v) => v === 'true')
+    .default(false),
+  FEATURE_AI_CONTENT_DIFF: z
+    .string()
+    .transform((v) => v === 'true')
+    .default(false),
 });
 
 // Validate at startup — fails fast before any worker logic runs
@@ -56,6 +68,15 @@ if (parsed.FEATURE_MULTI_LOCATION && !parsed.REGION_PROBE_SECRET) {
     '[env] FEATURE_MULTI_LOCATION=true but REGION_PROBE_SECRET is not set — disabling multi-location checks'
   );
   parsed.FEATURE_MULTI_LOCATION = false;
+}
+
+// Fail-open: AI is opt-in. If a real provider is selected but the API key is
+// missing, force AI_PROVIDER to 'noop' rather than crashing the worker fleet.
+if (parsed.AI_PROVIDER !== 'noop' && !parsed.AI_API_KEY) {
+  console.warn(
+    `[env] AI_PROVIDER=${parsed.AI_PROVIDER} but AI_API_KEY is not set — disabling AI analysis`
+  );
+  parsed.AI_PROVIDER = 'noop';
 }
 
 export const env = parsed;

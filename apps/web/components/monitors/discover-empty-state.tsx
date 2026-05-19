@@ -6,11 +6,13 @@ import {
   Activity,
   AlertCircle,
   Check,
+  Code2,
   Globe,
   Loader2,
   Lock,
   Search,
   Sparkles,
+  Tag,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,16 +33,46 @@ interface DiscoverEmptyStateProps {
 function suggestionIcon(type: DiscoverySuggestion['type']) {
   if (type === 'ssl') return Lock;
   if (type === 'domain') return Globe;
+  if (type === 'content') return Code2;
   return Activity;
 }
 
 function suggestionToInput(s: DiscoverySuggestion): CreateMonitorInput {
-  return {
+  const base: CreateMonitorInput = {
     name: s.name,
     url: s.url,
     type: s.type,
     intervalSeconds: s.defaultIntervalSeconds,
   };
+
+  if (s.type === 'content') {
+    base.config = {
+      ...(s.selectorChosen ? { selector: s.selectorChosen } : {}),
+      smartSetup: {
+        classification: s.classification,
+        selectorCandidates: s.selectorCandidates,
+        selectorChosen: s.selectorChosen,
+        generatedAt: s.generatedAt ?? new Date().toISOString(),
+      },
+    };
+  }
+
+  return base;
+}
+
+function AiCategoryBadge({ classification }: { classification: DiscoverResponse['aiClassification'] }) {
+  if (!classification) return null;
+  const pct = Math.round(classification.confidence * 100);
+  const label = classification.category.charAt(0).toUpperCase() + classification.category.slice(1);
+  return (
+    <div className="mb-4 flex items-center gap-2 rounded-md border border-brand-line bg-muted/50 px-3 py-2 text-sm">
+      <Sparkles className="h-4 w-4 shrink-0 text-primary" />
+      <span>
+        <span className="font-medium">Detected: {label}</span>
+        <span className="ml-1 text-muted-foreground">· {pct}% confidence</span>
+      </span>
+    </div>
+  );
 }
 
 export function DiscoverEmptyState({ onCreated }: DiscoverEmptyStateProps) {
@@ -85,10 +117,11 @@ export function DiscoverEmptyState({ onCreated }: DiscoverEmptyStateProps) {
       selected.has(`${s.type}:${s.url}`)
     );
     if (chosen.length === 0) return;
+    const hasAi = chosen.some((s) => s.source === 'ai' || s.source === 'ai+sitemap');
     try {
       const res = await bulkCreate.mutateAsync({
         monitors: chosen.map(suggestionToInput),
-        source: 'discovery',
+        source: hasAi ? 'smart-setup' : 'discovery',
       });
       onCreated?.(res.created.length);
       reset();
@@ -172,6 +205,17 @@ export function DiscoverEmptyState({ onCreated }: DiscoverEmptyStateProps) {
         </p>
       </div>
 
+      {discovery.degraded && (
+        <Alert className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            AI suggestions unavailable right now — showing keyword-only results.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <AiCategoryBadge classification={discovery.aiClassification} />
+
       {discovery.warnings.length > 0 && (
         <div className="mb-4 space-y-2">
           {discovery.warnings.map((w, i) => (
@@ -196,6 +240,7 @@ export function DiscoverEmptyState({ onCreated }: DiscoverEmptyStateProps) {
             const key = `${s.type}:${s.url}`;
             const isSelected = selected.has(key);
             const Icon = suggestionIcon(s.type);
+            const isAi = s.source === 'ai' || s.source === 'ai+sitemap';
             return (
               <li
                 key={key}
@@ -213,12 +258,33 @@ export function DiscoverEmptyState({ onCreated }: DiscoverEmptyStateProps) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
                     <p className="truncate text-sm font-medium">{s.name}</p>
-                    <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-brand-muted">
-                      {s.type}
-                    </span>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      {isAi && (
+                        <span className="flex items-center gap-0.5 text-[10px] font-medium text-primary">
+                          <Sparkles className="h-3 w-3" />
+                          AI
+                        </span>
+                      )}
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                        {s.type}
+                      </span>
+                    </div>
                   </div>
                   <p className="truncate text-xs text-muted-foreground">{s.url}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{s.reason}</p>
+                  {s.aiReason && s.aiReason !== s.reason && (
+                    <p className="mt-0.5 text-xs text-muted-foreground/70">{s.aiReason}</p>
+                  )}
+                  {s.type === 'content' && (
+                    <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                      <Tag className="h-3 w-3" />
+                      {s.selectorChosen != null ? (
+                        <>Watches: <code className="font-mono">{s.selectorChosen}</code></>
+                      ) : (
+                        'Watches: full page'
+                      )}
+                    </p>
+                  )}
                 </div>
               </li>
             );

@@ -14,6 +14,7 @@ export interface DiscoverResult {
   suggestions: Suggestion[];
   warnings: string[];
   cappedByPlan: boolean;
+  sitemapUrls?: string[];
 }
 
 export async function discoverMonitors(
@@ -41,10 +42,14 @@ export async function discoverMonitors(
     warnings.push("Suggestions were capped to fit your plan's monitor limit.");
   }
 
-  return { domain, suggestions, warnings, cappedByPlan };
+  return { domain, suggestions, warnings, cappedByPlan, sitemapUrls: sitemap.urls };
 }
 
 export type { Suggestion } from './build-suggestions';
-export { buildSuggestions } from './build-suggestions';
+export { buildSuggestions, buildAiSuggestions } from './build-suggestions';
+export type { AiIntent, BuildAiSuggestionsInput } from './build-suggestions';
 export { prioritizeUrls } from './prioritize';
 export { fetchSitemapUrls, parseSitemapDirectives, parseSitemapXml } from './sitemap';
+export { fetchPageHtml } from './page-fetch';
+export { pickBestSelector } from './selector-validate';
+export type { SelectorValidation } from './selector-validate';

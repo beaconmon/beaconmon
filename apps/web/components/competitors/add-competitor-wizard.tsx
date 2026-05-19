@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Check, Loader2 } from 'lucide-react';
+import { AlertCircle, Check, Loader2, Pencil, X } from 'lucide-react';
 import { apiFetch } from '@/lib/api-fetch';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import type { PlanTier } from '@beaconmon/types';
@@ -25,6 +25,8 @@ interface PresetMatch {
   selector: string;
   preview: string;
   matched: boolean;
+  aiSelector: string | null;
+  aiRationale: string | null;
 }
 
 interface AddCompetitorWizardProps {
@@ -43,6 +45,10 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
   const [matches, setMatches] = useState<PresetMatch[]>([]);
   const [selected, setSelected] = useState<PresetMatch | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectorOverrides, setSelectorOverrides] = useState<Record<string, string>>({});
+  const [editingSelector, setEditingSelector] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   const minInterval = PLAN_LIMITS[plan].checkIntervalSeconds;
 
@@ -53,6 +59,29 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
     setMatches([]);
     setSelected(null);
     setError(null);
+    setSelectorOverrides({});
+    setEditingSelector(null);
+    setEditValue('');
+  }
+
+  function effectiveSelector(m: PresetMatch): string {
+    return selectorOverrides[m.preset.id] ?? m.aiSelector ?? m.selector;
+  }
+
+  function startEditSelector(m: PresetMatch) {
+    setEditingSelector(m.preset.id);
+    setEditValue(effectiveSelector(m));
+    setTimeout(() => editInputRef.current?.focus(), 0);
+  }
+
+  function commitSelectorEdit(presetId: string) {
+    const trimmed = editValue.trim();
+    if (trimmed && trimmed !== (matches.find((m) => m.preset.id === presetId)?.aiSelector ?? matches.find((m) => m.preset.id === presetId)?.selector)) {
+      setSelectorOverrides((prev) => ({ ...prev, [presetId]: trimmed }));
+    } else if (!trimmed) {
+      setSelectorOverrides((prev) => { const next = { ...prev }; delete next[presetId]; return next; });
+    }
+    setEditingSelector(null);
   }
 
   function handleOpenChange(v: boolean) {
@@ -75,7 +104,7 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
         setError(data.error ?? 'Failed to fetch URL');
         return;
       }
-      setMatches(data.matches ?? COMPETITOR_PRESETS.map((p) => ({ preset: p, selector: p.selectors[p.selectors.length - 1]!, preview: '', matched: false })));
+      setMatches(data.matches ?? COMPETITOR_PRESETS.map((p) => ({ preset: p, selector: p.selectors[p.selectors.length - 1]!, preview: '', matched: false, aiSelector: null, aiRationale: null })));
       const firstMatch = data.matches?.find((m: PresetMatch) => m.matched);
       setSelected(firstMatch ?? null);
       setStep('presets');
@@ -107,7 +136,7 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
           type: 'content',
           intervalSeconds: minInterval,
           isCompetitor: true,
-          config: { selector: selected.selector },
+          config: { selector: effectiveSelector(selected) },
         }),
       });
       if (!res.ok) {
@@ -183,48 +212,110 @@ export function AddCompetitorWizard({ open, onOpenChange, plan, onCreated }: Add
             </p>
 
             <div className="space-y-2">
-              {matches.map((m) => (
-                <button
-                  key={m.preset.id}
-                  type="button"
-                  onClick={() => setSelected(m)}
-                  className={cn(
-                    'w-full rounded-md border px-3 py-2.5 text-left transition-colors',
-                    selected?.preset.id === m.preset.id
-                      ? 'border-brand-green bg-brand-green/5'
-                      : 'border-brand-line bg-brand-surface hover:border-brand-dim'
-                  )}
-                >
-                  <div className="flex items-start gap-2">
-                    <span
-                      className={cn(
-                        'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px]',
-                        selected?.preset.id === m.preset.id
-                          ? 'border-brand-green bg-brand-green text-white'
-                          : 'border-brand-line'
-                      )}
+              {matches.map((m) => {
+                const isSelected = selected?.preset.id === m.preset.id;
+                const hasAi = !!m.aiSelector;
+                const isEditing = editingSelector === m.preset.id;
+                const activeSelector = effectiveSelector(m);
+                const isOverridden = !!selectorOverrides[m.preset.id];
+
+                return (
+                  <div
+                    key={m.preset.id}
+                    className={cn(
+                      'w-full rounded-md border px-3 py-2.5 text-left transition-colors',
+                      isSelected
+                        ? 'border-brand-green bg-brand-green/5'
+                        : 'border-brand-line bg-brand-surface'
+                    )}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSelected(m)}
+                      className="w-full text-left"
                     >
-                      {selected?.preset.id === m.preset.id && <Check className="h-2.5 w-2.5" />}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-brand-text">{m.preset.label}</span>
-                        {m.matched && (
-                          <span className="rounded bg-brand-green/10 px-1 py-0.5 text-[10px] font-medium text-brand-green-ink">
-                            detected
-                          </span>
+                      <div className="flex items-start gap-2">
+                        <span
+                          className={cn(
+                            'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px]',
+                            isSelected
+                              ? 'border-brand-green bg-brand-green text-white'
+                              : 'border-brand-line'
+                          )}
+                        >
+                          {isSelected && <Check className="h-2.5 w-2.5" />}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-brand-text">{m.preset.label}</span>
+                            {(m.matched || hasAi) && (
+                              <span className="rounded bg-brand-green/10 px-1 py-0.5 text-[10px] font-medium text-brand-green-ink">
+                                detected
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-brand-muted mt-0.5">
+                            {hasAi && m.aiRationale ? m.aiRationale : m.preset.description}
+                          </p>
+                          {m.preview && !hasAi && (
+                            <p className="mt-1 text-[11px] text-brand-dim line-clamp-2 font-mono bg-brand-bg2 rounded px-1.5 py-1">
+                              {m.preview}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+
+                    {(hasAi || isOverridden) && (
+                      <div className="mt-2 ml-6">
+                        {isEditing ? (
+                          <div className="flex items-center gap-1">
+                            <input
+                              ref={editInputRef}
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') commitSelectorEdit(m.preset.id);
+                                if (e.key === 'Escape') setEditingSelector(null);
+                              }}
+                              onBlur={() => commitSelectorEdit(m.preset.id)}
+                              className="flex-1 rounded border border-brand-line bg-brand-bg2 px-2 py-0.5 font-mono text-[11px] text-brand-text focus:outline-none focus:ring-1 focus:ring-brand-green"
+                              placeholder="CSS selector"
+                              maxLength={200}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setEditingSelector(null)}
+                              className="text-brand-muted hover:text-brand-text"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5">
+                            {hasAi && !isOverridden && (
+                              <span className="rounded bg-brand-bg3 px-1 py-0.5 text-[9px] font-medium text-brand-muted">
+                                AI
+                              </span>
+                            )}
+                            <span className="font-mono text-[11px] text-brand-dim truncate max-w-[220px]">
+                              {activeSelector}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); startEditSelector(m); }}
+                              className="ml-auto shrink-0 text-brand-muted hover:text-brand-text"
+                              aria-label="Edit selector"
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </button>
+                          </div>
                         )}
                       </div>
-                      <p className="text-xs text-brand-muted mt-0.5">{m.preset.description}</p>
-                      {m.preview && (
-                        <p className="mt-1 text-[11px] text-brand-dim line-clamp-2 font-mono bg-brand-bg2 rounded px-1.5 py-1">
-                          {m.preview}
-                        </p>
-                      )}
-                    </div>
+                    )}
                   </div>
-                </button>
-              ))}
+                );
+              })}
             </div>
 
             {error && (

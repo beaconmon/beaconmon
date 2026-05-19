@@ -8,6 +8,14 @@ export interface ContentSnapshotRecord {
   diffSummary: string | null;
 }
 
+export interface AttachAiAnalysisInput {
+  monitorId: string;
+  capturedAt: Date;
+  summary: string;
+  classification: string;
+  model: string;
+}
+
 export interface DigestSnapshotRow {
   monitorId: string;
   monitorName: string;
@@ -15,6 +23,8 @@ export interface DigestSnapshotRow {
   snapshotId: string;
   capturedAt: Date;
   content: string;
+  diffSummary: string | null;
+  classification: string | null;
 }
 
 export const contentSnapshotWorkerRepository = {
@@ -27,7 +37,24 @@ export const contentSnapshotWorkerRepository = {
     teamId: string,
     content: string,
     capturedAt: Date
-  ): Promise<ContentSnapshotRecord> {
+  ): Promise<ContentSnapshotRecord | null> {
+    // Dedup guard: if the latest snapshot already has this content (e.g. from a
+    // concurrent initialization), just sync the hot column and skip the insert.
+    const latest = await prisma.contentSnapshot.findFirst({
+      where: { monitorId },
+      select: { content: true },
+      orderBy: { capturedAt: 'desc' },
+    });
+
+    if (latest?.content === content) {
+      await prisma.monitor.update({
+        where: { id: monitorId },
+        data: { contentSnapshot: content },
+        select: { id: true },
+      });
+      return null;
+    }
+
     const [snapshot] = await prisma.$transaction([
       prisma.contentSnapshot.create({
         data: { monitorId, teamId, content, capturedAt },
@@ -47,6 +74,25 @@ export const contentSnapshotWorkerRepository = {
     ]);
 
     return snapshot;
+  },
+
+  /**
+   * Attach AI summary + classification to a previously-persisted snapshot.
+   * Looked up by (monitorId, capturedAt) since `recordChange` writes both.
+   * Idempotent: re-running with the same input is a no-op overwrite.
+   * Returns the number of rows updated (0 if the snapshot was pruned in between).
+   */
+  async attachAiAnalysis(input: AttachAiAnalysisInput): Promise<number> {
+    const result = await prisma.contentSnapshot.updateMany({
+      where: { monitorId: input.monitorId, capturedAt: input.capturedAt },
+      data: {
+        diffSummary: input.summary,
+        classification: input.classification,
+        aiModel: input.model,
+        aiAnalyzedAt: new Date(),
+      },
+    });
+    return result.count;
   },
 
   /**
@@ -99,6 +145,8 @@ export const contentSnapshotWorkerRepository = {
         monitorId: true,
         capturedAt: true,
         content: true,
+        diffSummary: true,
+        classification: true,
         monitor: { select: { name: true, url: true } },
       },
       orderBy: { capturedAt: 'asc' },
@@ -111,6 +159,8 @@ export const contentSnapshotWorkerRepository = {
       snapshotId: r.id,
       capturedAt: r.capturedAt,
       content: r.content,
+      diffSummary: r.diffSummary,
+      classification: r.classification,
     }));
   },
 

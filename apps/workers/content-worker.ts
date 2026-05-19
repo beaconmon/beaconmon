@@ -21,7 +21,7 @@ const { worker } = createManagedWorker<ContentCheckJob>({
   processor: async (job) => {
     const { monitorId, url } = job.data;
     logger.info({ service: 'content-worker', monitorId, url }, 'Processing content check job');
-    await processContentCheckJob(job.data);
+    await processContentCheckJob(job.data, connection);
   },
   onShutdown: async () => {
     await prisma.$disconnect();

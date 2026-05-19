@@ -21,6 +21,16 @@ export interface MonitorForCheck {
   instantAlerts: boolean;
 }
 
+/**
+ * Monitor + the team's raw plan/billing state. The worker resolves the
+ * effective plan (e.g. trial expiry → free) so this stays a pure data lookup.
+ */
+export interface MonitorWithPlan extends MonitorForCheck {
+  teamPlan: string;
+  teamTrialEndsAt: Date | null;
+  teamSubscriptionStatus: string | null;
+}
+
 export interface UpdateAfterCheckData {
   currentStatus: MonitorStatus;
   consecutiveFailures: number;
@@ -68,6 +78,66 @@ export const monitorRepository = {
       anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
       isCompetitor: monitor.isCompetitor,
       instantAlerts: monitor.instantAlerts,
+    };
+  },
+
+  // Worker-only: returns the monitor plus the team's plan / billing state so
+  // the caller can plan-gate downstream work (e.g. AI analysis). Kept separate
+  // from `findById` so existing callers don't pay the extra join.
+  async findByIdWithPlan(monitorId: string): Promise<MonitorWithPlan | null> {
+    const monitor = await prisma.monitor.findUnique({
+      where: { id: monitorId },
+      select: {
+        id: true,
+        teamId: true,
+        name: true,
+        url: true,
+        type: true,
+        intervalSeconds: true,
+        timeoutMs: true,
+        currentStatus: true,
+        consecutiveFailures: true,
+        config: true,
+        contentSnapshot: true,
+        keyword: true,
+        keywordCondition: true,
+        escalationPolicyId: true,
+        anomalyDetectionEnabled: true,
+        isCompetitor: true,
+        instantAlerts: true,
+        team: {
+          select: {
+            plan: true,
+            trialEndsAt: true,
+            subscription: { select: { status: true } },
+          },
+        },
+      },
+    });
+
+    if (!monitor) return null;
+
+    return {
+      id: monitor.id,
+      teamId: monitor.teamId,
+      name: monitor.name,
+      url: monitor.url,
+      type: monitor.type as MonitorType,
+      intervalSeconds: monitor.intervalSeconds,
+      timeoutMs: monitor.timeoutMs,
+      currentStatus: monitor.currentStatus as MonitorStatus,
+      consecutiveFailures: monitor.consecutiveFailures,
+      config: monitor.config as Record<string, unknown>,
+      contentSnapshot: monitor.contentSnapshot,
+      keyword: monitor.keyword,
+      keywordCondition: monitor.keywordCondition as 'present' | 'absent' | null,
+      escalationPolicyId: monitor.escalationPolicyId,
+      anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
+      isCompetitor: monitor.isCompetitor,
+      instantAlerts: monitor.instantAlerts,
+      teamPlan: monitor.team.plan,
+      teamTrialEndsAt: monitor.team.trialEndsAt,
+      teamSubscriptionStatus: monitor.team.subscription?.status ?? null,
     };
   },
 

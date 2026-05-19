@@ -256,6 +256,14 @@ CF_PROBE_URL_EU_WEST=https://beaconmon-probe-eu-west.beaconmon.workers.dev
 CF_PROBE_URL_AP_SOUTHEAST=https://beaconmon-probe-ap-southeast.beaconmon.workers.dev
 CF_PROBE_URL_SA_EAST=https://beaconmon-probe-sa-east.beaconmon.workers.dev
 
+# AI content-diff summaries + noise filter (Pro/Business only)
+AI_PROVIDER=noop                 # 'anthropic' | 'openai' | 'deepseek' | 'noop' — fail-open: if a real provider is set without AI_API_KEY, falls back to 'noop'
+AI_API_KEY=                      # Provider API key. Required for 'anthropic' / 'openai' / 'deepseek'.
+AI_MODEL=                        # Optional override. Defaults: anthropic=claude-haiku-4-5-20251001, openai=gpt-4o-mini, deepseek=deepseek-chat
+AI_DRY_RUN=false                 # Set to true to log AI eligibility without calling the provider
+FEATURE_AI_CONTENT_DIFF=false    # Master kill switch — off = no AI calls anywhere
+FEATURE_AI_SMART_SETUP=false    # Master kill switch for Smart Setup AI onboarding (Pro/Business only)
+
 # Feature flags
 ALERT_DRY_RUN=false              # Set to true in dev to log alerts instead of sending
 FEATURE_SMS_ALERTS=false
@@ -637,6 +645,8 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [x] SLO / error budget tracking (per-monitor SLO target, fast/slow burn-rate alerts, plan-gated)
 - [x] Content snapshot history + diff view (content_snapshots table, list + diff API, plan-gated retention 3/30/90)
 - [x] Competitor tracking preset (is_competitor flag on monitors, `/api/monitors/competitor-presets` endpoint with suggested selectors)
+- [x] AI content-diff summaries + noise filter (`@beaconmon/ai` package; Anthropic/OpenAI/noop providers; Pro/Business gated; per-monitor daily rate limit; noise classifications suppress alerts + digest entries)
+- [x] AI Smart Monitor Setup (`FEATURE_AI_SMART_SETUP`; augments `/api/monitors/discover` for Pro/Business; site classification + CSS selector proposal; 30s budget with per-stage timeouts; graceful degradation to keyword-only on any failure)
 - [x] Multi-location checks (Cloudflare Workers) — post-launch
 - [x] Heartbeat monitoring — post-launch
 - [x] Scheduled maintenance windows — post-launch

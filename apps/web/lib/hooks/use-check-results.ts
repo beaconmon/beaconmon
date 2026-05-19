@@ -24,6 +24,15 @@ function rangeToMs(range: TimeRange): number {
   }
 }
 
+export function defaultLimitForRange(range: TimeRange): number {
+  switch (range) {
+    case '24h': return 500;
+    case '7d':  return 2000;
+    case '30d': return 2000;
+    case '90d': return 2000;
+  }
+}
+
 export function useCheckResults(monitorId: string, range: TimeRange = '24h', limit = 500) {
   return useQuery<CheckResultRow[]>({
     queryKey: ['check-results', monitorId, range, limit],

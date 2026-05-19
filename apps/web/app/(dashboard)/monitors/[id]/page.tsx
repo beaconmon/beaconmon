@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { use } from 'react';
 import { format, formatDistanceToNow, differenceInMinutes } from 'date-fns';
 import {
@@ -42,7 +42,7 @@ import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useMonitor, useDeleteMonitor, useUpdateMonitor } from '@/lib/hooks/use-monitors';
 import { Switch } from '@/components/ui/switch';
 import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';
-import { useCheckResults, type TimeRange, type CheckResultRow } from '@/lib/hooks/use-check-results';
+import { useCheckResults, defaultLimitForRange, type TimeRange, type CheckResultRow } from '@/lib/hooks/use-check-results';
 import { useMonitorIncidents, useResolveIncident } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 import { AckButton } from '@/components/dashboard/ack-button';
@@ -83,7 +83,7 @@ function durationStr(startedAt: string | Date, resolvedAt: string | Date | null)
 // ─── Uptime card ─────────────────────────────────────────────────────────────
 
 function UptimeRangeCard({ monitorId, range }: { monitorId: string; range: TimeRange }) {
-  const { data, isLoading } = useCheckResults(monitorId, range, 500);
+  const { data, isLoading } = useCheckResults(monitorId, range, defaultLimitForRange(range));
   const pct = data != null ? computeUptime(data) : null;
 
   if (isLoading) {
@@ -809,13 +809,15 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
 export default function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') ?? 'performance';
   const [range, setRange] = useState<TimeRange>('24h');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [recentLimit, setRecentLimit] = useState(25);
 
   const sessionQ = useSession();
   const monitorQ = useMonitor(id);
-  const resultsQ = useCheckResults(id, range, 500);
+  const resultsQ = useCheckResults(id, range, defaultLimitForRange(range));
   const incidentsQ = useMonitorIncidents(id);
   const channelsQ = useAlertChannels();
   const deleteMonitor = useDeleteMonitor(id);
@@ -834,17 +836,23 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const isContentMonitor = monitor?.type === 'content';
   const isCompetitorMonitor = monitor?.isCompetitor === true;
 
-  // Group by checkedAt so multi-region rounds collapse to one point (avg across regions).
+  // Group by time bucket so multi-region rounds collapse (avg across regions) and
+  // longer ranges aggregate into coarser intervals for a readable chart.
   const chartData = (() => {
-    const byTs = new Map<string, number[]>();
+    const bucketFmt =
+      range === '24h' ? 'HH:mm' :
+      range === '7d'  ? 'MMM d HH:00' :
+                        'MMM d';
+    const byBucket = new Map<string, number[]>();
     [...results].reverse().forEach((r) => {
       if (r.responseTimeMs == null) return;
-      const bucket = byTs.get(r.checkedAt) ?? [];
+      const key = format(new Date(r.checkedAt), bucketFmt);
+      const bucket = byBucket.get(key) ?? [];
       bucket.push(r.responseTimeMs);
-      byTs.set(r.checkedAt, bucket);
+      byBucket.set(key, bucket);
     });
-    return [...byTs.entries()].map(([ts, msList]) => ({
-      time: format(new Date(ts), 'HH:mm'),
+    return [...byBucket.entries()].map(([time, msList]) => ({
+      time,
       ms: Math.round(msList.reduce((a, b) => a + b, 0) / msList.length),
     }));
   })();
@@ -919,13 +927,13 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
       <div className="flex gap-5 items-start flex-col lg:flex-row">
         {/* Left: tabs */}
         <div className="min-w-0 flex-1 space-y-5">
-          <Tabs defaultValue="performance">
+          <Tabs defaultValue={initialTab}>
             <TabsList className="mb-4 bg-brand-bg3 border border-brand-line flex-wrap h-auto gap-0.5 p-1">
               {[
                 { value: 'performance', label: 'Performance' },
-                { value: 'incidents', label: 'Incidents' },
-                { value: 'slo', label: 'SLO' },
-                { value: 'deploys', label: 'Deploys' },
+                ...(!isCompetitorMonitor ? [{ value: 'incidents', label: 'Incidents' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'SLO' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Deploys' }] : []),
                 ...(isContentMonitor ? [{ value: 'snapshots', label: 'Snapshots' }] : []),
                 ...(multiLocationEnabled && hasRegionData ? [{ value: 'regions', label: 'Regions' }] : []),
               ].map((tab) => (
