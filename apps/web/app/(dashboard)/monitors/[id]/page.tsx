@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
@@ -921,8 +921,10 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const stats = computeStats(results);
 
   const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
-  const cutoff = new Date(Date.now() - RANGE_MS[range]);
-  const chartAnomalies = anomalies.filter((a) => new Date(a.checkedAt) >= cutoff);
+  const chartAnomalies = useMemo(() => {
+    const cutoff = new Date(Date.now() - RANGE_MS[range]);
+    return anomalies.filter((a) => new Date(a.checkedAt) >= cutoff);
+  }, [anomalies, range]);
 
   function handleDelete() {
     deleteMonitor.mutate(undefined, {
