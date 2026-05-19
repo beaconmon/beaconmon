@@ -88,6 +88,8 @@ export default withSentryConfig(nextConfig, {
   // Disable the Sentry webpack plugin telemetry
   telemetry: false,
   // Do not auto-instrument routes — we rely on manual Sentry.captureException()
-  autoInstrumentServerFunctions: false,
-  autoInstrumentMiddleware: false,
+  webpack: {
+    autoInstrumentServerFunctions: false,
+    autoInstrumentMiddleware: false,
+  },
 });
