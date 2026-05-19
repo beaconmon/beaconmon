@@ -17,14 +17,22 @@ const service = 'alert-worker';
 export async function processCompetitorDigestJob(data: CompetitorDigestJob): Promise<void> {
   const { teamId, windowStart, windowEnd } = data;
 
-  const snapshots = await contentSnapshotWorkerRepository.findSnapshotsForDigest(
+  const allSnapshots = await contentSnapshotWorkerRepository.findSnapshotsForDigest(
     teamId,
     new Date(windowStart),
     new Date(windowEnd)
   );
 
+  // Drop AI-classified noise from the digest entirely — these are non-events
+  // (rotating testimonials, timestamps, etc.).
+  const snapshots = allSnapshots.filter((s) => s.classification !== 'noise');
+  const noiseCount = allSnapshots.length - snapshots.length;
+
   if (snapshots.length === 0) {
-    logger.info({ service, teamId }, 'Competitor digest: no changes in window, skipping send');
+    logger.info(
+      { service, teamId, totalChanges: allSnapshots.length, noiseCount },
+      'Competitor digest: no substantive changes in window, skipping send'
+    );
     return;
   }
 
@@ -35,6 +43,8 @@ export async function processCompetitorDigestJob(data: CompetitorDigestJob): Pro
     monitorUrl: s.monitorUrl,
     changedAt: s.capturedAt,
     dashboardUrl: `${dashboardUrl}/${s.monitorId}`,
+    ...(s.diffSummary ? { summary: s.diffSummary } : {}),
+    ...(s.classification ? { classification: s.classification } : {}),
   }));
 
   const channels = await alertChannelRepository.findActiveByTeamId(teamId);
@@ -91,7 +101,13 @@ export async function processCompetitorDigestJob(data: CompetitorDigestJob): Pro
   }
 
   logger.info(
-    { service, teamId, changeCount: changes.length, recipientCount: recipients.length },
+    {
+      service,
+      teamId,
+      changeCount: changes.length,
+      noiseCount,
+      recipientCount: recipients.length,
+    },
     'Competitor digest sent'
   );
 }

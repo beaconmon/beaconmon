@@ -11,7 +11,7 @@ import { getPostHogClient } from '@/lib/posthog-server';
 
 const bulkCreateSchema = z.object({
   monitors: z.array(createMonitorSchema).min(1).max(20),
-  source: z.enum(['discovery', 'template', 'import']).optional(),
+  source: z.enum(['discovery', 'template', 'import', 'smart-setup']).optional(),
 });
 
 export const POST = withAuth(async (req, { teamId, plan, role }) => {

@@ -98,8 +98,8 @@ describe('checkResultsQuerySchema', () => {
     }
   });
 
-  it('rejects limit > 500', () => {
-    expect(checkResultsQuerySchema.safeParse({ from, to, limit: '501' }).success).toBe(false);
+  it('rejects limit > 2000', () => {
+    expect(checkResultsQuerySchema.safeParse({ from, to, limit: '2001' }).success).toBe(false);
   });
 
   it('rejects missing from', () => {

@@ -35,7 +35,7 @@ export type UpdateMonitorInput = z.infer<typeof updateMonitorSchema>;
 export const checkResultsQuerySchema = z.object({
   from: z.string().datetime(),
   to: z.string().datetime(),
-  limit: z.coerce.number().int().positive().max(500).default(50),
+  limit: z.coerce.number().int().positive().max(2000).default(50),
 });
 
 export type CheckResultsQuery = z.infer<typeof checkResultsQuerySchema>;

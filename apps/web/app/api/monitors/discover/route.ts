@@ -6,6 +6,8 @@ import { ForbiddenError, ValidationError } from '@/lib/api/errors';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { discoverMonitors } from '@/lib/discovery';
 import { isHostnameSafe } from '@/lib/discovery/ssrf-guard';
+import { runSmartSetupOrDegrade } from '@/lib/discovery/smart-setup';
+import { isWebAiSmartSetupEnabled } from '@/lib/ai';
 import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
 
@@ -79,7 +81,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   ]);
   const existingUrls = existing.map((m) => m.url);
 
-  const totalBudgetMs = 12_000;
+  const totalBudgetMs = 30_000;
   const controller = new AbortController();
   const budgetTimer = setTimeout(() => controller.abort(), totalBudgetMs);
 
@@ -109,7 +111,30 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
       // PostHog not configured locally — non-fatal
     }
 
-    return Response.json(result);
+    const aiEnabled = isWebAiSmartSetupEnabled(plan);
+
+    if (!aiEnabled) {
+      return Response.json(result);
+    }
+
+    logger.info({ service: 'web', teamId, domain }, 'smart_setup: running AI enrichment');
+
+    const aiResult = await runSmartSetupOrDegrade({
+      domain,
+      baseline: result,
+      ctx: {
+        teamId,
+        existingUrls,
+        planMonitorLimit: limits.monitors,
+        existingMonitorCount: count,
+        planMinIntervalSeconds: limits.checkIntervalSeconds,
+      },
+      signal: controller.signal,
+      budgets: { classifyMs: 22_000, perFetchMs: 5_000, totalEnrichMs: 8_000 },
+    });
+
+    // Spread AI result over baseline — aiResult.suggestions overrides when not degraded
+    return Response.json({ ...result, ...aiResult });
   } finally {
     clearTimeout(budgetTimer);
   }

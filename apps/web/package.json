@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@beaconmon/ai": "workspace:*",
     "@beaconmon/db": "workspace:*",
     "@beaconmon/logger": "workspace:*",
     "@beaconmon/queue": "workspace:*",

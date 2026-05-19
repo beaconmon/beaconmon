@@ -610,12 +610,15 @@ model DeployEvent {
 // ─── Content Snapshots (history for content monitors) ─────────────────────────
 
 model ContentSnapshot {
-  id          String   @id @default(cuid())
-  monitorId   String   @map("monitor_id")
-  teamId      String   @map("team_id")
-  content     String
-  capturedAt  DateTime @default(now()) @map("captured_at")
-  diffSummary String?  @map("diff_summary") // reserved for future AI summaries
+  id             String    @id @default(cuid())
+  monitorId      String    @map("monitor_id")
+  teamId         String    @map("team_id")
+  content        String
+  capturedAt     DateTime  @default(now()) @map("captured_at")
+  diffSummary    String?   @map("diff_summary")
+  classification String?   @map("classification")
+  aiModel        String?   @map("ai_model")
+  aiAnalyzedAt   DateTime? @map("ai_analyzed_at")
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)

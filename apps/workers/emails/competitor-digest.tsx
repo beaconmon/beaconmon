@@ -17,6 +17,8 @@ export interface CompetitorChange {
   monitorUrl: string;
   changedAt: Date;
   dashboardUrl: string;
+  summary?: string;
+  classification?: string;
 }
 
 export interface CompetitorDigestEmailProps {
@@ -55,8 +57,16 @@ export function CompetitorDigestEmail({
 
           {changes.map((change, i) => (
             <Section key={String(i)} style={changeCard}>
-              <Text style={changeTitle}>{change.monitorName}</Text>
+              <Text style={changeTitle}>
+                {change.monitorName}
+                {change.classification ? (
+                  <span style={classificationTag}>{change.classification}</span>
+                ) : null}
+              </Text>
               <Text style={changeUrl}>{change.monitorUrl}</Text>
+              {change.summary ? (
+                <Text style={changeSummary}>{change.summary}</Text>
+              ) : null}
               <Text style={changeMeta}>
                 Detected at {change.changedAt.toUTCString()}
               </Text>
@@ -143,6 +153,25 @@ const changeUrl: React.CSSProperties = {
   fontSize: '12px',
   margin: '0 0 4px',
   wordBreak: 'break-all',
+};
+
+const changeSummary: React.CSSProperties = {
+  color: '#1f2937',
+  fontSize: '13px',
+  lineHeight: '1.5',
+  margin: '6px 0 6px',
+};
+
+const classificationTag: React.CSSProperties = {
+  backgroundColor: '#eff6ff',
+  color: '#2563eb',
+  fontSize: '10px',
+  fontWeight: '600',
+  textTransform: 'uppercase',
+  letterSpacing: '0.04em',
+  padding: '2px 6px',
+  borderRadius: '3px',
+  marginLeft: '8px',
 };
 
 const changeMeta: React.CSSProperties = {

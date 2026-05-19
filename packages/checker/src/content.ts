@@ -46,8 +46,13 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
 
     const $ = cheerio.load(html);
     const rawText = selector ? $(selector).text() : $('body').text();
-    // Normalize: trim + collapse internal whitespace to single spaces
-    const content = rawText.replace(/\s+/g, ' ').trim();
+    // Normalize: collapse horizontal whitespace per line, drop blank lines.
+    // Preserves newlines so diffLines() produces meaningful per-line diffs.
+    const content = rawText
+      .split('\n')
+      .map((l) => l.replace(/[ \t]+/g, ' ').trim())
+      .filter((l) => l.length > 0)
+      .join('\n');
 
     return {
       monitorId,

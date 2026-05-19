@@ -72,11 +72,24 @@ export interface CompetitorDigestJob {
   windowEnd: string;   // ISO date string
 }
 
+/** Enqueued by content-check worker when a content change is confirmed */
+export interface ContentNotifyJob {
+  teamId: string;
+  monitorName: string;
+  monitorUrl: string;
+  monitorId: string;
+  changedAt: string; // ISO date string
+  summary?: string;
+  classification?: string;
+  appUrl?: string;
+}
+
 // ─── Queue name constants ─────────────────────────────────────────────────────
 
 export const QUEUE_NAMES = {
   CHECK_SCHEDULED: 'check-scheduled',
   CONTENT_CHECK: 'content-check',
+  CONTENT_NOTIFY: 'content-notify',
   ALERT_SEND: 'alert-send',
   REPORT_GENERATE: 'report-generate',
   ESCALATION_STEP: 'escalation-step',

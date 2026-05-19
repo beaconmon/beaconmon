@@ -57,7 +57,7 @@ const nextConfig: NextConfig = {
   // Must point to monorepo root so Next.js traces shared packages (packages/db, etc.)
   // into the standalone output rather than trying to bundle them from app-relative paths.
   outputFileTracingRoot: path.resolve(__dirname, '../../'),
-  serverExternalPackages: ['bullmq', 'ioredis', '@prisma/client', 'pg', 'pg-connection-string', 'pgpass', 'split2', 'string_decoder', 'buffer', 'redis-parser', 'redis-errors'],
+  serverExternalPackages: ['bullmq', 'ioredis', '@prisma/client', 'pg', 'pg-connection-string', 'pgpass', 'split2', 'string_decoder', 'buffer', 'redis-parser', 'redis-errors', '@anthropic-ai/sdk', 'openai'],
   transpilePackages: [
     '@beaconmon/db',
     '@beaconmon/queue',
@@ -88,6 +88,8 @@ export default withSentryConfig(nextConfig, {
   // Disable the Sentry webpack plugin telemetry
   telemetry: false,
   // Do not auto-instrument routes — we rely on manual Sentry.captureException()
-  autoInstrumentServerFunctions: false,
-  autoInstrumentMiddleware: false,
+  webpack: {
+    autoInstrumentServerFunctions: false,
+    autoInstrumentMiddleware: false,
+  },
 });
