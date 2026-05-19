@@ -20,6 +20,7 @@ function toFormValues(monitor: MonitorRow): Partial<MonitorFormValues> {
     responseTimeThresholdMs: monitor.responseTimeThresholdMs ?? undefined,
     keyword: monitor.keyword ?? undefined,
     keywordCondition: (monitor.keywordCondition ?? undefined) as MonitorFormValues['keywordCondition'],
+    anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
     tags: monitor.tags,
   };
 
@@ -49,6 +50,7 @@ function buildApiPayload(data: MonitorFormValues): UpdateMonitorInput {
     responseTimeThresholdMs: data.responseTimeThresholdMs,
     keyword: data.keyword,
     keywordCondition: data.keywordCondition,
+    anomalyDetectionEnabled: data.anomalyDetectionEnabled,
     tags: data.tags,
   };
 
