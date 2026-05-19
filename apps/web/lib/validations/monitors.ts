@@ -18,6 +18,7 @@ const monitorBaseSchema = z.object({
   config: z.record(z.string(), z.unknown()).optional(),
   isCompetitor: z.boolean().optional(),
   instantAlerts: z.boolean().optional(),
+  anomalyDetectionEnabled: z.boolean().optional(),
   tags: z.array(tagSchema).max(20).optional(),
 });
 

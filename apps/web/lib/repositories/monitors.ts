@@ -19,6 +19,7 @@ export interface MonitorRow {
   config: Record<string, unknown>;
   isCompetitor: boolean;
   instantAlerts: boolean;
+  anomalyDetectionEnabled: boolean;
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -65,6 +66,7 @@ export const monitorRepository: {
         config: true,
         isCompetitor: true,
         instantAlerts: true,
+        anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -94,6 +96,7 @@ export const monitorRepository: {
         config: true,
         isCompetitor: true,
         instantAlerts: true,
+        anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -142,6 +145,7 @@ export const monitorRepository: {
         config: true,
         isCompetitor: true,
         instantAlerts: true,
+        anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
         updatedAt: true,
@@ -218,6 +222,7 @@ export const monitorRepository: {
         ...(data.config !== undefined && { config: data.config as unknown as Prisma.InputJsonValue }),
         ...(data.isCompetitor !== undefined && { isCompetitor: data.isCompetitor }),
         ...(data.instantAlerts !== undefined && { instantAlerts: data.instantAlerts }),
+        ...(data.anomalyDetectionEnabled !== undefined && { anomalyDetectionEnabled: data.anomalyDetectionEnabled }),
         ...(data.tags !== undefined && { tags: dedupeTags(data.tags) }),
       },
     });

@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Switch } from '@/components/ui/switch';
 import { AlertCircle, X } from 'lucide-react';
 import { useState, type KeyboardEvent } from 'react';
 
@@ -44,6 +45,7 @@ const formSchema = z.object({
   keywordCondition: z.enum(['present', 'absent']).optional(),
   cssSelector: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  anomalyDetectionEnabled: z.boolean().optional(),
 }).superRefine((data, ctx) => {
   if (data.type === 'http' || data.type === 'keyword' || data.type === 'content') {
     if (!data.url) {
@@ -83,6 +85,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
       type: 'http',
       intervalSeconds: minInterval,
       timeoutMs: 30000,
+      anomalyDetectionEnabled: false,
       ...defaultValues,
     },
   });
@@ -294,6 +297,31 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
                 </FormControl>
                 <FormDescription>Alert if response time exceeds this value.</FormDescription>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {(selectedType === 'http' || selectedType === 'keyword') && (
+          <FormField
+            control={form.control}
+            name="anomalyDetectionEnabled"
+            render={({ field }) => (
+              <FormItem className="flex items-start justify-between gap-3 rounded-lg border border-brand-line p-3">
+                <div>
+                  <FormLabel>Anomaly detection</FormLabel>
+                  <FormDescription>
+                    Alert when response time is a statistical outlier (z-score &gt; 3).
+                    {plan === 'free' && ' Upgrade to Pro to enable.'}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value ?? false}
+                    onCheckedChange={field.onChange}
+                    disabled={plan === 'free'}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />

@@ -13,6 +13,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  ReferenceDot,
 } from 'recharts';
 import {
   ExternalLink,
@@ -50,6 +51,7 @@ import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useSlo, useUpdateSlo } from '@/lib/hooks/use-slo';
 import { useDeploys, useStartDeploy, useEndDeploy } from '@/lib/hooks/use-deploys';
 import { useSnapshots, useSnapshotDiff } from '@/lib/hooks/use-snapshots';
+import { useAnomalies, type PerformanceAlertRow } from '@/lib/hooks/use-anomalies';
 import type { SloData } from '@/lib/repositories/slo';
 
 const RANGES: TimeRange[] = ['24h', '7d', '30d', '90d'];
@@ -804,6 +806,69 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
   );
 }
 
+// ─── Anomalies tab ────────────────────────────────────────────────────────────
+
+function AnomaliesTab({ monitorId }: { monitorId: string }) {
+  const { data: anomalies = [], isLoading, isError, refetch } = useAnomalies(monitorId);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-10 animate-pulse rounded-lg bg-brand-bg3" />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-brand-line bg-brand-surface p-6 text-center">
+        <p className="text-sm text-brand-red">Failed to load anomalies.</p>
+        <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-brand-line bg-brand-surface">
+      <div className="border-b border-brand-line px-4 py-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Anomalies</h2>
+      </div>
+      {anomalies.length === 0 ? (
+        <p className="px-4 py-8 text-center text-sm text-brand-muted">
+          No anomalies detected in the last 90 days.
+        </p>
+      ) : (
+        <div>
+          <div className="grid grid-cols-4 border-b border-brand-line px-4 py-2">
+            {['Time', 'Response (ms)', 'Baseline mean (ms)', 'z-score'].map((h) => (
+              <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                {h}
+              </span>
+            ))}
+          </div>
+          {anomalies.map((a) => (
+            <div
+              key={a.id}
+              className="grid grid-cols-4 items-center border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30"
+            >
+              <span className="font-mono text-xs text-brand-dim">
+                {format(new Date(a.checkedAt), 'MMM d, HH:mm')}
+              </span>
+              <span className="font-mono text-sm font-semibold text-brand-red">{a.responseTimeMs}</span>
+              <span className="font-mono text-xs text-brand-dim">{Math.round(a.meanMs)}</span>
+              <span className="font-mono text-xs text-brand-amber">{a.zScore.toFixed(2)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -829,10 +894,14 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const sessionUserId = sessionQ.data?.userId;
   const plan = sessionQ.data?.plan ?? 'free';
 
+  const anomaliesQ = useAnomalies(id);
+  const anomalies: PerformanceAlertRow[] = monitor?.anomalyDetectionEnabled ? (anomaliesQ.data ?? []) : [];
+
   const multiLocationEnabled = process.env['NEXT_PUBLIC_FEATURE_MULTI_LOCATION'] === 'true';
   const hasRegionData = results.some((r) => r.region != null);
   const isContentMonitor = monitor?.type === 'content';
   const isCompetitorMonitor = monitor?.isCompetitor === true;
+  const isAnomalyMonitor = (monitor?.type === 'http' || monitor?.type === 'keyword') && monitor?.anomalyDetectionEnabled;
 
   // Group by checkedAt so multi-region rounds collapse to one point (avg across regions).
   const chartData = (() => {
@@ -850,6 +919,10 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   })();
 
   const stats = computeStats(results);
+
+  const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
+  const cutoff = new Date(Date.now() - RANGE_MS[range]);
+  const chartAnomalies = anomalies.filter((a) => new Date(a.checkedAt) >= cutoff);
 
   function handleDelete() {
     deleteMonitor.mutate(undefined, {
@@ -927,6 +1000,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                 { value: 'slo', label: 'SLO' },
                 { value: 'deploys', label: 'Deploys' },
                 ...(isContentMonitor ? [{ value: 'snapshots', label: 'Snapshots' }] : []),
+                ...(isAnomalyMonitor ? [{ value: 'anomalies', label: 'Anomalies' }] : []),
                 ...(multiLocationEnabled && hasRegionData ? [{ value: 'regions', label: 'Regions' }] : []),
               ].map((tab) => (
                 <TabsTrigger
@@ -1009,15 +1083,32 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                                 fill="url(#rtGrad)"
                                 dot={false}
                               />
+                              {chartAnomalies.map((a) => (
+                                <ReferenceDot
+                                  key={a.id}
+                                  x={format(new Date(a.checkedAt), 'HH:mm')}
+                                  y={a.responseTimeMs}
+                                  r={4}
+                                  fill="#ef4444"
+                                  stroke="#7f1d1d"
+                                  strokeWidth={1}
+                                />
+                              ))}
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
 
-                        <div className="mt-4 flex gap-6 border-t border-brand-line pt-4">
+                        <div className="mt-4 flex items-center gap-6 border-t border-brand-line pt-4">
                           <StatPill label="Min" value={stats.min != null ? `${stats.min}ms` : '—'} />
                           <StatPill label="Avg" value={stats.avg != null ? `${stats.avg}ms` : '—'} />
                           <StatPill label="Max" value={stats.max != null ? `${stats.max}ms` : '—'} />
                           <StatPill label="p95" value={stats.p95 != null ? `${stats.p95}ms` : '—'} />
+                          {isAnomalyMonitor && chartAnomalies.length > 0 && (
+                            <span className="ml-auto flex items-center gap-1.5 text-[10px] font-medium text-brand-red">
+                              <span className="h-2 w-2 rounded-full bg-brand-red" />
+                              Anomaly (z &gt; 3.0)
+                            </span>
+                          )}
                         </div>
                       </>
                     )}
@@ -1127,6 +1218,13 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               </TabsContent>
             )}
 
+            {/* Anomalies tab — http/keyword monitors with anomaly detection enabled */}
+            {isAnomalyMonitor && (
+              <TabsContent value="anomalies" className="mt-0">
+                <AnomaliesTab monitorId={id} />
+              </TabsContent>
+            )}
+
             {/* Regions tab — feature flagged */}
             {multiLocationEnabled && hasRegionData && (
               <TabsContent value="regions" className="mt-0">
@@ -1174,6 +1272,26 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                   onCheckedChange={(checked) => {
                     updateMonitor.mutate({ instantAlerts: checked });
                   }}
+                />
+              </div>
+            </SidebarCard>
+          )}
+
+          {monitor && (monitor.type === 'http' || monitor.type === 'keyword') && (
+            <SidebarCard title="Anomaly detection">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-brand-dim">Detect slow response spikes</p>
+                  <p className="mt-0.5 text-[11px] text-brand-muted leading-snug">
+                    {plan === 'free'
+                      ? 'Upgrade to Pro to enable anomaly detection.'
+                      : 'Alert when response time is a statistical outlier (z > 3).'}
+                  </p>
+                </div>
+                <Switch
+                  checked={monitor.anomalyDetectionEnabled}
+                  disabled={updateMonitor.isPending || plan === 'free'}
+                  onCheckedChange={(checked) => updateMonitor.mutate({ anomalyDetectionEnabled: checked })}
                 />
               </div>
             </SidebarCard>
