@@ -23,6 +23,8 @@ import {
   ArrowLeft,
   Globe,
   Rocket,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -139,6 +141,56 @@ function SidebarCard({ title, children }: { title: string; children: React.React
         <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">{title}</h3>
       </div>
       <div className="p-4">{children}</div>
+    </div>
+  );
+}
+
+// ─── Heartbeat ping card ──────────────────────────────────────────────────────
+
+function HeartbeatPingCard({ monitor }: { monitor: { config: Record<string, unknown>; lastHeartbeatAt: Date | null; intervalSeconds: number } }) {
+  const [copied, setCopied] = useState(false);
+  const token = monitor.config?.token as string | undefined;
+  const pingUrl = typeof window !== 'undefined' && token
+    ? `${window.location.origin}/api/heartbeats/${token}`
+    : token ? `/api/heartbeats/${token}` : '';
+
+  function handleCopy() {
+    if (!pingUrl) return;
+    void navigator.clipboard.writeText(pingUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  const gracePeriodSeconds = (monitor.config?.gracePeriodSeconds as number | undefined) ?? 0;
+
+  return (
+    <div className="rounded-lg border border-brand-line bg-brand-surface">
+      <div className="border-b border-brand-line px-4 py-3">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Ping URL</h3>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="flex items-center gap-2 rounded-md border border-brand-line bg-brand-bg3 px-3 py-2">
+          <span className="flex-1 truncate font-mono text-xs text-brand-dim">{pingUrl || '—'}</span>
+          <button
+            onClick={handleCopy}
+            disabled={!pingUrl}
+            className="shrink-0 rounded p-1 text-brand-muted transition-colors hover:text-brand-text disabled:opacity-40"
+            aria-label="Copy ping URL"
+          >
+            {copied ? <Check className="h-3.5 w-3.5 text-brand-green" /> : <Copy className="h-3.5 w-3.5" />}
+          </button>
+        </div>
+        <p className="text-[11px] text-brand-muted">
+          Last ping:{' '}
+          {monitor.lastHeartbeatAt
+            ? formatDistanceToNow(new Date(monitor.lastHeartbeatAt), { addSuffix: true })
+            : 'never'}
+        </p>
+        <p className="text-[11px] text-brand-muted">
+          Expected every {monitor.intervalSeconds}s · Grace period {gracePeriodSeconds}s
+        </p>
+      </div>
     </div>
   );
 }
@@ -957,15 +1009,17 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                 <h1 className="text-2xl font-semibold text-brand-text">{monitor.name}</h1>
                 <StatusBadge status={monitor.currentStatus} />
               </div>
-              <a
-                href={monitor.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 font-mono text-sm text-brand-muted transition-colors hover:text-brand-dim"
-              >
-                {monitor.url}
-                <ExternalLink className="h-3 w-3" />
-              </a>
+              {monitor.type !== 'heartbeat' && monitor.url && (
+                <a
+                  href={monitor.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 font-mono text-sm text-brand-muted transition-colors hover:text-brand-dim"
+                >
+                  {monitor.url}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
@@ -1017,8 +1071,11 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Performance tab */}
             <TabsContent value="performance" className="mt-0 space-y-5">
+              {monitor?.type === 'heartbeat' && (
+                <HeartbeatPingCard monitor={{ config: monitor.config, lastHeartbeatAt: monitor.lastHeartbeatAt, intervalSeconds: monitor.intervalSeconds }} />
+              )}
               {/* Response time chart */}
-              <div className="rounded-lg border border-brand-line bg-brand-surface">
+              {monitor?.type !== 'heartbeat' && <div className="rounded-lg border border-brand-line bg-brand-surface">
                 <div className="flex items-center justify-between border-b border-brand-line px-4 py-3">
                   <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
                     Response time
@@ -1116,7 +1173,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                     )}
                   </QueryState>
                 </div>
-              </div>
+              </div>}
 
               {/* Recent checks */}
               <div className="rounded-lg border border-brand-line bg-brand-surface">

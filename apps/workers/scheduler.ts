@@ -6,7 +6,10 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
-import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createCompetitorDigestQueue } from '@beaconmon/queue';
+import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createCompetitorDigestQueue, createAlertQueue, createEscalationQueue } from '@beaconmon/queue';
+import type { Queue } from 'bullmq';
+import type { AlertJob, EscalationStepJob } from '@beaconmon/queue';
+import { dispatchDownAlert } from './process-incident-check.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult } from '@beaconmon/checker';
 
@@ -19,6 +22,8 @@ const checkQueue = createCheckQueue(connection);
 const contentQueue = createContentCheckQueue(connection);
 const sloBurnQueue = createSloBurnQueue(connection);
 const competitorDigestQueue = createCompetitorDigestQueue(connection);
+const alertQueue = createAlertQueue(connection);
+const escalationQueue = createEscalationQueue(connection);
 
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
@@ -91,8 +96,11 @@ async function evaluateHeartbeatMonitor(
     config: Record<string, unknown>;
     currentStatus: string;
     consecutiveFailures: number;
+    escalationPolicyId: string | null;
   },
-  now: Date
+  now: Date,
+  alertQueue: Queue<AlertJob>,
+  escalationQueue: Queue<EscalationStepJob>
 ): Promise<void> {
   const service = 'scheduler';
   const { id: monitorId } = monitor;
@@ -154,9 +162,17 @@ async function evaluateHeartbeatMonitor(
         teamId: monitor.teamId,
         startedAt: now,
       });
-      logger.info({ service, monitorId, incidentId: incident.id }, 'Heartbeat missed — incident created');
+      await dispatchDownAlert({
+        incidentId: incident.id,
+        monitorId,
+        teamId: monitor.teamId,
+        monitorEscalationPolicyId: monitor.escalationPolicyId,
+        alertQueue,
+        escalationQueue,
+      });
+      logger.info({ service, monitorId, incidentId: incident.id }, 'Heartbeat missed — incident created, alert enqueued');
     } catch (err) {
-      logger.error({ service, monitorId, err }, 'Heartbeat: failed to create incident');
+      logger.error({ service, monitorId, err }, 'Heartbeat: failed to create incident or enqueue alert');
     }
   }
 
@@ -164,14 +180,23 @@ async function evaluateHeartbeatMonitor(
     try {
       const openIncident = await incidentRepository.findOpenByMonitorId(monitorId);
       if (openIncident) {
-        await incidentRepository.resolve(openIncident.id, {
+        const resolved = await incidentRepository.resolve(openIncident.id, {
           resolvedAt: now,
           resolutionType: 'automatic',
         });
-        logger.info({ service, monitorId, incidentId: openIncident.id }, 'Heartbeat recovered — incident resolved');
+        const durationMs =
+          resolved.resolvedAt && resolved.startedAt
+            ? resolved.resolvedAt.getTime() - resolved.startedAt.getTime()
+            : undefined;
+        await alertQueue.add(
+          `alert:up:${monitorId}`,
+          { incidentId: resolved.id, monitorId, teamId: monitor.teamId, type: 'up', durationMs },
+          { jobId: `alert-up-${resolved.id}` }
+        );
+        logger.info({ service, monitorId, incidentId: resolved.id, durationMs }, 'Heartbeat recovered — incident resolved, recovery alert enqueued');
       }
     } catch (err) {
-      logger.error({ service, monitorId, err }, 'Heartbeat: failed to resolve incident');
+      logger.error({ service, monitorId, err }, 'Heartbeat: failed to resolve incident or enqueue recovery alert');
     }
   }
 }
@@ -213,6 +238,7 @@ async function scheduleChecks(): Promise<void> {
         consecutiveFailures: true,
         isCompetitor: true,
         instantAlerts: true,
+        escalationPolicyId: true,
         team: {
           select: {
             id: true,
@@ -278,8 +304,11 @@ async function scheduleChecks(): Promise<void> {
             config: monitor.config as Record<string, unknown>,
             currentStatus: monitor.currentStatus,
             consecutiveFailures: monitor.consecutiveFailures,
+            escalationPolicyId: monitor.escalationPolicyId ?? null,
           },
-          now
+          now,
+          alertQueue,
+          escalationQueue
         );
         continue;
       }
@@ -736,6 +765,8 @@ const shutdown = async (signal: string) => {
   await contentQueue.close();
   await sloBurnQueue.close();
   await competitorDigestQueue.close();
+  await alertQueue.close();
+  await escalationQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 

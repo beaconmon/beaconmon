@@ -8,7 +8,7 @@ export const tagSchema = z
 
 const monitorBaseSchema = z.object({
   name: z.string().min(1).max(100),
-  url: z.string().url(),
+  url: z.string().optional(),
   type: z.enum(['http', 'ssl', 'domain', 'tcp', 'keyword', 'content', 'heartbeat']),
   intervalSeconds: z.number().int().positive(),
   timeoutMs: z.number().int().positive().optional(),
@@ -20,6 +20,12 @@ const monitorBaseSchema = z.object({
   instantAlerts: z.boolean().optional(),
   anomalyDetectionEnabled: z.boolean().optional(),
   tags: z.array(tagSchema).max(20).optional(),
+}).superRefine((d, ctx) => {
+  if (d.type === 'http' || d.type === 'keyword' || d.type === 'content') {
+    if (!z.string().url().safeParse(d.url).success) {
+      ctx.addIssue({ code: 'custom', path: ['url'], message: 'Valid URL is required' });
+    }
+  }
 });
 
 export const createMonitorSchema = monitorBaseSchema.refine(

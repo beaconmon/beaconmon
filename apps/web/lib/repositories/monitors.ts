@@ -21,6 +21,7 @@ export interface MonitorRow {
   instantAlerts: boolean;
   anomalyDetectionEnabled: boolean;
   tags: string[];
+  lastHeartbeatAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -68,6 +69,7 @@ export const monitorRepository: {
         instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
+        lastHeartbeatAt: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -98,6 +100,7 @@ export const monitorRepository: {
         instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
+        lastHeartbeatAt: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -115,7 +118,7 @@ export const monitorRepository: {
       data: {
         teamId,
         name: data.name,
-        url: data.url,
+        url: data.url ?? '',
         type: data.type,
         intervalSeconds: data.intervalSeconds,
         timeoutMs: data.timeoutMs ?? 30000,
@@ -147,6 +150,7 @@ export const monitorRepository: {
         instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
+        lastHeartbeatAt: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -167,7 +171,7 @@ export const monitorRepository: {
           data: {
             teamId,
             name: data.name,
-            url: data.url,
+            url: data.url ?? '',
             type: data.type,
             intervalSeconds: data.intervalSeconds,
             timeoutMs: data.timeoutMs ?? 30000,

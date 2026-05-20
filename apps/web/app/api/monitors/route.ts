@@ -62,6 +62,10 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     }
   }
 
+  if (data.type === 'heartbeat' && plan === 'free') {
+    throw new PlanLimitError('Heartbeat monitoring requires a Pro or Business plan');
+  }
+
   // Enforce minimum check interval for the plan
   if (data.intervalSeconds < limits.checkIntervalSeconds) {
     throw new PlanLimitError(`Your plan minimum check interval is ${limits.checkIntervalSeconds}s`);

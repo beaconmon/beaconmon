@@ -27,9 +27,10 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 import { AlertCircle, X } from 'lucide-react';
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useState, type KeyboardEvent } from 'react';
 
-const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content'] as const;
+const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content', 'heartbeat'] as const;
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
@@ -46,6 +47,7 @@ const formSchema = z.object({
   cssSelector: z.string().optional(),
   tags: z.array(z.string()).optional(),
   anomalyDetectionEnabled: z.boolean().optional(),
+  gracePeriodSeconds: z.coerce.number().int().min(0).max(3600).optional(),
 }).superRefine((data, ctx) => {
   if (data.type === 'http' || data.type === 'keyword' || data.type === 'content') {
     if (!data.url) {
@@ -86,6 +88,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
       intervalSeconds: minInterval,
       timeoutMs: 30000,
       anomalyDetectionEnabled: false,
+      gracePeriodSeconds: 60,
       ...defaultValues,
     },
   });
@@ -95,6 +98,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
   const intervalValue = form.watch('intervalSeconds');
   const intervalTooLow = Number(intervalValue) < minInterval;
 
+  const isHeartbeat = selectedType === 'heartbeat';
   const needsUrl = selectedType === 'http' || selectedType === 'keyword' || selectedType === 'content';
   const needsDomain = selectedType === 'ssl' || selectedType === 'domain';
   const needsTcp = selectedType === 'tcp';
@@ -144,12 +148,53 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
                   <SelectItem value="tcp">TCP — port availability</SelectItem>
                   <SelectItem value="keyword">Keyword — text present/absent</SelectItem>
                   <SelectItem value="content">Content — HTML change detection</SelectItem>
+                  <SelectItem value="heartbeat" disabled={plan === 'free'}>
+                    Heartbeat — inverse monitoring (ping us)
+                    {plan === 'free' ? ' (Pro+)' : ''}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {isHeartbeat && plan === 'free' && (
+          <UpgradePrompt currentPlan="free" limitReached="heartbeat monitoring" />
+        )}
+
+        {isHeartbeat && plan !== 'free' && (
+          <FormField
+            control={form.control}
+            name="gracePeriodSeconds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Grace period</FormLabel>
+                <Select
+                  onValueChange={(v) => field.onChange(Number(v))}
+                  value={String(field.value ?? 60)}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select grace period" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="30">30 seconds</SelectItem>
+                    <SelectItem value="60">1 minute</SelectItem>
+                    <SelectItem value="300">5 minutes</SelectItem>
+                    <SelectItem value="900">15 minutes</SelectItem>
+                    <SelectItem value="3600">1 hour</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  How long after the expected ping to wait before triggering an alert.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {needsUrl && (
           <FormField

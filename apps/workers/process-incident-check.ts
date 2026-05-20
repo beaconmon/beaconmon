@@ -61,7 +61,7 @@ async function resolveEscalationPolicyId(
   return team?.defaultEscalationPolicyId ?? null;
 }
 
-async function dispatchDownAlert(params: {
+export async function dispatchDownAlert(params: {
   incidentId: string;
   monitorId: string;
   teamId: string;

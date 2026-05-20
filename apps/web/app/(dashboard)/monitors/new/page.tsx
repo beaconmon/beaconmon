@@ -31,6 +31,9 @@ function buildApiPayload(data: MonitorFormValues): CreateMonitorInput {
   if (data.type === 'content') {
     return { ...base, url: data.url ?? '', config: data.cssSelector ? { selector: data.cssSelector } : {} };
   }
+  if (data.type === 'heartbeat') {
+    return { ...base, url: '', config: { gracePeriodSeconds: data.gracePeriodSeconds ?? 60 } };
+  }
   return { ...base, url: data.url ?? '' };
 }
 
