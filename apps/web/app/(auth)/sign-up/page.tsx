@@ -58,7 +58,7 @@ function SignUpForm() {
       setError(res.error.message ?? 'Sign up failed. Please try again.');
       analytics.signUpFailed({ method: 'email', error: res.error.code ?? 'signup_error' });
     } else {
-      const allowedPlans = ['business'] as const;
+      const allowedPlans = ['starter', 'growth', 'scale', 'business'] as const;
       if (allowedPlans.includes(planParam as (typeof allowedPlans)[number])) {
         const planRes = await fetch('/api/billing/set-trial-plan', {
           method: 'POST',
@@ -115,7 +115,7 @@ function SignUpForm() {
         <div>
           <h1 className="text-xl font-bold text-brand-text">Create your account</h1>
           <p className="mt-1 text-sm text-brand-dim">
-            {planParam === 'business' ? '14-day Business trial · no card required' : '14-day Pro trial · no card required'}
+            {planParam === 'scale' || planParam === 'business' ? '14-day Scale trial · no card required' : planParam === 'growth' ? '14-day Growth trial · no card required' : planParam === 'starter' ? '14-day Starter trial · no card required' : '14-day Growth trial · no card required'}
           </p>
         </div>
 
