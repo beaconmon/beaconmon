@@ -38,7 +38,7 @@ export const analytics = {
     posthog.capture('user_signed_in', props);
   },
 
-  checkoutOpened(props: { plan: 'pro' | 'business'; billing_period: 'monthly' | 'annual' }) {
+  checkoutOpened(props: { plan: 'starter' | 'growth' | 'scale'; billing_period: 'monthly' | 'annual' }) {
     posthog.capture('checkout_opened', props);
   },
 

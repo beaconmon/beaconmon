@@ -144,7 +144,7 @@ export const teamRepository: {
   async updatePlan(teamId, plan) {
     await prisma.team.update({
       where: { id: teamId },
-      data: { plan: plan as 'free' | 'pro' | 'business' },
+      data: { plan: plan as 'free' | 'starter' | 'growth' | 'scale' },
     });
   },
 };

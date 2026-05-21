@@ -1,12 +1,14 @@
 import crypto from 'node:crypto';
 import { z } from 'zod';
+import type { PlanTier } from '@beaconmon/types';
 
 const freemiusEnvSchema = z.object({
   FREEMIUS_API_KEY: z.string().min(1),
   FREEMIUS_WEBHOOK_SECRET: z.string().min(1),
   FREEMIUS_PRODUCT_ID: z.string().min(1),
-  FREEMIUS_PRO_PLAN_ID: z.string().min(1),
-  FREEMIUS_BUSINESS_PLAN_ID: z.string().min(1),
+  FREEMIUS_STARTER_PLAN_ID: z.string().optional(),
+  FREEMIUS_GROWTH_PLAN_ID: z.string().optional(),
+  FREEMIUS_SCALE_PLAN_ID: z.string().optional(),
   FREEMIUS_SANDBOX: z.string().optional(),
   NODE_ENV: z.enum(['production', 'development', 'test']).optional(),
 });
@@ -22,16 +24,19 @@ function getFreemiusEnv(): FreemiusEnv {
   return _freemiusEnv;
 }
 
-export function getPlanId(plan: 'pro' | 'business'): string {
+export function getPlanId(plan: 'starter' | 'growth' | 'scale'): string {
   const env = getFreemiusEnv();
-  return plan === 'pro' ? env.FREEMIUS_PRO_PLAN_ID : env.FREEMIUS_BUSINESS_PLAN_ID;
+  if (plan === 'starter') return env.FREEMIUS_STARTER_PLAN_ID ?? '';
+  if (plan === 'growth') return env.FREEMIUS_GROWTH_PLAN_ID ?? '';
+  return env.FREEMIUS_SCALE_PLAN_ID ?? '';
 }
 
-export function planFromFreemiusPlanId(planId: string | null | undefined): 'free' | 'pro' | 'business' {
+export function planFromFreemiusPlanId(planId: string | null | undefined): PlanTier {
   if (!planId) return 'free';
   const env = getFreemiusEnv();
-  if (planId === env.FREEMIUS_PRO_PLAN_ID) return 'pro';
-  if (planId === env.FREEMIUS_BUSINESS_PLAN_ID) return 'business';
+  if (env.FREEMIUS_STARTER_PLAN_ID && planId === env.FREEMIUS_STARTER_PLAN_ID) return 'starter';
+  if (env.FREEMIUS_GROWTH_PLAN_ID && planId === env.FREEMIUS_GROWTH_PLAN_ID) return 'growth';
+  if (env.FREEMIUS_SCALE_PLAN_ID && planId === env.FREEMIUS_SCALE_PLAN_ID) return 'scale';
   return 'free';
 }
 

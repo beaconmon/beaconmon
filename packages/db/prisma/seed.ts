@@ -25,7 +25,7 @@ async function main() {
     create: {
       id: 'seed-team-1',
       name: "Demo's Workspace",
-      plan: 'pro',
+      plan: 'growth',
       trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     },
   });
