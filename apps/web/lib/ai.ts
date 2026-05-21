@@ -24,6 +24,6 @@ export function isWebAiSmartSetupEnabled(plan: string): boolean {
     process.env.FEATURE_AI_SMART_SETUP === 'true' &&
     !!process.env.AI_PROVIDER &&
     process.env.AI_PROVIDER !== 'noop' &&
-    (plan === 'pro' || plan === 'business')
+    (plan === 'growth' || plan === 'scale')
   );
 }

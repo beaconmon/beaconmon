@@ -182,7 +182,7 @@ export default function ReportsPage() {
   const [showModal, setShowModal] = useState(false);
 
   const plan = session?.plan ?? 'free';
-  const isPaid = plan === 'pro' || plan === 'business';
+  const isPaid = plan !== 'free';
   const isViewer = session?.role === 'viewer';
 
   return (
