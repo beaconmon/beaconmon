@@ -23,7 +23,7 @@ export const slackSender: ChannelSender = async (rawConfig, payload) => {
     type === 'down'
       ? `Monitor Down: ${monitor.name}`
       : type === 'slow'
-        ? `Slow Response: ${monitor.name}`
+        ? `Smart Alert: ${monitor.name}`
         : `Monitor Recovered: ${monitor.name}`;
 
   const fields =
