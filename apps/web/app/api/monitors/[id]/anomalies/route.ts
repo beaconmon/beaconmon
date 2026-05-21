@@ -19,14 +19,14 @@ export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
 
   const { from, to, limit } = parsed.data;
 
-  const alerts = await performanceAlertRepository.findByMonitor(teamId, params.id, plan, {
+  const result = await performanceAlertRepository.findByMonitor(teamId, params.id, plan, {
     from: new Date(from),
     to: new Date(to),
     limit,
   });
 
-  if (alerts === null) throw new NotFoundError();
+  if (!result.ok) throw new NotFoundError();
 
   logger.info({ service: 'web', teamId, monitorId: params.id }, 'Anomalies fetched');
-  return Response.json(alerts);
+  return Response.json(result.data);
 });

@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring Features: HTTP, SSL, Domain, Content | Beaconmon',
   description:
-    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection. Multi-location checks and SLO tracking — free for 10 monitors.',
+    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection. Multi-location checks and Reliability Targets, free for 10 monitors.',
   alternates: { canonical: 'https://beaconmon.com/features' },
 };
 
@@ -136,7 +136,7 @@ export default function FeaturesPage() {
             <span className="text-brand-green-ink"> know what&apos;s broken before anyone else does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
-            Six monitor types. Multi-location checks. Incident management. Public status pages. SLO tracking. All in one tool, built for freelancers and agencies.
+            Six monitor types. Multi-location checks. Incident management. Public status pages. Reliability Targets. All in one tool, built for ecommerce stores and agencies.
           </p>
         </div>
       </section>
@@ -279,19 +279,19 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">SLO Tracking</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Reliability Targets</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Know your error budget before it runs out.
+                Know if your store is meeting its uptime promise.
               </h2>
               <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires fast/slow burn-rate alerts when you&apos;re consuming it too quickly — so you can act before the SLO period is blown.
+                Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires immediate or sustained burn alerts when you&apos;re consuming it too quickly, so you can act before the window closes.
               </p>
               <ul className="space-y-3">
                 {[
-                  'Per-monitor SLO targets (e.g. 99.9%)',
+                  'Per-monitor reliability targets (e.g. 99.9%)',
                   'Error budget tracking in real time',
-                  'Fast and slow burn-rate alerts',
-                  'Available on Pro and Business plans',
+                  'Immediate and sustained burn alerts',
+                  'Available on Growth and Scale plans',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
                     <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
@@ -301,7 +301,7 @@ export default function FeaturesPage() {
               </ul>
             </div>
             <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6">
-              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Error budget — this period</div>
+              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Reliability targets — this period</div>
               <div className="space-y-5">
                 {[
                   { name: 'acme-storefront.com', target: '99.9%', remaining: 82 },
@@ -311,7 +311,7 @@ export default function FeaturesPage() {
                   <div key={name}>
                     <div className="flex justify-between text-[12px] mb-2">
                       <span className="text-brand-dim">{name}</span>
-                      <span className="text-brand-muted font-mono">SLO {target} · {remaining}% budget left</span>
+                      <span className="text-brand-muted font-mono">Target {target} · {remaining}% budget left</span>
                     </div>
                     <div className="h-2 bg-brand-bg3 rounded-full overflow-hidden">
                       <div

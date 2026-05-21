@@ -24,19 +24,17 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Uptime Monitoring for Freelancers & Agencies | Beaconmon',
+  title: 'Store and Competitor Monitoring | Beaconmon',
   description:
-    'Know the second your site goes down. Beaconmon monitors every 30 seconds, alerts via email, Slack, or SMS, and includes status pages — free for 10 monitors.',
+    'Monitor your store and competitors automatically. Know about outages, pricing changes, SSL expiry, and competitor updates before they hurt sales. Free for 10 monitors.',
   metadataBase: new URL('https://beaconmon.com'),
   openGraph: {
     type: 'website',
     siteName: 'Beaconmon',
-    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon website uptime monitoring — instant alerts when your site goes down' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@beaconmon',
-    images: [{ url: '/og-meta.png', width: 1200, height: 630, alt: 'Beaconmon website uptime monitoring — instant alerts when your site goes down' }],
   },
 };
 

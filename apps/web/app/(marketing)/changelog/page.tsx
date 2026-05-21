@@ -45,8 +45,8 @@ const ENTRIES: Entry[] = [
   {
     date: 'March 2026',
     tag: 'Feature',
-    title: 'SLO tracking and error budget alerts',
-    body: 'Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires burn-rate alerts when you\'re consuming it too quickly. Fast burn and slow burn thresholds are configurable. Available on Pro and Business plans.',
+    title: 'Reliability Targets',
+    body: 'Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires immediate or sustained burn alerts when you\'re consuming it too quickly. Alert thresholds are configurable. Available on Growth and Scale plans.',
   },
   {
     date: 'February 2026',

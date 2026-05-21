@@ -14,59 +14,6 @@ export type PricingTier = {
   elevated?: boolean;
 };
 
-export const PRICING_TIERS: PricingTier[] = [
-  {
-    tier: 'Free',
-    price: '$0',
-    tagline: 'For hobby projects and side sites.',
-    features: [
-      '10 monitors',
-      '5-minute check intervals',
-      'Email alerts',
-      '1 status page',
-      'SSL & domain expiry alerts',
-      '7-day history',
-    ],
-    ctaLabel: 'Start free — no card needed',
-    ctaHref: '/sign-up',
-  },
-  {
-    tier: 'Pro',
-    price: '$19',
-    tagline: 'For indie founders and growing SaaS products.',
-    features: [
-      '25 monitors',
-      '1-minute check intervals',
-      'Email + Slack + webhook alerts',
-      '3 status pages (custom domain)',
-      '90-day history',
-      'SLO tracking',
-      'Priority support',
-    ],
-    ctaLabel: 'Start 14-day trial',
-    ctaHref: '/sign-up',
-    highlighted: true,
-    badge: 'Most popular',
-    elevated: true,
-  },
-  {
-    tier: 'Business',
-    price: '$59',
-    tagline: 'For agencies managing multiple clients.',
-    features: [
-      'Unlimited monitors',
-      '30-second check intervals',
-      'Email + Slack + webhook alerts',
-      'Unlimited status pages',
-      'Heartbeat monitoring',
-      '1-year history',
-      'Priority support',
-    ],
-    ctaLabel: 'Start 14-day trial',
-    ctaHref: '/sign-up?plan=business',
-  },
-];
-
 export default function PricingCard({
   tier,
   price,
@@ -85,7 +32,7 @@ export default function PricingCard({
         highlighted
           ? 'bg-[linear-gradient(180deg,rgba(0,200,102,0.06),#F8F9FC_40%)] dark:bg-[linear-gradient(180deg,rgba(0,229,122,0.04),#0E0E14_40%)] border border-[rgba(0,229,122,0.3)] shadow-[0_20px_40px_-20px_rgba(0,229,122,0.2)]'
           : 'bg-brand-bg1 border border-brand-line-soft'
-      } ${elevated ? 'translate-y-[-6px] max-[880px]:translate-y-0' : ''}`}
+      } ${elevated ? 'translate-y-[-6px] max-[1100px]:translate-y-0' : ''}`}
     >
       {badge && (
         <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-brand-green text-brand-green-fg text-[11px] font-bold px-3 py-1 rounded-full tracking-[0.04em] uppercase whitespace-nowrap">

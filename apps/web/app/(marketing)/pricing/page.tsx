@@ -9,48 +9,49 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { PRICING } from '@/lib/pricing';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Uptime Monitoring Pricing — Free, Pro & Business | Beaconmon',
+  title: 'Pricing — Beaconmon Store & Competitor Monitoring',
   description:
-    'Simple, transparent pricing. 10 monitors free forever. Upgrade to Pro ($19/mo) for 1-minute checks, or Business ($59/mo) for 30-second checks and unlimited monitors. Annual billing saves 20%. No credit card required.',
+    'Simple, transparent pricing for ecommerce website intelligence. 10 monitors free forever. Starter from $29/mo for competitor tracking, Growth at $79/mo for AI-powered insights, Scale at $199/mo for unlimited monitoring.',
   alternates: { canonical: 'https://beaconmon.com/pricing' },
 };
 
-const FEATURE_MATRIX = [
-  { feature: 'Monitors', free: '10', pro: '25', business: 'Unlimited' },
-  { feature: 'Check frequency', free: '5 min', pro: '1 min', business: '30 sec' },
-  { feature: 'Monitor types', free: 'All 6', pro: 'All 6', business: 'All 6' },
-  { feature: 'Alert channels', free: '1', pro: '5', business: 'Unlimited' },
-  { feature: 'Email alerts', free: '✓', pro: '✓', business: '✓' },
-  { feature: 'Slack alerts', free: '—', pro: '✓', business: '✓' },
-  { feature: 'Webhook alerts', free: '—', pro: '✓', business: '✓' },
-  { feature: 'SMS alerts', free: '—', pro: '—', business: 'Soon' },
-  { feature: 'Status pages', free: '1', pro: '3', business: 'Unlimited' },
-  { feature: 'Custom status page domain', free: '—', pro: '✓', business: '✓' },
-  { feature: 'Remove "Powered by" badge', free: '—', pro: '✓', business: '✓' },
-  { feature: 'SSL expiry alerts', free: '✓', pro: '✓', business: '✓' },
-  { feature: 'Domain expiry alerts', free: '✓', pro: '✓', business: '✓' },
-  { feature: 'Multi-location checks', free: '—', pro: '✓', business: '✓' },
-  { feature: 'SLO tracking', free: '—', pro: '✓', business: '✓' },
-  { feature: 'Heartbeat monitoring', free: '—', pro: '—', business: '✓' },
-  { feature: 'History', free: '7 days', pro: '90 days', business: '1 year' },
-  { feature: 'Team members', free: '1', pro: '5', business: 'Unlimited' },
-  { feature: 'Agency dashboard', free: '—', pro: '—', business: 'Soon' },
-  { feature: 'Priority support', free: '—', pro: '✓', business: '✓' },
+type MatrixRow = { feature: string; free: string; starter: string; growth: string; scale: string };
+
+const FEATURE_MATRIX: MatrixRow[] = [
+  { feature: 'Monitors',              free: '10',          starter: '25',        growth: '100',              scale: 'Unlimited' },
+  { feature: 'Check frequency',       free: '5 min',       starter: '1 min',     growth: '1 min',            scale: '30 sec' },
+  { feature: 'History',               free: '7 days',      starter: '30 days',   growth: '90 days',          scale: '365 days' },
+  { feature: 'Status pages',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
+  { feature: 'Team members',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
+  { feature: 'Alert channels',        free: 'Email only',  starter: 'Unlimited', growth: 'Unlimited',        scale: 'Unlimited' },
+  { feature: 'Competitor monitors',   free: '—',           starter: '5',         growth: '25',               scale: 'Unlimited' },
+  { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
+  { feature: 'SSL / domain expiry',   free: '✓',           starter: '✓',         growth: '✓',                scale: '✓' },
+  { feature: 'Maintenance windows',   free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
+  { feature: 'Intelligence Digest',   free: '—',           starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
+  { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
+  { feature: 'AI content-diff',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'Deploy-aware alerts',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'Multi-location checks', free: '—',           starter: '—',         growth: '5 regions',        scale: '5 regions' },
+  { feature: 'Reliability Targets',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'Priority support',      free: '—',           starter: '—',         growth: '—',                scale: '✓' },
 ];
 
 const BILLING_FAQ = [
   {
     id: 'no-cc',
     q: 'Do I need a credit card to start?',
-    a: 'No. The Free plan is genuinely free — no card, no trial, no expiry. The 14-day Pro trial also starts without a card; you only enter payment details if you decide to upgrade.',
+    a: 'No. The Free plan is genuinely free — no card, no trial, no expiry. The 14-day Growth trial also starts without a card; you only enter payment details if you decide to upgrade.',
   },
   {
     id: 'trial',
     q: 'How does the 14-day trial work?',
-    a: 'When you sign up, your account starts on a 14-day trial automatically — Pro features if you sign up normally, Business features if you click the Business trial button. All features for your trial tier are available immediately. If you don\'t upgrade before 14 days, your account reverts to the Free plan — no charge.',
+    a: "When you sign up, your account starts on a 14-day Growth trial automatically — Growth features are available from day one, no card required. If you don't upgrade before 14 days, your account reverts to the Free plan — no charge. You can upgrade to Starter, Growth, or Scale at any time during or after the trial.",
   },
   {
     id: 'switch-plans',
@@ -65,12 +66,17 @@ const BILLING_FAQ = [
   {
     id: 'annual',
     q: 'Is there annual billing?',
-    a: 'Yes — paying annually saves 20% on Pro and Business plans. You can switch to annual billing from the billing settings in your dashboard.',
+    a: 'Yes — paying annually saves 20% on all paid plans. You can switch to annual billing from the billing settings in your dashboard.',
+  },
+  {
+    id: 'intelligence-digest',
+    q: 'What is the Intelligence Digest?',
+    a: "The Intelligence Digest is a scheduled summary of activity across your monitors and competitor trackers — outages, content changes, pricing updates, and Smart Alerts — delivered by email or Slack. Starter plans get weekly digests; Growth and Scale get daily and weekly. It's the fastest way to stay on top of competitor moves without checking the dashboard every day.",
   },
   {
     id: 'cancel',
     q: 'How do I cancel?',
-    a: 'You can cancel any time from the billing portal in your dashboard. Your plan stays active until the end of the period you\'ve already paid for. No cancellation fees, no questions asked.',
+    a: "You can cancel any time from the billing portal in your dashboard. Your plan stays active until the end of the period you've already paid for. No cancellation fees, no questions asked.",
   },
 ];
 
@@ -81,36 +87,48 @@ const PRICING_SCHEMA = {
   '@type': 'Product',
   name: 'Beaconmon',
   description:
-    'Website uptime and performance monitoring for freelancers and agencies. HTTP, SSL, domain, TCP, keyword, and content change monitoring.',
+    'Ecommerce website and competitor intelligence platform. Monitor your store and competitors automatically — uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
   url: 'https://beaconmon.com',
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
-    highPrice: '59',
+    highPrice: String(PRICING.scale.monthly),
     priceCurrency: 'USD',
-    offerCount: 3,
+    offerCount: 4,
     offers: [
       { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
       {
         '@type': 'Offer',
-        name: 'Pro',
-        price: '19',
+        name: 'Starter',
+        price: String(PRICING.starter.monthly),
         priceCurrency: 'USD',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '19',
+          price: String(PRICING.starter.monthly),
           priceCurrency: 'USD',
           referenceQuantity: MONTHLY,
         },
       },
       {
         '@type': 'Offer',
-        name: 'Business',
-        price: '59',
+        name: 'Growth',
+        price: String(PRICING.growth.monthly),
         priceCurrency: 'USD',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '59',
+          price: String(PRICING.growth.monthly),
+          priceCurrency: 'USD',
+          referenceQuantity: MONTHLY,
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Scale',
+        price: String(PRICING.scale.monthly),
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: String(PRICING.scale.monthly),
           priceCurrency: 'USD',
           referenceQuantity: MONTHLY,
         },
@@ -118,6 +136,18 @@ const PRICING_SCHEMA = {
     ],
   },
 };
+
+function renderCell(value: string) {
+  if (value === '✓') return <span className="text-brand-green-ink font-semibold">✓</span>;
+  if (value === '—') return <span className="text-brand-muted">—</span>;
+  return value;
+}
+
+function renderGrowthCell(value: string) {
+  if (value === '✓') return <span className="text-brand-green-ink font-semibold">✓</span>;
+  if (value === '—') return <span className="text-brand-muted">—</span>;
+  return <span className="text-brand-green-ink font-semibold">{value}</span>;
+}
 
 export default function PricingPage() {
   return (
@@ -146,7 +176,7 @@ export default function PricingPage() {
             Simple pricing. No surprises.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Start free. 14-day Pro trial on every account — no card required. Upgrade when you need more.
+            Start free. 14-day Growth trial on every account — no card required. Upgrade when you need more.
           </p>
         </div>
       </section>
@@ -172,19 +202,21 @@ export default function PricingPage() {
             <table className="w-full border-collapse min-w-[560px]">
               <thead>
                 <tr>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft w-[40%]">Feature</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft w-[35%]">Feature</th>
                   <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Free</th>
-                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)]">Pro</th>
-                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Business</th>
+                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Starter</th>
+                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)]">Growth</th>
+                  <th className="p-4 text-center text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Scale</th>
                 </tr>
               </thead>
               <tbody>
-                {FEATURE_MATRIX.map(({ feature, free, pro, business }, i) => (
+                {FEATURE_MATRIX.map(({ feature, free, starter, growth, scale }, i) => (
                   <tr key={feature}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{free === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : free === '—' ? <span className="text-brand-muted">—</span> : free}</td>
-                    <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{pro === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : pro === '—' ? <span className="text-brand-muted">—</span> : <span className="text-brand-green-ink font-semibold">{pro}</span>}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{business === '✓' ? <span className="text-brand-green-ink font-semibold">✓</span> : business === '—' ? <span className="text-brand-muted">—</span> : business}</td>
+                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(free)}</td>
+                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(starter)}</td>
+                    <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderGrowthCell(growth)}</td>
+                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(scale)}</td>
                   </tr>
                 ))}
               </tbody>

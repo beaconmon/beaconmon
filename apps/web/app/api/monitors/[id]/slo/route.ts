@@ -6,7 +6,7 @@ import { ForbiddenError, NotFoundError, PlanLimitError, ValidationError } from '
 type Params = { id: string; [key: string]: string };
 
 export const GET = withAuth<Params>(async (_req, { teamId, plan }, params) => {
-  if (plan === 'free') throw new PlanLimitError('SLO tracking requires a Pro or Business plan');
+  if (plan === 'free') throw new PlanLimitError('Reliability Targets require a Starter plan or higher');
 
   const data = await sloRepository.getSloData(teamId, params.id, plan);
   if (!data) throw new NotFoundError();
@@ -16,7 +16,7 @@ export const GET = withAuth<Params>(async (_req, { teamId, plan }, params) => {
 
 export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params) => {
   if (role === 'viewer') throw new ForbiddenError();
-  if (plan === 'free') throw new PlanLimitError('SLO tracking requires a Pro or Business plan');
+  if (plan === 'free') throw new PlanLimitError('Reliability Targets require a Starter plan or higher');
 
   let body: unknown;
   try {
@@ -27,8 +27,8 @@ export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params
   const parsed = updateSloSchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
-  // Pro plan: only 1 SLO per monitor (can update existing, but can't add if another monitor has one)
-  if (plan === 'pro' && parsed.data.sloTarget !== null) {
+  // Starter plan: only 1 SLO per monitor (can update existing, but can't add if another monitor has one)
+  if (plan === 'starter' && parsed.data.sloTarget !== null) {
     const existingCount = await sloRepository.countSlosByTeam(teamId);
     // Check if this monitor already has an SLO — if so, update is fine
     const current = await sloRepository.getSloData(teamId, params.id, plan);
@@ -36,14 +36,14 @@ export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params
 
     const isNewSlo = current.config.sloTarget === null;
     if (isNewSlo && existingCount >= 1) {
-      throw new PlanLimitError('Pro plan allows 1 SLO. Upgrade to Business for unlimited SLOs.');
+      throw new PlanLimitError('Starter plan allows 1 Reliability Target. Upgrade to Growth for unlimited.');
     }
   }
 
-  // Business plan: custom thresholds allowed; Pro: only default thresholds
-  if (plan === 'pro') {
+  // Scale plan: custom thresholds allowed; Starter/Growth: only default thresholds
+  if (plan === 'starter' || plan === 'growth') {
     if (parsed.data.sloBurnRateFastThreshold !== undefined || parsed.data.sloBurnRateSlowThreshold !== undefined) {
-      throw new PlanLimitError('Custom burn-rate thresholds require a Business plan');
+      throw new PlanLimitError('Custom alert thresholds require a Scale plan');
     }
   }
 

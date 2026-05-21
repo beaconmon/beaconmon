@@ -8,8 +8,9 @@ type Params = { id: string; [key: string]: string };
 
 const PLAN_SNAPSHOT_LIMIT: Record<keyof typeof PLAN_LIMITS, number> = {
   free: 3,
-  pro: 30,
-  business: 90,
+  starter: 10,
+  growth: 30,
+  scale: 90,
 };
 
 export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
