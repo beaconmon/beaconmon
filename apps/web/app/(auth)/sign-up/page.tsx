@@ -80,7 +80,7 @@ function SignUpForm() {
     analytics.signUpSocialAttempted({ provider });
     setLoading(true);
     try {
-      await authClient.signIn.social({ provider, callbackURL: '/monitors' });
+      await authClient.signIn.social({ provider, callbackURL: '/overview' });
     } catch {
       setLoading(false);
       analytics.signUpSocialFailed({ provider });
@@ -93,7 +93,7 @@ function SignUpForm() {
       return;
     }
     setLoading(true);
-    const res = await authClient.signIn.magicLink({ email, callbackURL: '/monitors' });
+    const res = await authClient.signIn.magicLink({ email, callbackURL: '/overview' });
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');
