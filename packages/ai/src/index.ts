@@ -31,5 +31,13 @@ export {
   buildSelectorsPrompt,
   classifySite,
   proposeSelectors,
+  suggestCompetitors,
+  CompetitorSuggestOutput,
 } from './smart-setup/index.js';
-export type { ClassifyIntent, ClassifySiteInput, ProposeSelectorsInput } from './smart-setup/index.js';
+export type {
+  ClassifyIntent,
+  ClassifySiteInput,
+  ProposeSelectorsInput,
+  SuggestCompetitorsInput,
+  SuggestCompetitorsResult,
+} from './smart-setup/index.js';
