@@ -1,6 +1,7 @@
 'use client';
 
-import { Globe, Shield, RefreshCw, FileSearch, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Globe, Shield, RefreshCw, FileSearch, ToggleLeft, ToggleRight, X } from 'lucide-react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import type { PlanTier } from '@beaconmon/types';
@@ -15,6 +16,8 @@ export interface BundleItem {
   url: string;
   intervalSeconds: number;
   enabled: boolean;
+  source?: 'ai' | 'template';
+  selectorChosen?: string | null;
 }
 
 interface Step2BundleProps {
@@ -22,6 +25,8 @@ interface Step2BundleProps {
   bundle: BundleItem[];
   onBundleChange: (bundle: BundleItem[]) => void;
   plan: PlanTier;
+  loading?: boolean;
+  degraded?: boolean;
   onBack: () => void;
   onSkip: () => void;
   onContinue: () => void;
@@ -63,14 +68,32 @@ function StatBox({ label, value }: { label: string; value: string }) {
   );
 }
 
+function SkeletonRow({ last }: { last?: boolean }) {
+  return (
+    <div className={cn('flex items-center gap-3 px-4 py-3', !last && 'border-b border-brand-line')}>
+      <div className="h-6 w-6 shrink-0 animate-pulse rounded bg-brand-bg3" />
+      <div className="min-w-0 flex-1 space-y-1.5">
+        <div className="h-3 w-32 animate-pulse rounded bg-brand-bg3" />
+        <div className="h-2.5 w-20 animate-pulse rounded bg-brand-bg2" />
+      </div>
+      <div className="h-4 w-12 shrink-0 animate-pulse rounded-full bg-brand-bg3" />
+      <div className="h-4 w-6 shrink-0 animate-pulse rounded bg-brand-bg2" />
+      <div className="h-5 w-5 shrink-0 animate-pulse rounded bg-brand-bg3" />
+    </div>
+  );
+}
+
 export function Step2Bundle({
   platform,
   bundle,
   onBundleChange,
+  loading = false,
+  degraded = false,
   onBack,
   onSkip,
   onContinue,
 }: Step2BundleProps) {
+  const [degradedDismissed, setDegradedDismissed] = useState(false);
   const enabledCount = bundle.filter((b) => b.enabled).length;
 
   function toggle(id: string) {
@@ -84,66 +107,106 @@ export function Step2Bundle({
       <div className="space-y-1">
         <h2 className="text-xl font-semibold text-brand-text">Smart Setup</h2>
         <p className="text-sm text-brand-dim">
-          We prepared a monitoring bundle based on your platform. Toggle off anything you don&apos;t
-          need.
+          {loading
+            ? 'AI is analyzing your store…'
+            : 'We prepared a monitoring bundle based on your platform. Toggle off anything you don’t need.'}
         </p>
       </div>
 
+      {/* Degradation notice */}
+      {degraded && !loading && !degradedDismissed && (
+        <div className="flex items-start justify-between gap-3 rounded-lg border border-amber-300/30 bg-amber-50/5 px-4 py-3">
+          <p className="text-sm text-amber-400">
+            AI analysis unavailable. Showing standard templates.
+          </p>
+          <button
+            onClick={() => setDegradedDismissed(true)}
+            aria-label="Dismiss"
+            className="shrink-0 text-amber-400/60 hover:text-amber-400 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatBox label="Monitors prepared" value={String(enabledCount)} />
-        <StatBox label="Reliability target" value={reliabilityLabel(platform)} />
-        <StatBox label="Check budget" value={formatCheckBudget(bundle)} />
-        <StatBox label="Setup time" value="0 min, all automatic" />
-      </div>
+      {!loading && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatBox label="Monitors prepared" value={String(enabledCount)} />
+          <StatBox label="Reliability target" value={reliabilityLabel(platform)} />
+          <StatBox label="Check budget" value={formatCheckBudget(bundle)} />
+          <StatBox label="Setup time" value="0 min, all automatic" />
+        </div>
+      )}
 
       {/* Monitor list */}
       <div className="overflow-hidden rounded-lg border border-brand-line">
-        {bundle.map((item, i) => (
-          <div
-            key={item.id}
-            className={cn(
-              'flex items-center gap-3 px-4 py-3',
-              i > 0 && 'border-t border-brand-line',
-              !item.enabled && 'opacity-50'
-            )}
-          >
+        {loading ? (
+          <>
+            <SkeletonRow />
+            <SkeletonRow />
+            <SkeletonRow />
+            <SkeletonRow last />
+          </>
+        ) : (
+          bundle.map((item, i) => (
             <div
+              key={item.id}
               className={cn(
-                'flex h-6 w-6 shrink-0 items-center justify-center rounded text-brand-muted',
-                item.enabled ? 'bg-brand-bg3' : 'bg-brand-bg2'
+                'flex items-center gap-3 px-4 py-3',
+                i > 0 && 'border-t border-brand-line',
+                !item.enabled && 'opacity-50'
               )}
             >
-              {TYPE_ICONS[item.type]}
-            </div>
+              <div
+                className={cn(
+                  'flex h-6 w-6 shrink-0 items-center justify-center rounded text-brand-muted',
+                  item.enabled ? 'bg-brand-bg3' : 'bg-brand-bg2'
+                )}
+              >
+                {TYPE_ICONS[item.type]}
+              </div>
 
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-brand-text">{item.label}</p>
-              {item.path && (
-                <p className="truncate text-xs text-brand-muted">{item.path}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-brand-text">{item.label}</p>
+                {item.path && (
+                  <p className="truncate text-xs text-brand-muted">{item.path}</p>
+                )}
+                {item.type === 'content' && item.source === 'ai' && (
+                  <p className="text-[10px] text-brand-muted font-mono mt-0.5">
+                    {item.selectorChosen
+                      ? `selector: ${item.selectorChosen}`
+                      : 'No selector, full page'}
+                  </p>
+                )}
+              </div>
+
+              {item.source === 'ai' && (
+                <span className="shrink-0 rounded-full bg-brand-green/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-green-ink">
+                  AI
+                </span>
               )}
+              <span className="shrink-0 rounded-full bg-brand-bg3 px-2 py-0.5 text-[10px] font-medium text-brand-dim">
+                {TYPE_LABEL[item.type]}
+              </span>
+              <span className="shrink-0 text-xs text-brand-muted">
+                {formatInterval(item.intervalSeconds)}
+              </span>
+
+              <button
+                onClick={() => toggle(item.id)}
+                aria-label={item.enabled ? 'Disable monitor' : 'Enable monitor'}
+                className="shrink-0 text-brand-muted hover:text-brand-text transition-colors"
+              >
+                {item.enabled ? (
+                  <ToggleRight className="h-5 w-5 text-brand-green-ink" />
+                ) : (
+                  <ToggleLeft className="h-5 w-5" />
+                )}
+              </button>
             </div>
-
-            <span className="shrink-0 rounded-full bg-brand-bg3 px-2 py-0.5 text-[10px] font-medium text-brand-dim">
-              {TYPE_LABEL[item.type]}
-            </span>
-            <span className="shrink-0 text-xs text-brand-muted">
-              {formatInterval(item.intervalSeconds)}
-            </span>
-
-            <button
-              onClick={() => toggle(item.id)}
-              aria-label={item.enabled ? 'Disable monitor' : 'Enable monitor'}
-              className="shrink-0 text-brand-muted hover:text-brand-text transition-colors"
-            >
-              {item.enabled ? (
-                <ToggleRight className="h-5 w-5 text-brand-green-ink" />
-              ) : (
-                <ToggleLeft className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Footer */}
@@ -165,7 +228,8 @@ export function Step2Bundle({
           </button>
           <Button
             onClick={onContinue}
-            className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90"
+            disabled={loading}
+            className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90 disabled:opacity-50"
           >
             Looks good, next
           </Button>

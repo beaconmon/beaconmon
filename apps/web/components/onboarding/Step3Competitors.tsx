@@ -32,6 +32,7 @@ interface Step3CompetitorsProps {
   onCompetitorsChange: (c: string[]) => void;
   plan: PlanTier;
   email: string | null;
+  aiSuggestions?: string[];
   onBack: () => void;
   onSkip: () => void;
   onSubmit: () => Promise<void>;
@@ -51,8 +52,9 @@ export function Step3Competitors({
   onCompetitorsChange,
   plan,
   email,
+  aiSuggestions = [],
   onBack,
-  onSkip,
+  onSkip: _onSkip,
   onSubmit,
   submitting,
   error,
@@ -92,6 +94,26 @@ export function Step3Competitors({
       billing_cycle: 'monthly',
       ...(email && { user_email: email, readonly_user: true }),
     });
+  }
+
+  function handleAddChip(domain: string) {
+    const normalized = normalizeDomain(domain);
+    if (!normalized || competitors.includes(normalized) || atLimit) return;
+    onCompetitorsChange([...competitors, normalized]);
+  }
+
+  function handleAddAllChips() {
+    const toAdd = aiSuggestions
+      .map(normalizeDomain)
+      .filter((d) => d && !competitors.includes(d));
+    if (toAdd.length === 0) return;
+    const next = [...competitors];
+    for (const d of toAdd) {
+      if (limit === -1 || next.length < limit) {
+        next.push(d);
+      }
+    }
+    onCompetitorsChange(next);
   }
 
   const planLabel = plan === 'free' ? 'free' : plan.charAt(0).toUpperCase() + plan.slice(1);
@@ -135,6 +157,44 @@ export function Step3Competitors({
         </>
       ) : (
         <>
+          {/* AI suggestion chips */}
+          {aiSuggestions.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-brand-muted uppercase tracking-wider">AI suggestions</p>
+                <button
+                  onClick={handleAddAllChips}
+                  disabled={atLimit}
+                  className="text-xs text-brand-green-ink hover:underline disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                >
+                  + Add all
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {aiSuggestions.map((domain) => {
+                  const normalized = normalizeDomain(domain);
+                  const added = competitors.includes(normalized);
+                  return (
+                    <button
+                      key={domain}
+                      onClick={() => handleAddChip(domain)}
+                      disabled={added || atLimit}
+                      className={cn(
+                        'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                        added
+                          ? 'border-brand-green/40 bg-brand-green/10 text-brand-green-ink cursor-default'
+                          : 'border-brand-line bg-brand-bg2 text-brand-dim hover:border-brand-green/40 hover:text-brand-text disabled:opacity-40 disabled:cursor-not-allowed'
+                      )}
+                    >
+                      {!added && <span className="text-brand-green-ink">+</span>}
+                      {normalized}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* URL input */}
           <div className="flex gap-2">
             <Input
@@ -226,8 +286,9 @@ export function Step3Competitors({
         {!isFree && (
           <div className="flex items-center gap-3">
             <button
-              onClick={onSkip}
-              className="text-sm text-brand-muted hover:text-brand-dim transition-colors"
+              onClick={() => void onSubmit()}
+              disabled={submitting}
+              className="text-sm text-brand-muted hover:text-brand-dim transition-colors disabled:opacity-50"
             >
               Skip, I&apos;ll add later
             </button>

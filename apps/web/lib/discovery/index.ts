@@ -14,6 +14,7 @@ export interface DiscoverResult {
   suggestions: Suggestion[];
   warnings: string[];
   cappedByPlan: boolean;
+  /** Internal only — used by smart-setup enrichment, never sent to clients. */
   sitemapUrls?: string[];
 }
 

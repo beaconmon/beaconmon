@@ -43,6 +43,7 @@ const MONTHLY_TIERS: PricingTier[] = [
     features: [
       '100 monitors',
       '25 competitor monitors',
+      'AI-powered store setup',
       'Intelligence Digest (daily + weekly)',
       'AI content-diff summaries',
       'Smart Alerts + Deploy-aware monitoring',

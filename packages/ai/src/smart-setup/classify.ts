@@ -5,7 +5,7 @@ import {
   buildClassifyPrompt,
 } from './prompt-classify.js';
 
-const MAX_TOKENS = 1500;
+const MAX_TOKENS = 2500;
 
 export interface ClassifySiteInput {
   homepageText: string;

@@ -113,8 +113,10 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
 
     const aiEnabled = isWebAiSmartSetupEnabled(plan);
 
+    const { sitemapUrls: _, ...clientResult } = result;
+
     if (!aiEnabled) {
-      return Response.json(result);
+      return Response.json(clientResult);
     }
 
     logger.info({ service: 'web', teamId, domain }, 'smart_setup: running AI enrichment');
@@ -134,7 +136,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     });
 
     // Spread AI result over baseline — aiResult.suggestions overrides when not degraded
-    return Response.json({ ...result, ...aiResult });
+    return Response.json({ ...clientResult, ...aiResult });
   } finally {
     clearTimeout(budgetTimer);
   }
