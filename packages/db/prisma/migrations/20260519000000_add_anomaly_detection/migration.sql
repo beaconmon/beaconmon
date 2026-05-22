@@ -1,8 +1,8 @@
 -- AddColumn: anomaly_detection_enabled on monitors
 ALTER TABLE "monitors" ADD COLUMN IF NOT EXISTS "anomaly_detection_enabled" BOOLEAN NOT NULL DEFAULT false;
 
--- CreateTable: performance_alerts
-CREATE TABLE "performance_alerts" (
+-- CreateTable: performance_alerts (table may already exist from earlier migration)
+CREATE TABLE IF NOT EXISTS "performance_alerts" (
     "id" TEXT NOT NULL,
     "team_id" TEXT NOT NULL,
     "monitor_id" TEXT NOT NULL,
@@ -17,4 +17,4 @@ CREATE TABLE "performance_alerts" (
     CONSTRAINT "performance_alerts_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "performance_alerts_monitor_id_checked_at_idx" ON "performance_alerts"("monitor_id", "checked_at" DESC);
+CREATE INDEX IF NOT EXISTS "performance_alerts_monitor_id_checked_at_idx" ON "performance_alerts"("monitor_id", "checked_at" DESC);
