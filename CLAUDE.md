@@ -541,8 +541,15 @@ if (input.intervalSeconds < minInterval) {
 1. User signs up via email magic link (Better Auth)
 2. A personal team is auto-created (named "{User}'s Workspace", renameable)
 3. 14-day Growth trial auto-starts — no card required
-4. User lands on an empty dashboard with a single "Add your first monitor" CTA
-5. No multi-step wizard
+4. User is redirected to `/onboarding` for a 3-step wizard:
+   - Step 1 "Your store": URL input, server-side ping check, platform detection (Shopify/WooCommerce/other)
+   - Step 2 "Smart Setup": rule-based monitor suggestions via the discover endpoint, each toggleable
+   - Step 3 "Competitors": add competitor domains; all monitors are created in bulk at this final step
+5. Wizard completion is tracked in localStorage at key `bm_ob_{teamId}` (field: `completedAt`)
+6. The `(dashboard)` layout redirects to `/onboarding` on mount if the wizard is not complete
+7. Every step has a skip path; skipping marks the wizard complete and redirects to `/monitors`
+8. The `/onboarding` route lives outside the `(dashboard)` group (no sidebar/topbar)
+9. AI-enriched suggestions in steps 2 and 3 are deferred to a later branch (`FEATURE_AI_SMART_SETUP`)
 
 ---
 
