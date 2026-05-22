@@ -9,3 +9,4 @@ export * from './result';
 export * from './errors';
 export * from './status-page';
 export * from './alert-channels';
+export * from './digest';

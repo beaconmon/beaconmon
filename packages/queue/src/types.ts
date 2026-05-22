@@ -65,9 +65,10 @@ export interface EscalationStepJob {
   stepIndex: number; // 0-based index into the policy's steps array
 }
 
-/** Enqueued daily by the scheduler for each team with active competitor monitors */
-export interface CompetitorDigestJob {
+/** Enqueued daily/weekly by the scheduler for each team with digest prefs configured */
+export interface IntelligenceDigestJob {
   teamId: string;
+  frequency: 'daily' | 'weekly';
   windowStart: string; // ISO date string
   windowEnd: string;   // ISO date string
 }
@@ -94,7 +95,7 @@ export const QUEUE_NAMES = {
   REPORT_GENERATE: 'report-generate',
   ESCALATION_STEP: 'escalation-step',
   SLO_BURN: 'slo-burn',
-  COMPETITOR_DIGEST: 'competitor-digest',
+  INTELLIGENCE_DIGEST: 'intelligence-digest',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];

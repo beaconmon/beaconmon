@@ -8,7 +8,7 @@ import type {
   ReportJob,
   EscalationStepJob,
   SloBurnAlertJob,
-  CompetitorDigestJob,
+  IntelligenceDigestJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -97,8 +97,8 @@ export function createEscalationQueue(connection: Redis): Queue<EscalationStepJo
   });
 }
 
-export function createCompetitorDigestQueue(connection: Redis): Queue<CompetitorDigestJob> {
-  return new Queue<CompetitorDigestJob>(QUEUE_NAMES.COMPETITOR_DIGEST, {
+export function createIntelligenceDigestQueue(connection: Redis): Queue<IntelligenceDigestJob> {
+  return new Queue<IntelligenceDigestJob>(QUEUE_NAMES.INTELLIGENCE_DIGEST, {
     connection,
     defaultJobOptions: {
       attempts: 3,
