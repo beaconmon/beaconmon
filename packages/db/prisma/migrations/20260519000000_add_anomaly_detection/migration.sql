@@ -1,5 +1,5 @@
 -- AddColumn: anomaly_detection_enabled on monitors
-ALTER TABLE "monitors" ADD COLUMN "anomaly_detection_enabled" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "monitors" ADD COLUMN IF NOT EXISTS "anomaly_detection_enabled" BOOLEAN NOT NULL DEFAULT false;
 
 -- CreateTable: performance_alerts
 CREATE TABLE "performance_alerts" (
