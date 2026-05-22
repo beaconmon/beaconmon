@@ -13,6 +13,7 @@ type FreemiusCheckoutHandler = {
     billing_cycle?: 'monthly' | 'annual' | 'lifetime';
     user_email?: string;
     readonly_user?: boolean;
+    user_dictionary?: Record<string, unknown>;
     success?: (response: unknown) => void;
   }) => void;
   close?: () => void;
@@ -76,6 +77,7 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
       billing_cycle: 'monthly',
       user_email: email,
       readonly_user: true,
+      user_dictionary: { teamId: session?.teamId },
     });
   }
 

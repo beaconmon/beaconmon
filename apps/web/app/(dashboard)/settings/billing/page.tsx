@@ -21,6 +21,7 @@ type FreemiusCheckoutHandler = {
     billing_cycle?: 'monthly' | 'annual' | 'lifetime';
     user_email?: string;
     readonly_user?: boolean;
+    user_dictionary?: Record<string, unknown>;
     success?: (response: unknown) => void;
   }) => void;
   close?: () => void;
@@ -127,6 +128,7 @@ export default function BillingPage() {
   const [hasFreemiusCustomer, setHasFreemiusCustomer] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [fsReady, setFsReady] = useState(false);
+  const [resyncing, setResyncing] = useState(false);
 
   useEffect(() => {
     if (!sessionQ.data?.teamId) return;
@@ -191,6 +193,7 @@ export default function BillingPage() {
       billing_cycle: selectedPeriod === 'annual' ? 'annual' : 'monthly',
       user_email: email,
       readonly_user: true,
+      user_dictionary: { teamId: sessionQ.data?.teamId },
     });
   }
 
@@ -205,6 +208,22 @@ export default function BillingPage() {
       window.open(url, '_blank');
     } catch {
       alert('Unable to open subscription management. Please try again.');
+    }
+  }
+
+  async function handleResync() {
+    setResyncing(true);
+    try {
+      const res = await fetch('/api/billing/resync', { method: 'POST' });
+      if (!res.ok) {
+        alert('Resync failed. Please try again or contact support.');
+        return;
+      }
+      window.location.reload();
+    } catch {
+      alert('Resync failed. Please try again or contact support.');
+    } finally {
+      setResyncing(false);
     }
   }
 
@@ -256,9 +275,14 @@ export default function BillingPage() {
                 <p className="text-sm text-muted-foreground">
                   To change your billing interval or payment method, open your Freemius portal.
                 </p>
-                <Button variant="outline" onClick={handleManageSubscription}>
-                  Manage subscription
-                </Button>
+                <div className="flex gap-2 flex-wrap">
+                  <Button variant="outline" onClick={handleManageSubscription}>
+                    Manage subscription
+                  </Button>
+                  <Button variant="ghost" size="sm" disabled={resyncing} onClick={() => void handleResync()} className="text-muted-foreground">
+                    {resyncing ? 'Syncing…' : 'Resync from Freemius'}
+                  </Button>
+                </div>
               </div>
             ) : plan === 'growth' ? (
               <div className="space-y-3">
@@ -274,6 +298,11 @@ export default function BillingPage() {
                   {hasFreemiusCustomer && (
                     <Button variant="outline" onClick={handleManageSubscription}>
                       Manage subscription
+                    </Button>
+                  )}
+                  {hasFreemiusCustomer && (
+                    <Button variant="ghost" size="sm" disabled={resyncing} onClick={() => void handleResync()} className="text-muted-foreground">
+                      {resyncing ? 'Syncing…' : 'Resync from Freemius'}
                     </Button>
                   )}
                 </div>
@@ -295,6 +324,11 @@ export default function BillingPage() {
                   {hasFreemiusCustomer && (
                     <Button variant="outline" onClick={handleManageSubscription}>
                       Manage subscription
+                    </Button>
+                  )}
+                  {hasFreemiusCustomer && (
+                    <Button variant="ghost" size="sm" disabled={resyncing} onClick={() => void handleResync()} className="text-muted-foreground">
+                      {resyncing ? 'Syncing…' : 'Resync from Freemius'}
                     </Button>
                   )}
                 </div>

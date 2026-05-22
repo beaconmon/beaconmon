@@ -37,23 +37,42 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
       const plan = planFromFreemiusPlanId(sub.plan_id);
       const billingPeriod = billingPeriodFromFreemiusCycle(sub.billing_cycle);
       const currentPeriodEnd = parseNextPayment(sub.next_payment);
-      const email = sub.user?.email;
 
-      if (!email) {
-        logger.warn(
-          { service: 'web', eventType: event.type, subscriptionId: sub.id },
-          'Freemius subscription.created missing buyer email — cannot map to team'
+      // Prefer teamId from checkout user_dictionary metadata; fall back to email lookup.
+      // user_dictionary is passed at checkout open() and stored on the subscription by Freemius.
+      const rawData = event.data as Record<string, unknown>;
+      const userDict = rawData['user_dictionary'] as Record<string, unknown> | undefined;
+      const userDictTeamId = typeof userDict?.['teamId'] === 'string' ? userDict['teamId'] : undefined;
+
+      let teamId: string | null = null;
+
+      if (userDictTeamId) {
+        teamId = userDictTeamId;
+        logger.info(
+          { service: 'web', eventType: event.type, subscriptionId: sub.id, teamId },
+          'Matched subscription to team via user_dictionary'
         );
-        return;
-      }
-
-      const teamId = await subscriptionRepository.findTeamIdByOwnerEmail(email);
-      if (!teamId) {
+      } else {
+        const email = sub.user?.email;
+        if (!email) {
+          logger.warn(
+            { service: 'web', eventType: event.type, subscriptionId: sub.id },
+            'Freemius subscription.created missing buyer email and no user_dictionary — cannot map to team'
+          );
+          return;
+        }
+        teamId = await subscriptionRepository.findTeamIdByOwnerEmail(email);
+        if (!teamId) {
+          logger.warn(
+            { service: 'web', eventType: event.type, subscriptionId: sub.id, email },
+            'No team found for Freemius buyer email — skipping (consider adding user_dictionary at checkout)'
+          );
+          return;
+        }
         logger.warn(
           { service: 'web', eventType: event.type, subscriptionId: sub.id, email },
-          'No team found for Freemius buyer email — skipping'
+          'Matched subscription to team via buyer email fallback — risk of mismatch if checkout email differs'
         );
-        return;
       }
 
       await subscriptionRepository.createFromFreemiusEvent(teamId, {
@@ -186,7 +205,8 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
       break;
     }
 
-    case 'payment.failed': {
+    case 'payment.failed':
+    case 'subscription.on_hold': {
       const sub = parseSubscriptionData(event);
       if (!sub) return;
 
@@ -199,10 +219,35 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
       });
 
       if (result) {
-        logger.info({ service: 'web', teamId: result.teamId }, 'Subscription marked past_due');
+        logger.info({ service: 'web', teamId: result.teamId, eventType: event.type }, 'Subscription marked past_due');
       }
       break;
     }
+
+    case 'subscription.pending': {
+      const sub = parseSubscriptionData(event);
+      if (!sub) return;
+
+      const result = await subscriptionRepository.updateFromFreemiusEvent(sub.user_id, {
+        plan: planFromFreemiusPlanId(sub.plan_id),
+        billingPeriod: billingPeriodFromFreemiusCycle(sub.billing_cycle),
+        status: 'incomplete',
+        currentPeriodEnd: parseNextPayment(sub.next_payment),
+        freemiusSubscriptionId: sub.id,
+      });
+
+      if (result) {
+        logger.info({ service: 'web', teamId: result.teamId }, 'Subscription marked incomplete (pending)');
+      }
+      break;
+    }
+
+    case 'subscription.trial_started':
+    case 'subscription.trial_expired':
+      // Trial state is managed locally via teams.trial_ends_at; no action needed.
+      // Log so we can verify Freemius is emitting these and correlate with our records.
+      logger.info({ service: 'web', eventType: event.type }, 'Freemius trial event received — no action taken');
+      break;
 
     default:
       logger.info({ service: 'web', eventType: event.type }, 'Unhandled Freemius event — ignored');

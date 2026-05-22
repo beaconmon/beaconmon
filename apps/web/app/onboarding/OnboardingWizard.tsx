@@ -327,6 +327,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
               competitors={competitors}
               onCompetitorsChange={setCompetitors}
               plan={plan}
+              teamId={teamId}
               email={email}
               aiSuggestions={competitorSuggestions}
               onBack={() => setStep(2)}

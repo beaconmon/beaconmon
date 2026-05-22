@@ -199,7 +199,11 @@ BETTER_AUTH_URL=https://yourdomain.com
 # Freemius
 # Freemius models monthly/annual as a billing_cycle integer (1 = monthly, 12 = annual),
 # so there is only one plan ID per tier — not two like Paddle had.
+# FREEMIUS_SECRET_KEY and FREEMIUS_PUBLIC_KEY are from Developer Dashboard > Settings > API & Keys.
+# Required for the @freemius/sdk singleton used by the resync endpoint.
 FREEMIUS_API_KEY=
+FREEMIUS_SECRET_KEY=
+FREEMIUS_PUBLIC_KEY=
 FREEMIUS_WEBHOOK_SECRET=
 FREEMIUS_PRODUCT_ID=
 FREEMIUS_STARTER_PLAN_ID=

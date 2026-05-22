@@ -18,6 +18,7 @@ type FreemiusCheckoutHandler = {
     billing_cycle?: 'monthly' | 'annual' | 'lifetime';
     user_email?: string;
     readonly_user?: boolean;
+    user_dictionary?: Record<string, unknown>;
   }) => void;
 };
 
@@ -31,6 +32,7 @@ interface Step3CompetitorsProps {
   competitors: string[];
   onCompetitorsChange: (c: string[]) => void;
   plan: PlanTier;
+  teamId?: string;
   email: string | null;
   aiSuggestions?: string[];
   onBack: () => void;
@@ -51,6 +53,7 @@ export function Step3Competitors({
   competitors,
   onCompetitorsChange,
   plan,
+  teamId,
   email,
   aiSuggestions = [],
   onBack,
@@ -93,6 +96,7 @@ export function Step3Competitors({
       plan_id: Number(starterPlanId),
       billing_cycle: 'monthly',
       ...(email && { user_email: email, readonly_user: true }),
+      ...(teamId && { user_dictionary: { teamId } }),
     });
   }
 
