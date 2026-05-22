@@ -39,19 +39,22 @@ declare global {
 }
 
 const PLAN_DISPLAY: Record<string, { label: string; color: string }> = {
-  free:     { label: 'Free',     color: 'bg-brand-bg3 text-brand-dim border-brand-line' },
-  pro:      { label: 'Pro',      color: 'bg-blue-950/60 text-blue-300 border-blue-800/50' },
-  business: { label: 'Business', color: 'bg-purple-950/60 text-purple-300 border-purple-800/50' },
+  free:    { label: 'Free',    color: 'bg-brand-bg3 text-brand-dim border-brand-line' },
+  starter: { label: 'Starter', color: 'bg-sky-950/60 text-sky-300 border-sky-800/50' },
+  growth:  { label: 'Growth',  color: 'bg-blue-950/60 text-blue-300 border-blue-800/50' },
+  scale:   { label: 'Scale',   color: 'bg-purple-950/60 text-purple-300 border-purple-800/50' },
 };
 
 const ANNUAL_PRICES: Record<string, { amount: string; monthly: string }> = {
-  pro:      { amount: '$180/yr', monthly: '$15/mo' },
-  business: { amount: '$564/yr', monthly: '$47/mo' },
+  starter: { amount: '$276/yr', monthly: '$23/mo' },
+  growth:  { amount: '$756/yr', monthly: '$63/mo' },
+  scale:   { amount: '$1,908/yr', monthly: '$159/mo' },
 };
 
 const MONTHLY_PRICES: Record<string, string> = {
-  pro:      '$19/mo',
-  business: '$59/mo',
+  starter: '$29/mo',
+  growth:  '$79/mo',
+  scale:   '$199/mo',
 };
 
 function BillingPeriodToggle({
@@ -160,7 +163,7 @@ export default function BillingPage() {
     return handlerRef.current;
   }
 
-  function handleUpgrade(plan: 'pro' | 'business') {
+  function handleUpgrade(plan: 'starter' | 'growth' | 'scale') {
     const email = sessionQ.data?.email;
     const handler = ensureHandler();
     if (!email || !handler) {
@@ -168,18 +171,22 @@ export default function BillingPage() {
       return;
     }
 
-    const planId = plan === 'pro'
-      ? process.env['NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID']
-      : process.env['NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID'];
+    const planIdMap: Record<string, string | undefined> = {
+      starter: process.env['NEXT_PUBLIC_FREEMIUS_STARTER_PLAN_ID'],
+      growth:  process.env['NEXT_PUBLIC_FREEMIUS_GROWTH_PLAN_ID'],
+      scale:   process.env['NEXT_PUBLIC_FREEMIUS_SCALE_PLAN_ID'],
+    };
+    const planId = planIdMap[plan];
 
     if (!planId) {
       alert('Checkout configuration is missing. Please contact support.');
       return;
     }
 
+    const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
     analytics.checkoutOpened({ plan, billing_period: selectedPeriod });
     handler.open({
-      name: `${plan === 'pro' ? 'Pro' : 'Business'} ${selectedPeriod === 'annual' ? 'Annual' : 'Monthly'}`,
+      name: `${planLabel} ${selectedPeriod === 'annual' ? 'Annual' : 'Monthly'}`,
       plan_id: Number(planId),
       billing_cycle: selectedPeriod === 'annual' ? 'annual' : 'monthly',
       user_email: email,
@@ -244,7 +251,7 @@ export default function BillingPage() {
 
             <BillingPeriodToggle selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 
-            {plan === 'business' && hasFreemiusCustomer ? (
+            {plan === 'scale' && hasFreemiusCustomer ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
                   To change your billing interval or payment method, open your Freemius portal.
@@ -253,16 +260,37 @@ export default function BillingPage() {
                   Manage subscription
                 </Button>
               </div>
-            ) : plan === 'pro' ? (
+            ) : plan === 'growth' ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Business for unlimited monitors, 30-second checks, and 365-day history.
-                  {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['business']?.amount} (${ANNUAL_PRICES['business']?.monthly})`}
-                  {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['business']}`}
+                  Upgrade to Scale for unlimited monitors, 30-second checks, and 365-day history.
+                  {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['scale']?.amount} (${ANNUAL_PRICES['scale']?.monthly})`}
+                  {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['scale']}`}
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Button disabled={!fsReady} onClick={() => handleUpgrade('business')}>
-                    Upgrade to Business — {selectedPeriod === 'annual' ? ANNUAL_PRICES['business']?.amount : MONTHLY_PRICES['business']}
+                  <Button disabled={!fsReady} onClick={() => handleUpgrade('scale')}>
+                    Upgrade to Scale — {selectedPeriod === 'annual' ? ANNUAL_PRICES['scale']?.amount : MONTHLY_PRICES['scale']}
+                  </Button>
+                  {hasFreemiusCustomer && (
+                    <Button variant="outline" onClick={handleManageSubscription}>
+                      Manage subscription
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : plan === 'starter' ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Upgrade to Growth for 100 monitors, 1-minute checks, and 90-day history.
+                  {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['growth']?.amount} (${ANNUAL_PRICES['growth']?.monthly})`}
+                  {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['growth']}`}
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <Button disabled={!fsReady} onClick={() => handleUpgrade('growth')}>
+                    Upgrade to Growth — {selectedPeriod === 'annual' ? ANNUAL_PRICES['growth']?.amount : MONTHLY_PRICES['growth']}
+                  </Button>
+                  <Button variant="outline" disabled={!fsReady} onClick={() => handleUpgrade('scale')}>
+                    Scale — {selectedPeriod === 'annual' ? ANNUAL_PRICES['scale']?.amount : MONTHLY_PRICES['scale']}
                   </Button>
                   {hasFreemiusCustomer && (
                     <Button variant="outline" onClick={handleManageSubscription}>
@@ -274,14 +302,17 @@ export default function BillingPage() {
             ) : (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Pro for 25 monitors, 1-minute checks, and 90-day history.
+                  Upgrade to Starter for 25 monitors, 1-minute checks, and 30-day history.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Button disabled={!fsReady} onClick={() => handleUpgrade('pro')}>
-                    Upgrade to Pro — {selectedPeriod === 'annual' ? `${ANNUAL_PRICES['pro']?.amount}` : MONTHLY_PRICES['pro']}
+                  <Button disabled={!fsReady} onClick={() => handleUpgrade('starter')}>
+                    Upgrade to Starter — {selectedPeriod === 'annual' ? ANNUAL_PRICES['starter']?.amount : MONTHLY_PRICES['starter']}
                   </Button>
-                  <Button variant="outline" disabled={!fsReady} onClick={() => handleUpgrade('business')}>
-                    Business — {selectedPeriod === 'annual' ? `${ANNUAL_PRICES['business']?.amount}` : MONTHLY_PRICES['business']}
+                  <Button variant="outline" disabled={!fsReady} onClick={() => handleUpgrade('growth')}>
+                    Growth — {selectedPeriod === 'annual' ? ANNUAL_PRICES['growth']?.amount : MONTHLY_PRICES['growth']}
+                  </Button>
+                  <Button variant="outline" disabled={!fsReady} onClick={() => handleUpgrade('scale')}>
+                    Scale — {selectedPeriod === 'annual' ? ANNUAL_PRICES['scale']?.amount : MONTHLY_PRICES['scale']}
                   </Button>
                 </div>
               </div>

@@ -124,7 +124,7 @@ const options = {
             const team = await tx.team.create({
               data: {
                 name: `${user.name}'s Workspace`,
-                plan: 'pro',
+                plan: 'growth',
                 trialEndsAt,
               },
             });

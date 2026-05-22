@@ -34,26 +34,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // ── Tier 3: Solution pages ────────────────────────────────────────────
     {
-      url: `${BASE_URL}/for/agencies`,
-      lastModified: new Date('2026-03-01'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/for/freelancers`,
-      lastModified: new Date('2026-03-01'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
       url: `${BASE_URL}/for/ecommerce`,
-      lastModified: new Date('2026-03-01'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/for/developers`,
-      lastModified: new Date('2026-03-01'),
+      lastModified: new Date('2026-05-21'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },

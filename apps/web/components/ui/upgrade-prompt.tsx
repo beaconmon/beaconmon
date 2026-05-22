@@ -37,8 +37,9 @@ interface UpgradePromptProps {
 
 const PLAN_LABEL: Record<PlanTier, string> = {
   free: 'Free',
-  pro: 'Pro',
-  business: 'Business',
+  starter: 'Starter',
+  growth: 'Growth',
+  scale: 'Scale',
 };
 
 export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps) {
@@ -61,17 +62,17 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
   }
 
   function handleUpgrade() {
-    const proPlanId = process.env['NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID'];
+    const starterPlanId = process.env['NEXT_PUBLIC_FREEMIUS_STARTER_PLAN_ID'];
     const email = session?.email;
     const handler = ensureHandler();
-    if (!proPlanId || !email || !handler) {
+    if (!starterPlanId || !email || !handler) {
       alert('Unable to start checkout. Please refresh the page and try again.');
       return;
     }
 
     handler.open({
-      name: 'Pro Monthly',
-      plan_id: Number(proPlanId),
+      name: 'Starter Monthly',
+      plan_id: Number(starterPlanId),
       billing_cycle: 'monthly',
       user_email: email,
       readonly_user: true,
@@ -86,10 +87,10 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
           You&apos;ve reached the {limitReached} limit on the {PLAN_LABEL[currentPlan]} plan.
         </p>
         <p className="mt-1 text-amber-700">
-          Upgrade to Pro for more {limitReached} and higher limits.
+          Upgrade to Starter for more {limitReached} and higher limits.
         </p>
         <Button size="sm" className="mt-3" onClick={handleUpgrade}>
-          Upgrade to Pro
+          Upgrade to Starter
         </Button>
       </div>
     </>

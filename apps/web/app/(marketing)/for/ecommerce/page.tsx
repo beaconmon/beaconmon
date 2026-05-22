@@ -1,19 +1,20 @@
 import NavBar from '@/components/marketing/NavBar';
+import { PRICING } from '@/lib/pricing';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Uptime Monitoring for E-commerce — Beaconmon',
-  description: 'Beaconmon monitors your Shopify, WooCommerce, or custom store every 30 seconds. Know the moment your checkout goes down — before you lose another sale.',
+  title: 'Store and Checkout Monitoring for E-commerce | Beaconmon',
+  description: 'Monitor your Shopify, WooCommerce, or custom store for outages, checkout failures, pricing changes, and competitor updates. Free for 10 monitors, no card required.',
   alternates: { canonical: 'https://beaconmon.com/for/ecommerce' },
 };
 
 const FEATURES = [
   {
     heading: '30-second checks around the clock',
-    body: 'Your store never sleeps, and neither does Beaconmon. Checks run every 30 seconds on Business and Pro plans. A failed checkout at 3am is caught within a minute, not three hours later when you wake up.',
+    body: 'Your store never sleeps, and neither does Beaconmon. Checks run every 30 seconds on the Scale plan, and every minute on Starter and Growth. A failed checkout at 3am is caught within a minute, not three hours later when you wake up.',
   },
   {
     heading: 'Keyword monitoring for critical pages',
@@ -26,6 +27,10 @@ const FEATURES = [
   {
     heading: 'Instant alerts to the whole team',
     body: 'When a checkout page goes down, you want everyone to know at once. Beaconmon fires to email, Slack, or webhook simultaneously — no one has to forward the alert.',
+  },
+  {
+    heading: 'Competitor price and content tracking',
+    body: 'Add competitor product pages alongside your own monitors. Get alerted the moment a competitor changes their pricing, runs a promotion, or updates their homepage. Know before your customers notice.',
   },
 ];
 
@@ -73,7 +78,7 @@ export default function ForEcommercePage() {
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
-            Free forever for 10 monitors. 14-day Business trial, no card required.
+            Free forever for 10 monitors. 14-day Growth trial, no card required.
           </p>
         </div>
       </section>
@@ -156,7 +161,7 @@ export default function ForEcommercePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Start monitoring your store in 5 minutes.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro plan at $15/mo for 210 monitors and 30-second checks.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Starter plan from ${PRICING.starter.monthly}/mo.</p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

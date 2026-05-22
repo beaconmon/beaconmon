@@ -130,7 +130,7 @@ async function main() {
     localServer = server;
 
     const team = await prisma.team.create({
-      data: { name: '_smoke-test-team_', plan: 'pro' },
+      data: { name: '_smoke-test-team_', plan: 'growth' },
     });
     teamId = team.id;
 

@@ -56,7 +56,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
       const competitorCount = await competitorRepository.countActive(teamId);
       if (competitorCount >= competitorLimit) {
         throw new PlanLimitError(
-          `Your plan allows a maximum of ${competitorLimit} competitor monitor${competitorLimit !== 1 ? 's' : ''}`
+          `Your plan allows a maximum of ${competitorLimit} competitor monitors`
         );
       }
     }

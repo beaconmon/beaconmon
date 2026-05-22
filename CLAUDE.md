@@ -14,8 +14,8 @@ Slack, or webhook. Includes public status pages, SSL/domain expiry warnings, and
 deep content change monitoring.
 
 **Target users:** freelancers, agencies, small e-commerce businesses.
-**Business model:** freemium subscription — Free / Pro ($19/mo, $15/mo annual) / Business ($59/mo, $47/mo annual).
-**Trial:** 14-day trial, no card required. Pro trial auto-starts at signup; Business trial starts when clicking the Business CTA (/sign-up?plan=business → POST /api/billing/set-trial-plan).
+**Business model:** freemium subscription — Free / Starter ($29/mo, $23/mo annual) / Growth ($79/mo, $63/mo annual) / Scale ($199/mo, $159/mo annual).
+**Trial:** 14-day trial, no card required. Growth trial auto-starts at signup; other paid plans start when clicking their CTA (/sign-up?plan=starter|growth|scale → POST /api/billing/set-trial-plan). `?plan=business` is a backward-compat alias that maps to `scale`.
 **Stack:** Next.js, Node.js workers, PostgreSQL, Redis, BullMQ, Freemius, Resend.
 
 ---
@@ -172,7 +172,7 @@ future browser-render tier and must not be acted on until that tier is built.
 
 ### 11. check_results queries must respect plan retention limits
 Repository functions that query `check_results` must clamp the `from` date to the
-team's plan retention window (Free=7d, Pro=90d, Business=365d). Do not expose data
+team's plan retention window (Free=7d, Starter=30d, Growth=90d, Scale=365d). Do not expose data
 beyond the plan limit even though the underlying partitions may contain it.
 
 ---
@@ -202,18 +202,20 @@ BETTER_AUTH_URL=https://yourdomain.com
 FREEMIUS_API_KEY=
 FREEMIUS_WEBHOOK_SECRET=
 FREEMIUS_PRODUCT_ID=
-FREEMIUS_PRO_PLAN_ID=
-FREEMIUS_BUSINESS_PLAN_ID=
+FREEMIUS_STARTER_PLAN_ID=
+FREEMIUS_GROWTH_PLAN_ID=
+FREEMIUS_SCALE_PLAN_ID=
 FREEMIUS_SANDBOX=false
 NEXT_PUBLIC_FREEMIUS_PRODUCT_ID=
-NEXT_PUBLIC_FREEMIUS_PRO_PLAN_ID=
-NEXT_PUBLIC_FREEMIUS_BUSINESS_PLAN_ID=
+NEXT_PUBLIC_FREEMIUS_STARTER_PLAN_ID=
+NEXT_PUBLIC_FREEMIUS_GROWTH_PLAN_ID=
+NEXT_PUBLIC_FREEMIUS_SCALE_PLAN_ID=
 
 # Email
 RESEND_API_KEY=re_...
 EMAIL_FROM=alerts@yourdomain.com
 
-# SMS (tier 2 — Business plan only)
+# SMS (tier 2 — Scale plan only)
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_FROM_NUMBER=
@@ -486,22 +488,38 @@ export const PLAN_LIMITS = {
     statusPages: 1,
     teamMembers: 1,
     alertChannels: 1,
+    regions: 0,
+    competitorMonitors: 0,
   },
-  pro: {
+  starter: {
     monitors: 25,
     checkIntervalSeconds: 60,    // 1 minute minimum
-    historyDays: 90,
+    historyDays: 30,
     statusPages: 3,
-    teamMembers: 5,
-    alertChannels: 5,
+    teamMembers: 3,
+    alertChannels: -1,
+    regions: 0,
+    competitorMonitors: 5,
   },
-  business: {
+  growth: {
+    monitors: 100,
+    checkIntervalSeconds: 60,    // 1 minute minimum
+    historyDays: 90,
+    statusPages: 10,
+    teamMembers: 10,
+    alertChannels: -1,
+    regions: 5,
+    competitorMonitors: 25,
+  },
+  scale: {
     monitors: -1,                // unlimited
     checkIntervalSeconds: 30,    // 30 seconds minimum
     historyDays: 365,
     statusPages: -1,
     teamMembers: -1,
     alertChannels: -1,
+    regions: 5,
+    competitorMonitors: -1,
   },
 } as const;
 ```
@@ -522,7 +540,7 @@ if (input.intervalSeconds < minInterval) {
 
 1. User signs up via email magic link (Better Auth)
 2. A personal team is auto-created (named "{User}'s Workspace", renameable)
-3. 14-day Pro trial auto-starts — no card required
+3. 14-day Growth trial auto-starts — no card required
 4. User lands on an empty dashboard with a single "Add your first monitor" CTA
 5. No multi-step wizard
 
@@ -593,21 +611,14 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [ ] `DATABASE_URL` and `DATABASE_URL_POOLED` both point to the **Neon pooled URL** at runtime (only laptop migrations use the direct URL)
 - [ ] `ALERT_DRY_RUN=false` in production
 - [ ] Freemius webhook endpoint registered at `/api/webhooks/freemius` and `FREEMIUS_WEBHOOK_SECRET` set
-- [ ] `SENTRY_DSN` set in Dokploy env vars (propagates to all services)
-- [ ] `NEXT_PUBLIC_SENTRY_DSN` set (client-side error capture)
-- [ ] `SENTRY_AUTH_TOKEN` set in GitHub Actions secrets if uploading source maps
-- [ ] Create a Sentry Cron Monitor with slug `beaconmon-scheduler` (or whatever `SENTRY_MONITOR_SLUG` is set to)
-- [ ] Health check endpoint responding at `/api/health` with all workers showing `alive: true`
 - [ ] Run `pnpm smoke-test` after deploy before flipping DNS
-- [ ] Self-monitoring: add `https://beaconmon.com` as a monitor after deploy
-- [ ] Hetzner backups enabled on the VPS
 
 **Observability / rate limiting added in production hardening:**
 - Worker heartbeats: each worker writes `worker:heartbeat:{name}` to Redis every 30s (TTL 120s)
 - Health endpoint (`/api/health`) checks: Redis + queue depths + scheduler last run + worker heartbeats + DB ping. Returns 503 if Redis or DB fails.
 - Rate limits: POST /api/monitors → 20/hr per team; POST /api/auth/* → 10/15min per IP (fail-open on Redis unavailability); GET /api/status-pages/[id]/data → 60/min per IP
 - Sentry cron monitor: scheduler reports check-in status every tick (uses 1-minute interval in Sentry)
-- Per-plan retention cleanup runs daily in the scheduler (Free 7d, Pro 90d; Business is handled by partition purge)
+- Per-plan retention cleanup runs daily in the scheduler (Free 7d, Starter 30d, Growth 90d; Scale is handled by partition purge)
 
 ---
 
@@ -639,10 +650,11 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [x] Worker heartbeats (Redis, 30s interval, read by /api/health)
 - [x] /api/health — queue depth + worker heartbeats + DB ping + scheduler last run
 - [x] Rate limiting — POST /api/monitors (20/hr/team), POST /api/auth/* (10/15min/IP)
-- [x] Per-plan check_results retention cleanup (daily, batched DELETE, Free 7d / Pro 90d)
+- [x] Per-plan check_results retention cleanup (daily, batched DELETE, Free 7d / Starter 30d / Growth 90d; Scale is handled by partition purge)
 - [x] Smoke test script (`pnpm smoke-test`) — DB + Redis + check cycle + health endpoint
 - [x] Deploy-aware monitoring (deploy_events table, webhook + manual buttons, alert suppression, 30-min auto-expire)
-- [x] SLO / error budget tracking (per-monitor SLO target, fast/slow burn-rate alerts, plan-gated)
+- [x] Reliability Targets (per-monitor reliability target, immediate/sustained burn alerts, plan-gated; Growth+ only)
+- [x] Smart Alerts / anomaly detection (z-score outlier detection on HTTP/keyword monitors, fires via existing alert channels as `type: 'slow'`; Growth+ only)
 - [x] Content snapshot history + diff view (content_snapshots table, list + diff API, plan-gated retention 3/30/90)
 - [x] Competitor tracking preset (is_competitor flag on monitors, `/api/monitors/competitor-presets` endpoint with suggested selectors)
 - [x] AI content-diff summaries + noise filter (`@beaconmon/ai` package; Anthropic/OpenAI/noop providers; Pro/Business gated; per-monitor daily rate limit; noise classifications suppress alerts + digest entries)
@@ -656,6 +668,11 @@ Seven services in the Compose stack, all from the same Docker image with differe
 ---
 
 ## Known decisions and tradeoffs
+
+## Writing Style
+- NEVER use em dashes (—), en dashes (–), or double hyphens (--).
+- Use commas, periods, or restructure the sentence instead.
+- Before finishing a writing task, scan for and remove any dash-based constructions.
 
 - **No microservices.** Workers are separate processes in a monorepo, not separate
   services with their own repos. This keeps operational complexity low for a solo founder.

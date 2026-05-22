@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { use } from 'react';
@@ -312,7 +312,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
   if (plan === 'free') {
     return (
       <div className="p-4">
-        <UpgradePrompt currentPlan="free" limitReached="SLO tracking" />
+        <UpgradePrompt currentPlan="free" limitReached="Reliability Targets" />
       </div>
     );
   }
@@ -365,7 +365,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
   if (isError) {
     return (
       <div className="rounded-lg border border-brand-line bg-brand-surface p-6 text-center">
-        <p className="text-sm text-brand-red">Failed to load SLO data.</p>
+        <p className="text-sm text-brand-red">Failed to load reliability data.</p>
         <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
           Retry
         </Button>
@@ -379,9 +379,9 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
         <div className="space-y-5">
           {!data.config.sloTarget ? (
             <div className="rounded-lg border border-brand-line bg-brand-surface p-6 text-center">
-              <p className="text-sm text-brand-muted">No SLO target configured for this monitor.</p>
+              <p className="text-sm text-brand-muted">No reliability target configured for this monitor.</p>
               <Button size="sm" className="mt-3" onClick={() => { setTarget('99.9'); setWindowDays('30'); setFormError(''); setEditing(true); }}>
-                Set SLO target
+                Set reliability target
               </Button>
             </div>
           ) : (
@@ -399,7 +399,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                 <div className="grid grid-cols-2 gap-3">
                   {data.metrics && [
                     { label: 'Current uptime', value: `${data.metrics.uptimePercent.toFixed(3)}%` },
-                    { label: 'SLO target', value: `${(data.config.sloTarget * 100).toFixed(2)}%` },
+                    { label: 'Reliability target', value: `${(data.config.sloTarget * 100).toFixed(2)}%` },
                     {
                       label: 'Budget total',
                       value: `${Math.round(data.metrics.errorBudgetTotalMinutes)}m`,
@@ -408,7 +408,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                       label: 'Budget remaining',
                       value: `${Math.round(data.metrics.errorBudgetRemainingMinutes)}m`,
                     },
-                    { label: 'Burn rate', value: `${data.metrics.burnRate.toFixed(2)}x` },
+                    { label: 'Budget rate', value: `${data.metrics.burnRate.toFixed(2)}x` },
                     { label: 'Window', value: `${data.config.sloWindowDays ?? 30}d` },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex flex-col gap-0.5">
@@ -419,7 +419,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                 </div>
                 <div className="flex gap-2 pt-2 border-t border-brand-line">
                   <Button variant="outline" size="sm" onClick={() => startEdit(data)}>
-                    Edit SLO target
+                    Edit reliability target
                   </Button>
                   <Button
                     variant="outline"
@@ -427,7 +427,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
                     onClick={() => setConfirmRemove(true)}
                     className="text-brand-red hover:text-brand-red"
                   >
-                    Remove SLO
+                    Remove target
                   </Button>
                 </div>
               </div>
@@ -437,7 +437,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
           {/* Inline edit form */}
           {editing && (
             <div className="rounded-lg border border-brand-line bg-brand-surface p-5 space-y-4">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Configure SLO</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Configure reliability target</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-xs text-brand-dim">Target uptime (%)</Label>
@@ -482,10 +482,10 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
       <Dialog open={confirmRemove} onOpenChange={setConfirmRemove}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Remove SLO?</DialogTitle>
+            <DialogTitle>Remove reliability target?</DialogTitle>
             <DialogDescription>
-              This clears the SLO target and window for this monitor. Burn-rate alerts
-              tied to this SLO will stop firing. You can set a new SLO at any time.
+              This clears the reliability target and window for this monitor. Burn alerts
+              tied to this target will stop firing. You can set a new target at any time.
             </DialogDescription>
           </DialogHeader>
           {formError && <p className="text-xs text-brand-red">{formError}</p>}
@@ -498,7 +498,7 @@ function SloTab({ monitorId, plan }: { monitorId: string; plan: string }) {
               onClick={handleClear}
               disabled={updateSlo.isPending}
             >
-              {updateSlo.isPending ? 'Removing…' : 'Remove SLO'}
+              {updateSlo.isPending ? 'Removing…' : 'Remove'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -824,7 +824,7 @@ function AnomaliesTab({ monitorId }: { monitorId: string }) {
   if (isError) {
     return (
       <div className="rounded-lg border border-brand-line bg-brand-surface p-6 text-center">
-        <p className="text-sm text-brand-red">Failed to load anomalies.</p>
+        <p className="text-sm text-brand-red">Failed to load Smart Alerts data.</p>
         <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
           Retry
         </Button>
@@ -835,11 +835,11 @@ function AnomaliesTab({ monitorId }: { monitorId: string }) {
   return (
     <div className="rounded-lg border border-brand-line bg-brand-surface">
       <div className="border-b border-brand-line px-4 py-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Anomalies</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Smart Alerts</h2>
       </div>
       {anomalies.length === 0 ? (
         <p className="px-4 py-8 text-center text-sm text-brand-muted">
-          No anomalies detected in the last 90 days.
+          No Smart Alerts triggered in the last 90 days.
         </p>
       ) : (
         <div>
@@ -868,6 +868,8 @@ function AnomaliesTab({ monitorId }: { monitorId: string }) {
     </div>
   );
 }
+
+const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
@@ -905,13 +907,14 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const isCompetitorMonitor = monitor?.isCompetitor === true;
   const isAnomalyMonitor = (monitor?.type === 'http' || monitor?.type === 'keyword') && monitor?.anomalyDetectionEnabled;
 
+  const bucketFmt =
+    range === '24h' ? 'HH:mm' :
+    range === '7d'  ? 'MMM d HH:00' :
+                      'MMM d';
+
   // Group by time bucket so multi-region rounds collapse (avg across regions) and
   // longer ranges aggregate into coarser intervals for a readable chart.
   const chartData = (() => {
-    const bucketFmt =
-      range === '24h' ? 'HH:mm' :
-      range === '7d'  ? 'MMM d HH:00' :
-                        'MMM d';
     const byBucket = new Map<string, number[]>();
     [...results].reverse().forEach((r) => {
       if (r.responseTimeMs == null) return;
@@ -928,8 +931,8 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
 
   const stats = computeStats(results);
 
-  const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
-  const cutoff = new Date(Date.now() - RANGE_MS[range]);
+  // eslint-disable-next-line react-hooks/purity
+  const cutoff = useMemo(() => new Date(Date.now() - RANGE_MS[range]), [range]);
   const chartAnomalies = anomalies.filter((a) => new Date(a.checkedAt) >= cutoff);
 
   function handleDelete() {
@@ -1005,10 +1008,10 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               {[
                 { value: 'performance', label: 'Performance' },
                 ...(!isCompetitorMonitor ? [{ value: 'incidents', label: 'Incidents' }] : []),
-                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'SLO' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'Reliability Targets' }] : []),
                 ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Deploys' }] : []),
                 ...(isContentMonitor ? [{ value: 'snapshots', label: 'Snapshots' }] : []),
-                ...(isAnomalyMonitor ? [{ value: 'anomalies', label: 'Anomalies' }] : []),
+                ...(isAnomalyMonitor ? [{ value: 'anomalies', label: 'Smart Alerts' }] : []),
                 ...(multiLocationEnabled && hasRegionData ? [{ value: 'regions', label: 'Regions' }] : []),
               ].map((tab) => (
                 <TabsTrigger
@@ -1094,7 +1097,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                               {chartAnomalies.map((a) => (
                                 <ReferenceDot
                                   key={a.id}
-                                  x={format(new Date(a.checkedAt), 'HH:mm')}
+                                  x={format(new Date(a.checkedAt), bucketFmt)}
                                   y={a.responseTimeMs}
                                   r={4}
                                   fill="#ef4444"
@@ -1114,7 +1117,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                           {isAnomalyMonitor && chartAnomalies.length > 0 && (
                             <span className="ml-auto flex items-center gap-1.5 text-[10px] font-medium text-brand-red">
                               <span className="h-2 w-2 rounded-full bg-brand-red" />
-                              Anomaly (z &gt; 3.0)
+                              Smart Alert (z &gt; 3.0)
                             </span>
                           )}
                         </div>
@@ -1333,13 +1336,13 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
           )}
 
           {monitor && (monitor.type === 'http' || monitor.type === 'keyword') && (
-            <SidebarCard title="Anomaly detection">
+            <SidebarCard title="Smart Alerts">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-brand-dim">Detect slow response spikes</p>
+                  <p className="text-xs font-medium text-brand-dim">Detect response time spikes</p>
                   <p className="mt-0.5 text-[11px] text-brand-muted leading-snug">
                     {plan === 'free'
-                      ? 'Upgrade to Pro to enable anomaly detection.'
+                      ? 'Upgrade to Growth to enable Smart Alerts.'
                       : 'Alert when response time is a statistical outlier (z > 3).'}
                   </p>
                 </div>

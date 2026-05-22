@@ -431,11 +431,12 @@ async function runRetentionCleanup(): Promise<void> {
 }
 
 // Per-plan snapshot retention for content monitors.
-// Free → 3, Pro → 30, Business → 90.
+// Free → 3, Starter → 10, Growth → 30, Scale → 90.
 const SNAPSHOT_RETENTION_BY_PLAN: Record<keyof typeof PLAN_LIMITS, number> = {
   free: 3,
-  pro: 30,
-  business: 90,
+  starter: 10,
+  growth: 30,
+  scale: 90,
 };
 
 /**

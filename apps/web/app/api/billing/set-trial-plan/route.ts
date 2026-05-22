@@ -3,7 +3,9 @@ import { logger } from '@/lib/logger';
 import { teamRepository } from '@/lib/repositories/teams';
 import { z } from 'zod';
 
-const bodySchema = z.object({ plan: z.enum(['business']) });
+const bodySchema = z.object({
+  plan: z.enum(['starter', 'growth', 'scale', 'business']),
+});
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
@@ -34,9 +36,12 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Not on a trial' }, { status: 409 });
     }
 
-    await teamRepository.updatePlan(teamId, parsed.data.plan);
+    const rawPlan = parsed.data.plan;
+    const plan: 'starter' | 'growth' | 'scale' = rawPlan === 'business' ? 'scale' : rawPlan;
 
-    logger.info({ service: 'web', teamId, plan: parsed.data.plan }, 'Trial plan set');
+    await teamRepository.updatePlan(teamId, plan);
+
+    logger.info({ service: 'web', teamId, plan }, 'Trial plan set');
 
     return Response.json({ ok: true });
   } catch (err) {

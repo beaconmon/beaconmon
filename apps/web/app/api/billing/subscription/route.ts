@@ -12,7 +12,7 @@ export const GET = withAuth(async (_req, { teamId }) => {
       select: { trialEndsAt: true },
     });
     return Response.json({
-      plan: 'pro',
+      plan: 'growth',
       status: 'trialing',
       billingPeriod: 'monthly',
       currentPeriodEnd: null,

@@ -95,6 +95,14 @@ export default async function proxy(req: NextRequest) {
 
   if (host === appHost || host === 'localhost' || host === '127.0.0.1') {
     const { pathname } = req.nextUrl;
+
+    if (pathname === '/for/agencies' || pathname === '/for/developers') {
+      return NextResponse.redirect(new URL('/', req.url), 301);
+    }
+    if (pathname === '/for/freelancers') {
+      return NextResponse.redirect(new URL('/for/ecommerce', req.url), 301);
+    }
+
     const method = req.method.toUpperCase();
     const cookieToken = req.cookies.get(CSRF_COOKIE)?.value;
 

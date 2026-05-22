@@ -309,10 +309,10 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
             render={({ field }) => (
               <FormItem className="flex items-start justify-between gap-3 rounded-lg border border-brand-line p-3">
                 <div>
-                  <FormLabel>Anomaly detection</FormLabel>
+                  <FormLabel>Smart Alerts</FormLabel>
                   <FormDescription>
                     Alert when response time is a statistical outlier (z-score &gt; 3).
-                    {plan === 'free' && ' Upgrade to Pro to enable.'}
+                    {plan === 'free' && ' Upgrade to Growth to enable.'}
                   </FormDescription>
                 </div>
                 <FormControl>
