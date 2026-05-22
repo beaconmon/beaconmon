@@ -41,6 +41,7 @@ export function CompetitorManagementSheet({
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function loadCompetitors() {
     setLoading(true);
@@ -117,11 +118,18 @@ export function CompetitorManagementSheet({
 
   async function handleDelete(id: string) {
     setDeletingId(id);
+    setDeleteError(null);
     try {
       const res = await apiFetch(`/api/monitors/${id}`, { method: 'DELETE' });
-      if (!res.ok) return;
+      if (!res.ok) {
+        const err: { error?: string } = await res.json().catch(() => ({}));
+        setDeleteError(err.error ?? 'Failed to delete competitor');
+        return;
+      }
       setCompetitors((prev) => prev.filter((c) => c.id !== id));
       onChanged();
+    } catch {
+      setDeleteError('Failed to delete competitor');
     } finally {
       setDeletingId(null);
     }
@@ -172,6 +180,7 @@ export function CompetitorManagementSheet({
             <p className="text-xs font-semibold uppercase tracking-wider text-brand-muted mb-3">
               Current competitors {!loading && `(${competitors.length})`}
             </p>
+            {deleteError && <p className="text-xs text-red-500 mb-2">{deleteError}</p>}
             {loading ? (
               <div className="flex justify-center py-6">
                 <Loader2 className="h-5 w-5 animate-spin text-brand-muted" />

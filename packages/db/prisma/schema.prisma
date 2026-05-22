@@ -97,6 +97,9 @@ model Team {
   // Fallback escalation policy used when a monitor has no policy assigned.
   defaultEscalationPolicyId String? @map("default_escalation_policy_id")
 
+  // Intelligence Digest preferences (frequency, opted-in channels, section toggles)
+  digestPrefs Json? @map("digest_prefs")
+
   members                     TeamMember[]
   invitations                 TeamInvitation[]
   subscription                Subscription?

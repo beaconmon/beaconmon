@@ -24,6 +24,7 @@
     "start:worker:alerts": "pnpm --filter @beaconmon/workers run start:alert",
     "start:worker:escalation": "pnpm --filter @beaconmon/workers run start:escalation",
     "start:worker:report": "pnpm --filter @beaconmon/workers run start:report",
+    "start:worker:digest": "pnpm --filter @beaconmon/workers run start:digest",
     "start:scheduler": "pnpm --filter @beaconmon/workers run start:scheduler",
     "smoke-test": "tsx scripts/smoke-test.ts"
   },

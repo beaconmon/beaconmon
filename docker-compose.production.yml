@@ -82,6 +82,13 @@ services:
       redis:
         condition: service_healthy
 
+  digest-worker:
+    <<: *workers
+    command: ["pnpm", "run", "start:worker:digest"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
   # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
   scheduler:
     <<: *workers

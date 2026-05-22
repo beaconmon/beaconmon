@@ -6,7 +6,9 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
-import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createCompetitorDigestQueue } from '@beaconmon/queue';
+import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createIntelligenceDigestQueue } from '@beaconmon/queue';
+import { digestPrefsSchema } from '@beaconmon/types';
+import { getEffectivePlan } from './lib/get-effective-plan.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult } from '@beaconmon/checker';
 
@@ -18,7 +20,7 @@ const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const checkQueue = createCheckQueue(connection);
 const contentQueue = createContentCheckQueue(connection);
 const sloBurnQueue = createSloBurnQueue(connection);
-const competitorDigestQueue = createCompetitorDigestQueue(connection);
+const intelligenceDigestQueue = createIntelligenceDigestQueue(connection);
 
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
@@ -36,21 +38,6 @@ const SLO_FAST_BURN_WINDOW_MINUTES = 5;
 const SLO_SLOW_BURN_WINDOW_MINUTES = 60;
 // Cooldown: don't re-alert for same monitor+severity within this window
 const SLO_BURN_ALERT_COOLDOWN_MINUTES = 30;
-
-function getEffectivePlan(team: {
-  plan: string;
-  trialEndsAt: Date | null;
-  subscription: { status: string } | null;
-}): keyof typeof PLAN_LIMITS {
-  const plan = team.plan as keyof typeof PLAN_LIMITS;
-  if (plan === 'free') return 'free';
-  if (team.trialEndsAt && team.trialEndsAt < new Date()) {
-    const subStatus = team.subscription?.status;
-    const hasActiveSub = subStatus === 'active' || subStatus === 'past_due';
-    if (!hasActiveSub) return 'free';
-  }
-  return plan;
-}
 
 /**
  * Returns the set of monitor IDs that are currently in an active maintenance window
@@ -623,50 +610,96 @@ async function evaluateSloBurnRates(): Promise<void> {
   }
 }
 
-// Redis key that stores the UTC date string of the last competitor digest run ("2026-05-16")
-const DIGEST_LAST_RUN_KEY = 'scheduler:competitor_digest:last_run_date';
-// Target UTC hour to send the daily digest
-const DIGEST_TARGET_HOUR_UTC = 13;
+const DAILY_DIGEST_HOUR_UTC = 7;
+const DAILY_DIGEST_REDIS_KEY = 'scheduler:intelligence_digest:daily_last_run';
+const WEEKLY_DIGEST_REDIS_KEY = 'scheduler:intelligence_digest:weekly_last_run';
+
+function getIsoWeekKey(date: Date): string {
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNum = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+}
 
 /**
- * Enqueue a competitor digest job for each team that has at least one active competitor monitor.
- * Uses a Redis date key so the digest fires once per calendar day at ~13:00 UTC.
+ * Enqueue intelligence digest jobs for teams that have configured digest preferences.
+ * Daily digest: every day at 7:00 UTC (growth/scale only).
+ * Weekly digest: every Monday at 7:00 UTC (starter/growth/scale).
  */
-async function maybeEnqueueCompetitorDigests(): Promise<void> {
+async function maybeEnqueueIntelligenceDigests(): Promise<void> {
   const now = new Date();
-  if (now.getUTCHours() < DIGEST_TARGET_HOUR_UTC) return;
+  if (now.getUTCHours() < DAILY_DIGEST_HOUR_UTC) return;
 
-  const todayUtc = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
-  const lastRunDate = await connection.get(DIGEST_LAST_RUN_KEY);
-  if (lastRunDate === todayUtc) return; // already ran today
+  const todayKey = now.toISOString().slice(0, 10);
+  const weekKey = getIsoWeekKey(now);
+  const isMonday = now.getUTCDay() === 1;
+
+  const dailyDone = await connection.get(DAILY_DIGEST_REDIS_KEY);
+  const weeklyDone = isMonday ? await connection.get(WEEKLY_DIGEST_REDIS_KEY) : weekKey;
+  const runDaily = dailyDone !== todayKey;
+  const runWeekly = isMonday && weeklyDone !== weekKey;
+
+  if (!runDaily && !runWeekly) return;
 
   try {
-    // Find all teams that have at least one active, non-deleted competitor monitor
-    const rows = await prisma.monitor.groupBy({
-      by: ['teamId'],
-      where: { isCompetitor: true, isActive: true, deletedAt: null },
+    const allTeams = await prisma.team.findMany({
+      select: {
+        id: true,
+        plan: true,
+        trialEndsAt: true,
+        digestPrefs: true,
+        subscription: { select: { status: true } },
+      },
     });
+    const teams = allTeams.filter((t) => t.digestPrefs !== null);
 
-    if (rows.length === 0) {
-      await connection.set(DIGEST_LAST_RUN_KEY, todayUtc, 'EX', 60 * 60 * 48);
+    if (teams.length === 0) {
+      if (runDaily) await connection.set(DAILY_DIGEST_REDIS_KEY, todayKey, 'EX', 60 * 60 * 48);
+      if (runWeekly) await connection.set(WEEKLY_DIGEST_REDIS_KEY, weekKey, 'EX', 60 * 60 * 24 * 8);
       return;
     }
 
     const windowEnd = now.toISOString();
-    const windowStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+    let dailyEnqueued = 0;
+    let weeklyEnqueued = 0;
 
-    for (const row of rows) {
-      await competitorDigestQueue.add(`digest:${row.teamId}:${todayUtc}`, {
-        teamId: row.teamId,
-        windowStart,
-        windowEnd,
-      }, { jobId: `digest:${row.teamId}:${todayUtc}` });
+    for (const team of teams) {
+      const effectivePlan = getEffectivePlan(team);
+      if (effectivePlan === 'free') continue;
+
+      const prefs = digestPrefsSchema.safeParse(team.digestPrefs ?? {});
+      if (!prefs.success || !prefs.data.frequency) continue;
+      const freq = prefs.data.frequency;
+
+      if (runDaily && effectivePlan !== 'starter' && (freq === 'daily' || freq === 'both')) {
+        const windowStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+        const jobId = `digest:daily:${team.id}:${todayKey}`;
+        await intelligenceDigestQueue.add(
+          jobId,
+          { teamId: team.id, frequency: 'daily', windowStart, windowEnd },
+          { jobId }
+        );
+        dailyEnqueued++;
+      }
+
+      if (runWeekly && (freq === 'weekly' || freq === 'both')) {
+        const windowStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const jobId = `digest:weekly:${team.id}:${weekKey}`;
+        await intelligenceDigestQueue.add(
+          jobId,
+          { teamId: team.id, frequency: 'weekly', windowStart, windowEnd },
+          { jobId }
+        );
+        weeklyEnqueued++;
+      }
     }
 
-    await connection.set(DIGEST_LAST_RUN_KEY, todayUtc, 'EX', 60 * 60 * 48);
-    logger.info({ service: 'scheduler', teamCount: rows.length }, 'Competitor digest jobs enqueued');
+    if (runDaily) await connection.set(DAILY_DIGEST_REDIS_KEY, todayKey, 'EX', 60 * 60 * 48);
+    if (runWeekly) await connection.set(WEEKLY_DIGEST_REDIS_KEY, weekKey, 'EX', 60 * 60 * 24 * 8);
+    logger.info({ service: 'scheduler', dailyEnqueued, weeklyEnqueued }, 'Intelligence digest jobs enqueued');
   } catch (err) {
-    logger.error({ service: 'scheduler', err }, 'Failed to enqueue competitor digest jobs');
+    logger.error({ service: 'scheduler', err }, 'Failed to enqueue intelligence digest jobs');
     Sentry.captureException(err);
   }
 }
@@ -715,7 +748,7 @@ async function main(): Promise<void> {
       void expireStaleDeployEvents();
     }
 
-    void maybeEnqueueCompetitorDigests();
+    void maybeEnqueueIntelligenceDigests();
   }, 10_000);
 
   // Run immediately
@@ -736,7 +769,7 @@ const shutdown = async (signal: string) => {
   await checkQueue.close();
   await contentQueue.close();
   await sloBurnQueue.close();
-  await competitorDigestQueue.close();
+  await intelligenceDigestQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 
