@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { use } from 'react';
@@ -869,6 +869,8 @@ function AnomaliesTab({ monitorId }: { monitorId: string }) {
   );
 }
 
+const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -929,8 +931,8 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
 
   const stats = computeStats(results);
 
-  const RANGE_MS: Record<TimeRange, number> = { '24h': 86400000, '7d': 604800000, '30d': 2592000000, '90d': 7776000000 };
-  const cutoff = new Date(Date.now() - RANGE_MS[range]);
+  // eslint-disable-next-line react-hooks/purity
+  const cutoff = useMemo(() => new Date(Date.now() - RANGE_MS[range]), [range]);
   const chartAnomalies = anomalies.filter((a) => new Date(a.checkedAt) >= cutoff);
 
   function handleDelete() {
