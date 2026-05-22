@@ -3,6 +3,7 @@ import { PRICING } from '@/lib/pricing';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -80,6 +81,30 @@ export default function ForEcommercePage() {
           <p className="mt-[14px] text-[13px] text-brand-muted">
             Free forever for 10 monitors. 14-day Growth trial, no card required.
           </p>
+        </div>
+      </section>
+
+      {/* Platform selector */}
+      <section className="py-[60px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-8">
+            <h2 className="text-[clamp(22px,2.8vw,32px)] tracking-[-0.03em] font-extrabold mb-2">Choose your platform</h2>
+            <p className="text-brand-dim text-[15px]">Platform-specific setup guides and monitor templates.</p>
+          </div>
+          <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 max-w-[640px] mx-auto">
+            <Link href="/for/shopify" className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-brand-green-ink transition-colors group">
+              <div className="text-[28px] mb-3">🛍</div>
+              <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2 group-hover:text-brand-green-ink transition-colors">Shopify</h3>
+              <p className="text-brand-dim text-[13px] leading-[1.5]">Monitor setup for Shopify stores. Checkout, competitor tracking, and Intelligence Digest.</p>
+              <span className="mt-4 inline-block text-brand-green-ink text-[14px] font-medium">View Shopify setup →</span>
+            </Link>
+            <Link href="/for/woocommerce" className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-brand-green-ink transition-colors group">
+              <div className="text-[28px] mb-3">🔌</div>
+              <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2 group-hover:text-brand-green-ink transition-colors">WooCommerce</h3>
+              <p className="text-brand-dim text-[13px] leading-[1.5]">Monitor setup for WooCommerce stores. Shop, checkout, and competitor price tracking.</p>
+              <span className="mt-4 inline-block text-brand-green-ink text-[14px] font-medium">View WooCommerce setup →</span>
+            </Link>
+          </div>
         </div>
       </section>
 

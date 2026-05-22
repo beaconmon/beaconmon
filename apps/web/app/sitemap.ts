@@ -39,6 +39,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${BASE_URL}/for/shopify`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/for/woocommerce`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
 
     // ── Tier 4: Comparison pages ──────────────────────────────────────────
     {
@@ -70,6 +82,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,
+    },
+
+    // ── Tier 4.5: SEO content pages ──────────────────────────────────────
+    {
+      url: `${BASE_URL}/shopify-competitor-monitoring`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/competitor-price-tracking`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/pricing-change-alerts`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/ecommerce-website-monitoring`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/website-change-detection`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/homepage-monitoring`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
 
     // ── Tier 5: Trust / informational ────────────────────────────────────
