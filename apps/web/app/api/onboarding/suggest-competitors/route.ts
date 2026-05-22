@@ -77,7 +77,8 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     if (res.ok) {
       const contentLength = res.headers.get('content-length');
       const maxSizeBytes = 1024 * 1024;
-      if (!contentLength || parseInt(contentLength, 10) <= maxSizeBytes) {
+      const contentSize = contentLength ? parseInt(contentLength, 10) : Infinity;
+      if (Number.isFinite(contentSize) && contentSize <= maxSizeBytes) {
         const html = await res.text();
         const titleMatch = html.match(/<title[^>]*>([^<]{1,200})<\/title>/i);
         const descMatch =
