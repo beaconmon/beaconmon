@@ -17,6 +17,13 @@ export interface DisabledChannel {
 }
 
 export const alertChannelRepository = {
+  async validateChannelIds(channelIds: string[], teamId: string): Promise<boolean> {
+    const count = await prisma.alertChannel.count({
+      where: { id: { in: channelIds }, teamId },
+    });
+    return count === channelIds.length;
+  },
+
   async findActiveByTeamId(teamId: string): Promise<AlertChannel[]> {
     return prisma.alertChannel.findMany({
       where: { teamId, isActive: true, disabledAt: null },
