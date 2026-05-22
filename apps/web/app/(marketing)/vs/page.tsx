@@ -5,64 +5,104 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon Alternatives & Comparisons — How Beaconmon Stacks Up',
-  description: 'Honest, side-by-side comparisons of Beaconmon vs UptimeRobot, Pingdom, Better Uptime, and StatusCake. Find the right uptime monitoring tool for your needs.',
+  title: 'How Beaconmon Compares — Ecommerce Uptime Monitoring vs Alternatives',
+  description: 'Honest, side-by-side comparisons of Beaconmon vs UptimeRobot, Pingdom, Better Uptime, and StatusCake. Built for Shopify and WooCommerce stores, not DevOps teams.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
 };
+
+const FAQ_ITEMS = [
+  {
+    q: 'Is Beaconmon cheaper than the alternatives?',
+    a: 'On a per-ecommerce-feature basis, yes. UptimeRobot\'s paid plan starts at $7/mo but has no competitor monitoring or content tracking. Pingdom has no free plan and starts at $15/mo with no ecommerce features. Better Uptime starts at $25/mo. Beaconmon Starter is $29/mo with competitor monitoring, content change detection, and Intelligence Digest included.',
+  },
+  {
+    q: 'Which tool should I choose if I just need basic ping checks?',
+    a: 'If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors) is better suited to ecommerce stores that will outgrow basic pings and need competitor intelligence on paid plans.',
+  },
+  {
+    q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
+    a: 'Not yet. Better Uptime and PagerDuty are strong choices if you run on-call rotations with escalation policies. Beaconmon is designed for ecommerce store owners and small agencies where a Slack alert to the team is sufficient.',
+  },
+  {
+    q: 'Can I migrate my monitors from UptimeRobot or Pingdom?',
+    a: 'There\'s no one-click importer, but setup is fast — each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
+  },
+  {
+    q: 'What makes content change monitoring unique to Beaconmon?',
+    a: 'None of the competitors in this list — UptimeRobot, Pingdom, Better Uptime, or StatusCake — offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It\'s purpose-built for tracking competitor pricing, product availability, and promotional copy.',
+  },
+];
 
 const COMPETITORS = [
   {
     name: 'UptimeRobot',
     slug: 'uptimerobot',
-    tagline: 'Popular free tier, but feature-limited on paid plans.',
-    verdict: 'Great for basic ping checks. Beaconmon adds domain expiry, content monitoring, and faster check intervals at the same Pro price.',
+    tagline: 'Popular free tier, no ecommerce features.',
+    verdict: 'No competitor monitoring, no content tracking. Fine for basic pings — not built for ecommerce.',
     icon: '🤖',
   },
   {
     name: 'Pingdom',
     slug: 'pingdom',
     tagline: 'Enterprise-grade — and enterprise-priced.',
-    verdict: 'No free plan, status pages cost extra, and domain monitoring isn\'t included. Beaconmon covers all of it starting at $15/mo.',
+    verdict: 'No free plan, no competitor monitoring, enterprise pricing. Beaconmon covers ecommerce needs from $29/mo.',
     icon: '📡',
   },
   {
     name: 'Better Uptime',
     slug: 'better-uptime',
     tagline: 'Strong on-call scheduling for large teams.',
-    verdict: 'Excellent if you run an on-call rotation. Overkill for freelancers and small agencies — and $10/mo more expensive for comparable features.',
+    verdict: 'Strong on-call scheduling for large DevOps teams. No competitor monitoring — overkill for most ecommerce stores.',
     icon: '⏱️',
   },
   {
     name: 'StatusCake',
     slug: 'statuscake',
-    tagline: 'Generous free tier, but paid plans get expensive.',
-    verdict: 'Ten free monitors is hard to beat. But paid plans start at $24.99 and content change monitoring is absent entirely.',
+    tagline: 'Generous free tier, missing ecommerce features.',
+    verdict: 'Generous free tier. No competitor monitoring, no content change detection, no Intelligence Digest.',
     icon: '🎂',
   },
 ];
 
 const DIFFERENTIATORS = [
   {
-    heading: '30-second checks on all paid plans.',
-    body: 'Most competitors reserve sub-minute checks for their most expensive tier. Beaconmon\'s $15 Pro plan checks every 30 seconds.',
+    heading: 'Competitor price and content tracking.',
+    body: 'Track when a competitor changes their pricing page, product listings, or homepage copy. Get alerted instantly or via weekly digest.',
   },
   {
-    heading: 'Domain expiry tracking, included.',
-    body: 'Only Beaconmon and a handful of tools track WHOIS-based domain renewals. We include it on every plan because a forgotten domain renewal is the most avoidable downtime there is.',
+    heading: 'Intelligence Digest, delivered to Slack or email.',
+    body: 'A scheduled summary (daily or weekly) of every change detected on competitor sites, grouped and ranked. Available on Starter and above.',
   },
   {
-    heading: 'Content change monitoring.',
-    body: 'Track competitor pricing pages, legal terms, and product listings. Get alerted the instant the content at a CSS selector changes. No other tool in this list offers this.',
+    heading: 'AI-powered change summaries.',
+    body: 'On Growth and Scale, an AI reads the diff and tells you what changed and why it might matter to your store. No noise, just signal.',
   },
   {
-    heading: 'Built for freelancers and agencies.',
-    body: 'Every UX decision was made with people managing multiple client sites in mind — not enterprise DevOps teams with dedicated SRE budgets.',
+    heading: 'Built for ecommerce stores, not DevOps teams.',
+    body: 'Every UX decision is made for a store owner or their agency, not an SRE team with a dedicated monitoring budget.',
   },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: a,
+    },
+  })),
+};
 
 export default function VsHubPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <NavBar />
 
       {/* Hero */}
@@ -82,10 +122,10 @@ export default function VsHubPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Compare</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
-            How Beaconmon compares to the alternatives.
+            How Beaconmon compares — for ecommerce stores.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
-            Honest, opinionated comparisons. We don&apos;t hide our weaknesses — but we do think we&apos;re the best fit for most freelancers and agencies.
+            We&apos;re built for Shopify and WooCommerce stores, not DevOps teams. Honest, opinionated comparisons.
           </p>
         </div>
       </section>
@@ -152,28 +192,7 @@ export default function VsHubPage() {
             <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">Common questions</h2>
           </div>
           <div className="space-y-8">
-            {[
-              {
-                q: 'Is Beaconmon cheaper than the alternatives?',
-                a: 'On a per-feature basis, yes. UptimeRobot\'s paid plan starts at $7/mo but lacks domain expiry and content monitoring. Pingdom has no free plan and starts at $15/mo for fewer monitors. Better Uptime starts at $25/mo. Beaconmon Pro is $15/mo with all monitor types, 5 regions, and custom-domain status pages included.',
-              },
-              {
-                q: 'Which tool should I choose if I just need basic ping checks?',
-                a: 'If you only need simple HTTP uptime monitoring for personal projects and you want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors) is better suited to people who will outgrow it and need the paid features.',
-              },
-              {
-                q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
-                a: 'Not yet. Better Uptime and PagerDuty are strong choices if you run on-call rotations with escalation policies. Beaconmon is designed for freelancers and small agencies where a Slack alert to the team is sufficient.',
-              },
-              {
-                q: 'Can I migrate my monitors from UptimeRobot or Pingdom?',
-                a: 'There\'s no one-click importer, but setup is fast — each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
-              },
-              {
-                q: 'What makes content change monitoring unique to Beaconmon?',
-                a: 'None of the competitors in this list — UptimeRobot, Pingdom, Better Uptime, or StatusCake — offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It\'s purpose-built for tracking competitor pricing, product availability, and legal terms.',
-              },
-            ].map(({ q, a }) => (
+            {FAQ_ITEMS.map(({ q, a }) => (
               <div key={q} className="reveal border-b border-brand-line-soft pb-8 last:border-b-0 last:pb-0">
                 <h3 className="text-[16px] font-semibold tracking-[-0.01em] mb-3">{q}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.7]">{a}</p>
@@ -204,6 +223,12 @@ export default function VsHubPage() {
           </h2>
           <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. No credit card required.</p>
           <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">
+              See the Shopify-specific setup →
+            </Link>
+          </p>
         </div>
       </section>
 

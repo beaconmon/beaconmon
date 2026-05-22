@@ -6,42 +6,18 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs StatusCake (2026) — Uptime Monitoring Comparison',
+  title: 'Beaconmon vs StatusCake for Shopify Stores (2026) — Honest Comparison',
   description:
-    'StatusCake vs Beaconmon: pricing, check frequency, content monitoring, and which tool makes more sense for agencies and freelancers. Try free, no card needed.',
+    'StatusCake vs Beaconmon: no competitor monitoring, no content change detection, no Intelligence Digest. Here\'s the honest comparison for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/statuscake' },
 };
 
 const TABLE_ROWS = [
   {
-    feature: 'Free tier monitors',
-    beaconmon: '10 monitors',
-    competitor: '10 monitors',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Free check frequency',
-    beaconmon: '5 minutes',
-    competitor: '5 minutes',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Paid check frequency',
-    beaconmon: '30 seconds',
-    competitor: '1 minute',
+    feature: 'Competitor monitoring',
+    beaconmon: '✓ Included',
+    competitor: '—',
     beaconmonGood: true,
-  },
-  {
-    feature: 'Multi-location checks',
-    beaconmon: '5 regions (Pro+)',
-    competitor: '✓ (paid)',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Domain expiry tracking',
-    beaconmon: '✓ All plans',
-    competitor: '✓ Paid only',
-    beaconmonGood: false,
   },
   {
     feature: 'Content change monitoring',
@@ -50,49 +26,84 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Heartbeat monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Paid',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'SSL monitoring',
-    beaconmon: '✓ All plans',
-    competitor: '✓ All plans',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Status pages',
-    beaconmon: '✓ All plans',
-    competitor: '✓ Paid only',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'SLO / error budget tracking',
-    beaconmon: '✓ Included',
+    feature: 'AI change summaries',
+    beaconmon: '✓ Growth+',
     competitor: '—',
     beaconmonGood: true,
   },
   {
-    feature: 'Paid plan starting price',
-    beaconmon: '$15 / month',
-    competitor: '$24.99 / month',
+    feature: 'Intelligence Digest',
+    beaconmon: '✓ Starter+',
+    competitor: '—',
     beaconmonGood: true,
+  },
+  {
+    feature: 'Smart Alerts (anomaly)',
+    beaconmon: '✓ Growth+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Multi-location checks',
+    beaconmon: '5 regions',
+    competitor: 'Limited (paid)',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'SSL + domain expiry',
+    beaconmon: '✓ Included',
+    competitor: 'SSL only',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Status pages (custom domain)',
+    beaconmon: '✓ Included',
+    competitor: '✓ Included',
+    beaconmonGood: false,
+  },
+  {
+    feature: 'Check frequency (paid)',
+    beaconmon: '30 seconds',
+    competitor: '1 minute',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Pricing',
+    beaconmon: '$29/mo · $79/mo',
+    competitor: 'From $24.99/mo',
+    beaconmonGood: false,
   },
 ];
 
 const SWITCH_REASONS = [
-  'StatusCake paid plans start at $24.99 — Beaconmon Pro is $15/mo for more features.',
-  'Content change monitoring is completely absent from StatusCake.',
-  'Beaconmon checks every 30 seconds on paid plans; StatusCake\'s comparable plan checks every 1 minute.',
-  'Status pages are included in all Beaconmon plans — StatusCake requires a paid plan.',
-  'SLO tracking and error budget alerts are a Beaconmon-only feature here.',
-  'Beaconmon was built specifically for freelancers and agencies; StatusCake targets a broader audience.',
+  'You want to track when competitors change prices, product listings, or run promotions.',
+  'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
+  'StatusCake has no competitor monitoring and no content change detection of any kind.',
+  'StatusCake paid plans start at $24.99/mo with no ecommerce-specific features included.',
 ];
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Beaconmon',
+  applicationCategory: 'BusinessApplication',
+  description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
+  url: 'https://beaconmon.com',
+  offers: {
+    '@type': 'Offer',
+    price: '29',
+    priceCurrency: 'USD',
+  },
+};
 
 export default function VsStatusCakePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       <NavBar />
 
       {/* Hero */}
@@ -116,10 +127,10 @@ export default function VsStatusCakePage() {
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs StatusCake<br />
-            <span className="text-brand-green-ink">an honest comparison.</span>
+            <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            StatusCake has a generous free tier with 10 monitors. But once you need faster checks, status pages, or content monitoring, paid plans start at $24.99 and still leave gaps that Beaconmon fills at $15.
+            StatusCake has a generous free tier with 10 monitors. But it has no competitor monitoring, no content change detection, and no Intelligence Digest — none of the ecommerce-specific features that matter once you care about more than basic uptime pings.
           </p>
         </div>
       </section>
@@ -130,7 +141,7 @@ export default function VsStatusCakePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              StatusCake&apos;s free plan is the strongest of any tool in this comparison (10 monitors). But its paid plans are expensive, content monitoring doesn&apos;t exist, and status pages are locked behind a subscription. Beaconmon wins on value for anyone doing professional client work.
+              StatusCake&apos;s free plan is strong (10 monitors). But it has no competitor monitoring, no content change detection, and no Intelligence Digest. For a Shopify or WooCommerce store that wants to track what competitors are doing — not just whether their own site is up — Beaconmon is built for that job.
             </p>
           </div>
         </div>
@@ -171,10 +182,10 @@ export default function VsStatusCakePage() {
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[900px] mx-auto">
             <div>
               <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Why people choose Beaconmon over StatusCake
+                Why ecommerce stores choose Beaconmon over StatusCake
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                The free tier is StatusCake&apos;s strongest selling point. Once you upgrade, the value calculus changes fast.
+                The free tier is StatusCake&apos;s strongest selling point. Once you need competitor monitoring or content change detection, it isn&apos;t there.
               </p>
             </div>
             <ul className="space-y-4">
@@ -208,8 +219,14 @@ export default function VsStatusCakePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Growth trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">
+              See the Shopify-specific setup →
+            </Link>
+          </p>
         </div>
       </section>
 
