@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth';
 const RedisUrl = z.string().url().parse(process.env['REDIS_URL']);
 const redis = new Redis(RedisUrl);
 
-const PROTECTED_PATHS = ['/overview', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/settings'];
+const PROTECTED_PATHS = ['/overview', '/onboarding', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/settings'];
 const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/reset-password'];
 
 /**
