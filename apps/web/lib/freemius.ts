@@ -26,9 +26,16 @@ function getFreemiusEnv(): FreemiusEnv {
 
 export function getPlanId(plan: 'starter' | 'growth' | 'scale'): string {
   const env = getFreemiusEnv();
-  if (plan === 'starter') return env.FREEMIUS_STARTER_PLAN_ID ?? '';
-  if (plan === 'growth') return env.FREEMIUS_GROWTH_PLAN_ID ?? '';
-  return env.FREEMIUS_SCALE_PLAN_ID ?? '';
+  if (plan === 'starter') {
+    if (!env.FREEMIUS_STARTER_PLAN_ID) throw new Error("Missing FREEMIUS_STARTER_PLAN_ID for plan 'starter'");
+    return env.FREEMIUS_STARTER_PLAN_ID;
+  }
+  if (plan === 'growth') {
+    if (!env.FREEMIUS_GROWTH_PLAN_ID) throw new Error("Missing FREEMIUS_GROWTH_PLAN_ID for plan 'growth'");
+    return env.FREEMIUS_GROWTH_PLAN_ID;
+  }
+  if (!env.FREEMIUS_SCALE_PLAN_ID) throw new Error("Missing FREEMIUS_SCALE_PLAN_ID for plan 'scale'");
+  return env.FREEMIUS_SCALE_PLAN_ID;
 }
 
 export function planFromFreemiusPlanId(planId: string | null | undefined): PlanTier {
