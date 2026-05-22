@@ -14,6 +14,26 @@ import { ONBOARDING_TEMPLATES } from '@/lib/onboarding-templates';
 import type { PlatformType } from '@/lib/onboarding-templates';
 import Logo from '@/components/logo';
 
+const discoverResponseSchema = z.object({
+  suggestions: z.array(
+    z.object({
+      type: z.enum(['http', 'ssl', 'domain', 'content']),
+      url: z.string(),
+      name: z.string(),
+      defaultIntervalSeconds: z.number(),
+      checkedByDefault: z.boolean(),
+      source: z.enum(['sitemap', 'ai', 'ai+sitemap', 'apex']).optional(),
+      selectorChosen: z.string().nullable().optional(),
+    })
+  ),
+  degraded: z.boolean().optional(),
+});
+
+const suggestCompetitorsResponseSchema = z.object({
+  suggestions: z.array(z.string()),
+  degraded: z.boolean().optional(),
+});
+
 interface OnboardingWizardProps {
   teamId: string;
   plan: PlanTier;
@@ -46,6 +66,7 @@ function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: str
     url: t.path === null ? storeUrl : `${base}${t.path}`,
     intervalSeconds: t.intervalSeconds,
     enabled: true,
+    source: 'template',
   }));
 
   if (platform === 'shopify' && productSlugs.length > 0) {
@@ -57,11 +78,35 @@ function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: str
       url: `${base}/products/${slug}`,
       intervalSeconds: 300,
       enabled: true,
+      source: 'template',
     }));
     return [...items, ...products];
   }
 
   return items;
+}
+
+function mapDiscoverToBundle(
+  suggestions: z.infer<typeof discoverResponseSchema>['suggestions'],
+  _storeUrl: string
+): BundleItem[] {
+  return suggestions.map((s, i): BundleItem => ({
+    id: `discover-${i}`,
+    label: s.name,
+    type: s.type,
+    path: (() => {
+      try {
+        return new URL(s.url).pathname || null;
+      } catch {
+        return null;
+      }
+    })(),
+    url: s.url,
+    intervalSeconds: s.defaultIntervalSeconds,
+    enabled: s.checkedByDefault,
+    source: s.source?.startsWith('ai') ? 'ai' : 'template',
+    selectorChosen: s.selectorChosen,
+  }));
 }
 
 export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps) {
@@ -73,6 +118,9 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   const [competitors, setCompetitors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [discoverLoading, setDiscoverLoading] = useState(false);
+  const [discoverDegraded, setDiscoverDegraded] = useState(false);
+  const [competitorSuggestions, setCompetitorSuggestions] = useState<string[]>([]);
   const [ready] = useState(() => {
     try {
       return localStorage.getItem(obKey(teamId)) === null;
@@ -93,6 +141,57 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   }
 
   async function goToStep2(): Promise<void> {
+    const isAiPlan = plan === 'growth' || plan === 'scale';
+
+    if (isAiPlan) {
+      setDiscoverDegraded(false);
+      setDiscoverLoading(true);
+      setStep(2);
+
+      const hostname = (() => {
+        try {
+          return new URL(storeUrl).hostname;
+        } catch {
+          return storeUrl;
+        }
+      })();
+
+      const [discoverResult, competitorResult] = await Promise.allSettled([
+        apiFetch('/api/monitors/discover', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ domain: hostname }),
+        }).then(async (res) => {
+          const data = await res.json();
+          return discoverResponseSchema.parse(data);
+        }),
+        apiFetch('/api/onboarding/suggest-competitors', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ domain: hostname }),
+        }).then(async (res) => {
+          const data = await res.json();
+          return suggestCompetitorsResponseSchema.parse(data);
+        }),
+      ]);
+
+      if (discoverResult.status === 'fulfilled') {
+        setBundle(mapDiscoverToBundle(discoverResult.value.suggestions, storeUrl));
+        setDiscoverDegraded(discoverResult.value.degraded === true);
+      } else {
+        setBundle(buildBundle(storeUrl, platform ?? 'other', []));
+        setDiscoverDegraded(true);
+      }
+
+      if (competitorResult.status === 'fulfilled' && !competitorResult.value.degraded) {
+        setCompetitorSuggestions(competitorResult.value.suggestions);
+      }
+
+      setDiscoverLoading(false);
+      return;
+    }
+
+    // Free/Starter: template path
     let slugs: string[] = [];
     if (platform === 'shopify') {
       try {
@@ -132,6 +231,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
           url: b.url,
           type: b.type,
           intervalSeconds: clamp(b.intervalSeconds),
+          ...(b.selectorChosen ? { config: { selectorChosen: b.selectorChosen } } : {}),
         }));
 
       const competitorInputs = competitors.map((domain) => ({
@@ -159,10 +259,11 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       }
 
       const monitors = [...enabledBundle, ...competitorInputs];
+      const bulkSource = bundle.some((b) => b.source === 'ai') ? 'smart-setup' : 'template';
       const res = await apiFetch('/api/monitors/bulk-create', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ monitors, source: 'template' }),
+        body: JSON.stringify({ monitors, source: bulkSource }),
       });
 
       if (!res.ok) {
@@ -212,6 +313,8 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
               bundle={bundle}
               onBundleChange={setBundle}
               plan={plan}
+              loading={discoverLoading}
+              degraded={discoverDegraded}
               onBack={() => setStep(1)}
               onSkip={skip}
               onContinue={() => setStep(3)}
@@ -223,6 +326,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
               onCompetitorsChange={setCompetitors}
               plan={plan}
               email={email}
+              aiSuggestions={competitorSuggestions}
               onBack={() => setStep(2)}
               onSkip={skip}
               onSubmit={handleSubmit}

@@ -100,7 +100,7 @@ function mapDeepSeekError(err: unknown): Error {
     }
     return new AiProviderError(`DeepSeek API error (${err.status}): ${err.message}`, err);
   }
-  if (err instanceof Error && err.name === 'AbortError') {
+  if (err instanceof Error && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
     return new AiTimeoutError(err.message, err);
   }
   return new AiProviderError(

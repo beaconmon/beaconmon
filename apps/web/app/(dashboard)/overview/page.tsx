@@ -8,7 +8,7 @@ export default async function DashboardPage() {
 
   const teamId = session?.user?.teamId;
   if (!teamId) {
-    redirect('/monitors');
+    redirect('/sign-in');
   }
 
   const count = await monitorRepository.countByTeam(teamId);

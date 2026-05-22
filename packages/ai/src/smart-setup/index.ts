@@ -17,3 +17,6 @@ export type { ClassifySiteInput } from './classify.js';
 
 export { proposeSelectors } from './select-selectors.js';
 export type { ProposeSelectorsInput } from './select-selectors.js';
+
+export { suggestCompetitors, CompetitorSuggestOutput } from './suggest-competitors.js';
+export type { SuggestCompetitorsInput, SuggestCompetitorsResult } from './suggest-competitors.js';

@@ -10,7 +10,7 @@ import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
 
 const bulkCreateSchema = z.object({
-  monitors: z.array(createMonitorSchema).min(1).max(20),
+  monitors: z.array(createMonitorSchema).min(1).max(50),
   source: z.enum(['discovery', 'template', 'import', 'smart-setup']).optional(),
 });
 
