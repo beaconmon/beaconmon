@@ -55,6 +55,7 @@ export function CompetitorManagementSheet({
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open) void loadCompetitors();
   }, [open]);
 

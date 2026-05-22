@@ -78,6 +78,7 @@ export function useIntelligenceFeed(filters: FilterParams): UseFeedResult {
       setCursor(undefined);
       setEvents([]);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchPage(undefined, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersKey]);
