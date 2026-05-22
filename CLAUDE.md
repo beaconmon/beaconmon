@@ -377,6 +377,14 @@ type ReportJob = {
   periodStart: string;
   periodEnd: string;
 }
+
+// intelligence-digest — enqueued daily/weekly by scheduler for teams with digest prefs
+type IntelligenceDigestJob = {
+  teamId: string;
+  frequency: 'daily' | 'weekly';
+  windowStart: string;
+  windowEnd: string;
+}
 ```
 
 Queue configuration:
@@ -384,6 +392,7 @@ Queue configuration:
 - `content-check` — concurrency: 10 per worker, attempts: 2
 - `alert-send` — concurrency: 10, attempts: 5, backoff: exponential (alerts must eventually send)
 - `report-generate` — concurrency: 2, attempts: 3
+- `intelligence-digest` — concurrency: 3, attempts: 3, backoff: exponential
 
 ---
 
@@ -612,6 +621,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
 | alert-worker | `pnpm run start:worker:alerts` | 1 instance |
 | escalation-worker | `pnpm run start:worker:escalation` | 1 instance |
 | report-worker | `pnpm run start:worker:report` | 1 instance |
+| digest-worker | `pnpm run start:worker:digest` | 1 instance |
 | scheduler | `pnpm run start:scheduler` | 1 instance (must be singleton) |
 
 **Deploy checklist before going live:**
@@ -666,6 +676,7 @@ Seven services in the Compose stack, all from the same Docker image with differe
 - [x] Competitor tracking preset (is_competitor flag on monitors, `/api/monitors/competitor-presets` endpoint with suggested selectors)
 - [x] AI content-diff summaries + noise filter (`@beaconmon/ai` package; Anthropic/OpenAI/noop providers; Pro/Business gated; per-monitor daily rate limit; noise classifications suppress alerts + digest entries)
 - [x] AI Smart Monitor Setup (`FEATURE_AI_SMART_SETUP`; augments `/api/monitors/discover` for Pro/Business; site classification + CSS selector proposal; 30s budget with per-stage timeouts; graceful degradation to keyword-only on any failure)
+- [x] Intelligence Digest (scheduled email + Slack digest; daily at 7:00 UTC for Growth/Scale, weekly Monday 7:00 UTC for all paid plans; 5 toggleable sections; per-team channel opt-in; `digestPrefs` jsonb on teams table; dedicated `digest-worker` process)
 - [x] Multi-location checks (Cloudflare Workers) — post-launch
 - [x] Heartbeat monitoring — post-launch
 - [x] Scheduled maintenance windows — post-launch
