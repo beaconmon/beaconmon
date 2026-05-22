@@ -162,6 +162,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ domain: hostname }),
         }).then(async (res) => {
+          if (!res.ok) throw new Error(`Discover API failed with status ${res.status}`);
           const data = await res.json();
           return discoverResponseSchema.parse(data);
         }),
@@ -170,6 +171,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ domain: hostname }),
         }).then(async (res) => {
+          if (!res.ok) throw new Error(`Suggest competitors API failed with status ${res.status}`);
           const data = await res.json();
           return suggestCompetitorsResponseSchema.parse(data);
         }),

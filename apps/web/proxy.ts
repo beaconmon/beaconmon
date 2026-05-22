@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth';
 const RedisUrl = z.string().url().parse(process.env['REDIS_URL']);
 const redis = new Redis(RedisUrl);
 
-const PROTECTED_PATHS = ['/overview', '/onboarding', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/settings'];
+const PROTECTED_PATHS = ['/overview', '/onboarding', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/intelligence', '/settings'];
 const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/reset-password'];
 
 /**
@@ -101,6 +101,9 @@ export default async function proxy(req: NextRequest) {
     }
     if (pathname === '/for/freelancers') {
       return NextResponse.redirect(new URL('/for/ecommerce', req.url), 301);
+    }
+    if (pathname === '/competitors' || pathname.startsWith('/competitors/')) {
+      return NextResponse.redirect(new URL('/intelligence', req.url), 301);
     }
 
     const method = req.method.toUpperCase();
