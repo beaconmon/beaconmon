@@ -50,6 +50,9 @@ importers:
       '@beaconmon/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@freemius/sdk':
+        specifier: ^0.3.0
+        version: 0.3.0(@freemius/checkout@1.4.1)(zod@4.3.6)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.73.1(react@19.2.5))
@@ -1388,6 +1391,15 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@freemius/checkout@1.4.1':
+    resolution: {integrity: sha512-NAQouqGG9PNmGqU45HfnUB6fk3IDUudJpye6nLMthJvZaYWGPbMb0xzfu1v/+35avzH5BgcRBoNcQkgxGh8Tjg==}
+
+  '@freemius/sdk@0.3.0':
+    resolution: {integrity: sha512-/WHitAgqk9mWg1lzKin7WVCoZb5yiz/Uqbi9oDzQ/836wfya6OBBIVxXiNH6BXYYxIcXOz02kxuZzqmXgs9m9g==}
+    peerDependencies:
+      '@freemius/checkout': ^1.4.0
+      zod: ^4.0.0
 
   '@hono/node-server@1.19.11':
     resolution: {integrity: sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g==}
@@ -5391,6 +5403,12 @@ packages:
       zod:
         optional: true
 
+  openapi-fetch@0.14.1:
+    resolution: {integrity: sha512-l7RarRHxlEZYjMLd/PR0slfMVse2/vvIAGm75/F7J6MlQ8/b9uUQmUF2kCPrQhJqMXSxmYWObVgeYXbFYzZR+A==}
+
+  openapi-typescript-helpers@0.0.15:
+    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
+
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -7549,6 +7567,14 @@ snapshots:
       react-dom: 19.2.5(react@19.2.5)
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@freemius/checkout@1.4.1': {}
+
+  '@freemius/sdk@0.3.0(@freemius/checkout@1.4.1)(zod@4.3.6)':
+    dependencies:
+      '@freemius/checkout': 1.4.1
+      openapi-fetch: 0.14.1
+      zod: 4.3.6
 
   '@hono/node-server@1.19.11(hono@4.12.14)':
     dependencies:
@@ -11988,6 +12014,12 @@ snapshots:
     optionalDependencies:
       ws: 8.18.0
       zod: 4.4.3
+
+  openapi-fetch@0.14.1:
+    dependencies:
+      openapi-typescript-helpers: 0.0.15
+
+  openapi-typescript-helpers@0.0.15: {}
 
   optionator@0.9.4:
     dependencies:

@@ -1,11 +1,14 @@
 import crypto from 'node:crypto';
 import { z } from 'zod';
 import type { PlanTier } from '@beaconmon/types';
+import { Freemius } from '@freemius/sdk';
 
 const freemiusEnvSchema = z.object({
   FREEMIUS_API_KEY: z.string().min(1),
   FREEMIUS_WEBHOOK_SECRET: z.string().min(1),
   FREEMIUS_PRODUCT_ID: z.string().min(1),
+  FREEMIUS_SECRET_KEY: z.string().min(1).optional(),
+  FREEMIUS_PUBLIC_KEY: z.string().min(1).optional(),
   FREEMIUS_STARTER_PLAN_ID: z.string().optional(),
   FREEMIUS_GROWTH_PLAN_ID: z.string().optional(),
   FREEMIUS_SCALE_PLAN_ID: z.string().optional(),
@@ -60,8 +63,7 @@ export function billingPeriodFromFreemiusCycle(
 }
 
 // Customer portal: Freemius hosts the user dashboard at users.freemius.com.
-// We deep-link with the user's email so the login flow is pre-filled — the
-// user authenticates via a Freemius-issued magic link.
+// We deep-link with the user's email so the login flow is pre-filled.
 export async function createPortalSession(_freemiusUserId: string, email?: string): Promise<string> {
   const params = new URLSearchParams();
   if (email) params.set('email', email);
@@ -125,3 +127,22 @@ export const freemiusSubscriptionDataSchema = z.object({
 });
 
 export type FreemiusSubscriptionData = z.infer<typeof freemiusSubscriptionDataSchema>;
+
+// SDK singleton for REST API calls (resync endpoint, future use).
+// Requires FREEMIUS_SECRET_KEY and FREEMIUS_PUBLIC_KEY to be set.
+let _freemiusSdk: Freemius | null = null;
+
+export function getFreemiusSdk(): Freemius {
+  if (_freemiusSdk) return _freemiusSdk;
+  const env = getFreemiusEnv();
+  if (!env.FREEMIUS_SECRET_KEY || !env.FREEMIUS_PUBLIC_KEY) {
+    throw new Error('FREEMIUS_SECRET_KEY and FREEMIUS_PUBLIC_KEY are required for SDK operations. Set them in your environment.');
+  }
+  _freemiusSdk = new Freemius({
+    productId: env.FREEMIUS_PRODUCT_ID,
+    apiKey: env.FREEMIUS_API_KEY,
+    secretKey: env.FREEMIUS_SECRET_KEY,
+    publicKey: env.FREEMIUS_PUBLIC_KEY,
+  });
+  return _freemiusSdk;
+}

@@ -415,6 +415,19 @@ async function runRetentionCleanup(): Promise<void> {
     logger.error({ service: 'scheduler', err }, 'Retention cleanup failed');
     Sentry.captureException(err);
   }
+
+  // Purge dedup table rows older than 90 days — keeps the table from growing unbounded.
+  try {
+    const webhookCutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const deleted = await prisma.processedWebhookEvent.deleteMany({
+      where: { processedAt: { lt: webhookCutoff } },
+    });
+    if (deleted.count > 0) {
+      logger.info({ service: 'scheduler', deleted: deleted.count }, 'Purged old processed_webhook_events');
+    }
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'processed_webhook_events purge failed');
+  }
 }
 
 // Per-plan snapshot retention for content monitors.

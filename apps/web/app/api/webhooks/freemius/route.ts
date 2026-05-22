@@ -1,3 +1,4 @@
+import { prisma, Prisma } from '@beaconmon/db';
 import { logger } from '@/lib/logger';
 import { verifyWebhook } from '@/lib/freemius';
 import { handleFreemiusEvent } from '@/lib/freemius-handlers';
@@ -20,6 +21,22 @@ export async function POST(req: Request) {
   }
 
   logger.info({ service: 'web', eventType: event.type }, 'Freemius webhook received');
+
+  // Dedup on event_id to guard against Freemius retries and double-fires.
+  const eventId = event.id != null ? String(event.id) : null;
+  if (eventId) {
+    try {
+      await prisma.processedWebhookEvent.create({
+        data: { id: eventId, type: event.type },
+      });
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        logger.info({ service: 'web', eventId, eventType: event.type }, 'Duplicate Freemius event — skipped');
+        return Response.json({ received: true });
+      }
+      throw err;
+    }
+  }
 
   try {
     await handleFreemiusEvent(event);
