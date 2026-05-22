@@ -6,33 +6,15 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Better Uptime Alternative — Beaconmon for Freelancers & Agencies',
+  title: 'Beaconmon vs Better Uptime for Shopify Stores (2026) — Honest Comparison',
   description:
-    'Better Uptime vs Beaconmon: on-call scheduling, pricing, content monitoring, and which tool is actually built for your use case. Try free, no card needed.',
+    'Better Uptime vs Beaconmon: on-call scheduling vs ecommerce competitor monitoring. Which tool is actually built for your store? Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
 };
 
 const TABLE_ROWS = [
   {
-    feature: 'Free plan',
-    beaconmon: '✓ 10 monitors',
-    competitor: '✓ 3 monitors',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Check frequency (paid)',
-    beaconmon: '30 seconds',
-    competitor: '30 seconds',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Multi-location checks',
-    beaconmon: '5 regions',
-    competitor: '✓ Multiple',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Domain expiry tracking',
+    feature: 'Competitor monitoring',
     beaconmon: '✓ Included',
     competitor: '—',
     beaconmonGood: true,
@@ -44,55 +26,84 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Heartbeat monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'On-call scheduling / rotations',
-    beaconmon: '—',
-    competitor: '✓ Advanced',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Status pages',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'SSL monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'SLO / error budget tracking',
-    beaconmon: '✓ Included',
+    feature: 'AI change summaries',
+    beaconmon: '✓ Growth+',
     competitor: '—',
     beaconmonGood: true,
   },
   {
-    feature: 'Pro plan price',
-    beaconmon: '$15 / month',
-    competitor: '$25 / month (Freelancer)',
+    feature: 'Intelligence Digest',
+    beaconmon: '✓ Starter+',
+    competitor: '—',
     beaconmonGood: true,
+  },
+  {
+    feature: 'Smart Alerts (anomaly)',
+    beaconmon: '✓ Growth+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Multi-location checks',
+    beaconmon: '5 regions',
+    competitor: 'Multiple (paid)',
+    beaconmonGood: false,
+  },
+  {
+    feature: 'SSL + domain expiry',
+    beaconmon: '✓ Included',
+    competitor: 'SSL only',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Status pages (custom domain)',
+    beaconmon: '✓ Included',
+    competitor: '✓ Included',
+    beaconmonGood: false,
+  },
+  {
+    feature: 'Check frequency (paid)',
+    beaconmon: '30 seconds',
+    competitor: '3 minutes',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Pricing',
+    beaconmon: '$29/mo · $79/mo',
+    competitor: 'From $25/mo',
+    beaconmonGood: false,
   },
 ];
 
 const SWITCH_REASONS = [
-  'Beaconmon costs $10/mo less for a comparable feature set.',
-  'Domain expiry tracking is missing from Better Uptime — Beaconmon includes it on all plans.',
-  'Content change monitoring is a Beaconmon-only feature in this comparison.',
-  'You don\'t need on-call scheduling for a one-person or small team setup.',
-  'SLO / error budget tracking is included in Beaconmon Pro; not available in Better Uptime.',
-  'Beaconmon\'s free plan includes 10 monitors vs 3 in Better Uptime.',
+  'You want to track when competitors change prices, product listings, or run promotions.',
+  'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
+  'Better Uptime\'s on-call rotation features are designed for DevOps teams with pager rotations — overkill for an ecommerce store.',
+  'Better Uptime has no competitor monitoring or content change detection.',
 ];
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Beaconmon',
+  applicationCategory: 'BusinessApplication',
+  description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
+  url: 'https://beaconmon.com',
+  offers: {
+    '@type': 'Offer',
+    price: '29',
+    priceCurrency: 'USD',
+  },
+};
 
 export default function VsBetterUptimePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       <NavBar />
 
       {/* Hero */}
@@ -116,10 +127,10 @@ export default function VsBetterUptimePage() {
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs Better Uptime<br />
-            <span className="text-brand-green-ink">an honest comparison.</span>
+            <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            Better Uptime has excellent on-call scheduling for large engineering teams. But for freelancers and small agencies, it&apos;s $10/mo more expensive with features you probably won&apos;t use, and it&apos;s missing domain expiry and content monitoring entirely.
+            Better Uptime has excellent on-call scheduling for large engineering teams. For ecommerce store owners, it&apos;s a tool built for a different job — and it has no competitor monitoring or content change detection at any price point.
           </p>
         </div>
       </section>
@@ -130,7 +141,7 @@ export default function VsBetterUptimePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Better Uptime is built for teams that need on-call rotations and escalation policies. If that&apos;s you, it might be worth the extra cost. If you&apos;re a freelancer or a small agency managing client sites, Beaconmon is $10/mo cheaper with more features that matter for that specific job.
+              Better Uptime is built for teams that need on-call rotations and escalation policies. If your store needs a pager rotation, it might be worth a look. If you&apos;re a Shopify or WooCommerce store owner who wants competitor price tracking, content change alerts, and a weekly Intelligence Digest — Beaconmon is purpose-built for that.
             </p>
           </div>
         </div>
@@ -171,10 +182,10 @@ export default function VsBetterUptimePage() {
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[900px] mx-auto">
             <div>
               <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Why people choose Beaconmon over Better Uptime
+                Why ecommerce stores choose Beaconmon over Better Uptime
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Better Uptime shines for large engineering teams. For freelancers and small agencies, the value calculus tips toward Beaconmon.
+                Better Uptime is excellent for DevOps teams running on-call rotations. For store owners and their agencies, the value tips toward Beaconmon.
               </p>
             </div>
             <ul className="space-y-4">
@@ -208,8 +219,14 @@ export default function VsBetterUptimePage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Growth trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">
+              See the Shopify-specific setup →
+            </Link>
+          </p>
         </div>
       </section>
 

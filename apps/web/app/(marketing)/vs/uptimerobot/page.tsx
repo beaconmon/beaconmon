@@ -6,33 +6,15 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs UptimeRobot (2026) — Honest Comparison',
+  title: 'Beaconmon vs UptimeRobot for Shopify Stores (2026) — Honest Comparison',
   description:
-    'UptimeRobot vs Beaconmon: check frequency, pricing, domain expiry, content monitoring, and status pages compared side-by-side. Try free, no card needed.',
+    'UptimeRobot vs Beaconmon: competitor monitoring, content change detection, Intelligence Digest, and pricing compared side-by-side for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/uptimerobot' },
 };
 
 const TABLE_ROWS = [
   {
-    feature: 'Free tier monitors',
-    beaconmon: '10 monitors',
-    competitor: '50 monitors',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Paid check frequency',
-    beaconmon: '30 seconds',
-    competitor: '1 minute',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Multi-location checks',
-    beaconmon: '5 regions',
-    competitor: '1 location',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Domain expiry tracking',
+    feature: 'Competitor monitoring',
     beaconmon: '✓ Included',
     competitor: '—',
     beaconmonGood: true,
@@ -44,9 +26,33 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Heartbeat monitoring',
-    beaconmon: '✓ Included',
+    feature: 'AI change summaries',
+    beaconmon: '✓ Growth+',
     competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Intelligence Digest',
+    beaconmon: '✓ Starter+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Smart Alerts (anomaly)',
+    beaconmon: '✓ Growth+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Multi-location checks',
+    beaconmon: '5 regions',
+    competitor: '1 location',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'SSL + domain expiry',
+    beaconmon: '✓ Included',
+    competitor: 'SSL only',
     beaconmonGood: true,
   },
   {
@@ -56,49 +62,48 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'SSL monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'TCP port monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Webhook alerts',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'SLO / error budget tracking',
-    beaconmon: '✓ Included',
-    competitor: '—',
+    feature: 'Check frequency (paid)',
+    beaconmon: '30 seconds',
+    competitor: '1 minute',
     beaconmonGood: true,
   },
   {
-    feature: 'Pro plan price',
-    beaconmon: '$15 / month',
-    competitor: '$7 / month',
+    feature: 'Pricing',
+    beaconmon: '$29/mo · $79/mo',
+    competitor: '$7/mo',
     beaconmonGood: false,
   },
 ];
 
 const SWITCH_REASONS = [
-  'You need domain expiry tracking — UptimeRobot doesn\'t watch WHOIS records.',
-  'You want to monitor content changes on competitor pages or client sites.',
-  'You need faster checks — 30-second intervals vs 1-minute on UptimeRobot\'s paid plan.',
-  'You want multi-location confirmation to eliminate false positives.',
-  'Your clients need a status page on a custom domain without paying extra.',
-  'You need heartbeat monitoring for cron jobs and scheduled tasks.',
+  'You want to track when competitors change prices, product listings, or run promotions.',
+  'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
+  'UptimeRobot has no competitor monitoring — it only pings URLs for uptime, nothing more.',
+  'You want multi-location checks to eliminate false positives during high-traffic campaigns.',
 ];
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Beaconmon',
+  applicationCategory: 'BusinessApplication',
+  description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
+  url: 'https://beaconmon.com',
+  offers: {
+    '@type': 'Offer',
+    price: '29',
+    priceCurrency: 'USD',
+  },
+};
 
 export default function VsUptimeRobotPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       <NavBar />
 
       {/* Hero */}
@@ -122,10 +127,10 @@ export default function VsUptimeRobotPage() {
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs UptimeRobot<br />
-            <span className="text-brand-green-ink">an honest comparison.</span>
+            <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            UptimeRobot&apos;s free plan (50 monitors) is genuinely hard to beat. But the moment you care about domain expiry, content monitoring, or faster checks — Beaconmon pulls ahead at a competitive price.
+            UptimeRobot&apos;s free plan (50 monitors) is genuinely hard to beat for basic pings. But if you run a Shopify or WooCommerce store and want to track competitor pricing changes, get a weekly Intelligence Digest, or catch SSL expiry before it kills your checkout — Beaconmon is purpose-built for that.
           </p>
         </div>
       </section>
@@ -136,7 +141,7 @@ export default function VsUptimeRobotPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              If you only need basic HTTP pings and the 50-monitor free tier is useful to you, UptimeRobot is a solid choice. But if you manage client sites and need domain expiry warnings, content monitoring, custom-domain status pages, or faster check intervals — Beaconmon gives you significantly more for $8/mo more.
+              If you only need basic HTTP uptime pings, UptimeRobot&apos;s free tier (50 monitors) is hard to beat. But if you run a Shopify or WooCommerce store and want to track competitor pricing changes, get a weekly Intelligence Digest, or catch SSL expiry before it kills your checkout — Beaconmon is purpose-built for that.
             </p>
           </div>
         </div>
@@ -177,10 +182,10 @@ export default function VsUptimeRobotPage() {
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[900px] mx-auto">
             <div>
               <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Why people switch from UptimeRobot to Beaconmon
+                Why ecommerce stores switch from UptimeRobot to Beaconmon
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Usually it&apos;s one of a few things — the missing features start to matter as you take on more client work.
+                Usually it comes down to the same gaps — you need competitor tracking, content change alerts, or a weekly digest of everything that changed on competitor sites.
               </p>
             </div>
             <ul className="space-y-4">
@@ -214,8 +219,14 @@ export default function VsUptimeRobotPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Growth trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">
+              See the Shopify-specific setup →
+            </Link>
+          </p>
         </div>
       </section>
 

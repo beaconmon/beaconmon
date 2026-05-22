@@ -27,5 +27,9 @@ export const GET = withAuth(async (req, { teamId, plan }) => {
     range,
   });
 
-  return Response.json(result);
+  if (!result.ok) {
+    throw new Error('Failed to fetch intelligence feed');
+  }
+
+  return Response.json(result.data);
 });

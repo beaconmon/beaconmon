@@ -43,31 +43,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // ── Tier 4: Comparison pages ──────────────────────────────────────────
     {
       url: `${BASE_URL}/vs`,
-      lastModified: new Date('2026-03-01'),
+      lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${BASE_URL}/vs/uptimerobot`,
-      lastModified: new Date('2026-05-10'),
+      lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
       url: `${BASE_URL}/vs/pingdom`,
-      lastModified: new Date('2026-05-10'),
+      lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
       url: `${BASE_URL}/vs/better-uptime`,
-      lastModified: new Date('2026-05-10'),
+      lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
       url: `${BASE_URL}/vs/statuscake`,
-      lastModified: new Date('2026-05-10'),
+      lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },

@@ -6,39 +6,15 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Pingdom (2026) — Is Pingdom Worth the Price?',
+  title: 'Beaconmon vs Pingdom for Shopify Stores (2026) — Honest Comparison',
   description:
-    "Pingdom vs Beaconmon: no free plan, status pages cost extra, and domain monitoring is missing. Here's the honest comparison. Try free, no card needed.",
+    'Pingdom vs Beaconmon: no free plan, no competitor monitoring, enterprise pricing. Here\'s the honest comparison for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
 };
 
 const TABLE_ROWS = [
   {
-    feature: 'Free plan',
-    beaconmon: '✓ 10 monitors free',
-    competitor: '— None',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Check frequency',
-    beaconmon: '30 seconds',
-    competitor: '1 minute',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Multi-location checks',
-    beaconmon: '5 regions',
-    competitor: '✓ (limited locations)',
-    beaconmonGood: false,
-  },
-  {
-    feature: 'Status pages',
-    beaconmon: '✓ Included',
-    competitor: 'Extra cost',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Domain expiry tracking',
+    feature: 'Competitor monitoring',
     beaconmon: '✓ Included',
     competitor: '—',
     beaconmonGood: true,
@@ -50,49 +26,84 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Heartbeat monitoring',
-    beaconmon: '✓ Included',
+    feature: 'AI change summaries',
+    beaconmon: '✓ Growth+',
     competitor: '—',
     beaconmonGood: true,
   },
   {
-    feature: 'SSL monitoring',
-    beaconmon: '✓ Included',
-    competitor: '✓ Included',
+    feature: 'Intelligence Digest',
+    beaconmon: '✓ Starter+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Smart Alerts (anomaly)',
+    beaconmon: '✓ Growth+',
+    competitor: '—',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Multi-location checks',
+    beaconmon: '5 regions',
+    competitor: 'Multiple (enterprise)',
     beaconmonGood: false,
   },
   {
-    feature: 'SLO / error budget tracking',
+    feature: 'SSL + domain expiry',
     beaconmon: '✓ Included',
-    competitor: '—',
+    competitor: 'SSL only',
     beaconmonGood: true,
   },
   {
-    feature: 'Starting price',
-    beaconmon: '$0 (free) / $15 Pro',
-    competitor: '$15 / month',
+    feature: 'Status pages (custom domain)',
+    beaconmon: '✓ Included',
+    competitor: 'Paid add-on',
     beaconmonGood: true,
   },
   {
-    feature: 'Built for agencies',
-    beaconmon: '✓ Core use case',
-    competitor: 'Enterprise focus',
+    feature: 'Check frequency (paid)',
+    beaconmon: '30 seconds',
+    competitor: '1 minute',
     beaconmonGood: true,
+  },
+  {
+    feature: 'Pricing',
+    beaconmon: '$29/mo · $79/mo',
+    competitor: 'From $15/mo (no free plan)',
+    beaconmonGood: false,
   },
 ];
 
 const SWITCH_REASONS = [
-  'No free plan on Pingdom — you pay from day one.',
-  'Status pages cost extra in Pingdom; they\'re included in every Beaconmon plan.',
-  'Domain expiry monitoring is absent from Pingdom entirely.',
-  'Content change monitoring isn\'t a Pingdom feature at any price point.',
-  'Beaconmon\'s $15 Pro plan includes more features than Pingdom\'s $15 entry point.',
-  'Beaconmon checks every 30 seconds; Pingdom\'s standard plan checks every 1 minute.',
+  'You want to track when competitors change prices, product listings, or run promotions.',
+  'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
+  'Pingdom has no free plan and is priced for enterprise teams, not ecommerce stores.',
+  'Pingdom has no competitor monitoring or content change detection.',
 ];
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Beaconmon',
+  applicationCategory: 'BusinessApplication',
+  description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
+  url: 'https://beaconmon.com',
+  offers: {
+    '@type': 'Offer',
+    price: '29',
+    priceCurrency: 'USD',
+  },
+};
 
 export default function VsPingdomPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       <NavBar />
 
       {/* Hero */}
@@ -116,10 +127,10 @@ export default function VsPingdomPage() {
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
             Beaconmon vs Pingdom<br />
-            <span className="text-brand-green-ink">an honest comparison.</span>
+            <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            Pingdom is a solid enterprise monitoring tool, but it has no free plan, charges extra for status pages, and lacks domain expiry and content monitoring. Beaconmon covers all of that starting at $0.
+            Pingdom is a solid enterprise monitoring tool. But it has no free plan, no competitor monitoring, status pages cost extra, and domain expiry isn&apos;t included. Beaconmon covers all of that from $29/mo, purpose-built for ecommerce.
           </p>
         </div>
       </section>
@@ -130,7 +141,7 @@ export default function VsPingdomPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Pingdom is built for teams that already have dedicated DevOps budgets. For freelancers and agencies paying out of pocket, you&apos;re getting fewer features at the same price point — no free plan, status pages cost extra, and key features like domain expiry tracking simply don&apos;t exist in Pingdom at any tier.
+              Pingdom is built for teams with dedicated DevOps budgets. For ecommerce stores paying out of pocket, you get fewer features at a higher price — no free plan, status pages cost extra, no competitor monitoring, and key features like domain expiry tracking don&apos;t exist at any tier.
             </p>
           </div>
         </div>
@@ -171,10 +182,10 @@ export default function VsPingdomPage() {
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[900px] mx-auto">
             <div>
               <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Why people switch from Pingdom to Beaconmon
+                Why ecommerce stores switch from Pingdom to Beaconmon
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                The same starting price, but Beaconmon includes features that Pingdom either charges extra for or doesn&apos;t offer at all.
+                The starting price looks similar, but Beaconmon&apos;s feature set is built around what ecommerce stores actually need.
               </p>
             </div>
             <ul className="space-y-4">
@@ -208,8 +219,14 @@ export default function VsPingdomPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Try Beaconmon free.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Pro trial, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Growth trial, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">
+              See the Shopify-specific setup →
+            </Link>
+          </p>
         </div>
       </section>
 
