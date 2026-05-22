@@ -1,22 +1,15 @@
-import { prisma } from '@beaconmon/db';
-import { digestPrefsSchema, updateDigestPrefsSchema } from '@beaconmon/types';
+import { digestPrefsSchema, updateDigestPrefsSchema, DEFAULT_DIGEST_PREFS } from '@beaconmon/types';
+import { digestRepository, alertChannelRepository } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { ValidationError, ForbiddenError } from '@/lib/api/errors';
 
 export const GET = withAuth(async (_req, ctx) => {
   const { teamId, plan } = ctx;
 
-  const team = await prisma.team.findUnique({
-    where: { id: teamId },
-    select: { digestPrefs: true },
-  });
+  const digestPrefs = await digestRepository.getDigestPrefs(teamId);
 
-  const parsedPrefs = digestPrefsSchema.safeParse(team?.digestPrefs ?? {});
-  const prefs = parsedPrefs.success ? parsedPrefs.data : {
-    frequency: null,
-    channelIds: [],
-    sections: { incidents: true, ownContent: true, competitors: true, smartAlerts: true, expiry: true },
-  };
+  const parsedPrefs = digestPrefsSchema.safeParse(digestPrefs ?? {});
+  const prefs = parsedPrefs.success ? parsedPrefs.data : DEFAULT_DIGEST_PREFS;
 
   return Response.json({ prefs, plan });
 });
@@ -42,18 +35,13 @@ export const PATCH = withAuth(async (req, ctx) => {
 
   // Validate that all channelIds belong to this team
   if (input.channelIds.length > 0) {
-    const count = await prisma.alertChannel.count({
-      where: { id: { in: input.channelIds }, teamId },
-    });
-    if (count !== input.channelIds.length) {
+    const valid = await alertChannelRepository.validateChannelIds(input.channelIds, teamId);
+    if (!valid) {
       throw new ValidationError('One or more channel IDs are invalid');
     }
   }
 
-  await prisma.team.update({
-    where: { id: teamId },
-    data: { digestPrefs: input },
-  });
+  await digestRepository.updateDigestPrefs(teamId, input);
 
   return Response.json({ ok: true });
 });

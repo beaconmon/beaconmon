@@ -46,6 +46,22 @@ export interface DigestOwnContentSnapshot {
 }
 
 export const digestRepository = {
+  async getDigestPrefs(teamId: string): Promise<unknown> {
+    const team = await prisma.team.findUnique({
+      where: { id: teamId },
+      select: { digestPrefs: true },
+    });
+    return team?.digestPrefs ?? null;
+  },
+
+  async updateDigestPrefs(teamId: string, prefs: unknown): Promise<void> {
+    await prisma.team.update({
+      where: { id: teamId },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: { digestPrefs: prefs as any },
+    });
+  },
+
   async getTeamForDigest(teamId: string): Promise<DigestTeam | null> {
     const team = await prisma.team.findUnique({
       where: { id: teamId },
