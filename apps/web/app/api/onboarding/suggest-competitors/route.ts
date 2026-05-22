@@ -75,20 +75,24 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     clearTimeout(timeout);
 
     if (res.ok) {
-      const html = await res.text();
-      const titleMatch = html.match(/<title[^>]*>([^<]{1,200})<\/title>/i);
-      const descMatch =
-        html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{1,300})["']/i) ??
-        html.match(/<meta[^>]+content=["']([^"']{1,300})["'][^>]+name=["']description["']/i);
-      const bodyText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 2000);
+      const contentLength = res.headers.get('content-length');
+      const maxSizeBytes = 1024 * 1024;
+      if (!contentLength || parseInt(contentLength, 10) <= maxSizeBytes) {
+        const html = await res.text();
+        const titleMatch = html.match(/<title[^>]*>([^<]{1,200})<\/title>/i);
+        const descMatch =
+          html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{1,300})["']/i) ??
+          html.match(/<meta[^>]+content=["']([^"']{1,300})["'][^>]+name=["']description["']/i);
+        const bodyText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 2000);
 
-      extractedText = [
-        titleMatch?.[1] && `Title: ${titleMatch[1]}`,
-        descMatch?.[1] && `Description: ${descMatch[1]}`,
-        bodyText && `Body: ${bodyText}`,
-      ]
-        .filter(Boolean)
-        .join('\n');
+        extractedText = [
+          titleMatch?.[1] && `Title: ${titleMatch[1]}`,
+          descMatch?.[1] && `Description: ${descMatch[1]}`,
+          bodyText && `Body: ${bodyText}`,
+        ]
+          .filter(Boolean)
+          .join('\n');
+      }
     }
   } catch {
     // fetch failed, use domain-only prompt
