@@ -142,7 +142,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Monitor types grid */}
-      <section className="py-[80px] border-t border-brand-line-soft">
+      <section id="monitors" className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Six ways to watch your stack</h2>
@@ -222,7 +222,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Status pages */}
-      <section className="py-[100px] border-t border-brand-line-soft">
+      <section id="status-pages" className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1.1fr_1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div className="order-2 max-[880px]:order-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
@@ -275,7 +275,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* SLO */}
-      <section className="py-[100px] border-t border-brand-line-soft">
+      <section id="reliability-targets" className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div>
@@ -322,6 +322,51 @@ export default function FeaturesPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Smart Alerts */}
+      <section id="smart-alerts" className="py-[100px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
+            <div>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Smart Alerts</span>
+              <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
+                Alerts that know when something is actually wrong.
+              </h2>
+              <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
+                Not every spike is an outage. Beaconmon uses statistical anomaly detection to separate genuine slowdowns from background noise. You get alerted when response times deviate meaningfully from the historical baseline, not when a single check runs slow.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Z-score anomaly detection on HTTP and keyword monitors',
+                  'Fires through existing alert channels (email, Slack, webhook)',
+                  'Tunable sensitivity per monitor',
+                  'Available on Growth and Scale plans',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
+                    <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 space-y-4">
+              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-1">Anomaly detected</div>
+              {[
+                { label: 'Checkout API', baseline: '210ms', current: '1,420ms', severity: 'high' },
+                { label: 'Product page', baseline: '340ms', current: '480ms', severity: 'low' },
+                { label: 'Marketing site', baseline: '180ms', current: '195ms', severity: 'none' },
+              ].map(({ label, baseline, current, severity }) => (
+                <div key={label} className="flex items-center gap-4 py-3 border-b border-brand-line-soft last:border-b-0 text-[13px]">
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${severity === 'high' ? 'bg-brand-red' : severity === 'low' ? 'bg-yellow-400' : 'bg-brand-green'}`} />
+                  <span className="flex-1 text-brand-dim">{label}</span>
+                  <span className="font-mono text-brand-muted">avg {baseline}</span>
+                  <span className={`font-mono font-semibold ${severity === 'high' ? 'text-brand-red' : severity === 'low' ? 'text-yellow-400' : 'text-brand-green'}`}>{current}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -21,62 +21,58 @@ export const metadata: Metadata = {
 
 type MatrixRow = { feature: string; free: string; starter: string; growth: string; scale: string };
 
-const FEATURE_MATRIX: MatrixRow[] = [
+const CORE_MONITORING: MatrixRow[] = [
   { feature: 'Monitors',              free: '10',          starter: '25',        growth: '100',              scale: 'Unlimited' },
-  { feature: 'Check frequency',       free: '5 min',       starter: '1 min',     growth: '1 min',            scale: '30 sec' },
-  { feature: 'History',               free: '7 days',      starter: '30 days',   growth: '90 days',          scale: '365 days' },
-  { feature: 'Status pages',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
-  { feature: 'Team members',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
-  { feature: 'Alert channels',        free: 'Email only',  starter: 'Unlimited', growth: 'Unlimited',        scale: 'Unlimited' },
+  { feature: 'Check interval',        free: '5 min',       starter: '1 min',     growth: '1 min',            scale: '30 sec' },
+  { feature: 'History retention',     free: '7 days',      starter: '30 days',   growth: '90 days',          scale: '365 days' },
+  { feature: 'Multi-region checks',   free: '—',           starter: '—',         growth: '5 regions',        scale: '5 regions' },
+  { feature: 'SSL & domain expiry',   free: '✓',           starter: '✓',         growth: '✓',                scale: '✓' },
+  { feature: 'Maintenance windows',   free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
+];
+
+const INTELLIGENCE: MatrixRow[] = [
   { feature: 'Competitor monitors',   free: '—',           starter: '5',         growth: '25',               scale: 'Unlimited' },
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
-  { feature: 'SSL / domain expiry',   free: '✓',           starter: '✓',         growth: '✓',                scale: '✓' },
-  { feature: 'Maintenance windows',   free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
   { feature: 'Intelligence Digest',   free: '—',           starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
   { feature: 'AI content-diff',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Deploy-aware alerts',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
-  { feature: 'Multi-location checks', free: '—',           starter: '—',         growth: '5 regions',        scale: '5 regions' },
   { feature: 'Reliability Targets',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+];
+
+const TEAM_AND_ALERTS: MatrixRow[] = [
+  { feature: 'Status pages',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
+  { feature: 'Team members',          free: '1',           starter: '3',         growth: '10',               scale: 'Unlimited' },
+  { feature: 'Alert channels',        free: 'Email only',  starter: 'Unlimited', growth: 'Unlimited',        scale: 'Unlimited' },
   { feature: 'Priority support',      free: '—',           starter: '—',         growth: '—',                scale: '✓' },
 ];
 
 const BILLING_FAQ = [
   {
-    id: 'no-cc',
-    q: 'Do I need a credit card to start?',
-    a: 'No. The Free plan is genuinely free — no card, no trial, no expiry. The 14-day Growth trial also starts without a card; you only enter payment details if you decide to upgrade.',
+    id: 'competitor-monitor',
+    q: 'What counts as a "competitor monitor"?',
+    a: 'Each URL you add for a competitor brand counts as one competitor monitor. A typical setup tracks a competitor\'s pricing page, homepage, and product listing as three separate monitors. Competitor monitors come from your plan\'s competitor monitor quota, not your general monitor quota.',
   },
   {
-    id: 'trial',
-    q: 'How does the 14-day trial work?',
-    a: "When you sign up, your account starts on a 14-day Growth trial automatically — Growth features are available from day one, no card required. If you don't upgrade before 14 days, your account reverts to the Free plan — no charge. You can upgrade to Starter, Growth, or Scale at any time during or after the trial.",
+    id: 'smart-setup',
+    q: 'How does Smart Setup work?',
+    a: 'Paste your store URL and Beaconmon fetches the page, detects your platform (Shopify, WooCommerce, etc.), and proposes a bundle of monitors covering your homepage, cart, checkout, and key product pages. On Growth and Scale plans, an AI layer also suggests CSS selectors for price and content tracking. You confirm or edit the bundle, then all monitors are created in one click.',
+  },
+  {
+    id: 'screenshots',
+    q: 'Do you store screenshots of competitor sites?',
+    a: 'No. Beaconmon does not take or store screenshots. Competitor monitoring works by fetching the HTML of competitor pages and comparing selected text content (prices, headings, copy) against the previous snapshot. Only the text content of tracked selectors is stored, not full page captures.',
   },
   {
     id: 'switch-plans',
-    q: 'Can I switch plans at any time?',
-    a: 'Yes. Upgrades take effect immediately and are prorated. Downgrades take effect at the end of your current billing period.',
+    q: 'Can I change plans later?',
+    a: 'Yes. Upgrades take effect immediately and are prorated. Downgrades take effect at the end of your current billing period. You can switch between monthly and annual billing at any time from your billing settings.',
   },
   {
-    id: 'payment-methods',
-    q: 'What payment methods do you accept?',
-    a: 'All major credit and debit cards (Visa, Mastercard, Amex) and PayPal. Payments are processed by Freemius, Inc., our Merchant of Record, so you never share card details directly with Beaconmon.',
-  },
-  {
-    id: 'annual',
-    q: 'Is there annual billing?',
-    a: 'Yes — paying annually saves 20% on all paid plans. You can switch to annual billing from the billing settings in your dashboard.',
-  },
-  {
-    id: 'intelligence-digest',
-    q: 'What is the Intelligence Digest?',
-    a: "The Intelligence Digest is a scheduled summary of activity across your monitors and competitor trackers — outages, content changes, pricing updates, and Smart Alerts — delivered by email or Slack. Starter plans get weekly digests; Growth and Scale get daily and weekly. It's the fastest way to stay on top of competitor moves without checking the dashboard every day.",
-  },
-  {
-    id: 'cancel',
-    q: 'How do I cancel?',
-    a: "You can cancel any time from the billing portal in your dashboard. Your plan stays active until the end of the period you've already paid for. No cancellation fees, no questions asked.",
+    id: 'scale-contract',
+    q: 'Is there a contract for Scale?',
+    a: 'No. Scale is month-to-month (or annual if you choose annual billing) like all other plans. No minimum term, no cancellation fees. Cancel any time from the billing portal in your dashboard.',
   },
 ];
 
@@ -87,7 +83,7 @@ const PRICING_SCHEMA = {
   '@type': 'Product',
   name: 'Beaconmon',
   description:
-    'Ecommerce website and competitor intelligence platform. Monitor your store and competitors automatically — uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
+    'Ecommerce website and competitor intelligence platform. Monitor your store and competitors automatically, uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
   url: 'https://beaconmon.com',
   offers: {
     '@type': 'AggregateOffer',
@@ -149,6 +145,27 @@ function renderGrowthCell(value: string) {
   return <span className="text-brand-green-ink font-semibold">{value}</span>;
 }
 
+function MatrixSection({ label, rows }: { label: string; rows: MatrixRow[] }) {
+  return (
+    <>
+      <tr>
+        <td colSpan={5} className="px-4 pt-5 pb-2">
+          <span className="text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-muted">{label}</span>
+        </td>
+      </tr>
+      {rows.map(({ feature, free, starter, growth, scale }, i) => (
+        <tr key={feature}>
+          <td className={`p-4 text-[14px] text-brand-dim ${i < rows.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
+          <td className={`p-4 text-center text-[14px] text-brand-dim ${i < rows.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(free)}</td>
+          <td className={`p-4 text-center text-[14px] text-brand-dim ${i < rows.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(starter)}</td>
+          <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < rows.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderGrowthCell(growth)}</td>
+          <td className={`p-4 text-center text-[14px] text-brand-dim ${i < rows.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(scale)}</td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
 export default function PricingPage() {
   return (
     <>
@@ -173,10 +190,10 @@ export default function PricingPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Pricing</span>
           <h1 className="text-[clamp(40px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5">
-            Simple pricing. No surprises.
+            Start free. Pay when intelligence pays you back.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Start free. 14-day Growth trial on every account — no card required. Upgrade when you need more.
+            Every plan includes uptime, SSL and domain checks. Competitor monitoring and AI summaries unlock on Starter and Growth.
           </p>
         </div>
       </section>
@@ -210,35 +227,31 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                {FEATURE_MATRIX.map(({ feature, free, starter, growth, scale }, i) => (
-                  <tr key={feature}>
-                    <td className={`p-4 text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feature}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(free)}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(starter)}</td>
-                    <td className={`p-4 text-center text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.15)] ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderGrowthCell(growth)}</td>
-                    <td className={`p-4 text-center text-[14px] text-brand-dim ${i < FEATURE_MATRIX.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{renderCell(scale)}</td>
-                  </tr>
-                ))}
+                <MatrixSection label="Core monitoring" rows={CORE_MONITORING} />
+                <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
+                <MatrixSection label="Intelligence" rows={INTELLIGENCE} />
+                <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
+                <MatrixSection label="Team & alerts" rows={TEAM_AND_ALERTS} />
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      {/* Billing FAQ */}
+      {/* FAQ */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[minmax(0,320px)_1fr] max-[880px]:grid-cols-1 gap-20 max-[880px]:gap-8 max-w-[960px] mx-auto">
             <div>
               <h2 className="text-[clamp(28px,3.4vw,38px)] tracking-[-0.03em] font-extrabold mb-4 leading-[1.15]">
-                Billing<br />questions?
+                Questions?
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.6]">
-                Payments are handled by Freemius, Inc. — a trusted Merchant of Record used by thousands of SaaS companies. They handle tax, compliance, and card processing on our behalf.
+                Payments are handled by Freemius, Inc., a trusted Merchant of Record used by thousands of SaaS companies. They handle tax, compliance, and card processing on our behalf.
               </p>
             </div>
             <div className="reveal">
-              <Accordion type="single" collapsible defaultValue="no-cc">
+              <Accordion type="single" collapsible defaultValue="competitor-monitor">
                 {BILLING_FAQ.map(({ id, q, a }) => (
                   <AccordionItem key={id} value={id} className="border-b border-brand-line-soft">
                     <AccordionTrigger className="text-[16px] font-semibold tracking-[-0.01em] py-5 hover:no-underline text-brand-text">

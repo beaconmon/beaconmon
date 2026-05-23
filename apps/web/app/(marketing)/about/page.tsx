@@ -27,6 +27,20 @@ const ABOUT_SCHEMA = [
     url: 'https://beaconmon.com',
     description: 'Website uptime and performance monitoring for freelancers and agencies.',
     email: 'hello@beaconmon.com',
+    founder: { '@type': 'Person', name: 'Haimanot Getu' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Haimanot Getu',
+    jobTitle: 'Founder',
+    url: 'https://www.linkedin.com/in/haimanot-getu/',
+    sameAs: ['https://www.linkedin.com/in/haimanot-getu/'],
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Beaconmon',
+      url: 'https://beaconmon.com',
+    },
   },
 ];
 
@@ -108,6 +122,32 @@ export default function AboutPage() {
               <p>
                 Beaconmon is bootstrapped. We don&apos;t have venture capital or growth targets pressuring us to make the product more complex. Our incentive is simple: build something good enough that you tell a colleague about it.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal flex items-center gap-6 max-[640px]:flex-col max-[640px]:items-start">
+            <div className="w-14 h-14 rounded-full bg-brand-bg2 border border-brand-line flex items-center justify-center shrink-0 text-[20px] font-bold text-brand-green select-none">
+              HG
+            </div>
+            <div>
+              <p className="text-[17px] font-bold tracking-[-0.02em] leading-[1.2]">Haimanot Getu</p>
+              <p className="text-brand-dim text-[14px] mb-2">Founder, Beaconmon</p>
+              <p className="text-brand-dim text-[15px] leading-[1.65] max-w-[540px]">
+                Built Beaconmon after getting burned by false-positive alerts on client stores.
+              </p>
+              <a
+                href="https://www.linkedin.com/in/haimanot-getu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-3 text-[13px] font-medium text-brand-green hover:underline"
+              >
+                LinkedIn &rarr;
+              </a>
             </div>
           </div>
         </div>

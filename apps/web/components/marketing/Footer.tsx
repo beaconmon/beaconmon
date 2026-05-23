@@ -2,10 +2,16 @@ import Link from 'next/link';
 import LogoMark from './LogoMark';
 
 const PRODUCT_LINKS: [string, string][] = [
-  ['/features', 'Features'],
-  ['/pricing', 'Pricing'],
-  ['/integrations', 'Integrations'],
-  ['/changelog', 'Changelog'],
+  ['/features#monitors', 'Monitors'],
+  ['/intelligence', 'Intelligence'],
+  ['/features#status-pages', 'Status pages'],
+  ['/features#smart-alerts', 'Smart Alerts'],
+  ['/features#reliability-targets', 'Reliability Targets'],
+];
+
+const FOR_LINKS: [string, string][] = [
+  ['/for/shopify', 'Shopify'],
+  ['/for/woocommerce', 'WooCommerce'],
 ];
 
 const COMPANY_LINKS: [string, string][] = [
@@ -26,13 +32,13 @@ export default function Footer() {
   return (
     <footer className="border-t border-brand-line-soft pt-14 pb-8 bg-brand-bg-section dark:bg-brand-bg1">
       <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-        <div className="grid grid-cols-[1.4fr_repeat(3,1fr)] max-[880px]:grid-cols-[1.4fr_repeat(2,1fr)] max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-12 max-[880px]:gap-8 mb-12">
+        <div className="grid grid-cols-[1.4fr_repeat(4,1fr)] max-[1024px]:grid-cols-[1.4fr_repeat(3,1fr)] max-[880px]:grid-cols-[1.4fr_repeat(2,1fr)] max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-12 max-[880px]:gap-8 mb-12">
           <div>
             <Link href="/" className="inline-flex items-center gap-[10px] font-bold text-[16px] tracking-[-0.01em]">
               <LogoMark />
               <span>Beaconmon</span>
             </Link>
-            <p className="text-[13px] text-brand-muted mt-[14px] max-w-[260px]">Know before your users do.</p>
+            <p className="text-[13px] text-brand-muted mt-[14px] max-w-[260px]">Website and competitor intelligence for ecommerce brands. Watch your store, watch theirs.</p>
           </div>
           <div>
             <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Product</h4>
@@ -47,9 +53,9 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Company</h4>
+            <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">For</h4>
             <ul className="space-y-0">
-              {COMPANY_LINKS.map(([href, label]) => (
+              {FOR_LINKS.map(([href, label]) => (
                 <li key={label} className="py-[6px]">
                   <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
                     {label}
@@ -70,9 +76,21 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+          <div className="max-[1024px]:hidden">
+            <h4 className="text-[12px] tracking-[0.08em] uppercase text-brand-muted font-semibold mb-4">Company</h4>
+            <ul className="space-y-0">
+              {COMPANY_LINKS.map(([href, label]) => (
+                <li key={label} className="py-[6px]">
+                  <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <div className="pt-6 border-t border-brand-line-soft flex justify-between flex-wrap gap-4 text-[13px] text-brand-muted">
-          <div>© 2026 Beaconmon</div>
+          <div>© 2026 Beaconmon. Made for ecommerce.</div>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-brand-dim transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-brand-dim transition-colors">Terms of Service</Link>
