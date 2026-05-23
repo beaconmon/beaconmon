@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Monitor your store and competitors automatically — Beaconmon';
+export const alt = 'Monitor your store and competitors automatically | Beaconmon';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

@@ -4,6 +4,7 @@ import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -19,15 +20,15 @@ const FEATURES = [
   },
   {
     heading: 'Keyword monitoring for critical pages',
-    body: 'A 200 OK response doesn\'t mean your checkout is working. Keyword monitoring verifies that the right content is present — "Add to cart" on your product page, the checkout form on the cart page — so you catch broken deploys instantly.',
+    body: 'A 200 OK response doesn\'t mean your checkout is working. Keyword monitoring verifies the right content is present: "Add to cart" on your product page and the checkout form on the cart page, so broken deploys are caught in seconds.',
   },
   {
     heading: 'Heartbeat monitoring for your order jobs',
-    body: 'Cron jobs that process orders, update inventory, and send receipts — if one stops running, you need to know. Heartbeat monitoring alerts you when a scheduled task misses its window.',
+    body: 'Your cron jobs process orders, update inventory, and send receipts. If one stops running, you need to know. Heartbeat monitoring alerts you when a scheduled task misses its window.',
   },
   {
     heading: 'Instant alerts to the whole team',
-    body: 'When a checkout page goes down, you want everyone to know at once. Beaconmon fires to email, Slack, or webhook simultaneously — no one has to forward the alert.',
+    body: 'When a checkout page goes down, you want everyone to know at once. Beaconmon fires to email, Slack, or webhook simultaneously. No one has to forward the alert.',
   },
   {
     heading: 'Competitor price and content tracking',
@@ -43,9 +44,9 @@ const COST_OF_DOWNTIME = [
 ];
 
 const HOW_IT_HELPS = [
-  'Catch checkout downtime in under 60 seconds — before you lose more than one abandoned cart.',
+  'Catch checkout downtime in under 60 seconds, before you lose more than one abandoned cart.',
   'Verify critical page content is loading correctly, not just that the server is responding.',
-  'Alert your whole team at once — developer, store manager, and customer support — the moment something breaks.',
+  'Alert your developer, store manager, and customer support simultaneously the moment something breaks.',
   'Monitor Shopify, WooCommerce, Magento, custom-built stores, or any combination.',
 ];
 
@@ -93,13 +94,17 @@ export default function ForEcommercePage() {
           </div>
           <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 max-w-[640px] mx-auto">
             <Link href="/for/shopify" className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-brand-green-ink transition-colors group">
-              <div className="text-[28px] mb-3">🛍</div>
+              <div className="mb-4 w-10 h-10">
+                <Image src="/shopify.svg" alt="Shopify" width={40} height={40} />
+              </div>
               <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2 group-hover:text-brand-green-ink transition-colors">Shopify</h3>
               <p className="text-brand-dim text-[13px] leading-[1.5]">Monitor setup for Shopify stores. Checkout, competitor tracking, and Intelligence Digest.</p>
               <span className="mt-4 inline-block text-brand-green-ink text-[14px] font-medium">View Shopify setup →</span>
             </Link>
             <Link href="/for/woocommerce" className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-brand-green-ink transition-colors group">
-              <div className="text-[28px] mb-3">🔌</div>
+              <div className="mb-4 w-10 h-10">
+                <Image src="/woocommerce.svg" alt="WooCommerce" width={40} height={40} />
+              </div>
               <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2 group-hover:text-brand-green-ink transition-colors">WooCommerce</h3>
               <p className="text-brand-dim text-[13px] leading-[1.5]">Monitor setup for WooCommerce stores. Shop, checkout, and competitor price tracking.</p>
               <span className="mt-4 inline-block text-brand-green-ink text-[14px] font-medium">View WooCommerce setup →</span>
@@ -152,7 +157,7 @@ export default function ForEcommercePage() {
                 What Beaconmon does for your store
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Set up monitors for your homepage, product pages, cart, and checkout separately. Know exactly which part of the funnel is broken — not just that &ldquo;the site is down.&rdquo;
+                Set up monitors for your homepage, product pages, cart, and checkout separately. Know exactly which part of the funnel is broken, not just that &ldquo;the site is down.&rdquo;
               </p>
             </div>
             <ul className="space-y-5">

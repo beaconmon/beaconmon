@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Beaconmon — Uptime Monitoring Built for Freelancers',
+  title: 'About Beaconmon | Uptime Monitoring Built for Freelancers',
   description:
     'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
   alternates: { canonical: 'https://beaconmon.com/about' },
@@ -47,7 +47,7 @@ const ABOUT_SCHEMA = [
 const PHILOSOPHY = [
   {
     heading: 'Reliability is not optional.',
-    body: 'Every minute your client\'s site is down costs them money and costs you trust. We built Beaconmon to make professional-grade monitoring accessible to freelancers and small teams — not just enterprise teams with dedicated DevOps.',
+    body: 'Every minute your client\'s site is down costs them money and costs you trust. We built Beaconmon to make professional-grade monitoring accessible to freelancers and small teams, not just enterprise teams with dedicated DevOps.',
   },
   {
     heading: 'Simple tools get used.',
@@ -84,7 +84,7 @@ export default function AboutPage() {
             Built by people who got paged at 2am for sites that were already up.
           </h1>
           <p className="text-[18px] leading-[1.6] text-brand-dim max-w-[600px]">
-            Beaconmon exists because the tools we used were either too noisy, too expensive, or too slow. We wanted something that just worked — and sent alerts only when they meant something.
+            Beaconmon exists because the tools we used were either too noisy, too expensive, or too slow. We wanted something that just worked and sent alerts only when they meant something.
           </p>
         </div>
       </section>
@@ -111,13 +111,13 @@ export default function AboutPage() {
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-8 leading-[1.15]">What we believe</h2>
             <div className="space-y-6 text-[16px] text-brand-dim leading-[1.75]">
               <p>
-                Most uptime monitoring tools were built for enterprise teams. They charge enterprise prices, require enterprise setup, and generate enterprise volumes of alerts — most of which are meaningless by the time someone looks at them.
+                Most uptime monitoring tools were built for enterprise teams. They charge enterprise prices, require enterprise setup, and generate enterprise volumes of alerts, most of which are meaningless by the time someone looks at them.
               </p>
               <p>
                 We believe the freelancers and small agencies who build and manage most of the web deserve better. A tool that checks your sites every 30 seconds, confirms failures before crying wolf, and sends one clear, actionable alert to the right channel.
               </p>
               <p>
-                We&apos;re a small team obsessed with reliability — and with the idea that monitoring should be something you set up once and forget about, until it matters.
+                We&apos;re a small team obsessed with reliability, and with the idea that monitoring should be something you set up once and forget about, until it matters.
               </p>
               <p>
                 Beaconmon is bootstrapped. We don&apos;t have venture capital or growth targets pressuring us to make the product more complex. Our incentive is simple: build something good enough that you tell a colleague about it.

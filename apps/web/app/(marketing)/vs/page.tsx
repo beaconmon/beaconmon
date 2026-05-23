@@ -2,10 +2,11 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import Link from 'next/link';
+import { Bot, Activity, Clock, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'How Beaconmon Compares — Ecommerce Uptime Monitoring vs Alternatives',
+  title: 'How Beaconmon Compares: Ecommerce Uptime Monitoring vs Alternatives',
   description: 'Honest, side-by-side comparisons of Beaconmon vs UptimeRobot, Pingdom, Better Uptime, and StatusCake. Built for Shopify and WooCommerce stores, not DevOps teams.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
 };
@@ -25,11 +26,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Can I migrate my monitors from UptimeRobot or Pingdom?',
-    a: 'There\'s no one-click importer, but setup is fast — each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
+    a: 'There\'s no one-click importer, but setup is fast. Each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
   },
   {
     q: 'What makes content change monitoring unique to Beaconmon?',
-    a: 'None of the competitors in this list — UptimeRobot, Pingdom, Better Uptime, or StatusCake — offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It\'s purpose-built for tracking competitor pricing, product availability, and promotional copy.',
+    a: 'UptimeRobot, Pingdom, Better Uptime, and StatusCake do not offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It tracks competitor pricing, product availability, and promotional copy.',
   },
 ];
 
@@ -38,29 +39,45 @@ const COMPETITORS = [
     name: 'UptimeRobot',
     slug: 'uptimerobot',
     tagline: 'Popular free tier, no ecommerce features.',
-    verdict: 'No competitor monitoring, no content tracking. Fine for basic pings — not built for ecommerce.',
-    icon: '🤖',
+    verdict: 'No competitor monitoring, no content tracking. Fine for basic pings. Not built for ecommerce.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(45, 206, 163, 0.12)' }}>
+        <Bot size={24} color="#2DCEA3" strokeWidth={1.5} />
+      </div>
+    ),
   },
   {
     name: 'Pingdom',
     slug: 'pingdom',
-    tagline: 'Enterprise-grade — and enterprise-priced.',
+    tagline: 'Enterprise-grade and enterprise-priced.',
     verdict: 'No free plan, no competitor monitoring, enterprise pricing. Beaconmon covers ecommerce needs from $29/mo.',
-    icon: '📡',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(88, 147, 248, 0.12)' }}>
+        <Activity size={24} color="#5893F8" strokeWidth={1.5} />
+      </div>
+    ),
   },
   {
     name: 'Better Uptime',
     slug: 'better-uptime',
     tagline: 'Strong on-call scheduling for large teams.',
-    verdict: 'Strong on-call scheduling for large DevOps teams. No competitor monitoring — overkill for most ecommerce stores.',
-    icon: '⏱️',
+    verdict: 'Strong on-call scheduling for large DevOps teams. No competitor monitoring. Overkill for most ecommerce stores.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(249, 115, 22, 0.12)' }}>
+        <Clock size={24} color="#F97316" strokeWidth={1.5} />
+      </div>
+    ),
   },
   {
     name: 'StatusCake',
     slug: 'statuscake',
     tagline: 'Generous free tier, missing ecommerce features.',
     verdict: 'Generous free tier. No competitor monitoring, no content change detection, no Intelligence Digest.',
-    icon: '🎂',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(74, 222, 128, 0.12)' }}>
+        <ShieldCheck size={24} color="#4ADE80" strokeWidth={1.5} />
+      </div>
+    ),
   },
 ];
 
@@ -122,7 +139,7 @@ export default function VsHubPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Compare</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
-            How Beaconmon compares — for ecommerce stores.
+            How Beaconmon compares for ecommerce stores.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
             We&apos;re built for Shopify and WooCommerce stores, not DevOps teams. Honest, opinionated comparisons.
@@ -145,9 +162,7 @@ export default function VsHubPage() {
                 className="reveal group bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-[rgba(0,229,122,0.3)] transition-colors"
               >
                 <div className="flex items-start justify-between mb-5">
-                  <div>
-                    <span className="text-[32px] leading-none">{icon}</span>
-                  </div>
+                  {icon}
                   <span className="text-brand-green-ink text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     Compare →
                   </span>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Pingdom for Shopify Stores (2026) — Honest Comparison',
+  title: 'Beaconmon vs Pingdom for Shopify Stores (2026): Honest Comparison',
   description:
     'Pingdom vs Beaconmon: no free plan, no competitor monitoring, enterprise pricing. Here\'s the honest comparison for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
@@ -141,7 +141,7 @@ export default function VsPingdomPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Pingdom is built for teams with dedicated DevOps budgets. For ecommerce stores paying out of pocket, you get fewer features at a higher price — no free plan, status pages cost extra, no competitor monitoring, and key features like domain expiry tracking don&apos;t exist at any tier.
+              Pingdom is built for teams with dedicated DevOps budgets. For ecommerce stores paying out of pocket, you get fewer features at a higher price: no free plan, status pages cost extra, no competitor monitoring, and domain expiry tracking is missing entirely.
             </p>
           </div>
         </div>

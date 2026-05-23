@@ -2,7 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Refund Policy — Beaconmon',
+  title: 'Refund Policy | Beaconmon',
   description: 'Beaconmon refund and cancellation policy for paid subscriptions.',
   alternates: { canonical: 'https://beaconmon.com/refund-policy' },
 };
@@ -21,7 +21,7 @@ export default function RefundPolicyPage() {
 
             <h2>1. 14-day money-back guarantee</h2>
             <p>
-              If you are not satisfied with Beaconmon for any reason, you may request a full refund within <strong>14 days</strong> of your first paid charge — no questions asked. This applies to new Pro and Business subscriptions only (not renewals).
+              If you are not satisfied with Beaconmon for any reason, you may request a full refund within <strong>14 days</strong> of your first paid charge, no questions asked. This applies to new Pro and Business subscriptions only (not renewals).
             </p>
             <p>
               To request a refund, email us at{' '}
@@ -30,7 +30,7 @@ export default function RefundPolicyPage() {
 
             <h2>2. Renewals</h2>
             <p>
-              Subscription renewals (monthly or annual) are generally non-refundable. If you forgot to cancel before a renewal charged, contact us within <strong>48 hours</strong> and we will consider a refund on a case-by-case basis — particularly if you have not used the service since the charge.
+              Subscription renewals (monthly or annual) are generally non-refundable. If you forgot to cancel before a renewal charged, contact us within <strong>48 hours</strong> and we will consider a refund on a case-by-case basis, particularly if you have not used the service since the charge.
             </p>
 
             <h2>3. Annual plans</h2>
@@ -40,18 +40,18 @@ export default function RefundPolicyPage() {
 
             <h2>4. Billing errors</h2>
             <p>
-              If you were charged incorrectly — for example, due to a pricing error, a duplicate charge, or a technical failure — we will issue a full refund regardless of when the error is reported. Please contact us at{' '}
+              If you were charged incorrectly, for example due to a pricing error, a duplicate charge, or a technical failure, we will issue a full refund regardless of when the error is reported. Please contact us at{' '}
               <a href="mailto:hello@beaconmon.com">hello@beaconmon.com</a> with your account details and a description of the issue.
             </p>
 
             <h2>5. Trial period</h2>
             <p>
-              All new accounts start with a <strong>14-day free Pro trial</strong> — no credit card required. You will not be charged anything until you choose to subscribe after the trial ends. If you do not add a payment method, your account simply reverts to the Free plan.
+              All new accounts start with a <strong>14-day free Pro trial</strong>, no credit card required. You will not be charged anything until you choose to subscribe after the trial ends. If you do not add a payment method, your account simply reverts to the Free plan.
             </p>
 
             <h2>6. Cancellation</h2>
             <p>
-              You may cancel your subscription at any time from the billing settings in your dashboard. Cancellation takes effect at the end of your current billing period — you retain full access until then. We do not charge cancellation fees, and cancelling does not automatically trigger a refund unless you are within the 14-day guarantee window.
+              You may cancel your subscription at any time from the billing settings in your dashboard. Cancellation takes effect at the end of your current billing period. You retain full access until then. We do not charge cancellation fees, and cancelling does not automatically trigger a refund unless you are within the 14-day guarantee window.
             </p>
 
             <h2>7. How refunds are processed</h2>
@@ -62,7 +62,7 @@ export default function RefundPolicyPage() {
             <h2>8. Contact</h2>
             <p>
               Questions about this policy? Email us at{' '}
-              <a href="mailto:hello@beaconmon.com">hello@beaconmon.com</a> — we are happy to help.
+              <a href="mailto:hello@beaconmon.com">hello@beaconmon.com</a>. We are happy to help.
             </p>
 
           </div>

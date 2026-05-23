@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Competitor Intelligence for Ecommerce — Beaconmon',
+  title: 'Competitor Intelligence for Ecommerce | Beaconmon',
   description:
     'Track competitor prices, product changes, and page updates automatically. Get a daily or weekly digest of what changed, with AI-powered summaries. Built for Shopify and WooCommerce brands.',
   alternates: { canonical: 'https://beaconmon.com/features/intelligence' },
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Competitor Intelligence — Beaconmon',
+  name: 'Competitor Intelligence | Beaconmon',
   description:
     'Track competitor prices, product changes, and page updates automatically. Get a daily or weekly digest of what changed.',
   url: 'https://beaconmon.com/features/intelligence',
@@ -31,7 +31,7 @@ const CAPABILITIES = [
       </svg>
     ),
     name: 'Price change alerts',
-    body: 'Point Beaconmon at a competitor pricing page or product listing. The moment the price, sale label, or "sold out" badge changes, you get an alert — not a digest days later.',
+    body: 'Point Beaconmon at a competitor pricing page or product listing. The moment the price, sale label, or "sold out" badge changes, you get an alert, not a digest days later.',
   },
   {
     icon: (
@@ -43,7 +43,7 @@ const CAPABILITIES = [
       </svg>
     ),
     name: 'Content change detection',
-    body: 'Target any CSS selector on a page and track exactly that element. Product titles, return policy text, shipping times, promotional banners — Beaconmon diffs the HTML and shows you exactly what changed.',
+    body: 'Target any CSS selector on a page and track exactly that element. Product titles, return policy text, shipping times, promotional banners. Beaconmon diffs the HTML and shows you exactly what changed.',
   },
   {
     icon: (
@@ -83,7 +83,7 @@ const CAPABILITIES = [
       </svg>
     ),
     name: 'Noise filtering',
-    body: 'Not every change matters. Beaconmon classifies trivial changes (ad rotation, timestamp updates, session tokens) and suppresses alerts for them — so your digest only surfaces changes that are actually significant.',
+    body: 'Not every change matters. Beaconmon classifies trivial changes (ad rotation, timestamp updates, session tokens) and suppresses alerts for them, so your digest only surfaces changes that are actually significant.',
   },
 ];
 
@@ -202,7 +202,7 @@ export default function IntelligencePage() {
                 {[
                   { competitor: 'rivalshop.com', page: '/pricing', summary: 'Starter plan dropped from $49 to $39/mo.', type: 'price' },
                   { competitor: 'acmegear.co', page: '/free-shipping', summary: 'Free shipping threshold raised from $50 to $75.', type: 'policy' },
-                  { competitor: 'shopwave.io', page: '/products/pro-kit', summary: 'Product marked "Back in stock" — previously sold out.', type: 'stock' },
+                  { competitor: 'shopwave.io', page: '/products/pro-kit', summary: 'Product marked "Back in stock" (previously sold out).', type: 'stock' },
                 ].map(({ competitor, page, summary, type }) => (
                   <div key={competitor} className="flex gap-3 text-[13px]">
                     <div className={`mt-[3px] w-2 h-2 rounded-full shrink-0 ${type === 'price' ? 'bg-brand-red' : type === 'policy' ? 'bg-yellow-400' : 'bg-brand-green'}`} />

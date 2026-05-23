@@ -71,7 +71,7 @@ const HERO_EVENTS = [
   {
     type: 'competitor' as const,
     icon: '↓',
-    label: 'Allbirds — price drop',
+    label: 'Allbirds: price drop',
     detail: 'Tree Runners dropped from $98 to $79 on all colorways',
     timeAgo: '2m ago',
     bigText: true,
@@ -79,7 +79,7 @@ const HERO_EVENTS = [
   {
     type: 'competitor' as const,
     icon: '✎',
-    label: "Rothy's — copy change",
+    label: "Rothy's: copy change",
     detail: 'Hero changed: "Summer drop is live" added above CTA',
     timeAgo: '14m ago',
   },
@@ -87,7 +87,7 @@ const HERO_EVENTS = [
     type: 'alert' as const,
     icon: '!',
     label: 'Checkout alert',
-    detail: 'yourstore.com/checkout returned 502 — 1 check failed',
+    detail: 'yourstore.com/checkout returned 502. 1 check failed.',
     timeAgo: '31m ago',
   },
   {
@@ -336,7 +336,7 @@ export default function LandingPage() {
                   </div>
                   <div className="px-4 py-3 space-y-[6px]">
                     {[
-                      { dot: 'bg-amber-400', text: '3 competitor moves — Allbirds price drop, Rothys hero change, HOKA new collection' },
+                      { dot: 'bg-amber-400', text: '3 competitor moves: Allbirds price drop, Rothys hero change, HOKA new collection' },
                       { dot: 'bg-green-400', text: 'All 12 store monitors up · 99.97% uptime this week' },
                       { dot: 'bg-yellow-400', text: '1 smart alert · Response time spike on /checkout at 3:14am' },
                     ].map(({ dot, text }, i) => (

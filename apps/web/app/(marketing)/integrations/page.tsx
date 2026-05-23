@@ -5,8 +5,8 @@ import { JsonLd } from '@/components/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Alert Integrations — Email, Slack & Webhooks | Beaconmon',
-  description: 'Beaconmon sends downtime alerts via email, Slack, and webhooks. Route alerts to the tools your team already uses — or build your own automation on top of the JSON payload.',
+  title: 'Alert Integrations: Email, Slack & Webhooks | Beaconmon',
+  description: 'Beaconmon sends downtime alerts via email, Slack, and webhooks. Route alerts to the tools your team already uses, or build your own automation on top of the JSON payload.',
   alternates: { canonical: 'https://beaconmon.com/integrations' },
 };
 
@@ -54,7 +54,7 @@ function getLineClassName(line: PreviewLine): string {
 const INTEGRATIONS: Integration[] = [
   {
     name: 'Email',
-    description: 'Instant alert emails the moment a monitor goes down or recovers. Formatted to be clear at a glance — no digging through paragraphs to understand what happened.',
+    description: 'Instant alert emails the moment a monitor goes down or recovers. Formatted to be clear at a glance, with no digging through paragraphs to understand what happened.',
     available: true,
     plan: 'All plans',
     preview: {
@@ -64,14 +64,14 @@ const INTEGRATIONS: Integration[] = [
         { label: 'Status', value: '503 Service Unavailable', red: true },
         { label: 'Location', value: 'US East + EU West' },
         { label: 'Started', value: '2026-05-08 14:23:07 UTC' },
-        { label: 'Response time', value: '—' },
+        { label: 'Response time', value: 'N/A' },
       ],
       footer: 'View incident → Acknowledge → Suppress for 30 min',
     },
   },
   {
     name: 'Slack',
-    description: 'Beaconmon posts to any Slack channel when a monitor changes state. Your team sees it together — no more "did you get the email?" conversations.',
+    description: 'Beaconmon posts to any Slack channel when a monitor changes state. Your team sees it together. No more "did you get the email?" conversations.',
     available: true,
     plan: 'Pro & Business',
     preview: {
@@ -87,7 +87,7 @@ const INTEGRATIONS: Integration[] = [
   },
   {
     name: 'Webhooks',
-    description: 'Send a JSON payload to any URL when a monitor event fires. Build custom automations — auto-create a Jira ticket, post to Discord, trigger a PagerDuty alert, or anything else your stack needs.',
+    description: 'Send a JSON payload to any URL when a monitor event fires. Build custom automations: auto-create a Jira ticket, post to Discord, trigger a PagerDuty alert, or anything else your stack needs.',
     available: true,
     plan: 'Pro & Business',
     preview: {
@@ -139,7 +139,7 @@ export default function IntegrationsPage() {
             Get alerted wherever your team works.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
-            Email, Slack, and webhooks — so you can plug Beaconmon into the tools you already use, or build your own automation on top.
+            Email, Slack, and webhooks, so you can plug Beaconmon into the tools you already use, or build your own automation on top.
           </p>
         </div>
       </section>
@@ -224,7 +224,7 @@ export default function IntegrationsPage() {
             {[
               {
                 q: 'Can I send alerts to multiple channels at the same time?',
-                a: 'Yes. You can add as many alert channels as your plan allows (Pro: up to 5, Business: unlimited) and each monitor can notify any combination of them. Use email for your own inbox, Slack for your team, and a webhook for your ticketing system — all from the same monitor.',
+                a: 'Yes. You can add as many alert channels as your plan allows (Pro: up to 5, Business: unlimited) and each monitor can notify any combination of them. Use email for your own inbox, Slack for your team, and a webhook for your ticketing system, all from the same monitor.',
               },
               {
                 q: 'What events trigger an alert?',
@@ -232,7 +232,7 @@ export default function IntegrationsPage() {
               },
               {
                 q: 'How do I connect Beaconmon to Slack?',
-                a: 'In the dashboard, go to Alert Channels → Add Channel → Slack. You\'ll be prompted to authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste — it\'s a single click.',
+                a: 'In the dashboard, go to Alert Channels → Add Channel → Slack. You\'ll be prompted to authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste. It\'s a single click.',
               },
               {
                 q: 'What does the webhook payload look like?',
@@ -240,7 +240,7 @@ export default function IntegrationsPage() {
               },
               {
                 q: 'Can I use webhooks to connect to PagerDuty, Discord, or Jira?',
-                a: 'Yes — webhooks are designed for exactly this. Point the channel at a PagerDuty Events API URL to auto-create incidents, a Discord channel webhook URL for team notifications, or your own serverless function to open a Jira ticket. Any service that accepts an inbound HTTP POST will work.',
+                a: 'Yes. Webhooks are designed for exactly this. Point the channel at a PagerDuty Events API URL to auto-create incidents, a Discord channel webhook URL for team notifications, or your own serverless function to open a Jira ticket. Any service that accepts an inbound HTTP POST will work.',
               },
               {
                 q: 'Is there a retry policy if my webhook endpoint is down?',

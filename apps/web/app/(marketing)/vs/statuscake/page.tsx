@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs StatusCake for Shopify Stores (2026) — Honest Comparison',
+  title: 'Beaconmon vs StatusCake for Shopify Stores (2026): Honest Comparison',
   description:
     'StatusCake vs Beaconmon: no competitor monitoring, no content change detection, no Intelligence Digest. Here\'s the honest comparison for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/statuscake' },
@@ -130,7 +130,7 @@ export default function VsStatusCakePage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            StatusCake has a generous free tier with 10 monitors. But it has no competitor monitoring, no content change detection, and no Intelligence Digest — none of the ecommerce-specific features that matter once you care about more than basic uptime pings.
+            StatusCake has a generous free tier with 10 monitors. But it has no competitor monitoring, no content change detection, and no Intelligence Digest: none of the ecommerce-specific features that matter once you care about more than basic uptime pings.
           </p>
         </div>
       </section>
@@ -141,7 +141,7 @@ export default function VsStatusCakePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              StatusCake&apos;s free plan is strong (10 monitors). But it has no competitor monitoring, no content change detection, and no Intelligence Digest. For a Shopify or WooCommerce store that wants to track what competitors are doing — not just whether their own site is up — Beaconmon is built for that job.
+              StatusCake&apos;s free plan is strong (10 monitors). But it has no competitor monitoring, no content change detection, and no Intelligence Digest. For a Shopify or WooCommerce store that wants competitor intelligence and not just uptime monitoring, Beaconmon is built for that job.
             </p>
           </div>
         </div>

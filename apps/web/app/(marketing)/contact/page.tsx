@@ -4,7 +4,7 @@ import { JsonLd } from '@/components/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Beaconmon — Support, Billing & Feature Requests',
+  title: 'Contact Beaconmon | Support, Billing & Feature Requests',
   description: 'Questions about your monitors, billing, or a feature request? Email the Beaconmon team at hello@beaconmon.com. We read every message and respond within one business day.',
   alternates: { canonical: 'https://beaconmon.com/contact' },
 };
@@ -62,7 +62,7 @@ export default function ContactPage() {
             {[
               {
                 heading: 'Bug reports',
-                body: 'If something in the dashboard is broken, an alert fired incorrectly, or a monitor isn\'t behaving as expected — tell us exactly what happened. Include your monitor URL and the time if you can.',
+                body: 'If something in the dashboard is broken, an alert fired incorrectly, or a monitor isn\'t behaving as expected, tell us exactly what happened. Include your monitor URL and the time if you can.',
               },
               {
                 heading: 'Feature requests',
@@ -74,7 +74,7 @@ export default function ContactPage() {
               },
               {
                 heading: 'Anything else',
-                body: 'Partnership ideas, press enquiries, general feedback, or just to say hello — we read everything and reply to everything worth replying to.',
+                body: 'Partnership ideas, press enquiries, general feedback, or just to say hello. We read everything and reply to everything worth replying to.',
               },
             ].map(({ heading, body }) => (
               <div key={heading} className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-7">
@@ -94,14 +94,14 @@ export default function ContactPage() {
             {[
               {
                 q: 'Is there a live chat or phone support?',
-                a: 'No. We\'re a small bootstrapped team, and email lets us give every question the attention it deserves. We respond within one business day — often sooner.',
+                a: 'No. We\'re a small bootstrapped team, and email lets us give every question the attention it deserves. We respond within one business day, often sooner.',
               },
               {
                 q: 'Can I get a refund if I cancel?',
                 a: 'Yes. If you\'re on a paid plan and it isn\'t working for you, email us within 30 days of your last charge and we\'ll refund it, no questions asked.',
               },
               {
-                q: 'My monitor is showing the wrong status — what should I do?',
+                q: 'My monitor is showing the wrong status. What should I do?',
                 a: 'Email us the monitor URL, what status it\'s showing, and roughly when it started. We can check the raw check logs on our end and figure out what\'s happening.',
               },
               {

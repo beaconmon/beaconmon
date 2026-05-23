@@ -2,7 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Beaconmon',
+  title: 'Privacy Policy | Beaconmon',
   description: 'How Beaconmon collects, uses, and protects your personal data.',
   alternates: { canonical: 'https://beaconmon.com/privacy' },
 };
@@ -47,11 +47,11 @@ export default function PrivacyPage() {
             <h2>4. Third-party processors</h2>
             <p>We share data with the following sub-processors, each bound by a data processing agreement:</p>
             <ul>
-              <li><strong>Freemius, Inc.</strong> — payment processing and subscription management (Merchant of Record). Freemius may be the data controller for billing data in certain jurisdictions.</li>
-              <li><strong>Resend</strong> — transactional email delivery (alert and account emails).</li>
-              <li><strong>Cloudflare</strong> — CDN, DDoS protection, and edge caching for status pages.</li>
-              <li><strong>Neon</strong> — managed PostgreSQL database hosting (your monitor data, check results, and account data are stored here).</li>
-              <li><strong>Sentry</strong> — error tracking. Error events may include request context but are stripped of payment or full authentication data.</li>
+              <li><strong>Freemius, Inc.</strong>: payment processing and subscription management (Merchant of Record). Freemius may be the data controller for billing data in certain jurisdictions.</li>
+              <li><strong>Resend</strong>: transactional email delivery (alert and account emails).</li>
+              <li><strong>Cloudflare</strong>: CDN, DDoS protection, and edge caching for status pages.</li>
+              <li><strong>Neon</strong>: managed PostgreSQL database hosting (your monitor data, check results, and account data are stored here).</li>
+              <li><strong>Sentry</strong>: error tracking. Error events may include request context but are stripped of payment or full authentication data.</li>
             </ul>
 
             <h2>5. Data retention</h2>

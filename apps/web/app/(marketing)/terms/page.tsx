@@ -2,7 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Beaconmon',
+  title: 'Terms of Service | Beaconmon',
   description: 'Terms and conditions for using the Beaconmon website monitoring service.',
   alternates: { canonical: 'https://beaconmon.com/terms' },
 };
@@ -54,12 +54,12 @@ export default function TermsPage() {
             <ul>
               <li>All prices are in USD. Annual prices are charged upfront.</li>
               <li>Upgrades take effect immediately and are prorated. Downgrades take effect at the end of the current billing period.</li>
-              <li>Refunds are handled by Freemius in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee — see our <a href="/refund-policy">Refund Policy</a> for full details.</li>
+              <li>Refunds are handled by Freemius in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee. See our <a href="/refund-policy">Refund Policy</a> for full details.</li>
             </ul>
 
             <h2>5. Cancellation</h2>
             <p>
-              You may cancel your subscription at any time from the billing settings in your dashboard. Cancellation takes effect at the end of the current billing period — you retain full access until then. We do not charge cancellation fees. Upon cancellation, your account reverts to the Free plan.
+              You may cancel your subscription at any time from the billing settings in your dashboard. Cancellation takes effect at the end of the current billing period. You retain full access until then. We do not charge cancellation fees. Upon cancellation, your account reverts to the Free plan.
             </p>
             <p>
               To delete your account entirely, contact us at{' '}<a href="mailto:hello@beaconmon.com">hello@beaconmon.com</a>. We will delete your account and associated data within 30 days.
