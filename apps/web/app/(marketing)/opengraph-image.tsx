@@ -70,7 +70,7 @@ export default function OGImage() {
       {/* Subheadline */}
       <div
         style={{
-          color: '#7A7A8A',
+          color: '#8C8C9D' /* --brand-muted: keep in sync with globals.css */,
           fontSize: '22px',
           lineHeight: 1.5,
           maxWidth: '740px',
@@ -92,7 +92,7 @@ export default function OGImage() {
           gap: '20px',
         }}
       >
-        <div style={{ height: '1px', background: '#1E1E2A', flex: 1, display: 'flex' }} />
+        <div style={{ height: '1px', background: '#2A2A3A' /* --brand-border2: keep in sync with globals.css */, flex: 1, display: 'flex' }} />
         <span style={{ color: '#00E57A', fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em' }}>
           BEACONMON.COM
         </span>

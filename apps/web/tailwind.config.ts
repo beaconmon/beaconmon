@@ -19,6 +19,7 @@ const config: Config = {
   	extend: {
   		fontFamily: {
   			mono: ['var(--font-mono)', 'ui-monospace', 'SF Mono', 'Menlo', 'monospace'],
+  			display: ['var(--font-display)', 'DM Sans', 'sans-serif'],
   		},
   		colors: {
   			brand: {
@@ -90,10 +91,6 @@ const config: Config = {
   				from: { height: 'var(--radix-accordion-content-height)' },
   				to: { height: '0' },
   			},
-  			'pulse-green': {
-  				'0%, 100%': { boxShadow: '0 0 0 0 rgba(0, 229, 122, 0.4)' },
-  				'50%': { boxShadow: '0 0 0 6px rgba(0, 229, 122, 0)' },
-  			},
   			breathe: {
   				'0%, 100%': { opacity: '1', transform: 'scale(1)' },
   				'50%': { opacity: '0.5', transform: 'scale(0.9)' },
@@ -110,7 +107,6 @@ const config: Config = {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
-  			'pulse-green': 'pulse-green 2s ease-in-out infinite',
   			breathe: 'breathe 2s ease-in-out infinite',
   			blip: 'blip 2s infinite',
   			'logo-pulse': 'logo-pulse 2s ease-out infinite',
