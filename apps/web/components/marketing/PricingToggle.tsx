@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import PricingCard, { type PricingTier } from './PricingCard';
 import { PRICING, PLAN_CTAS } from '@/lib/pricing';
 
@@ -8,7 +5,7 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Free',
     price: '$0',
-    tagline: 'For solo founders getting started.',
+    tagline: 'For hobby stores and side projects.',
     features: [
       '10 monitors',
       '5-minute check intervals',
@@ -23,13 +20,14 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Starter',
     price: `$${PRICING.starter.monthly}`,
-    tagline: 'For growing stores tracking competitors.',
+    tagline: 'For DTC brands that are starting to care.',
     features: [
       '25 monitors',
       '1-minute check intervals',
       '5 competitor monitors',
       'Email + Slack + webhook alerts',
       'Content monitoring',
+      'Weekly intelligence digest',
       '3 status pages',
       '30-day history',
     ],
@@ -39,11 +37,11 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Growth',
     price: `$${PRICING.growth.monthly}`,
-    tagline: 'For serious stores that need intelligence.',
+    tagline: 'For brands taking ecommerce seriously.',
     features: [
       '100 monitors',
       '25 competitor monitors',
-      'AI-powered store setup',
+      'AI-powered Smart Setup',
       'Intelligence Digest (daily + weekly)',
       'AI content-diff summaries',
       'Smart Alerts + Deploy-aware monitoring',
@@ -59,12 +57,12 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Scale',
     price: `$${PRICING.scale.monthly}`,
-    tagline: 'For high-volume stores.',
+    tagline: 'For multi-store and high-volume brands.',
     features: [
       'Unlimited monitors',
       '30-second check intervals',
       'Unlimited competitor monitors',
-      'Intelligence Digest (daily + weekly)',
+      'Daily + weekly intelligence digest',
       'All Growth features included',
       '365-day history',
       'Priority support',
@@ -93,35 +91,58 @@ const ANNUAL_TIERS: PricingTier[] = [
   },
 ];
 
-export default function PricingToggle() {
-  const [period, setPeriod] = useState<'monthly' | 'annual'>('annual');
-  const tiers = period === 'annual' ? ANNUAL_TIERS : MONTHLY_TIERS;
+const TOGGLE_CSS = `
+.pt-root .pt-radio { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.pt-root .pt-grid-monthly { display: none; }
+.pt-root .pt-grid-annual { display: grid; }
+.pt-root:has(#pt-period-monthly:checked) .pt-grid-monthly { display: grid; }
+.pt-root:has(#pt-period-monthly:checked) .pt-grid-annual { display: none; }
+.pt-root .pt-label { color: var(--brand-muted); }
+.pt-root .pt-label:hover { color: var(--brand-dim); }
+.pt-root:has(#pt-period-monthly:checked) .pt-label-monthly,
+.pt-root:has(#pt-period-annual:checked) .pt-label-annual {
+  background: var(--brand-bg3);
+  color: var(--brand-text);
+  font-weight: 600;
+}
+.pt-root:has(#pt-period-monthly:focus-visible) .pt-label-monthly,
+.pt-root:has(#pt-period-annual:focus-visible) .pt-label-annual { outline: 2px solid var(--brand-green); outline-offset: 2px; }
+`;
 
+export default function PricingToggle() {
   return (
-    <>
+    <div className="pt-root">
+      <style>{TOGGLE_CSS}</style>
+
+      <input type="radio" name="pt-period" id="pt-period-monthly" className="pt-radio" aria-label="Monthly billing" />
+      <input type="radio" name="pt-period" id="pt-period-annual" className="pt-radio" defaultChecked aria-label="Annual billing" />
+
       {/* Period toggle */}
       <div className="flex justify-center mb-10">
-        <div className="flex items-center gap-1 rounded-xl border border-brand-line bg-brand-bg1 p-1">
-          <button
-            onClick={() => setPeriod('monthly')}
-            className={`px-5 py-2 text-[14px] rounded-lg transition-colors ${period === 'monthly' ? 'bg-brand-bg3 text-brand-text font-semibold' : 'text-brand-muted hover:text-brand-dim'}`}
+        <div className="flex items-center gap-1 rounded-xl border border-brand-line bg-brand-bg1 p-1" role="radiogroup" aria-label="Billing period">
+          <label
+            htmlFor="pt-period-monthly"
+            className="pt-label pt-label-monthly px-5 py-2 text-[14px] rounded-lg transition-colors cursor-pointer select-none"
           >
             Monthly
-          </button>
-          <button
-            onClick={() => setPeriod('annual')}
-            className={`px-5 py-2 text-[14px] rounded-lg transition-colors flex items-center gap-2 ${period === 'annual' ? 'bg-brand-bg3 text-brand-text font-semibold' : 'text-brand-muted hover:text-brand-dim'}`}
+          </label>
+          <label
+            htmlFor="pt-period-annual"
+            className="pt-label pt-label-annual px-5 py-2 text-[14px] rounded-lg transition-colors cursor-pointer select-none flex items-center gap-2"
           >
             Annual
             <span className="text-[11px] font-bold text-brand-green-ink bg-brand-green/10 px-2 py-0.5 rounded-full">Save 20%</span>
-          </button>
+          </label>
         </div>
       </div>
 
-      {/* Pricing cards */}
-      <div className="grid grid-cols-4 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1 gap-5 items-stretch">
-        {tiers.map((t) => <PricingCard key={t.tier} {...t} />)}
+      {/* Pricing cards — both sets rendered SSR; CSS swaps visibility */}
+      <div className="pt-grid-monthly grid-cols-4 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1 gap-5 items-stretch">
+        {MONTHLY_TIERS.map((t) => <PricingCard key={t.tier} {...t} />)}
       </div>
-    </>
+      <div className="pt-grid-annual grid-cols-4 max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1 gap-5 items-stretch">
+        {ANNUAL_TIERS.map((t) => <PricingCard key={t.tier} {...t} />)}
+      </div>
+    </div>
   );
 }

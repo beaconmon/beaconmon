@@ -60,8 +60,9 @@ export default function NavBar() {
         </Link>
 
         <div className="flex gap-8 text-sm text-brand-dim max-[880px]:hidden">
-          <Link href="/features" className="hover:text-brand-text transition-colors duration-150">Features</Link>
+          <Link href="/features/intelligence" className="hover:text-brand-text transition-colors duration-150">Intelligence</Link>
           <Link href="/pricing" className="hover:text-brand-text transition-colors duration-150">Pricing</Link>
+          <Link href="/vs" className="hover:text-brand-text transition-colors duration-150">Compare</Link>
         </div>
 
         <div className="flex items-center gap-5">
@@ -102,11 +103,11 @@ export default function NavBar() {
           >
             <div className="flex flex-col gap-1">
               <Link
-                href="/features"
+                href="/features/intelligence"
                 className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors block"
                 onClick={() => setMenuOpen(false)}
               >
-                Features
+                Intelligence
               </Link>
               <Link
                 href="/pricing"
@@ -114,6 +115,13 @@ export default function NavBar() {
                 onClick={() => setMenuOpen(false)}
               >
                 Pricing
+              </Link>
+              <Link
+                href="/vs"
+                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                onClick={() => setMenuOpen(false)}
+              >
+                Compare
               </Link>
               <div className="border-t border-brand-line-soft mt-3 pt-3">
                 <Link

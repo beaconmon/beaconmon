@@ -1,6 +1,5 @@
 import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
-import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
 import IntelligenceMockup from '@/components/marketing/IntelligenceMockup';
 import Link from 'next/link';

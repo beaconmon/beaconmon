@@ -26,7 +26,7 @@ export async function suggestCompetitors(
     user: `Store homepage:\n${input.extractedText}\n\nSuggest 3-5 competitor domains.`,
     schema: CompetitorSuggestOutput,
     schemaName: 'suggest_competitors',
-    maxTokens: 200,
+    maxTokens: 400,
     temperature: 0,
     timeoutMs: 15000,
   });

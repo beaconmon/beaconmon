@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { X, Loader2, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Eye, X, Loader2, AlertCircle, ChevronRight } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import Script from 'next/script';
@@ -49,6 +47,14 @@ function normalizeDomain(input: string): string {
   return s;
 }
 
+function domainToName(domain: string): string {
+  const withoutTld = domain.replace(/\.[a-z]{2,}(\.[a-z]{2})?$/, '').replace(/^www\./, '');
+  return withoutTld
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
 export function Step3Competitors({
   competitors,
   onCompetitorsChange,
@@ -63,6 +69,7 @@ export function Step3Competitors({
   error,
 }: Step3CompetitorsProps) {
   const [inputValue, setInputValue] = useState('');
+  const [suggestedSet, setSuggestedSet] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
   const fsRef = useRef<FreemiusCheckoutHandler | null>(null);
 
@@ -80,6 +87,11 @@ export function Step3Competitors({
 
   function handleRemove(domain: string) {
     onCompetitorsChange(competitors.filter((c) => c !== domain));
+    setSuggestedSet((prev) => {
+      const next = new Set(prev);
+      next.delete(domain);
+      return next;
+    });
   }
 
   function handleUpgrade() {
@@ -100,41 +112,37 @@ export function Step3Competitors({
     });
   }
 
-  function handleAddChip(domain: string) {
+  function handleAddSuggestion(domain: string) {
     const normalized = normalizeDomain(domain);
     if (!normalized || competitors.includes(normalized) || atLimit) return;
     onCompetitorsChange([...competitors, normalized]);
+    setSuggestedSet((prev) => new Set([...prev, normalized]));
   }
 
-  function handleAddAllChips() {
-    const toAdd = aiSuggestions
-      .map(normalizeDomain)
-      .filter((d) => d && !competitors.includes(d));
-    if (toAdd.length === 0) return;
-    const next = [...competitors];
-    for (const d of toAdd) {
-      if (limit === -1 || next.length < limit) {
-        next.push(d);
-      }
-    }
-    onCompetitorsChange(next);
-  }
-
-  const planLabel = plan === 'free' ? 'free' : plan.charAt(0).toUpperCase() + plan.slice(1);
+  const visibleSuggestions = aiSuggestions
+    .map(normalizeDomain)
+    .filter((d) => d && !competitors.includes(d));
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-xl font-semibold text-brand-text">Competitors</h2>
-        <p className="text-sm text-brand-dim">
-          Add competitor domains to watch for price, content, and availability changes.
+    <div className="space-y-8">
+      {/* Editorial head */}
+      <div className="space-y-3 text-center">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-brand-green-ink">
+          Almost there
+        </p>
+        <h1 className="text-3xl font-semibold italic leading-tight text-brand-text">
+          Who should we keep an eye on?
+        </h1>
+        <p className="mx-auto max-w-md text-sm leading-relaxed text-brand-dim">
+          Add the brands you check every Monday morning. We&apos;ll watch their pricing, hero copy,
+          and promo banners so you don&apos;t have to.
         </p>
       </div>
 
       {isFree ? (
         <>
           <Script src="https://checkout.freemius.com/js/v1/" strategy="lazyOnload" />
-          <div className="rounded-lg border border-amber-300/30 bg-amber-50/5 p-5 space-y-3">
+          <div className="space-y-3 rounded-lg border border-amber-300/50 bg-amber-50/40 p-5 dark:border-amber-300/30 dark:bg-amber-50/5">
             <p className="text-sm font-medium text-brand-text">
               Competitor tracking starts at Starter ($29/mo)
             </p>
@@ -142,17 +150,16 @@ export function Step3Competitors({
               Monitor up to 5 competitor pages on the Starter plan and up to 25 on Growth.
             </p>
             <div className="flex items-center gap-3">
-              <Button
-                size="sm"
+              <button
                 onClick={handleUpgrade}
-                className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90"
+                className="rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-brand-green-fg transition-opacity hover:opacity-90"
               >
                 Upgrade
-              </Button>
+              </button>
               <button
                 onClick={() => void onSubmit()}
                 disabled={submitting}
-                className="text-sm text-brand-muted hover:text-brand-dim transition-colors"
+                className="text-sm text-brand-muted transition-colors hover:text-brand-dim"
               >
                 Finish setup without competitors
               </button>
@@ -161,100 +168,129 @@ export function Step3Competitors({
         </>
       ) : (
         <>
-          {/* AI suggestion chips */}
-          {aiSuggestions.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-brand-muted uppercase tracking-wider">AI suggestions</p>
-                <button
-                  onClick={handleAddAllChips}
-                  disabled={atLimit}
-                  className="text-xs text-brand-green-ink hover:underline disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-                >
-                  + Add all
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {aiSuggestions.map((domain) => {
-                  const normalized = normalizeDomain(domain);
-                  const added = competitors.includes(normalized);
-                  return (
-                    <button
-                      key={domain}
-                      onClick={() => handleAddChip(domain)}
-                      disabled={added || atLimit}
-                      className={cn(
-                        'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors',
-                        added
-                          ? 'border-brand-green/40 bg-brand-green/10 text-brand-green-ink cursor-default'
-                          : 'border-brand-line bg-brand-bg2 text-brand-dim hover:border-brand-green/40 hover:text-brand-text disabled:opacity-40 disabled:cursor-not-allowed'
-                      )}
-                    >
-                      {!added && <span className="text-brand-green-ink">+</span>}
-                      {normalized}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Input */}
+          <div className="flex h-14 items-stretch overflow-hidden rounded-lg border border-brand-line bg-brand-bg2 transition-colors focus-within:border-brand-green/60">
+            <div className="flex items-center pl-4 pr-3">
+              <Eye className="h-4 w-4 text-brand-muted" />
             </div>
-          )}
-
-          {/* URL input */}
-          <div className="flex gap-2">
-            <Input
+            <input
               ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleAdd();
               }}
-              placeholder="competitor.com"
+              placeholder="competitor-store.com"
               disabled={atLimit}
-              className="bg-brand-bg2 border-brand-line text-brand-text placeholder:text-brand-muted"
+              className="min-w-0 flex-1 bg-transparent text-sm text-brand-text placeholder:text-brand-muted focus:outline-none disabled:cursor-not-allowed"
             />
-            <Button
-              variant="outline"
-              onClick={handleAdd}
-              disabled={!inputValue.trim() || atLimit}
-              className="shrink-0 border-brand-line text-brand-dim hover:text-brand-text"
-            >
-              Add to watchlist
-            </Button>
+            <div className="flex items-center p-1.5">
+              <button
+                onClick={handleAdd}
+                disabled={!inputValue.trim() || atLimit}
+                className="rounded-md bg-brand-green px-4 py-2 text-sm font-semibold text-brand-green-fg transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                Add to watchlist
+              </button>
+            </div>
           </div>
 
           {atLimit && (
             <p className="text-xs text-amber-500">
-              You&apos;ve reached the {limit} competitor limit on the {planLabel} plan.
+              You&apos;ve reached the {limit} competitor limit on the{' '}
+              {plan.charAt(0).toUpperCase() + plan.slice(1)} plan.
             </p>
           )}
 
           {/* Watchlist */}
           {competitors.length > 0 && (
-            <div className="overflow-hidden rounded-lg border border-brand-line">
-              {competitors.map((domain, i) => (
-                <div
-                  key={domain}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-3',
-                    i > 0 && 'border-t border-brand-line'
-                  )}
-                >
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-bg3 text-xs font-bold text-brand-text">
-                    {domain[0]?.toUpperCase()}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-brand-text">{domain}</p>
-                    <p className="text-xs text-brand-muted">homepage only</p>
-                  </div>
-                  <button
-                    onClick={() => handleRemove(domain)}
-                    aria-label={`Remove ${domain}`}
-                    className="text-brand-muted hover:text-brand-text transition-colors"
+            <div className="space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-brand-muted">
+                Your watchlist{' '}
+                <span className="text-brand-dim">&middot; {competitors.length}</span>
+              </p>
+              <div className="space-y-2">
+                {competitors.map((domain) => {
+                  const isSuggested = suggestedSet.has(domain);
+                  return (
+                    <div
+                      key={domain}
+                      className="flex items-center gap-3 rounded-lg border border-brand-line bg-brand-bg2 px-4 py-3.5"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-bg3 text-sm font-bold text-brand-text">
+                        {domain[0]?.toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-brand-text">
+                            {domainToName(domain)}
+                          </p>
+                          {isSuggested && (
+                            <span className="rounded bg-brand-green/15 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-brand-green-ink">
+                              Suggested
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-brand-muted">
+                          {domain} &middot; homepage
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleRemove(domain)}
+                        aria-label={`Remove ${domain}`}
+                        className="rounded-md p-1 text-brand-muted transition-colors hover:text-brand-text"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* AI suggestion cards */}
+          {visibleSuggestions.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-brand-muted">
+                  Suggestions based on your store
+                </p>
+                <p className="font-mono text-[10px] text-brand-muted">
+                  powered by Smart Setup
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {visibleSuggestions.map((domain) => (
+                  <div
+                    key={domain}
+                    className="flex flex-col gap-3 rounded-lg border border-brand-line bg-brand-bg2 p-3.5"
                   >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand-bg3 text-xs font-bold text-brand-text">
+                        {domain[0]?.toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <p className="truncate text-sm font-semibold text-brand-text">
+                          {domainToName(domain)}
+                        </p>
+                        <p className="truncate text-[11px] text-brand-muted">{domain}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAddSuggestion(domain)}
+                      disabled={atLimit}
+                      className={cn(
+                        'flex items-center gap-1 text-xs font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-40',
+                        'text-brand-green-ink hover:opacity-80'
+                      )}
+                    >
+                      <span className="text-base leading-none">+</span>
+                      Add to watchlist
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </>
@@ -279,42 +315,39 @@ export function Step3Competitors({
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-2">
-        <Button
-          variant="ghost"
+        <button
           onClick={onBack}
-          className="text-brand-dim hover:text-brand-text"
+          className="flex items-center gap-1 text-sm text-brand-dim transition-colors hover:text-brand-text"
         >
+          <ChevronRight className="h-4 w-4 rotate-180" />
           Back to Smart Setup
-        </Button>
+        </button>
 
         {!isFree && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => void onSubmit()}
               disabled={submitting}
-              className="text-sm text-brand-muted hover:text-brand-dim transition-colors disabled:opacity-50"
+              className="text-sm text-brand-muted transition-colors hover:text-brand-dim disabled:opacity-50"
             >
-              Skip, I&apos;ll add later
+              Skip &middot; I&apos;ll add later
             </button>
-            <Button
+            <button
               onClick={() => void onSubmit()}
               disabled={submitting}
-              className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90"
+              className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-60"
+              style={{
+                background: 'var(--brand-green, #00e57a)',
+                boxShadow: '0 0 24px rgba(0,229,122,0.35)',
+              }}
             >
-              {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               Take me to my dashboard
-            </Button>
+              <span className="ml-0.5">&rarr;</span>
+            </button>
           </div>
         )}
       </div>
-
-      {/* Step footer */}
-      {!isFree && (
-        <p className="text-center text-xs text-brand-muted">
-          Step 3 of 3. You can add up to{' '}
-          {limit === -1 ? 'unlimited' : limit} competitor monitors on the {planLabel} plan.
-        </p>
-      )}
     </div>
   );
 }

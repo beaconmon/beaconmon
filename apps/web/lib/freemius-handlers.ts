@@ -1,5 +1,10 @@
+import crypto from 'node:crypto';
 import { alertChannelRepository } from '@beaconmon/db';
 import { logger } from '@/lib/logger';
+
+function hashEmail(email: string): string {
+  return crypto.createHash('sha256').update(email).digest('hex').slice(0, 8);
+}
 import {
   planFromFreemiusPlanId,
   billingPeriodFromFreemiusCycle,
@@ -61,16 +66,18 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
           );
           return;
         }
+        const emailHash = hashEmail(email);
+        const emailDomain = email.split('@')[1];
         teamId = await subscriptionRepository.findTeamIdByOwnerEmail(email);
         if (!teamId) {
           logger.warn(
-            { service: 'web', eventType: event.type, subscriptionId: sub.id, email },
+            { service: 'web', eventType: event.type, subscriptionId: sub.id, emailHash, emailDomain },
             'No team found for Freemius buyer email — skipping (consider adding user_dictionary at checkout)'
           );
           return;
         }
         logger.warn(
-          { service: 'web', eventType: event.type, subscriptionId: sub.id, email },
+          { service: 'web', eventType: event.type, subscriptionId: sub.id, emailHash, emailDomain },
           'Matched subscription to team via buyer email fallback — risk of mismatch if checkout email differs'
         );
       }

@@ -26,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/features/intelligence`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/integrations`,
       lastModified: new Date('2026-03-01'),
       changeFrequency: 'monthly',
@@ -47,6 +53,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/for/woocommerce`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/for/dtc-brands`,
+      lastModified: new Date('2026-05-23'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/for/solo-founders`,
       lastModified: new Date('2026-05-23'),
       changeFrequency: 'monthly',
       priority: 0.8,

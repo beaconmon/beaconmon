@@ -77,28 +77,33 @@ export async function fetchSitemapUrls(
     ? sitemapDirectives
     : [`${origin}/sitemap.xml`];
 
-  for (const sitemapUrl of candidateSitemaps.slice(0, 3)) {
-    if (urlSet.size >= MAX_URLS) break;
+  async function fetchSitemapAndNested(sitemapUrl: string): Promise<string[]> {
     const sm = await fetchWithTimeout(sitemapUrl, signal);
-    if (!sm || !sm.ok) continue;
+    if (!sm || !sm.ok) return [];
     const body = await readBoundedText(sm);
-    if (!body) continue;
+    if (!body) return [];
     const { urls, nestedSitemaps } = parseSitemapXml(body);
-    for (const u of urls) {
+    const collected: string[] = [...urls];
+    const nestedResults = await Promise.all(
+      nestedSitemaps.slice(0, 3).map(async (nested) => {
+        const nestedRes = await fetchWithTimeout(nested, signal);
+        if (!nestedRes || !nestedRes.ok) return [];
+        const nestedBody = await readBoundedText(nestedRes);
+        if (!nestedBody) return [];
+        return parseSitemapXml(nestedBody).urls;
+      })
+    );
+    for (const batch of nestedResults) collected.push(...batch);
+    return collected;
+  }
+
+  const batches = await Promise.all(
+    candidateSitemaps.slice(0, 3).map(fetchSitemapAndNested)
+  );
+  for (const batch of batches) {
+    for (const u of batch) {
       if (urlSet.size >= MAX_URLS) break;
       urlSet.add(u);
-    }
-    for (const nested of nestedSitemaps.slice(0, 3)) {
-      if (urlSet.size >= MAX_URLS) break;
-      const nestedRes = await fetchWithTimeout(nested, signal);
-      if (!nestedRes || !nestedRes.ok) continue;
-      const nestedBody = await readBoundedText(nestedRes);
-      if (!nestedBody) continue;
-      const parsed = parseSitemapXml(nestedBody);
-      for (const u of parsed.urls) {
-        if (urlSet.size >= MAX_URLS) break;
-        urlSet.add(u);
-      }
     }
   }
 

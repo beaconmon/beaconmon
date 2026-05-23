@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { PLAN_LIMITS } from '@beaconmon/types';
@@ -67,6 +67,7 @@ function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: str
     intervalSeconds: t.intervalSeconds,
     enabled: true,
     source: 'template',
+    description: t.description,
   }));
 
   if (platform === 'shopify' && productSlugs.length > 0) {
@@ -79,11 +80,19 @@ function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: str
       intervalSeconds: 300,
       enabled: true,
       source: 'template',
+      description: 'Price + stock status',
     }));
     return [...items, ...products];
   }
 
   return items;
+}
+
+function discoverDescription(type: string): string {
+  if (type === 'ssl')    return 'Auto-renews 30 days before expiry';
+  if (type === 'domain') return 'Reminds you before lapse';
+  if (type === 'http')   return 'Uptime check';
+  return 'Content change detection';
 }
 
 function mapDiscoverToBundle(
@@ -106,6 +115,7 @@ function mapDiscoverToBundle(
     enabled: s.checkedByDefault,
     source: s.source?.startsWith('ai') ? 'ai' : 'template',
     selectorChosen: s.selectorChosen,
+    description: discoverDescription(s.type),
   }));
 }
 
@@ -121,6 +131,11 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   const [discoverLoading, setDiscoverLoading] = useState(false);
   const [discoverDegraded, setDiscoverDegraded] = useState(false);
   const [competitorSuggestions, setCompetitorSuggestions] = useState<string[]>([]);
+  const prefetchRef = useRef<{
+    hostname: string;
+    discover: Promise<z.infer<typeof discoverResponseSchema>>;
+    competitors: Promise<z.infer<typeof suggestCompetitorsResponseSchema>>;
+  } | null>(null);
   const [ready] = useState(() => {
     try {
       return localStorage.getItem(obKey(teamId)) === null;
@@ -140,6 +155,34 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     router.push('/monitors');
   }
 
+  function prefetchDiscover(hostname: string): void {
+    const isAiPlan = plan === 'growth' || plan === 'scale';
+    if (!isAiPlan) return;
+    if (prefetchRef.current?.hostname === hostname) return;
+
+    prefetchRef.current = {
+      hostname,
+      discover: apiFetch('/api/monitors/discover', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ domain: hostname }),
+      }).then(async (res) => {
+        if (!res.ok) throw new Error(`Discover API failed with status ${res.status}`);
+        const data = await res.json();
+        return discoverResponseSchema.parse(data);
+      }),
+      competitors: apiFetch('/api/onboarding/suggest-competitors', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ domain: hostname }),
+      }).then(async (res) => {
+        if (!res.ok) throw new Error(`Suggest competitors API failed with status ${res.status}`);
+        const data = await res.json();
+        return suggestCompetitorsResponseSchema.parse(data);
+      }),
+    };
+  }
+
   async function goToStep2(): Promise<void> {
     const isAiPlan = plan === 'growth' || plan === 'scale';
 
@@ -156,25 +199,12 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
         }
       })();
 
+      // Fire prefetch now if it wasn't already started on Step 1 check success
+      prefetchDiscover(hostname);
+
       const [discoverResult, competitorResult] = await Promise.allSettled([
-        apiFetch('/api/monitors/discover', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ domain: hostname }),
-        }).then(async (res) => {
-          if (!res.ok) throw new Error(`Discover API failed with status ${res.status}`);
-          const data = await res.json();
-          return discoverResponseSchema.parse(data);
-        }),
-        apiFetch('/api/onboarding/suggest-competitors', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ domain: hostname }),
-        }).then(async (res) => {
-          if (!res.ok) throw new Error(`Suggest competitors API failed with status ${res.status}`);
-          const data = await res.json();
-          return suggestCompetitorsResponseSchema.parse(data);
-        }),
+        prefetchRef.current!.discover,
+        prefetchRef.current!.competitors,
       ]);
 
       if (discoverResult.status === 'fulfilled') {
@@ -286,19 +316,37 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   if (!ready) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-brand-bg">
-      {/* Header */}
+    <div
+      className="flex min-h-screen flex-col"
+      style={{
+        background:
+          'radial-gradient(ellipse at 50% -10%, rgba(0,229,122,0.07) 0%, transparent 60%), var(--brand-bg)',
+      }}
+    >
+      {/* Topbar */}
       <header className="flex h-14 items-center justify-between border-b border-brand-line px-6">
         <div className="flex items-center gap-2">
           <Logo size={22} />
           <span className="text-sm font-semibold text-brand-text">Beaconmon</span>
         </div>
-        <StepIndicator current={step} />
+        <button
+          onClick={skip}
+          className="font-mono text-xs text-brand-muted transition-colors hover:text-brand-dim"
+        >
+          Save &amp; continue later
+        </button>
       </header>
 
+      {/* Progress bar */}
+      <div className="flex justify-center border-b border-brand-line/50 px-6 py-4">
+        <div className="w-full max-w-[720px]">
+          <StepIndicator current={step} />
+        </div>
+      </div>
+
       {/* Content */}
-      <main className="flex flex-1 items-start justify-center p-6 sm:items-center">
-        <div className="w-full max-w-2xl">
+      <main className="flex flex-1 items-start justify-center px-6 py-10 sm:items-center">
+        <div className="w-full max-w-[760px]">
           {step === 1 && (
             <Step1Store
               storeUrl={storeUrl}
@@ -307,10 +355,12 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
               onPlatformChange={setPlatform}
               onContinue={goToStep2}
               onSkip={skip}
+              onCheckSuccess={prefetchDiscover}
             />
           )}
           {step === 2 && (
             <Step2Bundle
+              storeUrl={storeUrl}
               platform={platform ?? 'other'}
               bundle={bundle}
               onBundleChange={setBundle}
@@ -339,6 +389,13 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
           )}
         </div>
       </main>
+
+      {/* Mono hint footer */}
+      <footer className="flex justify-center pb-8">
+        <p className="font-mono text-[11px] text-brand-muted">
+          Step {step} of 3 · No credit card, ever, even for the trial.
+        </p>
+      </footer>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getPasswordStrength, MIN_PASSWORD_STRENGTH } from '@/lib/validations/password';
+import Logo from '@/components/logo';
 
 export { getPasswordStrength, MIN_PASSWORD_STRENGTH };
 
@@ -11,13 +13,10 @@ export { getPasswordStrength, MIN_PASSWORD_STRENGTH };
 
 export function AuthLogo() {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="relative flex h-7 w-7 shrink-0 items-center justify-center">
-        <span className="absolute h-7 w-7 rounded-full bg-brand-green opacity-20 animate-logo-pulse" />
-        <span className="h-3 w-3 rounded-full bg-brand-green" />
-      </div>
+    <Link href="/" className="flex items-center gap-2.5 w-fit">
+      <Logo size={28} />
       <span className="text-base font-semibold tracking-tight text-brand-text">Beaconmon</span>
-    </div>
+    </Link>
   );
 }
 
@@ -102,7 +101,7 @@ export function AuthPanel({ variant = 'default' }: { variant?: PanelVariant }) {
         </div>
 
         {/* Live monitor rows */}
-        <div className="rounded-xl border border-brand-line bg-brand-bg3/60 p-4 space-y-3 backdrop-blur-sm">
+        <div className="rounded-lg border border-brand-line bg-brand-bg3/60 p-4 space-y-3 backdrop-blur-sm">
           {MONITOR_ROWS.map((row) => (
             <div key={row.name} className="flex items-center gap-3">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green animate-blip" />
