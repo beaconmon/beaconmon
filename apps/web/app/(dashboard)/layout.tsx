@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import {
   Activity,
@@ -279,7 +279,6 @@ function TopBar({
 function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
-  const router = useRouter();
 
   // Auto-collapse sidebar on small screens (runs once on mount; SSR renders collapsed=false then corrects client-side)
   useEffect(() => {
@@ -295,17 +294,6 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       analytics.identify(session.userId, { plan: session.plan, teamId: session.teamId });
     }
   }, [session?.userId, session?.plan, session?.teamId]);
-
-  useEffect(() => {
-    if (!session?.teamId) return;
-    try {
-      if (localStorage.getItem(`bm_ob_${session.teamId}`) === null) {
-        router.replace('/onboarding');
-      }
-    } catch {
-      // localStorage unavailable
-    }
-  }, [session?.teamId, router]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-bg">
