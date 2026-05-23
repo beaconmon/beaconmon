@@ -3,15 +3,18 @@ import LogoMark from './LogoMark';
 
 const PRODUCT_LINKS: [string, string][] = [
   ['/features#monitors', 'Monitors'],
-  ['/intelligence', 'Intelligence'],
+  ['/features/intelligence', 'Intelligence'],
   ['/features#status-pages', 'Status pages'],
   ['/features#smart-alerts', 'Smart Alerts'],
   ['/features#reliability-targets', 'Reliability Targets'],
 ];
 
 const FOR_LINKS: [string, string][] = [
+  ['/for/ecommerce', 'Ecommerce'],
   ['/for/shopify', 'Shopify'],
   ['/for/woocommerce', 'WooCommerce'],
+  ['/for/dtc-brands', 'DTC Brands'],
+  ['/for/solo-founders', 'Solo Founders'],
 ];
 
 const COMPANY_LINKS: [string, string][] = [
