@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Competitor Intelligence for Ecommerce — Beaconmon',
   description:
     'Track competitor prices, product changes, and page updates automatically. Get a daily or weekly digest of what changed, with AI-powered summaries. Built for Shopify and WooCommerce brands.',
-  alternates: { canonical: 'https://beaconmon.com/intelligence' },
+  alternates: { canonical: 'https://beaconmon.com/features/intelligence' },
 };
 
 const SCHEMA = {
@@ -18,7 +18,7 @@ const SCHEMA = {
   name: 'Competitor Intelligence — Beaconmon',
   description:
     'Track competitor prices, product changes, and page updates automatically. Get a daily or weekly digest of what changed.',
-  url: 'https://beaconmon.com/intelligence',
+  url: 'https://beaconmon.com/features/intelligence',
 };
 
 const CAPABILITIES = [

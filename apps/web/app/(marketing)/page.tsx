@@ -193,7 +193,7 @@ export default function LandingPage() {
               Your competitor dropped prices at 2am. You found out at 11am, from a customer asking for a match.
             </blockquote>
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
-              Generic uptime tools tell you when your store is on fire. They don't tell you when your competitor changed their hero, slashed a price, or quietly launched a new collection. Beaconmon does both, in one feed.
+              Generic uptime tools tell you when your store is on fire. They don&apos;t tell you when your competitor changed their hero, slashed a price, or quietly launched a new collection. Beaconmon does both, in one feed.
             </p>
             <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
@@ -269,7 +269,7 @@ export default function LandingPage() {
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
               Two products. One pane.
             </h2>
-            <p className="text-brand-dim text-[17px] max-w-[600px] mx-auto">Everything you'd expect from a serious uptime tool, plus the competitor side most teams quietly cobble together with bookmarks and screenshots.</p>
+            <p className="text-brand-dim text-[17px] max-w-[600px] mx-auto">Everything you&apos;d expect from a serious uptime tool, plus the competitor side most teams quietly cobble together with bookmarks and screenshots.</p>
           </div>
 
           <div className="grid grid-cols-6 max-[880px]:grid-cols-1 gap-4" style={{ gridAutoRows: 'minmax(240px,auto)' }}>
@@ -308,7 +308,7 @@ export default function LandingPage() {
               <div className="p-7 pb-5">
                 <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Uptime monitoring</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">30-second checks from multiple regions.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">One blip doesn't trigger an alert. We confirm from two locations to eliminate false alarms.</p>
+                <p className="text-brand-dim text-[13px] leading-[1.55]">One blip doesn&apos;t trigger an alert. We confirm from two locations to eliminate false alarms.</p>
               </div>
             </div>
 
@@ -364,7 +364,7 @@ export default function LandingPage() {
               <div className="p-7 pb-5">
                 <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Reliability Targets</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Set SLOs and burn-rate alerts per monitor.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">Know the moment you're burning through your reliability budget, not after the month ends.</p>
+                <p className="text-brand-dim text-[13px] leading-[1.55]">Know the moment you&apos;re burning through your reliability budget, not after the month ends.</p>
               </div>
             </div>
           </div>
@@ -483,7 +483,7 @@ export default function LandingPage() {
           <h2 className="text-[clamp(36px,4.6vw,60px)] tracking-[-0.035em] leading-[1.08] font-extrabold mb-[18px]">
             Stop being the last to know.<br />About your store. About theirs.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. Add competitors when you're ready. Set up in five minutes.</p>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. Add competitors when you&apos;re ready. Set up in five minutes.</p>
           <CtaForm className="mx-auto mb-4" />
           <p className="text-[13px] text-brand-muted">No credit card · Cancel anytime · Made in Europe</p>
         </div>
