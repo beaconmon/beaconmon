@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, DM_Sans, JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { JsonLd } from '@/components/json-ld';
 import { PHProvider } from '@/components/posthog-provider';
@@ -8,6 +8,13 @@ import './globals.css';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['700', '800'],
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -61,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${dmSans.variable} ${mono.variable}`}>
       <head>
         <JsonLd data={SITE_SCHEMA} />
       </head>

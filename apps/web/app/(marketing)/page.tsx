@@ -71,7 +71,7 @@ const HERO_EVENTS = [
   {
     type: 'competitor' as const,
     icon: '↓',
-    label: 'Allbirds — price drop',
+    label: 'Allbirds: price drop',
     detail: 'Tree Runners dropped from $98 to $79 on all colorways',
     timeAgo: '2m ago',
     bigText: true,
@@ -79,7 +79,7 @@ const HERO_EVENTS = [
   {
     type: 'competitor' as const,
     icon: '✎',
-    label: "Rothy's — copy change",
+    label: "Rothy's: copy change",
     detail: 'Hero changed: "Summer drop is live" added above CTA',
     timeAgo: '14m ago',
   },
@@ -87,7 +87,7 @@ const HERO_EVENTS = [
     type: 'alert' as const,
     icon: '!',
     label: 'Checkout alert',
-    detail: 'yourstore.com/checkout returned 502 — 1 check failed',
+    detail: 'yourstore.com/checkout returned 502. 1 check failed.',
     timeAgo: '31m ago',
   },
   {
@@ -113,11 +113,11 @@ export default function LandingPage() {
           aria-hidden
           className="absolute pointer-events-none"
           style={{
-            top: '-40%',
-            right: '-10%',
-            width: 800,
-            height: 800,
-            background: 'radial-gradient(circle, rgba(0,229,122,0.10) 0%, rgba(0,229,122,0.04) 40%, transparent 70%)',
+            top: '-10%',
+            right: '-5%',
+            width: 400,
+            height: 400,
+            background: 'radial-gradient(circle, var(--brand-green-glow-04) 0%, transparent 70%)',
           }}
         />
 
@@ -127,7 +127,7 @@ export default function LandingPage() {
             <div>
               <a
                 href="/features"
-                className="inline-flex items-center gap-2 text-[12px] font-semibold text-brand-green-ink border border-[rgba(0,229,122,0.25)] bg-[rgba(0,229,122,0.06)] rounded-full px-3 py-1 mb-5 hover:bg-[rgba(0,229,122,0.10)] transition-colors"
+                className="inline-flex items-center gap-2 text-[12px] font-semibold text-brand-green-ink border border-[var(--brand-green-border-25)] bg-[var(--brand-green-glow-06)] rounded-full px-3 py-1 mb-5 hover:bg-[var(--brand-green-glow-10)] transition-colors"
               >
                 Now for ecommerce · competitor monitoring is live →
               </a>
@@ -174,12 +174,12 @@ export default function LandingPage() {
             Built for stores on
           </p>
           <div className="flex justify-between items-center gap-8 flex-wrap">
-            <span className="text-[17px] font-semibold tracking-[-0.01em] text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</span>
-            <span className="text-[17px] font-medium italic text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</span>
-            <span className="text-[17px] font-semibold tracking-[-0.01em] text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">BigCommerce</span>
-            <span className="text-[17px] font-bold tracking-[-0.01em] text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Webflow Ecom</span>
-            <span className="text-[17px] font-bold tracking-[-0.01em] text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Squarespace</span>
-            <span className="text-[13px] font-bold tracking-[0.06em] uppercase text-brand-muted opacity-70 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Magento</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">BigCommerce</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Webflow Ecom</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Squarespace</span>
+            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Magento</span>
           </div>
         </div>
       </section>
@@ -187,11 +187,11 @@ export default function LandingPage() {
       {/* ====== PAIN ====== */}
       <section className="py-[120px] max-[640px]:py-[72px]">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="reveal bg-[radial-gradient(ellipse_at_top,rgba(255,68,68,0.04),transparent_60%),#0E0E14] border border-brand-line rounded-[20px] px-[60px] py-20 max-[640px]:px-6 max-[640px]:py-12 text-center max-w-[920px] mx-auto relative overflow-hidden">
-            <span aria-hidden className="absolute top-[10px] left-10 font-serif text-[160px] text-brand-line leading-none select-none">&ldquo;</span>
-            <blockquote className="relative m-0 text-[clamp(24px,3vw,36px)] leading-[1.25] font-semibold tracking-[-0.02em] max-w-[760px] mx-auto mb-6">
-              Your competitor dropped prices at 2am. You found out at 11am, from a customer asking for a match.
-            </blockquote>
+          <div className="reveal bg-[radial-gradient(ellipse_at_top,var(--brand-red-glow-04),transparent_60%),var(--brand-pain-card-bg)] border border-brand-line rounded-[20px] px-[60px] py-20 max-[640px]:px-6 max-[640px]:py-12 text-center max-w-[920px] mx-auto relative overflow-hidden">
+            <div className="relative m-0 text-[clamp(24px,3vw,36px)] leading-[1.25] font-semibold tracking-[-0.02em] max-w-[760px] mx-auto mb-6">
+              <p className="m-0">Your competitor dropped prices at 2am. You found out at 11am, from a customer asking for a match.</p>
+              <p className="text-brand-muted text-[16px] font-normal mt-3 tracking-normal">Sound familiar?</p>
+            </div>
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
               Generic uptime tools tell you when your store is on fire. They don&apos;t tell you when your competitor changed their hero, slashed a price, or quietly launched a new collection. Beaconmon does both, in one feed.
             </p>
@@ -296,7 +296,7 @@ export default function LandingPage() {
                       <span className="text-green-400">$79.00</span>
                     </div>
                   </div>
-                  <div className="px-4 py-2 border-t border-brand-line-soft bg-[rgba(0,229,122,0.02)]">
+                  <div className="px-4 py-2 border-t border-brand-line-soft bg-[var(--brand-green-glow-02)]">
                     <p className="text-[11px] text-brand-muted">AI summary: Sale pricing applied to all colorways. 19% reduction, likely flash sale.</p>
                   </div>
                 </div>
@@ -306,7 +306,6 @@ export default function LandingPage() {
             {/* Small — uptime */}
             <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="p-7 pb-5">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Uptime monitoring</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">30-second checks from multiple regions.</h3>
                 <p className="text-brand-dim text-[13px] leading-[1.55]">One blip doesn&apos;t trigger an alert. We confirm from two locations to eliminate false alarms.</p>
               </div>
@@ -315,7 +314,6 @@ export default function LandingPage() {
             {/* Small — content change */}
             <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="p-7 pb-5">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Content change detection</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Monitor any page for content changes.</h3>
                 <p className="text-brand-dim text-[13px] leading-[1.55]">Pricing, availability, terms, or any text you care about. See exactly what changed and when.</p>
               </div>
@@ -330,13 +328,13 @@ export default function LandingPage() {
               </div>
               <div className="mt-auto px-[18px] pb-[14px]">
                 <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] overflow-hidden">
-                  <div className="px-4 py-[10px] bg-[rgba(0,229,122,0.04)] border-b border-brand-line-soft flex items-center gap-3">
+                  <div className="px-4 py-[10px] bg-[var(--brand-green-glow-04)] border-b border-brand-line-soft flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-[rgba(255,255,255,0.12)]" />
                     <span className="text-[11px] text-brand-muted font-medium">Intelligence Digest · Mon May 20</span>
                   </div>
                   <div className="px-4 py-3 space-y-[6px]">
                     {[
-                      { dot: 'bg-amber-400', text: '3 competitor moves — Allbirds price drop, Rothys hero change, HOKA new collection' },
+                      { dot: 'bg-amber-400', text: '3 competitor moves: Allbirds price drop, Rothys hero change, HOKA new collection' },
                       { dot: 'bg-green-400', text: 'All 12 store monitors up · 99.97% uptime this week' },
                       { dot: 'bg-yellow-400', text: '1 smart alert · Response time spike on /checkout at 3:14am' },
                     ].map(({ dot, text }, i) => (
@@ -353,7 +351,6 @@ export default function LandingPage() {
             {/* Small — status pages */}
             <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="p-7 pb-5">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Public status pages</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Status pages your customers will actually trust.</h3>
                 <p className="text-brand-dim text-[13px] leading-[1.55]">At your own domain. Looks professional. Takes 2 minutes to set up.</p>
               </div>
@@ -362,7 +359,6 @@ export default function LandingPage() {
             {/* Small — reliability targets */}
             <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="p-7 pb-5">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Reliability Targets</span>
                 <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Set SLOs and burn-rate alerts per monitor.</h3>
                 <p className="text-brand-dim text-[13px] leading-[1.55]">Know the moment you&apos;re burning through your reliability budget, not after the month ends.</p>
               </div>
@@ -383,7 +379,7 @@ export default function LandingPage() {
               <thead>
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)]">Beaconmon</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
                     <Link href="/vs/uptimerobot" className="hover:text-brand-dim transition-colors">UptimeRobot</Link>
                   </th>
@@ -439,7 +435,7 @@ export default function LandingPage() {
                 ].map(({ feat, bm, ur, p }, i, arr) => (
                   <tr key={feat}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feat}</td>
-                    <td className={`p-4 text-[14px] bg-[rgba(0,229,122,0.04)] border-l border-r border-[rgba(0,229,122,0.2)] ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{bm}</td>
+                    <td className={`p-4 text-[14px] bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)] ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{bm}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{ur}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{p}</td>
                   </tr>
@@ -466,19 +462,6 @@ export default function LandingPage() {
 
       {/* ====== FINAL CTA ====== */}
       <section className="py-[120px] relative overflow-hidden border-t border-brand-line-soft">
-        <div
-          aria-hidden
-          className="absolute pointer-events-none"
-          style={{
-            bottom: '-50%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 900,
-            height: 600,
-            background: 'radial-gradient(ellipse, rgba(0,229,122,0.18), transparent 60%)',
-            filter: 'blur(40px)',
-          }}
-        />
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center relative">
           <h2 className="text-[clamp(36px,4.6vw,60px)] tracking-[-0.035em] leading-[1.08] font-extrabold mb-[18px]">
             Stop being the last to know.<br />About your store. About theirs.

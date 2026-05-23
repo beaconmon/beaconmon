@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Better Uptime for Shopify Stores (2026) — Honest Comparison',
+  title: 'Beaconmon vs Better Uptime for Shopify Stores (2026): Honest Comparison',
   description:
     'Better Uptime vs Beaconmon: on-call scheduling vs ecommerce competitor monitoring. Which tool is actually built for your store? Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
@@ -79,7 +79,7 @@ const SWITCH_REASONS = [
   'You want to track when competitors change prices, product listings, or run promotions.',
   'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
   'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
-  'Better Uptime\'s on-call rotation features are designed for DevOps teams with pager rotations — overkill for an ecommerce store.',
+  'Better Uptime\'s on-call rotation features are designed for DevOps teams with pager rotations. Overkill for an ecommerce store.',
   'Better Uptime has no competitor monitoring or content change detection.',
 ];
 
@@ -130,7 +130,7 @@ export default function VsBetterUptimePage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            Better Uptime has excellent on-call scheduling for large engineering teams. For ecommerce store owners, it&apos;s a tool built for a different job — and it has no competitor monitoring or content change detection at any price point.
+            Better Uptime has excellent on-call scheduling for large engineering teams. For ecommerce store owners, it&apos;s a tool built for a different job, with no competitor monitoring or content change detection at any price point.
           </p>
         </div>
       </section>
@@ -141,7 +141,7 @@ export default function VsBetterUptimePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Better Uptime is built for teams that need on-call rotations and escalation policies. If your store needs a pager rotation, it might be worth a look. If you&apos;re a Shopify or WooCommerce store owner who wants competitor price tracking, content change alerts, and a weekly Intelligence Digest — Beaconmon is purpose-built for that.
+              Better Uptime is built for teams that need on-call rotations and escalation policies. If your store needs a pager rotation, it might be worth a look. For a Shopify or WooCommerce store owner who wants competitor price tracking, content change alerts, and a weekly Intelligence Digest, Beaconmon is purpose-built for that.
             </p>
           </div>
         </div>

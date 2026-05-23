@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs UptimeRobot for Shopify Stores (2026) — Honest Comparison',
+  title: 'Beaconmon vs UptimeRobot for Shopify Stores (2026): Honest Comparison',
   description:
     'UptimeRobot vs Beaconmon: competitor monitoring, content change detection, Intelligence Digest, and pricing compared side-by-side for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/uptimerobot' },
@@ -79,7 +79,7 @@ const SWITCH_REASONS = [
   'You want to track when competitors change prices, product listings, or run promotions.',
   'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites.',
   'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
-  'UptimeRobot has no competitor monitoring — it only pings URLs for uptime, nothing more.',
+  'UptimeRobot has no competitor monitoring. It only pings URLs for uptime.',
   'You want multi-location checks to eliminate false positives during high-traffic campaigns.',
 ];
 
@@ -130,7 +130,7 @@ export default function VsUptimeRobotPage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px]">
-            UptimeRobot&apos;s free plan (50 monitors) is genuinely hard to beat for basic pings. But if you run a Shopify or WooCommerce store and want to track competitor pricing changes, get a weekly Intelligence Digest, or catch SSL expiry before it kills your checkout — Beaconmon is purpose-built for that.
+            UptimeRobot&apos;s free plan (50 monitors) is genuinely hard to beat for basic pings. But if you run a Shopify or WooCommerce store and want to track competitor pricing changes, get a weekly Intelligence Digest, or catch SSL expiry before it kills your checkout, Beaconmon is purpose-built for that.
           </p>
         </div>
       </section>
@@ -141,7 +141,7 @@ export default function VsUptimeRobotPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              If you only need basic HTTP uptime pings, UptimeRobot&apos;s free tier (50 monitors) is hard to beat. But if you run a Shopify or WooCommerce store and want to track competitor pricing changes, get a weekly Intelligence Digest, or catch SSL expiry before it kills your checkout — Beaconmon is purpose-built for that.
+              UptimeRobot&apos;s free tier will tell you when your site goes down. It will not tell you when a competitor drops prices, when your SSL certificate has 7 days left, or what changed on a competitor homepage last Tuesday. That is what Beaconmon is for.
             </p>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function VsUptimeRobotPage() {
                 Why ecommerce stores switch from UptimeRobot to Beaconmon
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Usually it comes down to the same gaps — you need competitor tracking, content change alerts, or a weekly digest of everything that changed on competitor sites.
+                Usually it comes down to the same gaps: competitor tracking, content change alerts, or a weekly digest of everything that changed on competitor sites.
               </p>
             </div>
             <ul className="space-y-4">

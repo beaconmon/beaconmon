@@ -5,12 +5,16 @@ initSentry('scheduler'); // must be before other imports
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository } from '@beaconmon/db';
+import * as React from 'react';
+import { Resend } from 'resend';
+import { render } from '@react-email/render';
+import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository, alertChannelRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createIntelligenceDigestQueue } from '@beaconmon/queue';
 import { digestPrefsSchema } from '@beaconmon/types';
 import { getEffectivePlan } from './lib/get-effective-plan.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult } from '@beaconmon/checker';
+import { TrialReminder } from './emails/trial-reminder.js';
 
 const HEARTBEAT_KEY = 'worker:heartbeat:scheduler';
 // Sentry cron monitor slug — create a matching monitor in your Sentry project
@@ -28,10 +32,15 @@ let lastUptimeCompute = 0;
 let lastRetentionCleanup = 0;
 let lastDeployExpiry = 0;
 let lastSloBurnCheck = 0;
+let lastPastDueCheck = 0;
+let lastTrialReminderCheck = 0;
 const UPTIME_COMPUTE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 const RETENTION_CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const DEPLOY_EXPIRY_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 const SLO_BURN_CHECK_INTERVAL_MS = 60 * 1000; // 1 minute
+const PAST_DUE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const TRIAL_REMINDER_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const PAST_DUE_GRACE_DAYS = 10;
 
 // Burn-rate alert windows
 const SLO_FAST_BURN_WINDOW_MINUTES = 5;
@@ -717,6 +726,142 @@ async function maybeEnqueueIntelligenceDigests(): Promise<void> {
   }
 }
 
+/**
+ * Downgrade teams whose subscription has been past_due for more than PAST_DUE_GRACE_DAYS.
+ * Mirrors the subscription.canceled webhook handler: sets plan = 'free', disables surplus channels.
+ */
+async function runPastDueDowngrade(): Promise<void> {
+  const cutoff = new Date(Date.now() - PAST_DUE_GRACE_DAYS * 24 * 60 * 60 * 1000);
+
+  try {
+    const overdue = await prisma.subscription.findMany({
+      where: { status: 'past_due', updatedAt: { lt: cutoff } },
+      select: { id: true, teamId: true },
+    });
+
+    if (overdue.length === 0) return;
+
+    for (const sub of overdue) {
+      await prisma.$transaction([
+        prisma.subscription.update({
+          where: { id: sub.id },
+          data: { status: 'canceled', plan: 'free' },
+        }),
+        prisma.team.update({
+          where: { id: sub.teamId },
+          data: { plan: 'free' },
+        }),
+      ]);
+
+      await alertChannelRepository.disableSurplusForPlan(sub.teamId, 'free');
+
+      logger.info(
+        { service: 'scheduler', teamId: sub.teamId, subscriptionId: sub.id },
+        'past_due subscription auto-downgraded to free after grace period'
+      );
+    }
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'past_due downgrade job failed');
+    Sentry.captureException(err);
+  }
+}
+
+const TRIAL_REMINDER_REDIS_KEY = 'scheduler:trial_reminder:last_run';
+
+/**
+ * Send trial expiry reminder emails to teams whose trial ends in 7 days or 1 day.
+ * Uses Redis dedup keys to avoid sending the same email twice.
+ * Only runs once per day (guarded by a Redis key).
+ */
+async function sendTrialReminderEmails(): Promise<void> {
+  const resendApiKey = env.RESEND_API_KEY;
+  const emailFrom = process.env['EMAIL_FROM'];
+  const appUrl = process.env['BETTER_AUTH_URL'] ?? '';
+
+  if (!resendApiKey || !emailFrom) return;
+
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const lastRun = await connection.get(TRIAL_REMINDER_REDIS_KEY);
+  if (lastRun === todayKey) return;
+
+  try {
+    const now = new Date();
+    const window7Start = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const window7End = new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000);
+    const window1Start = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000);
+    const window1End = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+    const teams = await prisma.team.findMany({
+      where: {
+        plan: 'free',
+        trialEndsAt: { not: null },
+        subscription: null,
+      },
+      select: {
+        id: true,
+        trialEndsAt: true,
+        members: {
+          where: { role: 'owner' },
+          select: { user: { select: { email: true } } },
+          take: 1,
+        },
+      },
+    });
+
+    const resend = new Resend(resendApiKey);
+    let sent = 0;
+
+    for (const team of teams) {
+      if (!team.trialEndsAt) continue;
+      const ownerEmail = team.members[0]?.user.email;
+      if (!ownerEmail) continue;
+
+      const trialEnds = team.trialEndsAt.getTime();
+      let daysLeft: number | null = null;
+      let dedupKey: string | null = null;
+
+      if (trialEnds >= window7Start.getTime() && trialEnds < window7End.getTime()) {
+        daysLeft = 7;
+        dedupKey = `trial:reminder:7d:${team.id}`;
+      } else if (trialEnds >= window1Start.getTime() && trialEnds < window1End.getTime()) {
+        daysLeft = 1;
+        dedupKey = `trial:reminder:1d:${team.id}`;
+      }
+
+      if (!daysLeft || !dedupKey) continue;
+
+      const alreadySent = await connection.get(dedupKey);
+      if (alreadySent) continue;
+
+      const html = await render(React.createElement(TrialReminder, { daysLeft, appUrl }));
+      const { error } = await resend.emails.send({
+        from: emailFrom,
+        to: ownerEmail,
+        subject: daysLeft <= 1
+          ? 'Your Beaconmon trial ends tomorrow'
+          : `${daysLeft} days left in your Beaconmon trial`,
+        html,
+      });
+
+      if (error) {
+        logger.error({ service: 'scheduler', teamId: team.id, err: error }, 'Trial reminder email failed');
+        continue;
+      }
+
+      await connection.set(dedupKey, '1', 'EX', 60 * 60 * 24 * 10); // 10-day TTL
+      sent++;
+    }
+
+    await connection.set(TRIAL_REMINDER_REDIS_KEY, todayKey, 'EX', 60 * 60 * 48);
+    if (sent > 0) {
+      logger.info({ service: 'scheduler', sent }, 'Trial reminder emails sent');
+    }
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Trial reminder email job failed');
+    Sentry.captureException(err);
+  }
+}
+
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   // Log which DB connection is in use so ops can verify pooling is configured correctly
@@ -732,6 +877,10 @@ async function main(): Promise<void> {
   await runRetentionCleanup();
   await runContentSnapshotRetention();
   await expireStaleDeployEvents();
+  lastPastDueCheck = Date.now();
+  await runPastDueDowngrade();
+  lastTrialReminderCheck = Date.now();
+  await sendTrialReminderEmails();
 
   // Poll every 10 seconds — fine-grained enough for 30s monitors
   schedulerInterval = setInterval(() => {
@@ -759,6 +908,16 @@ async function main(): Promise<void> {
       void runRetentionCleanup();
       void runContentSnapshotRetention();
       void expireStaleDeployEvents();
+    }
+
+    if (Date.now() - lastPastDueCheck >= PAST_DUE_CHECK_INTERVAL_MS) {
+      lastPastDueCheck = Date.now();
+      void runPastDueDowngrade();
+    }
+
+    if (Date.now() - lastTrialReminderCheck >= TRIAL_REMINDER_CHECK_INTERVAL_MS) {
+      lastTrialReminderCheck = Date.now();
+      void sendTrialReminderEmails();
     }
 
     void maybeEnqueueIntelligenceDigests();

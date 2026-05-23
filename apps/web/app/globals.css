@@ -1,3 +1,4 @@
+/* Hallmark · macrostructure: Marquee Hero + Bento Grid · tone: utilitarian · anchor hue: green 152° */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,29 +28,42 @@
     --radius: 0.5rem;
 
     /* brand palette — light */
-    --brand-bg:           #FFFFFF;
-    --brand-bg1:          #FFFFFF;
-    --brand-bg2:          #F4F5FA;
-    --brand-bg3:          #ECEEF8;
+    --brand-bg:           oklch(100% 0 0);
+    --brand-bg1:          oklch(100% 0 0);
+    --brand-bg2:          oklch(97% 0.005 270);
+    --brand-bg3:          oklch(95% 0.007 270);
     /* Tinted section bg so white cards visibly lift via shadow/border */
-    --brand-bg-section:   #F6F8FC;
-    --brand-line:         #E2E4EF;
+    --brand-bg-section:   oklch(97.5% 0.004 250);
+    --brand-line:         oklch(91% 0.008 270);
     /* Hairline divider — must be lighter than --brand-line for hierarchy */
-    --brand-line-soft:    #EEF0F6;
-    --brand-text:         #0F172A;
-    --brand-dim:          #475569;
-    --brand-muted:        #94A3B8;
+    --brand-line-soft:    oklch(94.5% 0.005 270);
+    --brand-text:         oklch(14% 0.02 256);
+    --brand-dim:          oklch(42% 0.03 256);
+    --brand-muted:        oklch(68% 0.02 256);
     /* Brand neon — reserved for filled CTAs (fails AA as text on white) */
-    --brand-green:        #00E57A;
-    --brand-green-dim:    #00B862;
-    --brand-green-fg:     #001a0c;
+    --brand-green:        oklch(82% 0.22 152);
+    --brand-green-dim:    oklch(72% 0.20 152);
+    --brand-green-fg:     oklch(8% 0.04 152);
     /* Deeper green for text/icons on white — passes WCAG AA */
-    --brand-green-ink:    #00B862;
-    --brand-red:          #DC2626;
-    --brand-amber:        #B45309;
-    --brand-surface:      #FFFFFF;
-    --brand-outline:      #F0F2FA;
-    --brand-border2:      #E2E4EF;
+    --brand-green-ink:    oklch(68% 0.19 152);
+    --brand-red:          oklch(55% 0.22 25);
+    --brand-amber:        oklch(52% 0.16 60);
+    --brand-surface:      oklch(100% 0 0);
+    --brand-outline:      oklch(95.5% 0.006 270);
+    --brand-border2:      oklch(91% 0.008 270);
+
+    /* alpha variants */
+    --brand-green-glow-06:   oklch(82% 0.22 152 / 6%);
+    --brand-green-glow-10:   oklch(82% 0.22 152 / 10%);
+    --brand-green-glow-04:   oklch(82% 0.22 152 / 4%);
+    --brand-green-glow-02:   oklch(82% 0.22 152 / 2%);
+    --brand-green-border-25: oklch(82% 0.22 152 / 25%);
+    --brand-green-border-20: oklch(82% 0.22 152 / 20%);
+    --brand-green-hover:     oklch(88% 0.22 152);
+    --brand-nav-bg:          oklch(100% 0 0 / 85%);
+    --brand-mobile-menu-bg:  oklch(100% 0 0);
+    --brand-pain-card-bg:    oklch(97% 0.005 270);
+    --brand-red-glow-04:     oklch(55% 0.22 25 / 4%);
   }
 
   .dark {
@@ -75,27 +89,40 @@
     --ring: 152 100% 45%;
 
     /* brand palette — dark */
-    --brand-bg:           #0A0A0F;
-    --brand-bg1:          #0E0E14;
-    --brand-bg2:          #14141C;
-    --brand-bg3:          #1A1A24;
+    --brand-bg:           oklch(7% 0.005 270);
+    --brand-bg1:          oklch(8.5% 0.006 270);
+    --brand-bg2:          oklch(11% 0.008 270);
+    --brand-bg3:          oklch(14% 0.01 270);
     /* Tinted section bg in dark — slight lift from base; matches old --brand-bg1 */
-    --brand-bg-section:   #0E0E14;
-    --brand-line:         #222230;
-    --brand-line-soft:    #1B1B26;
-    --brand-text:         #ECECF1;
-    --brand-dim:          #B4B4C4;
-    --brand-muted:        #8C8C9D;
-    --brand-green:        #00E57A;
-    --brand-green-dim:    #00B862;
-    --brand-green-fg:     #001a0c;
+    --brand-bg-section:   oklch(8.5% 0.006 270);
+    --brand-line:         oklch(18% 0.01 270);
+    --brand-line-soft:    oklch(15% 0.009 270);
+    --brand-text:         oklch(94% 0.004 270);
+    --brand-dim:          oklch(74% 0.008 270);
+    --brand-muted:        oklch(60% 0.01 270);
+    --brand-green:        oklch(82% 0.22 152);
+    --brand-green-dim:    oklch(72% 0.20 152);
+    --brand-green-fg:     oklch(8% 0.04 152);
     /* Green-ink stays neon in dark — already AA on dark surfaces */
-    --brand-green-ink:    #00E57A;
-    --brand-red:          #FF4444;
-    --brand-amber:        #F5B400;
-    --brand-surface:      #111118;
-    --brand-outline:      #1E1E2A;
-    --brand-border2:      #2A2A3A;
+    --brand-green-ink:    oklch(82% 0.22 152);
+    --brand-red:          oklch(65% 0.22 25);
+    --brand-amber:        oklch(82% 0.17 72);
+    --brand-surface:      oklch(9.5% 0.007 270);
+    --brand-outline:      oklch(16% 0.01 270);
+    --brand-border2:      oklch(21% 0.012 270);
+
+    /* alpha variants */
+    --brand-green-glow-06:   oklch(82% 0.22 152 / 6%);
+    --brand-green-glow-10:   oklch(82% 0.22 152 / 10%);
+    --brand-green-glow-04:   oklch(82% 0.22 152 / 4%);
+    --brand-green-glow-02:   oklch(82% 0.22 152 / 2%);
+    --brand-green-border-25: oklch(82% 0.22 152 / 25%);
+    --brand-green-border-20: oklch(82% 0.22 152 / 20%);
+    --brand-green-hover:     oklch(88% 0.22 152);
+    --brand-nav-bg:          oklch(7% 0.005 270 / 85%);
+    --brand-mobile-menu-bg:  oklch(8.5% 0.006 270);
+    --brand-pain-card-bg:    oklch(8.5% 0.006 270);
+    --brand-red-glow-04:     oklch(65% 0.22 25 / 4%);
   }
 }
 
@@ -108,6 +135,9 @@
     font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
     -webkit-font-smoothing: antialiased;
+  }
+  h1, h2 {
+    font-family: var(--font-display), DM Sans, sans-serif;
   }
 }
 
@@ -129,11 +159,6 @@
   }
 }
 
-@keyframes pulse-green {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 122, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(0, 229, 122, 0); }
-}
-
 @keyframes breathe {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.9); }
@@ -149,7 +174,6 @@
   100% { transform: scale(1.4); opacity: 0; }
 }
 
-.animate-pulse-green { animation: pulse-green 2s ease-in-out infinite; }
 .animate-breathe { animation: breathe 2s ease-in-out infinite; }
 .animate-blip { animation: blip 2s infinite; }
 .animate-logo-pulse { animation: logo-pulse 2s ease-out infinite; }
@@ -175,5 +199,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .reveal-js { opacity: 1; transform: none; transition: none; }
-  .animate-pulse-green, .animate-breathe, .animate-blip, .animate-logo-pulse { animation: none; }
+  .animate-breathe, .animate-blip, .animate-logo-pulse { animation: none; }
 }

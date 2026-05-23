@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Security — Beaconmon',
+  title: 'Security | Beaconmon',
   description: 'How Beaconmon handles your data: infrastructure, encryption, access controls, GDPR, and responsible disclosure.',
   alternates: { canonical: 'https://beaconmon.com/security' },
 };
@@ -15,20 +15,20 @@ const SECTIONS = [
     heading: 'Infrastructure',
     items: [
       {
-        title: 'Compute — Hetzner Cloud',
+        title: 'Compute: Hetzner Cloud',
         body: 'Beaconmon runs on Hetzner Cloud servers located in Nuremberg, Germany (EU). Hetzner is ISO 27001 certified and operates its own data centers. We use dedicated VPS instances with no shared CPU resources.',
       },
       {
-        title: 'Database — Neon (PostgreSQL)',
-        body: 'All persistent data is stored in Neon, a serverless PostgreSQL provider running on AWS us-east-2. Neon encrypts data at rest using AES-256 and provides point-in-time recovery. We use connection pooling and separate direct/pooled URLs — migrations only run from controlled environments.',
+        title: 'Database: Neon (PostgreSQL)',
+        body: 'All persistent data is stored in Neon, a serverless PostgreSQL provider running on AWS us-east-2. Neon encrypts data at rest using AES-256 and provides point-in-time recovery. We use connection pooling and separate direct/pooled URLs. Migrations only run from controlled environments.',
       },
       {
-        title: 'Edge & DDoS protection — Cloudflare',
+        title: 'Edge & DDoS protection: Cloudflare',
         body: 'All traffic to beaconmon.com passes through Cloudflare. Cloudflare handles TLS termination (TLS 1.2 minimum, TLS 1.3 preferred), DDoS mitigation, and bot protection. The origin IP is not publicly exposed.',
       },
       {
-        title: 'Cache — Redis (self-hosted)',
-        body: 'Redis is self-hosted in the same stack as the application, used for job queues and status page caching. It is not exposed to the internet. AOF persistence is enabled. Redis is configured with noeviction policy — queue jobs are never silently dropped under memory pressure.',
+        title: 'Cache: Redis (self-hosted)',
+        body: 'Redis is self-hosted in the same stack as the application, used for job queues and status page caching. It is not exposed to the internet. AOF persistence is enabled. Redis is configured with noeviction policy. Queue jobs are never silently dropped under memory pressure.',
       },
     ],
   },
@@ -42,7 +42,7 @@ const SECTIONS = [
       },
       {
         title: 'At rest',
-        body: 'Database data at rest is encrypted by Neon (AES-256). Session tokens are stored as hashed values — the raw token is never persisted. Alert channel credentials (Slack webhook URLs, custom webhook secrets) are stored encrypted in the database.',
+        body: 'Database data at rest is encrypted by Neon (AES-256). Session tokens are stored as hashed values; the raw token is never persisted. Alert channel credentials (Slack webhook URLs, custom webhook secrets) are stored encrypted in the database.',
       },
       {
         title: 'Passwords',
@@ -56,7 +56,7 @@ const SECTIONS = [
     items: [
       {
         title: 'Tenant isolation',
-        body: 'Every database query that touches user data is scoped to a team ID. There is no code path that allows one team to read another team\'s monitors, check results, or alert channels. This is enforced at the repository layer, not the API layer — so it cannot be bypassed by route bugs.',
+        body: 'Every database query that touches user data is scoped to a team ID. There is no code path that allows one team to read another team\'s monitors, check results, or alert channels. This is enforced at the repository layer, not the API layer, so it cannot be bypassed by route bugs.',
       },
       {
         title: 'Role-based access',
@@ -78,7 +78,7 @@ const SECTIONS = [
     items: [
       {
         title: 'Data location',
-        body: 'Primary compute is in Germany (EU). Database is on Neon (AWS us-east-2, US). If your data residency requirements mandate EU-only storage, Beaconmon may not be the right fit today — we\'re working on an EU database option.',
+        body: 'Primary compute is in Germany (EU). Database is on Neon (AWS us-east-2, US). If your data residency requirements mandate EU-only storage, Beaconmon may not be the right fit today. We\'re working on an EU database option.',
       },
       {
         title: 'What we store',
@@ -121,7 +121,7 @@ export default function SecurityPage() {
             How we handle your data.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px]">
-            A plain-English overview of the infrastructure, encryption, and practices behind Beaconmon. No marketing fluff — just what we actually do.
+            A plain-English overview of the infrastructure, encryption, and practices behind Beaconmon. No marketing fluff. Just what we actually do.
           </p>
         </div>
       </section>

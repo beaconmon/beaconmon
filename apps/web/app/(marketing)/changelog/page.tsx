@@ -3,8 +3,8 @@ import { RevealObserver } from '@/components/reveal-observer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Changelog — Beaconmon',
-  description: 'What\'s new in Beaconmon. New features, improvements, and fixes — in reverse chronological order.',
+  title: 'Changelog | Beaconmon',
+  description: 'What\'s new in Beaconmon. New features, improvements, and fixes, in reverse chronological order.',
   alternates: { canonical: 'https://beaconmon.com/changelog' },
 };
 
@@ -28,7 +28,7 @@ const ENTRIES: Entry[] = [
     date: 'May 2026',
     tag: 'Feature',
     title: 'Multi-location checks from 5 regions',
-    body: 'Pro and Business plans now run checks from US East, US West, EU West, AP Southeast, and SA East. An alert only fires when two or more locations confirm the failure — dramatically reducing false alarms. Per-region response times are visible in the dashboard.',
+    body: 'Pro and Business plans now run checks from US East, US West, EU West, AP Southeast, and SA East. An alert only fires when two or more locations confirm the failure, dramatically reducing false alarms. Per-region response times are visible in the dashboard.',
   },
   {
     date: 'April 2026',
@@ -52,7 +52,7 @@ const ENTRIES: Entry[] = [
     date: 'February 2026',
     tag: 'Feature',
     title: 'Content snapshot history and diff view',
-    body: 'Content monitoring now stores a full history of snapshots. View a side-by-side diff of any two snapshots directly in the dashboard — so you can see exactly what changed, not just that something did. Snapshot retention: 3 snapshots (Free), 30 (Pro), 90 (Business).',
+    body: 'Content monitoring now stores a full history of snapshots. View a side-by-side diff of any two snapshots directly in the dashboard, so you can see exactly what changed, not just that something did. Snapshot retention: 3 snapshots (Free), 30 (Pro), 90 (Business).',
   },
   {
     date: 'February 2026',
@@ -64,24 +64,24 @@ const ENTRIES: Entry[] = [
     date: 'January 2026',
     tag: 'Feature',
     title: 'Deploy-aware monitoring',
-    body: 'Suppress false-positive alerts during your own deployments. Trigger a deployment event via webhook or from the dashboard — Beaconmon holds alerts for up to 30 minutes while your services restart. Auto-expires so you can\'t accidentally leave it on.',
+    body: 'Suppress false-positive alerts during your own deployments. Trigger a deployment event via webhook or from the dashboard. Beaconmon holds alerts for up to 30 minutes while your services restart. Auto-expires so you can\'t accidentally leave it on.',
   },
   {
     date: 'January 2026',
     tag: 'Feature',
     title: 'Competitor tracking presets',
-    body: 'Added a library of suggested CSS selectors for popular e-commerce and SaaS platforms — so you can set up a content monitor on a competitor\'s pricing page in seconds. Presets for Shopify, WooCommerce, Webflow, and more.',
+    body: 'Added a library of suggested CSS selectors for popular e-commerce and SaaS platforms, so you can set up a content monitor on a competitor\'s pricing page in seconds. Presets for Shopify, WooCommerce, Webflow, and more.',
   },
   {
     date: 'December 2025',
     tag: 'Improvement',
     title: 'Per-plan data retention enforcement',
-    body: 'Check result history is now properly clamped to plan limits in the dashboard: 7 days (Free), 90 days (Pro), 365 days (Business). Underlying data is retained for 365 days for all plans — so upgrading reveals your full history.',
+    body: 'Check result history is now properly clamped to plan limits in the dashboard: 7 days (Free), 90 days (Pro), 365 days (Business). Underlying data is retained for 365 days for all plans. Upgrading reveals your full history.',
   },
   {
     date: 'December 2025',
     tag: 'Feature',
-    title: 'Public status pages — general availability',
+    title: 'Public status pages: general availability',
     body: 'Status pages are now available on all plans. Free plan: one status page at a beaconmon.com subdomain. Pro: three status pages with custom domain support. Business: unlimited. 90-day uptime history, active incident banners, and scheduled maintenance support included.',
   },
   {
@@ -119,7 +119,7 @@ export default function ChangelogPage() {
             What&apos;s new in Beaconmon.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Every feature, improvement, and fix — in the order it shipped.
+            Every feature, improvement, and fix, in the order it shipped.
           </p>
         </div>
       </section>

@@ -52,7 +52,7 @@ const MONITOR_TYPES = [
     ),
     name: 'SSL Certificate Monitoring',
     tagline: 'Never let an expired cert take you by surprise.',
-    body: 'SSL expiry is one of the most embarrassing and preventable causes of downtime. Beaconmon watches every certificate and fires tiered alerts at 30 days, 14 days, and 7 days before expiry — giving you plenty of time to renew without scrambling.',
+    body: 'SSL expiry is one of the most embarrassing and preventable causes of downtime. Beaconmon watches every certificate and fires tiered alerts at 30 days, 14 days, and 7 days before expiry, giving you plenty of time to renew without scrambling.',
     highlights: ['30-day early warning', '14-day and 7-day reminders', 'Certificate validity checks', 'No config needed'],
   },
   {
@@ -66,7 +66,7 @@ const MONITOR_TYPES = [
     ),
     name: 'Domain Expiry Tracking',
     tagline: 'The worst outage is one you could have prevented.',
-    body: 'Domain renewals slip through the cracks — especially for client sites you manage. Beaconmon checks WHOIS records and alerts you at 30, 14, and 7 days before the domain expires. No more panicked domain rescues.',
+    body: 'Domain renewals slip through the cracks, especially for client sites you manage. Beaconmon checks WHOIS records and alerts you at 30, 14, and 7 days before the domain expires. No more panicked domain rescues.',
     highlights: ['WHOIS-based expiry detection', '30/14/7-day alerts', 'Works on all TLDs', 'Per-domain alert channels'],
   },
   {
@@ -77,7 +77,7 @@ const MONITOR_TYPES = [
     ),
     name: 'TCP Port Monitoring',
     tagline: 'Monitor any service that speaks TCP.',
-    body: 'Not everything is a website. Database servers, mail servers, game servers, custom APIs — if it listens on a TCP port, Beaconmon can watch it. You\'ll be alerted the moment a port becomes unreachable, before your users hit a connection error.',
+    body: 'Not everything is a website. Database servers, mail servers, game servers, custom APIs. If it listens on a TCP port, Beaconmon can watch it. You\'ll be alerted the moment a port becomes unreachable, before your users hit a connection error.',
     highlights: ['Any TCP port', 'Works on private IPs via VPN probes', 'Sub-60 second alerts', 'Works alongside HTTP monitors'],
   },
   {
@@ -89,7 +89,7 @@ const MONITOR_TYPES = [
     ),
     name: 'Keyword Monitoring',
     tagline: 'Verify your pages say exactly what they should.',
-    body: 'A 200 response doesn\'t always mean everything is fine. A broken deploy could serve an empty page, a database error, or a maintenance placeholder. Keyword monitoring checks that a specific string is present (or absent) in the response body — so you know the page actually loaded correctly.',
+    body: 'A 200 response doesn\'t always mean everything is fine. A broken deploy could serve an empty page, a database error, or a maintenance placeholder. Keyword monitoring checks that a specific string is present (or absent) in the response body, so you know the page actually loaded correctly.',
     highlights: ['Keyword present or absent', 'Case-sensitive matching', 'Works on any HTTP response', 'Combine with HTTP threshold checks'],
   },
   {
@@ -132,8 +132,8 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            All the website monitoring tools you need —
-            <span className="text-brand-green-ink"> know what&apos;s broken before anyone else does.</span>
+            All the website monitoring tools you need.
+            <span className="text-brand-green-ink"> Know what&apos;s broken before anyone else does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
             Six monitor types. Multi-location checks. Incident management. Public status pages. Reliability Targets. All in one tool, built for ecommerce stores and agencies.
@@ -146,7 +146,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Six ways to watch your stack</h2>
-            <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Each monitor type is purpose-built for a different failure mode — so you catch the right problems, every time.</p>
+            <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Each monitor type is purpose-built for a different failure mode, so you catch the right problems, every time.</p>
           </div>
           <div className="grid grid-cols-2 max-[880px]:grid-cols-1 gap-5">
             {MONITOR_TYPES.map(({ icon, name, tagline, body, highlights }) => (
@@ -181,7 +181,7 @@ export default function FeaturesPage() {
                 One blip won&apos;t wake you at 3am.
               </h2>
               <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                False alarms erode trust in your alerting system. Beaconmon confirms failures from multiple geographic regions before firing an alert — so when you get a notification, it&apos;s real.
+                False alarms erode trust in your alerting system. Beaconmon confirms failures from multiple geographic regions before firing an alert. When you get a notification, it&apos;s real.
               </p>
               <ul className="space-y-3">
                 {[
@@ -252,7 +252,7 @@ export default function FeaturesPage() {
                 A status page your clients will actually trust.
               </h2>
               <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                Clients shouldn&apos;t have to email you to find out if their site is down. Give them a public status page — at your own domain — that shows real-time uptime, incident history, and scheduled maintenance. It looks professional, and it takes two minutes to set up.
+                Clients shouldn&apos;t have to email you to find out if their site is down. Give them a public status page at your own domain that shows real-time uptime, incident history, and scheduled maintenance. It looks professional, and it takes two minutes to set up.
               </p>
               <ul className="space-y-3">
                 {[
@@ -301,7 +301,7 @@ export default function FeaturesPage() {
               </ul>
             </div>
             <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6">
-              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Reliability targets — this period</div>
+              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Reliability targets: this period</div>
               <div className="space-y-5">
                 {[
                   { name: 'acme-storefront.com', target: '99.9%', remaining: 82 },
@@ -391,7 +391,7 @@ export default function FeaturesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Ready to set up your first monitor?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro and Business trials start the moment you sign up — no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro and Business trials start the moment you sign up, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
           <Link href="/pricing" className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
             See pricing →

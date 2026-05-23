@@ -443,6 +443,7 @@ function BulkActionBar({
 export default function MonitorsPage() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [limitBannerDismissed, setLimitBannerDismissed] = useState(false);
   const monitorsQ = useMonitors({ tag: activeTag ?? undefined });
   const summariesQ = useMonitorSummaries();
   const incidentsQ = useIncidents();
@@ -455,6 +456,9 @@ export default function MonitorsPage() {
   const allTags = tagsQ.data ?? [];
   const plan = sessionQ.data?.plan ?? 'free';
   const minInterval = PLAN_LIMITS[plan].checkIntervalSeconds;
+  const planMax = PLAN_LIMITS[plan].monitors;
+  const nearLimit = planMax > 0 && monitors.length >= Math.floor(planMax * 0.8);
+  const atLimit = planMax > 0 && monitors.length >= planMax;
 
   const visibleIds = monitors.map((m) => m.id);
   const visibleSelectedIds = selectedIds.filter((id) => visibleIds.includes(id));
@@ -500,6 +504,28 @@ export default function MonitorsPage() {
           Add monitor
         </Link>
       </div>
+
+      {nearLimit && !limitBannerDismissed && (
+        <div className="flex items-center justify-between gap-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <span>
+            {atLimit
+              ? <>You have reached your monitor limit ({planMax} monitors on the {plan} plan).</>
+              : <>You are using {monitors.length} of {planMax} monitors on the {plan} plan.</>
+            }{' '}
+            <Link href="/settings/billing" className="font-medium underline hover:no-underline">
+              Upgrade your plan
+            </Link>{' '}
+            to add more.
+          </span>
+          <button
+            onClick={() => setLimitBannerDismissed(true)}
+            aria-label="Dismiss"
+            className="shrink-0 rounded p-0.5 hover:bg-amber-200 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       <TagFilter tags={allTags} active={activeTag} onChange={setActiveTag} />
 
