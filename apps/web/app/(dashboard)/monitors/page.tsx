@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { QueryState } from '@/components/dashboard/query-state';
 import { DiscoverEmptyState } from '@/components/monitors/discover-empty-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
+import { Sparkline } from '@/components/dashboard/sparkline';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,47 +26,14 @@ import { PLAN_LIMITS } from '@beaconmon/types';
 import type { MonitorRow } from '@/lib/repositories/monitors';
 import type { IncidentWithMonitor } from '@/lib/repositories/incidents';
 
-// ─── Sparkline ───────────────────────────────────────────────────────────────
-
-function Sparkline({ data }: { data: number[] }) {
-  if (data.length < 2) {
-    return <span className="text-brand-muted text-xs font-mono">—</span>;
-  }
-
-  const W = 80;
-  const H = 24;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-
-  const points = data
-    .map((v, i) => {
-      const x = (i / (data.length - 1)) * W;
-      const y = H - ((v - min) / range) * (H - 6) - 3;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(' ');
-
-  return (
-    <svg width={W} height={H} className="shrink-0 overflow-visible">
-      <polyline
-        points={points}
-        fill="none"
-        stroke="#00E57A"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
-    </svg>
-  );
-}
-
 // ─── Type pill ───────────────────────────────────────────────────────────────
 
 function TypePill({ type }: { type: string }) {
   return (
-    <span className="inline-flex items-center rounded border border-brand-line bg-brand-bg3 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-brand-dim">
+    <span
+      className="inline-flex items-center rounded-md bg-brand-bg3 px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-brand-dim"
+      style={{ boxShadow: 'inset 0 0 0 1px var(--brand-line)' }}
+    >
       {type}
     </span>
   );
@@ -179,6 +147,16 @@ function TagFilter({
 
 const GRID_COLS = '32px 20px 1fr 72px 110px 100px 72px 120px';
 
+function p95Color(rts: number[], threshold?: number | null): string {
+  if (rts.length === 0) return 'text-brand-muted';
+  const sorted = [...rts].sort((a, b) => a - b);
+  const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? sorted[sorted.length - 1]!;
+  if (!threshold) return 'text-brand-dim';
+  if (p95 >= threshold) return 'text-brand-red';
+  if (p95 >= threshold * 0.7) return 'text-amber-500 dark:text-amber-400';
+  return 'text-brand-green-ink';
+}
+
 function MonitorTableRow({
   monitor,
   summary,
@@ -190,6 +168,12 @@ function MonitorTableRow({
   selected: boolean;
   onToggle: (id: string, e: React.MouseEvent) => void;
 }) {
+  const rts = summary?.recentRts ?? [];
+  const sorted = [...rts].sort((a, b) => a - b);
+  const p95 = sorted.length > 0
+    ? sorted[Math.floor(sorted.length * 0.95)] ?? sorted[sorted.length - 1]
+    : null;
+
   return (
     <div
       className="group grid items-center gap-4 border-b border-brand-line px-4 py-3 transition-colors last:border-b-0 hover:bg-brand-surface/60"
@@ -244,9 +228,14 @@ function MonitorTableRow({
         {/* Status */}
         <StatusBadge status={monitor.currentStatus} />
 
-        {/* Sparkline */}
-        <div className="flex items-center">
-          <Sparkline data={summary?.recentRts ?? []} />
+        {/* Response sparkline + p95 */}
+        <div className="flex items-center gap-2">
+          <Sparkline data={rts} width={56} height={20} />
+          {p95 != null && (
+            <span className={`font-mono text-[11px] ${p95Color(rts, monitor.responseTimeThresholdMs)}`}>
+              {p95 >= 1000 ? `${(p95 / 1000).toFixed(1)}s` : `${p95}ms`}
+            </span>
+          )}
         </div>
 
         {/* Uptime 30d */}
@@ -554,22 +543,22 @@ export default function MonitorsPage() {
                   />
                 </div>
                 <span />
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Name / URL
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Type
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Status
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Response
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   30d
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Last check
                 </span>
               </div>

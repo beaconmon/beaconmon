@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import {
   Activity,
@@ -15,6 +15,7 @@ import {
   FileText,
   GitBranch,
   Globe,
+  LayoutGrid,
   LogOut,
   Plus,
   Search,
@@ -43,8 +44,9 @@ import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
 const NAV_ITEMS = [
+  { href: '/overview',               label: 'Overview',           icon: LayoutGrid },
   { href: '/monitors',               label: 'Monitors',           icon: Activity },
-  { href: '/intelligence',            label: 'Intelligence',       icon: Brain },
+  { href: '/intelligence',           label: 'Intelligence',       icon: Brain,   badge: 'NEW' },
   { href: '/incidents',              label: 'Incidents',          icon: AlertTriangle },
   { href: '/maintenance-windows',    label: 'Maintenance',        icon: Wrench },
   { href: '/status-pages',           label: 'Status Pages',       icon: Globe },
@@ -61,12 +63,14 @@ function NavItem({
   label,
   icon: Icon,
   badge,
+  labelBadge,
   collapsed,
 }: {
   href: string;
   label: string;
   icon: React.ElementType;
   badge?: number;
+  labelBadge?: string;
   collapsed: boolean;
 }) {
   const pathname = usePathname();
@@ -97,6 +101,18 @@ function NavItem({
       {!collapsed && (
         <>
           <span className="flex-1">{label}</span>
+          {labelBadge && (
+            <span
+              className="rounded px-1 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
+              style={{
+                background: 'rgba(0,229,122,0.12)',
+                color: 'var(--brand-green-ink)',
+                boxShadow: 'inset 0 0 0 1px rgba(0,229,122,0.3)',
+              }}
+            >
+              {labelBadge}
+            </span>
+          )}
           {badge != null && badge > 0 && (
             <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-red px-1 text-[9px] font-bold text-white">
               {badge > 9 ? '9+' : badge}
@@ -150,6 +166,7 @@ function Sidebar({
             label={item.label}
             icon={item.icon}
             badge={item.href === '/incidents' ? incidentCount : undefined}
+            labelBadge={'badge' in item ? (item.badge as string) : undefined}
             collapsed={collapsed}
           />
         ))}
@@ -262,6 +279,7 @@ function TopBar({
 function DashboardShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
+  const router = useRouter();
 
   // Auto-collapse sidebar on small screens (runs once on mount; SSR renders collapsed=false then corrects client-side)
   useEffect(() => {
@@ -277,6 +295,17 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       analytics.identify(session.userId, { plan: session.plan, teamId: session.teamId });
     }
   }, [session?.userId, session?.plan, session?.teamId]);
+
+  useEffect(() => {
+    if (!session?.teamId) return;
+    try {
+      if (localStorage.getItem(`bm_ob_${session.teamId}`) === null) {
+        router.replace('/onboarding');
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  }, [session?.teamId, router]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-bg">
