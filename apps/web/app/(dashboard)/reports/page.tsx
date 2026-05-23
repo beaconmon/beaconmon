@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/dashboard/empty-state';
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useSession } from '@/lib/hooks/use-session';
 import { useGenerateReport } from '@/lib/hooks/use-reports';
 
@@ -202,18 +203,7 @@ export default function ReportsPage() {
 
       {/* Plan gate */}
       {!isPaid && (
-        <div className="rounded-lg border border-brand-amber/30 bg-brand-amber/5 px-5 py-4">
-          <p className="text-sm font-medium text-brand-text">Report generation requires a Pro or Business plan</p>
-          <p className="mt-0.5 text-xs text-brand-muted">
-            Upgrade to generate branded PDF reports for your clients.
-          </p>
-          <a
-            href="/settings/billing"
-            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
-          >
-            Upgrade plan →
-          </a>
-        </div>
+        <UpgradePrompt currentPlan="free" limitReached="reports" />
       )}
 
       {/* Empty state */}

@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/dashboard/empty-state';
 import { QueryState } from '@/components/dashboard/query-state';
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useTeamMembers } from '@/lib/hooks/use-team';
 import {
@@ -43,6 +44,7 @@ import {
   useDeleteEscalationPolicy,
   type EscalationPolicyRow,
 } from '@/lib/hooks/use-escalation-policies';
+import { useSession } from '@/lib/hooks/use-session';
 import type { EscalationStepInput } from '@/lib/repositories/escalation-policies';
 
 // ─── Step editor row ──────────────────────────────────────────────────────────
@@ -635,6 +637,10 @@ function recipientSummary(policy: EscalationPolicyRow): string {
 }
 
 export default function EscalationPoliciesPage() {
+  const sessionQ = useSession();
+  const plan = sessionQ.data?.plan;
+  const isFree = plan === 'free';
+
   const policiesQ = useEscalationPolicies();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingPolicy, setEditingPolicy] = useState<EscalationPolicyRow | null>(null);
@@ -670,6 +676,20 @@ export default function EscalationPoliciesPage() {
   }
 
   const policies = policiesQ.data ?? [];
+
+  if (isFree) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-brand-text">Escalation Policies</h1>
+          <p className="mt-1 text-sm text-brand-muted">
+            Automatically escalate incidents to the right people when alerts go unacknowledged.
+          </p>
+        </div>
+        <UpgradePrompt currentPlan="free" limitReached="escalation policies" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">

@@ -97,10 +97,10 @@ export default async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     if (pathname === '/for/agencies' || pathname === '/for/developers') {
-      return NextResponse.redirect(new URL('/', req.url), 301);
+      return NextResponse.redirect(new URL('/for/dtc-brands', req.url), 301);
     }
     if (pathname === '/for/freelancers') {
-      return NextResponse.redirect(new URL('/for/ecommerce', req.url), 301);
+      return NextResponse.redirect(new URL('/for/solo-founders', req.url), 301);
     }
     if (pathname === '/competitors' || pathname.startsWith('/competitors/')) {
       return NextResponse.redirect(new URL('/intelligence', req.url), 301);
