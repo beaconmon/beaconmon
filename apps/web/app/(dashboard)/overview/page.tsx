@@ -2,8 +2,9 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
+import { OverviewPageClient } from './OverviewPageClient';
 
-export default async function DashboardPage() {
+export default async function OverviewPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   const teamId = session?.user?.teamId;
@@ -16,5 +17,5 @@ export default async function DashboardPage() {
     redirect('/onboarding');
   }
 
-  redirect('/monitors');
+  return <OverviewPageClient />;
 }
