@@ -22,6 +22,7 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/workers/package.json ./apps/workers/
 COPY apps/region-probe/package.json ./apps/region-probe/
 COPY packages/ai/package.json ./packages/ai/
+COPY packages/billing/package.json ./packages/billing/
 COPY packages/checker/package.json ./packages/checker/
 COPY packages/db/package.json ./packages/db/
 COPY packages/logger/package.json ./packages/logger/
