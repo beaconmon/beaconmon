@@ -265,7 +265,8 @@ export async function processIntelligenceDigestJob(
         const alreadySent = await redis.exists(idempotencyKey);
         if (alreadySent) {
           logger.info({ service, teamId, channelId: channel.id }, 'Digest: already sent to channel, skipping (idempotency)');
-          successCount++;
+          // Do not count as successCount — idempotent skips shouldn't mask
+          // failures on other channels and suppress BullMQ retries.
           continue;
         }
       } catch {
