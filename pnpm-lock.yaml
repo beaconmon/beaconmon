@@ -35,6 +35,9 @@ importers:
       '@beaconmon/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@beaconmon/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@beaconmon/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -222,6 +225,9 @@ importers:
       '@beaconmon/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@beaconmon/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@beaconmon/checker':
         specifier: workspace:*
         version: link:../../packages/checker
@@ -329,6 +335,19 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@20.19.39)(terser@5.46.2)
+
+  packages/billing:
+    dependencies:
+      '@beaconmon/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@beaconmon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
 
   packages/checker:
     dependencies:

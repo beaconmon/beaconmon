@@ -4,7 +4,7 @@ import {
   summarizeContentDiff,
   type ContentDiffClassification,
 } from '@beaconmon/ai';
-import { PLAN_LIMITS } from '@beaconmon/types';
+import { getEffectivePlan } from '@beaconmon/billing';
 import { env } from './env.js';
 import { logger } from './logger.js';
 
