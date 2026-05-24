@@ -1,6 +1,7 @@
 import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import { Bot, Activity, Clock, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -116,10 +117,7 @@ const faqSchema = {
 export default function VsHubPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={faqSchema} />
       <NavBar />
 
       {/* Hero */}

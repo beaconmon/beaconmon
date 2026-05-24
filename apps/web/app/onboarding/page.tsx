@@ -1,6 +1,11 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import type { PlanTier } from '@beaconmon/types';
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/lib/auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
 import { OnboardingWizard } from './OnboardingWizard';

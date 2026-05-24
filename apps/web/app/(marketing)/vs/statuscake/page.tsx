@@ -2,6 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -97,13 +98,20 @@ const softwareSchema = {
   },
 };
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://beaconmon.com' },
+    { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
+    { '@type': 'ListItem', position: 3, name: 'Beaconmon vs StatusCake', item: 'https://beaconmon.com/vs/statuscake' },
+  ],
+};
+
 export default function VsStatusCakePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
-      />
+      <JsonLd data={[softwareSchema, breadcrumbSchema]} />
       <NavBar />
 
       {/* Hero */}

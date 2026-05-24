@@ -14,6 +14,14 @@ export const metadata: Metadata = {
 const ABOUT_SCHEMA = [
   {
     '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://beaconmon.com' },
+      { '@type': 'ListItem', position: 2, name: 'About', item: 'https://beaconmon.com/about' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'AboutPage',
     name: 'About Beaconmon',
     description:

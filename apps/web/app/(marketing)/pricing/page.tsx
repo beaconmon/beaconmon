@@ -3,12 +3,6 @@ import PricingToggle from '@/components/marketing/PricingToggle';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { PRICING } from '@/lib/pricing';
 import type { Metadata } from 'next';
 
@@ -251,18 +245,17 @@ export default function PricingPage() {
               </p>
             </div>
             <div className="reveal">
-              <Accordion type="single" collapsible defaultValue="competitor-monitor">
-                {BILLING_FAQ.map(({ id, q, a }) => (
-                  <AccordionItem key={id} value={id} className="border-b border-brand-line-soft">
-                    <AccordionTrigger className="text-[16px] font-semibold tracking-[-0.01em] py-5 hover:no-underline text-brand-text">
-                      {q}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-brand-dim text-[15px] leading-[1.6] pb-5">
-                      {a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              {BILLING_FAQ.map(({ id, q, a }, i) => (
+                <details key={id} id={id} open={i === 0} className="group border-b border-brand-line-soft">
+                  <summary className="flex items-center justify-between py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[16px] font-semibold tracking-[-0.01em] text-brand-text">
+                    {q}
+                    <svg className="w-4 h-4 shrink-0 text-brand-muted transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </summary>
+                  <p className="text-brand-dim text-[15px] leading-[1.6] pb-5">{a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </div>

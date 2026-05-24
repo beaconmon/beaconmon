@@ -35,6 +35,27 @@ const nextConfig: NextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()' },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              // Next.js inlines bootstrap scripts; Freemius checkout overlay uses inline handlers
+              "script-src 'self' 'unsafe-inline' https://checkout.freemius.com",
+              // Tailwind + shadcn inject styles at runtime
+              "style-src 'self' 'unsafe-inline'",
+              // next/font/google serves fonts from /_next/static at build time
+              "font-src 'self'",
+              // OG images, favicons, user-provided URLs may be any HTTPS origin
+              "img-src 'self' data: https:",
+              // Sentry client SDK reports to ingest.sentry.io; PostHog is self-proxied
+              "connect-src 'self' https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+              // Freemius checkout is loaded in an iframe
+              "frame-src https://checkout.freemius.com",
+              "frame-ancestors 'none'",
+            ].join('; '),
+          },
         ],
       },
       // Long-term cache for public static assets (logo, OG image, fonts)
