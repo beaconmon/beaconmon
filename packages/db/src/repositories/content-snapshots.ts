@@ -13,6 +13,7 @@ export interface AttachAiAnalysisInput {
   capturedAt: Date;
   summary: string;
   classification: string;
+  confidence?: number;
   model: string;
 }
 
@@ -31,49 +32,54 @@ export const contentSnapshotWorkerRepository = {
   /**
    * Record a new snapshot for a content monitor and update the monitor's hot
    * snapshot column atomically. Workers call this on every detected change.
+   * Returns null when a snapshot with the same contentHash already exists for
+   * this monitor (unique constraint violation — concurrent worker beat us to it).
    */
   async recordChange(
     monitorId: string,
     teamId: string,
     content: string,
-    capturedAt: Date
+    capturedAt: Date,
+    contentHash: string
   ): Promise<ContentSnapshotRecord | null> {
-    // Dedup guard: if the latest snapshot already has this content (e.g. from a
-    // concurrent initialization), just sync the hot column and skip the insert.
-    const latest = await prisma.contentSnapshot.findFirst({
-      where: { monitorId },
-      select: { content: true },
-      orderBy: { capturedAt: 'desc' },
-    });
+    try {
+      const [snapshot] = await prisma.$transaction([
+        prisma.contentSnapshot.create({
+          data: { monitorId, teamId, content, contentHash, capturedAt },
+          select: {
+            id: true,
+            monitorId: true,
+            content: true,
+            capturedAt: true,
+            diffSummary: true,
+          },
+        }),
+        prisma.monitor.update({
+          where: { id: monitorId },
+          data: { contentSnapshot: content, contentLastChangedAt: capturedAt },
+          select: { id: true },
+        }),
+      ]);
 
-    if (latest?.content === content) {
-      await prisma.monitor.update({
-        where: { id: monitorId },
-        data: { contentSnapshot: content },
-        select: { id: true },
-      });
-      return null;
+      return snapshot;
+    } catch (err: unknown) {
+      // P2002 = unique constraint violation: same (monitorId, contentHash) already exists.
+      // Sync the hot column in case a previous insert missed it, then treat as no-op.
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'code' in err &&
+        (err as { code: string }).code === 'P2002'
+      ) {
+        await prisma.monitor.update({
+          where: { id: monitorId },
+          data: { contentSnapshot: content },
+          select: { id: true },
+        });
+        return null;
+      }
+      throw err;
     }
-
-    const [snapshot] = await prisma.$transaction([
-      prisma.contentSnapshot.create({
-        data: { monitorId, teamId, content, capturedAt },
-        select: {
-          id: true,
-          monitorId: true,
-          content: true,
-          capturedAt: true,
-          diffSummary: true,
-        },
-      }),
-      prisma.monitor.update({
-        where: { id: monitorId },
-        data: { contentSnapshot: content, contentLastChangedAt: capturedAt },
-        select: { id: true },
-      }),
-    ]);
-
-    return snapshot;
   },
 
   /**
@@ -88,6 +94,7 @@ export const contentSnapshotWorkerRepository = {
       data: {
         diffSummary: input.summary,
         classification: input.classification,
+        aiConfidence: input.confidence,
         aiModel: input.model,
         aiAnalyzedAt: new Date(),
       },
@@ -139,6 +146,7 @@ export const contentSnapshotWorkerRepository = {
         teamId,
         capturedAt: { gte: windowStart, lte: windowEnd },
         monitor: { isCompetitor: true, isActive: true, deletedAt: null },
+        NOT: { classification: 'noise' },
       },
       select: {
         id: true,

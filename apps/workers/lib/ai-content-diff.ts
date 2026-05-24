@@ -4,7 +4,7 @@ import {
   summarizeContentDiff,
   type ContentDiffClassification,
 } from '@beaconmon/ai';
-import { PLAN_LIMITS } from '@beaconmon/types';
+import { getEffectivePlan } from '@beaconmon/billing';
 import { env } from './env.js';
 import { logger } from './logger.js';
 
@@ -15,9 +15,13 @@ const service = 'content-worker';
 // well above any legitimate change rate. Keyed by UTC date.
 const PER_MONITOR_DAILY_LIMIT = 50;
 const RATE_LIMIT_TTL_SECONDS = 60 * 60 * 24;
-const AI_LOCK_TTL_SECONDS = 300;
 
-// Atomic INCR+EXPIRE: avoids a TTL-less key if the process crashes between the two commands.
+// Per-monitor circuit breaker: 3 provider failures within 60s trips the breaker.
+// Prevents a flaky AI provider from hammering retries on every content change.
+const CIRCUIT_BREAKER_THRESHOLD = 3;
+const CIRCUIT_BREAKER_TTL_SECONDS = 60;
+
+// Atomic INCR+EXPIRE: avoids a TTL-less key if the process crashes between commands.
 const ATOMIC_INCR_EXPIRE_SCRIPT = `
 local count = redis.call('INCR', KEYS[1])
 if count == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end
@@ -36,6 +40,7 @@ export interface AiAnalysisInput {
 export interface AiAnalysisOutput {
   summary: string;
   classification: ContentDiffClassification;
+  confidence: number;
   model: string;
   inputTokens: number;
   outputTokens: number;
@@ -43,7 +48,7 @@ export interface AiAnalysisOutput {
 
 /**
  * Run AI analysis on a content diff if eligible. Returns null when AI is
- * skipped (feature flag off, free plan, rate limited, or provider 'noop').
+ * skipped (feature flag off, free plan, rate limited, circuit open, or provider 'noop').
  * Never throws — AI failures are logged and swallowed so the content-change
  * pipeline keeps working.
  */
@@ -61,16 +66,17 @@ export async function runAiAnalysisIfEligible(
   const effectivePlan = getEffectivePlan({
     plan: input.teamPlan,
     trialEndsAt: input.trialEndsAt,
-    subscriptionStatus: input.subscriptionStatus,
+    subscription: input.subscriptionStatus ? { status: input.subscriptionStatus } : null,
   });
   if (effectivePlan === 'free') {
     logger.debug({ service, monitorId: input.monitorId }, 'AI skipped — free plan');
     return null;
   }
 
-  const lockAcquired = await tryAcquireAiLock(redis, input.monitorId);
-  if (!lockAcquired) {
-    logger.debug({ service, monitorId: input.monitorId }, 'AI skipped — another worker holds the lock for today');
+  // Check circuit breaker before consuming rate limit
+  const circuitClosed = await checkCircuitBreaker(redis, input.monitorId);
+  if (!circuitClosed) {
+    logger.warn({ service, monitorId: input.monitorId }, 'AI skipped — circuit breaker open');
     return null;
   }
 
@@ -97,6 +103,7 @@ export async function runAiAnalysisIfEligible(
     return {
       summary: result.data.summary,
       classification: result.data.classification,
+      confidence: result.data.confidence,
       model: result.model,
       inputTokens: result.usage.inputTokens,
       outputTokens: result.usage.outputTokens,
@@ -106,35 +113,34 @@ export async function runAiAnalysisIfEligible(
       { service, monitorId: input.monitorId, err },
       'AI analysis failed — continuing without summary'
     );
+    // Record failure so the circuit breaker can trip after repeated provider errors.
+    await recordCircuitBreakerFailure(redis, input.monitorId);
     return null;
   }
 }
 
-function getEffectivePlan(team: {
-  plan: string;
-  trialEndsAt: Date | null;
-  subscriptionStatus: string | null;
-}): keyof typeof PLAN_LIMITS {
-  const plan = team.plan as keyof typeof PLAN_LIMITS;
-  if (plan === 'free') return 'free';
-  if (team.trialEndsAt && team.trialEndsAt < new Date()) {
-    const subStatus = team.subscriptionStatus;
-    const hasActiveSub = subStatus === 'active' || subStatus === 'past_due';
-    if (!hasActiveSub) return 'free';
+/**
+ * Returns true (circuit closed = healthy) if the failure count for this monitor
+ * is below the threshold. Returns false (circuit open) on Redis failure so we
+ * fail closed — skipping AI is safer than uncapped spend on a broken provider.
+ */
+async function checkCircuitBreaker(redis: Redis, monitorId: string): Promise<boolean> {
+  const key = `ai:circuit:${monitorId}`;
+  try {
+    const count = await redis.get(key);
+    return count === null || parseInt(count, 10) < CIRCUIT_BREAKER_THRESHOLD;
+  } catch (err) {
+    logger.warn({ service, monitorId, err }, 'AI circuit breaker check failed — failing closed');
+    return false;
   }
-  return plan;
 }
 
-async function tryAcquireAiLock(redis: Redis, monitorId: string): Promise<boolean> {
-  const dayKey = new Date().toISOString().slice(0, 10);
-  const key = `ai:lock:${monitorId}:${dayKey}`;
+async function recordCircuitBreakerFailure(redis: Redis, monitorId: string): Promise<void> {
+  const key = `ai:circuit:${monitorId}`;
   try {
-    const result = await redis.set(key, '1', 'EX', AI_LOCK_TTL_SECONDS, 'NX');
-    return result === 'OK';
-  } catch (err) {
-    // Fail-open: if Redis is unavailable, allow the call.
-    logger.warn({ service, monitorId, err }, 'AI lock check failed — allowing call');
-    return true;
+    await redis.eval(ATOMIC_INCR_EXPIRE_SCRIPT, 1, key, String(CIRCUIT_BREAKER_TTL_SECONDS));
+  } catch {
+    // Best-effort; if Redis is down the circuit breaker simply won't count this failure.
   }
 }
 
@@ -145,8 +151,8 @@ async function consumeRateLimit(redis: Redis, monitorId: string): Promise<boolea
     const count = await redis.eval(ATOMIC_INCR_EXPIRE_SCRIPT, 1, key, String(RATE_LIMIT_TTL_SECONDS)) as number;
     return count <= PER_MONITOR_DAILY_LIMIT;
   } catch (err) {
-    // Fail-open: if Redis is unavailable, allow the call.
-    logger.warn({ service, monitorId, err }, 'AI rate-limit check failed — allowing call');
-    return true;
+    // Fail closed: if Redis is unavailable, skip AI to prevent uncapped spend.
+    logger.warn({ service, monitorId, err }, 'AI rate-limit check failed — failing closed');
+    return false;
   }
 }

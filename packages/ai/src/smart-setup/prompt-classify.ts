@@ -56,7 +56,7 @@ const HIGH_VALUE_KEYWORDS = [
   'status', 'login', 'signin', 'checkout', 'cart',
 ];
 
-function rankUrls(urls: string[]): string[] {
+export function rankUrls(urls: string[]): string[] {
   return urls
     .map((url) => {
       const lower = url.toLowerCase();

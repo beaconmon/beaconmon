@@ -12,7 +12,16 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://beaconmon.com/features' },
 };
 
-const FEATURES_SCHEMA = {
+const FEATURES_SCHEMA = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://beaconmon.com' },
+      { '@type': 'ListItem', position: 2, name: 'Features', item: 'https://beaconmon.com/features' },
+    ],
+  },
+  {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'Beaconmon Monitor Types',
@@ -21,17 +30,19 @@ const FEATURES_SCHEMA = {
   url: 'https://beaconmon.com/features',
   numberOfItems: 6,
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.' },
-    { '@type': 'ListItem', position: 2, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.' },
-    { '@type': 'ListItem', position: 3, name: 'Domain Expiry Tracking', description: 'The worst outage is one you could have prevented.' },
-    { '@type': 'ListItem', position: 4, name: 'TCP Port Monitoring', description: 'Monitor any service that speaks TCP.' },
-    { '@type': 'ListItem', position: 5, name: 'Keyword Monitoring', description: 'Verify your pages say exactly what they should.' },
-    { '@type': 'ListItem', position: 6, name: 'Content Change Monitoring', description: 'Know the instant a page changes.' },
+    { '@type': 'ListItem', position: 1, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.', url: 'https://beaconmon.com/features#http-monitoring' },
+    { '@type': 'ListItem', position: 2, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.', url: 'https://beaconmon.com/features#ssl-monitoring' },
+    { '@type': 'ListItem', position: 3, name: 'Domain Expiry Tracking', description: 'The worst outage is one you could have prevented.', url: 'https://beaconmon.com/features#domain-monitoring' },
+    { '@type': 'ListItem', position: 4, name: 'TCP Port Monitoring', description: 'Monitor any service that speaks TCP.', url: 'https://beaconmon.com/features#tcp-monitoring' },
+    { '@type': 'ListItem', position: 5, name: 'Keyword Monitoring', description: 'Verify your pages say exactly what they should.', url: 'https://beaconmon.com/features#keyword-monitoring' },
+    { '@type': 'ListItem', position: 6, name: 'Content Change Monitoring', description: 'Know the instant a page changes.', url: 'https://beaconmon.com/features#content-monitoring' },
   ],
-};
+  },
+];
 
 const MONITOR_TYPES = [
   {
+    slug: 'http-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -40,10 +51,11 @@ const MONITOR_TYPES = [
     ),
     name: 'HTTP Monitoring',
     tagline: 'Know the moment your site or API stops responding.',
-    body: 'Beaconmon checks your URLs every 30 seconds (Business) or 1 minute (Pro). If the response is anything other than a 2xx, you\'re alerted within 60 seconds. Set custom request headers, follow redirects, and configure per-monitor response-time thresholds to catch slow sites and APIs before users notice.',
+    body: 'Beaconmon checks your URLs every 30 seconds (Scale) or 1 minute (Growth and Starter). If the response is anything other than a 2xx, you\'re alerted within 60 seconds. Set custom request headers, follow redirects, and configure per-monitor response-time thresholds to catch slow sites and APIs before users notice.',
     highlights: ['Response code validation', 'Response time thresholds', 'Custom request headers', 'API endpoint monitoring'],
   },
   {
+    slug: 'ssl-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -56,6 +68,7 @@ const MONITOR_TYPES = [
     highlights: ['30-day early warning', '14-day and 7-day reminders', 'Certificate validity checks', 'No config needed'],
   },
   {
+    slug: 'domain-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -70,6 +83,7 @@ const MONITOR_TYPES = [
     highlights: ['WHOIS-based expiry detection', '30/14/7-day alerts', 'Works on all TLDs', 'Per-domain alert channels'],
   },
   {
+    slug: 'tcp-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -81,6 +95,7 @@ const MONITOR_TYPES = [
     highlights: ['Any TCP port', 'Works on private IPs via VPN probes', 'Sub-60 second alerts', 'Works alongside HTTP monitors'],
   },
   {
+    slug: 'keyword-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
@@ -93,6 +108,7 @@ const MONITOR_TYPES = [
     highlights: ['Keyword present or absent', 'Case-sensitive matching', 'Works on any HTTP response', 'Combine with HTTP threshold checks'],
   },
   {
+    slug: 'content-monitoring',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -149,8 +165,8 @@ export default function FeaturesPage() {
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Each monitor type is purpose-built for a different failure mode, so you catch the right problems, every time.</p>
           </div>
           <div className="grid grid-cols-2 max-[880px]:grid-cols-1 gap-5">
-            {MONITOR_TYPES.map(({ icon, name, tagline, body, highlights }) => (
-              <div key={name} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+            {MONITOR_TYPES.map(({ slug, icon, name, tagline, body, highlights }) => (
+              <div key={name} id={slug} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
                 <div className="w-12 h-12 rounded-[12px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green-ink mb-5">
                   {icon}
                 </div>
@@ -188,7 +204,7 @@ export default function FeaturesPage() {
                   'Checks from US East, US West, EU West, AP Southeast, SA East',
                   'Alert only fires when 2+ locations confirm failure',
                   'Per-region response times visible in the dashboard',
-                  'Available on Pro and Business plans',
+                  'Available on Growth and Scale plans',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
                     <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
@@ -391,7 +407,7 @@ export default function FeaturesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Ready to set up your first monitor?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. Pro and Business trials start the moment you sign up, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. 14-day Growth trial starts the moment you sign up, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
           <Link href="/pricing" className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
             See pricing →

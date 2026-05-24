@@ -50,7 +50,7 @@ import { AckButton } from '@/components/dashboard/ack-button';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useSlo, useUpdateSlo } from '@/lib/hooks/use-slo';
 import { useDeploys, useStartDeploy, useEndDeploy } from '@/lib/hooks/use-deploys';
-import { useSnapshots, useSnapshotDiff } from '@/lib/hooks/use-snapshots';
+import { useSnapshots, useSnapshotDiff, useNotifySnapshot } from '@/lib/hooks/use-snapshots';
 import { useAnomalies, type PerformanceAlertRow } from '@/lib/hooks/use-anomalies';
 import type { SloData } from '@/lib/repositories/slo';
 
@@ -691,6 +691,8 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
   const { data, isLoading, isError, refetch } = useSnapshots(monitorId);
   const snapshots = data?.snapshots ?? [];
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [pendingSnapshotId, setPendingSnapshotId] = useState<string | null>(null);
+  const notifyMutation = useNotifySnapshot(monitorId);
 
   const fromId = snapshots[selectedIdx + 1]?.id ?? null;
   const toId = snapshots[selectedIdx]?.id ?? null;
@@ -735,21 +737,45 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
         </div>
         <div className="divide-y divide-brand-line">
           {snapshots.map((snap, idx) => (
-            <button
+            <div
               key={snap.id}
-              onClick={() => setSelectedIdx(idx)}
               className={cn(
-                'w-full px-4 py-2.5 text-left transition-colors hover:bg-brand-bg3/60',
+                'w-full px-4 py-2.5 transition-colors hover:bg-brand-bg3/60 cursor-pointer',
                 selectedIdx === idx && 'bg-brand-bg3'
               )}
+              onClick={() => setSelectedIdx(idx)}
             >
-              <p className="font-mono text-xs text-brand-dim">
-                {format(new Date(snap.capturedAt), 'MMM d, HH:mm:ss')}
-              </p>
-              <p className="text-[10px] text-brand-muted mt-0.5">
-                {(snap.bytes / 1024).toFixed(1)} KB
-              </p>
-            </button>
+              <div className="flex items-center gap-1.5">
+                <p className="font-mono text-xs text-brand-dim">
+                  {format(new Date(snap.capturedAt), 'MMM d, HH:mm:ss')}
+                </p>
+                {snap.classification === 'noise' && (
+                  <span className="rounded px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide bg-brand-bg3 text-brand-muted border border-brand-line">
+                    noise
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center justify-between mt-0.5">
+                <p className="text-[10px] text-brand-muted">
+                  {(snap.bytes / 1024).toFixed(1)} KB
+                </p>
+                {snap.classification === 'noise' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPendingSnapshotId(snap.id);
+                      notifyMutation.mutate(snap.id, {
+                        onSettled: () => setPendingSnapshotId(null),
+                      });
+                    }}
+                    disabled={pendingSnapshotId === snap.id}
+                    className="text-[10px] text-brand-blue hover:underline disabled:opacity-50"
+                  >
+                    {pendingSnapshotId === snap.id ? 'Sending…' : 'Notify anyway'}
+                  </button>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       </div>

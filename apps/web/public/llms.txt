@@ -1,21 +1,23 @@
 # Beaconmon
 
-> Beaconmon is a website uptime and performance monitoring service for freelancers and agencies.
+> Beaconmon is an uptime, performance, and competitor monitoring platform built for ecommerce stores, freelancers, and agencies.
 
-Beaconmon checks your websites every 30 seconds and sends instant alerts when something breaks — downtime, slow responses, SSL certificate expiry, domain expiry, or unexpected content changes. It is designed for freelancers, agencies, and small e-commerce businesses who manage multiple client sites.
+Beaconmon checks your websites every 30 seconds and sends instant alerts when something breaks: downtime, slow responses, SSL certificate expiry, domain expiry, unexpected content changes, or competitor price drops. It is designed for freelancers, agencies, and small ecommerce businesses who need to stay ahead of site issues and track what competitors are doing.
 
 ## What Beaconmon does
 
-- **HTTP uptime monitoring** — checks every 30 seconds (Business plan) or 1 minute (Pro), alerts on non-2xx responses or slow load times
+- **HTTP uptime monitoring** — checks every 30 seconds (Scale plan) or 1 minute (Starter/Growth), alerts on non-2xx responses or slow load times
 - **SSL certificate monitoring** — tiered warnings at 30, 14, and 7 days before expiry
 - **Domain expiry tracking** — WHOIS-based alerts at 30, 14, and 7 days before renewal
 - **TCP port monitoring** — verifies any port is open and accepting connections
 - **Keyword monitoring** — confirms a word or phrase is (or isn't) present in the page body
-- **Content change detection** — notifies when any HTML content changes at a CSS selector
+- **Content change detection** — notifies when any HTML content changes at a CSS selector; tracks competitor prices, stock status, and copy changes
+- **Competitor monitoring** — track competitor pricing pages and product listings; get alerts the moment anything changes
+- **Intelligence Digest** — scheduled email and Slack digest summarizing uptime trends, anomalies, and competitor activity across all your monitors
 
 ## Alert channels
 
-Email, Slack, webhook. SMS available on Business plan.
+Email, Slack, webhook. SMS available on Scale plan.
 
 ## Public status pages
 
@@ -23,17 +25,20 @@ Every plan includes public status pages showing 90-day uptime history, active in
 
 ## Pricing
 
-- **Free** — 10 monitors, 5-minute check interval, 1 status page, no credit card required
-- **Pro** — $19/month (or $15/month annual) — 25 monitors, 1-minute checks, 5 alert channels, 3 status pages
-- **Business** — $59/month (or $47/month annual) — unlimited monitors, 30-second checks, unlimited everything, SLO tracking, multi-location checks
+- **Free** — $0/month — 10 monitors, 5-minute check interval, 1 status page, 7-day history, no credit card required
+- **Starter** — $29/month (or $23/month billed annually) — 25 monitors, 1-minute checks, 3 status pages, 30-day history, 5 competitor monitors
+- **Growth** — $79/month (or $63/month billed annually) — 100 monitors, 1-minute checks, 10 status pages, 90-day history, 25 competitor monitors, multi-location checks, Intelligence Digest
+- **Scale** — $199/month (or $159/month billed annually) — unlimited monitors, 30-second checks, unlimited status pages, 365-day history, unlimited competitor monitors, multi-location checks, Intelligence Digest, SMS alerts
 
-All plans include a 14-day Pro trial with no credit card required.
+All plans include a 14-day Growth trial with no credit card required.
 
 ## Key pages
 
 - Homepage: https://beaconmon.com
 - Features: https://beaconmon.com/features
+- Intelligence Digest: https://beaconmon.com/features/intelligence
 - Pricing: https://beaconmon.com/pricing
+- For Shopify stores: https://beaconmon.com/for/shopify
 - About: https://beaconmon.com/about
 - vs UptimeRobot: https://beaconmon.com/vs/uptimerobot
 - vs Pingdom: https://beaconmon.com/vs/pingdom

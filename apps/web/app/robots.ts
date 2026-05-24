@@ -4,6 +4,21 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        userAgent: 'GPTBot',
+        allow: ['/'],
+        disallow: ['/api/', '/sign-in', '/sign-up', '/overview', '/monitors', '/settings'],
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: ['/'],
+        disallow: ['/api/', '/sign-in', '/sign-up', '/overview', '/monitors', '/settings'],
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: ['/'],
+        disallow: ['/api/', '/sign-in', '/sign-up', '/overview', '/monitors', '/settings'],
+      },
+      {
         userAgent: '*',
         allow: [
           '/',
@@ -11,6 +26,8 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: [
           '/api/',
+          '/ingest/',
+          '/onboarding',
           '/sign-in',
           '/sign-up',
           '/forgot-password',

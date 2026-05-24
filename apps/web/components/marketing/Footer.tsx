@@ -2,9 +2,21 @@ import Link from 'next/link';
 import LogoMark from './LogoMark';
 
 const PRODUCT_LINKS: [string, string][] = [
-  ['/features', 'Features'],
+  ['/features#monitors', 'Monitors'],
+  ['/features/intelligence', 'Intelligence'],
+  ['/features#status-pages', 'Status Pages'],
+  ['/features#smart-alerts', 'Smart Alerts'],
+  ['/features#reliability-targets', 'Reliability Targets'],
   ['/pricing', 'Pricing'],
   ['/changelog', 'Changelog'],
+];
+
+const FOR_LINKS: [string, string][] = [
+  ['/for/ecommerce', 'Ecommerce'],
+  ['/for/shopify', 'Shopify'],
+  ['/for/woocommerce', 'WooCommerce'],
+  ['/for/dtc-brands', 'DTC Brands'],
+  ['/for/solo-founders', 'Solo Founders'],
 ];
 
 const COMPARE_LINKS: [string, string][] = [
@@ -35,11 +47,23 @@ export default function Footer() {
             <p className="text-[13px] text-brand-muted mt-[14px] max-w-[260px]">Website and competitor intelligence for ecommerce brands. Watch your store, watch theirs.</p>
             <p className="text-[12px] text-brand-muted mt-8">© 2026 Beaconmon. Made for ecommerce.</p>
           </div>
-          <div className="grid grid-cols-3 max-[400px]:grid-cols-1 gap-8">
+          <div className="grid grid-cols-4 max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-8">
             <div>
               <h4 className="text-[12px] font-semibold text-brand-dim mb-4">Product</h4>
               <ul className="space-y-0">
                 {PRODUCT_LINKS.map(([href, label]) => (
+                  <li key={label} className="py-[6px]">
+                    <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-semibold text-brand-dim mb-4">For</h4>
+              <ul className="space-y-0">
+                {FOR_LINKS.map(([href, label]) => (
                   <li key={label} className="py-[6px]">
                     <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
                       {label}

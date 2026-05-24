@@ -51,8 +51,10 @@ const SITE_SCHEMA = [
     '@type': 'Organization',
     name: 'Beaconmon',
     url: 'https://beaconmon.com',
-    logo: 'https://beaconmon.com/logo.svg',
-    sameAs: [],
+    logo: { '@type': 'ImageObject', url: 'https://beaconmon.com/logo.svg', width: 200, height: 60 },
+    description: 'Store and competitor monitoring for e-commerce businesses.',
+    email: 'hello@beaconmon.com',
+    sameAs: ['https://x.com/beaconmon'],
   },
   {
     '@context': 'https://schema.org',

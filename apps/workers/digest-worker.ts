@@ -26,7 +26,7 @@ const { worker } = createManagedWorker<IntelligenceDigestJob>({
       { service: 'digest-worker', jobId: job.id, teamId, frequency },
       'Processing intelligence digest job'
     );
-    await processIntelligenceDigestJob(job.data);
+    await processIntelligenceDigestJob(job.data, job.id, connection);
   },
   onShutdown: async () => {
     await prisma.$disconnect();

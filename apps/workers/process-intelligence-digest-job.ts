@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
+import type { Redis } from 'ioredis';
 import { prisma, contentSnapshotWorkerRepository, digestRepository } from '@beaconmon/db';
 import type { IntelligenceDigestJob } from '@beaconmon/queue';
 import { digestPrefsSchema } from '@beaconmon/types';
@@ -126,7 +127,11 @@ function buildSlackPayload(
   return { blocks };
 }
 
-export async function processIntelligenceDigestJob(data: IntelligenceDigestJob): Promise<void> {
+export async function processIntelligenceDigestJob(
+  data: IntelligenceDigestJob,
+  jobId?: string,
+  redis?: Redis
+): Promise<void> {
   const { teamId, frequency, windowStart, windowEnd } = data;
 
   const team = await digestRepository.getTeamForDigest(teamId);
@@ -200,9 +205,8 @@ export async function processIntelligenceDigestJob(data: IntelligenceDigestJob):
   }
 
   if (prefs.sections.competitors) {
-    const allSnaps = await contentSnapshotWorkerRepository.findSnapshotsForDigest(teamId, start, end);
-    sections.competitors = allSnaps
-      .filter((s) => s.classification !== 'noise')
+    const snaps = await contentSnapshotWorkerRepository.findSnapshotsForDigest(teamId, start, end);
+    sections.competitors = snaps
       .map((s) => ({
         monitorId: s.monitorId,
         monitorName: s.monitorName,
@@ -253,6 +257,22 @@ export async function processIntelligenceDigestJob(data: IntelligenceDigestJob):
   let failureCount = 0;
 
   for (const channel of channels) {
+    // Per-channel idempotency: skip if this job already delivered to this channel.
+    // Guards against duplicate sends when BullMQ retries after a partial failure.
+    if (jobId && redis) {
+      const idempotencyKey = `digest:sent:${jobId}:${channel.id}`;
+      try {
+        const alreadySent = await redis.exists(idempotencyKey);
+        if (alreadySent) {
+          logger.info({ service, teamId, channelId: channel.id }, 'Digest: already sent to channel, skipping (idempotency)');
+          successCount++;
+          continue;
+        }
+      } catch {
+        // Redis unavailable — proceed without idempotency check rather than blocking send.
+      }
+    }
+
     try {
       if (channel.type === 'email') {
         if (!env.RESEND_API_KEY || !env.EMAIL_FROM) {
@@ -285,6 +305,9 @@ export async function processIntelligenceDigestJob(data: IntelligenceDigestJob):
         });
 
         if (error) throw new Error(`Resend API error: ${error.message}`);
+        if (jobId && redis) {
+          await redis.set(`digest:sent:${jobId}:${channel.id}`, '1', 'EX', 48 * 60 * 60).catch(() => null);
+        }
         successCount++;
       } else if (channel.type === 'slack') {
         const parsed = slackChannelConfigSchema.safeParse(channel.config);
@@ -303,6 +326,9 @@ export async function processIntelligenceDigestJob(data: IntelligenceDigestJob):
         if (!response.ok) {
           const body = await response.text().catch(() => '');
           throw new Error(`Slack webhook returned ${response.status}: ${body}`);
+        }
+        if (jobId && redis) {
+          await redis.set(`digest:sent:${jobId}:${channel.id}`, '1', 'EX', 48 * 60 * 60).catch(() => null);
         }
         successCount++;
       } else {

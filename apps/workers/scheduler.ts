@@ -11,7 +11,7 @@ import { render } from '@react-email/render';
 import { prisma, statusPageWorkerRepository, checkResultRepository, incidentRepository, monitorRepository, deployEventRepository, sloRepository, contentSnapshotWorkerRepository, alertChannelRepository } from '@beaconmon/db';
 import { createCheckQueue, createContentCheckQueue, createSloBurnQueue, createIntelligenceDigestQueue } from '@beaconmon/queue';
 import { digestPrefsSchema } from '@beaconmon/types';
-import { getEffectivePlan } from './lib/get-effective-plan.js';
+import { getEffectivePlan, getSnapshotRetentionLimit } from '@beaconmon/billing';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { evaluateCheckResult } from '@beaconmon/checker';
 import { TrialReminder } from './emails/trial-reminder.js';
@@ -439,15 +439,6 @@ async function runRetentionCleanup(): Promise<void> {
   }
 }
 
-// Per-plan snapshot retention for content monitors.
-// Free → 3, Starter → 10, Growth → 30, Scale → 90.
-const SNAPSHOT_RETENTION_BY_PLAN: Record<keyof typeof PLAN_LIMITS, number> = {
-  free: 3,
-  starter: 10,
-  growth: 30,
-  scale: 90,
-};
-
 /**
  * Drop content snapshots beyond each team's plan-allowed retention count.
  * Runs alongside daily retention cleanup.
@@ -465,7 +456,7 @@ async function runContentSnapshotRetention(): Promise<void> {
         trialEndsAt: m.trialEndsAt,
         subscription: m.subscriptionStatus ? { status: m.subscriptionStatus } : null,
       });
-      const keep = SNAPSHOT_RETENTION_BY_PLAN[effectivePlan];
+      const keep = getSnapshotRetentionLimit(effectivePlan);
 
       const deleted = await contentSnapshotWorkerRepository.pruneToLimit(m.monitorId, keep);
       totalDeleted += deleted;

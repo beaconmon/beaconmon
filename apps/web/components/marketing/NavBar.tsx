@@ -70,7 +70,7 @@ export default function NavBar() {
             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 hidden group-hover:block">
               <div className="bg-brand-bg1 border border-brand-line-soft rounded-[10px] py-1 min-w-[160px] shadow-lg">
                 <Link href="/features" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Features</Link>
-                <Link href="/#pricing" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Pricing</Link>
+                <Link href="/pricing" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Pricing</Link>
                 <Link href="/vs" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Compare</Link>
               </div>
             </div>
@@ -86,13 +86,13 @@ export default function NavBar() {
           </Link>
           <Link
             href="/sign-up"
-            className="inline-flex items-center justify-center h-[38px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[var(--brand-green-hover)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(0,147,90,0.4),0_8px_22px_rgba(0,147,90,0.28)] transition-all duration-[120ms] whitespace-nowrap"
+            className="inline-flex items-center justify-center h-[48px] px-4 text-sm font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[var(--brand-green-hover)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(0,147,90,0.4),0_8px_22px_rgba(0,147,90,0.28)] transition-all duration-[120ms] whitespace-nowrap"
           >
             Start free
           </Link>
           <button
             id="menu-toggle"
-            className="hidden max-[880px]:inline-flex bg-transparent border-0 text-brand-text p-2"
+            className="hidden max-[880px]:inline-flex min-h-[48px] min-w-[48px] items-center justify-center bg-transparent border-0 text-brand-text"
             aria-label="Menu"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
@@ -124,7 +124,7 @@ export default function NavBar() {
               {productOpen && (
                 <div className="pl-3 flex flex-col gap-0">
                   <Link href="/features" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Features</Link>
-                  <Link href="/#pricing" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Pricing</Link>
+                  <Link href="/pricing" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Pricing</Link>
                   <Link href="/vs" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Compare</Link>
                 </div>
               )}

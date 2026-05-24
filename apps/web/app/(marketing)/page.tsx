@@ -14,16 +14,35 @@ export const metadata: Metadata = {
   description:
     'Monitor your store and competitors automatically. Know about outages, pricing changes, SEO edits, SSL expiry, and competitor updates before they hurt sales.',
   alternates: { canonical: 'https://beaconmon.com' },
+  openGraph: { url: 'https://beaconmon.com' },
 };
 
-const ORGANIZATION_SCHEMA = {
+const HOW_TO_SCHEMA = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Beaconmon',
-  url: 'https://beaconmon.com',
-  description: 'Store and competitor monitoring for e-commerce businesses.',
-  email: 'hello@beaconmon.com',
-  sameAs: ['https://beaconmon.com'],
+  '@type': 'HowTo',
+  name: 'Set up store and competitor monitoring',
+  description: 'No agents. No DNS config. No code changes. Paste, pick, done.',
+  totalTime: 'PT5M',
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Add your store',
+      text: 'Paste your Shopify or WooCommerce URL. We auto-detect product pages, cart, and checkout, and propose a sensible monitor bundle. Confirm and you\'re live in under a minute.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Add competitors to watch',
+      text: 'List the brands you actually compare against. We snapshot their content, prices, and homepage hero every check. Any change lands in your feed and your digest automatically.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Read your morning digest',
+      text: 'Every morning at 8am: outages, content edits, pricing changes, SEO moves. In your inbox, Slack, or webhook of choice. No dashboard required.',
+    },
+  ],
 };
 
 const SOFTWARE_SCHEMA = {
@@ -102,7 +121,7 @@ const HERO_EVENTS = [
 export default function LandingPage() {
   return (
     <>
-      <JsonLd data={[ORGANIZATION_SCHEMA, SOFTWARE_SCHEMA]} />
+      <JsonLd data={[SOFTWARE_SCHEMA, HOW_TO_SCHEMA]} />
 
       {/* ====== NAV ====== */}
       <NavBar />
@@ -136,7 +155,7 @@ export default function LandingPage() {
                 <span className="text-brand-green-ink">competitors automatically.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon watches your Shopify store for outages, SSL expiry, pricing changes and SEO edits, and quietly tracks the same on every competitor you care about. Find out before your customers do. Or before your customers go to them.
+                Beaconmon is an ecommerce monitoring platform that combines uptime monitoring with automated competitor intelligence, tracking pricing changes, content updates, and page edits across your store and every competitor you follow. Find out before your customers do. Or before your customers go to them.
               </p>
 
               <CtaForm />

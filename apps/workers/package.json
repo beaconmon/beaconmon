@@ -27,6 +27,7 @@
     "@aws-sdk/client-s3": "^3.0.0",
     "@aws-sdk/s3-request-presigner": "^3.0.0",
     "@beaconmon/ai": "workspace:*",
+    "@beaconmon/billing": "workspace:*",
     "@beaconmon/checker": "workspace:*",
     "@beaconmon/db": "workspace:*",
     "@beaconmon/logger": "workspace:*",

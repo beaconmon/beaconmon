@@ -634,15 +634,18 @@ model ContentSnapshot {
   monitorId      String    @map("monitor_id")
   teamId         String    @map("team_id")
   content        String
+  contentHash    String?   @map("content_hash")
   capturedAt     DateTime  @default(now()) @map("captured_at")
   diffSummary    String?   @map("diff_summary")
   classification String?   @map("classification")
+  aiConfidence   Float?    @map("ai_confidence")
   aiModel        String?   @map("ai_model")
   aiAnalyzedAt   DateTime? @map("ai_analyzed_at")
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
+  @@unique([monitorId, contentHash])
   @@index([monitorId, capturedAt(sort: Desc)])
   @@map("content_snapshots")
 }

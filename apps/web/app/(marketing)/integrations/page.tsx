@@ -10,6 +10,43 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://beaconmon.com/integrations' },
 };
 
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Can I send alerts to multiple channels at the same time?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. You can add as many alert channels as your plan allows and each monitor can notify any combination of them.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What events trigger an alert?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks) and again when it recovers to UP. SSL and domain expiry warnings fire at 30, 14, and 7 days before expiry.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I connect Beaconmon to Slack?',
+      acceptedAnswer: { '@type': 'Answer', text: 'In the dashboard, go to Alert Channels, Add Channel, then Slack. Authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What does the webhook payload look like?',
+      acceptedAnswer: { '@type': 'Answer', text: 'The POST body is a JSON object with event, monitor_id, url, status_code, confirmed_locations, incident_id, started_at, and optionally duration_ms on recovery. HTTPS only.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I use webhooks to connect to PagerDuty, Discord, or Jira?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Point the channel at a PagerDuty Events API URL, a Discord channel webhook URL, or your own function to open a Jira ticket.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is there a retry policy if my webhook endpoint is down?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff.' },
+    },
+  ],
+};
+
 const INTEGRATIONS_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -116,7 +153,7 @@ const COMING_SOON = [
 export default function IntegrationsPage() {
   return (
     <>
-      <JsonLd data={INTEGRATIONS_SCHEMA} />
+      <JsonLd data={[INTEGRATIONS_SCHEMA, FAQ_SCHEMA]} />
       <NavBar />
 
       {/* Hero */}
