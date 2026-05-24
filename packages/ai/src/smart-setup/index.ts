@@ -3,6 +3,7 @@ export {
   ClassifyOutput,
   ClassifyIntentSchema,
   buildClassifyPrompt,
+  rankUrls,
 } from './prompt-classify.js';
 export type { ClassifyIntent } from './prompt-classify.js';
 

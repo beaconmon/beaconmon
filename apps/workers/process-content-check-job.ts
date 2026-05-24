@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import {
   monitorRepository,
   checkResultRepository,
@@ -56,12 +57,13 @@ export async function processContentCheckJob(
   }
 
   const { content, checkedAt } = result;
+  const contentHash = createHash('sha256').update(content).digest('hex');
 
   // 5. First run — initialize snapshot (also write the first history row).
-  // recordChange has a dedup guard so concurrent workers won't create duplicates.
+  // The unique constraint on (monitorId, contentHash) prevents duplicate inserts from concurrent workers.
   if (monitor.contentSnapshot === null) {
     try {
-      const created = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
+      const created = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
       logger.info({ service, monitorId, duplicate: !created }, 'Content snapshot initialized');
     } catch (err) {
       logger.error({ service, monitorId, err }, 'Failed to initialize content snapshot');
@@ -99,7 +101,7 @@ export async function processContentCheckJob(
   // so retries see no diff and don't double-notify.
   let snapshotCreated: Awaited<ReturnType<typeof contentSnapshotWorkerRepository.recordChange>>;
   try {
-    snapshotCreated = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt);
+    snapshotCreated = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
     return;
@@ -115,6 +117,7 @@ export async function processContentCheckJob(
       capturedAt: checkedAt,
       summary: aiResult.summary,
       classification: aiResult.classification,
+      confidence: aiResult.confidence,
       model: aiResult.model,
     });
     logger.info(
@@ -131,8 +134,9 @@ export async function processContentCheckJob(
     );
   }
 
-  // 7c. Suppress alerts for AI-classified noise (timestamps, view counters, …).
-  if (aiResult?.classification === 'noise') {
+  // 7c. Suppress alerts for high-confidence noise only (confidence >= 0.8).
+  // Low-confidence noise classifications still fire an alert so users see the change.
+  if (aiResult?.classification === 'noise' && (aiResult.confidence ?? 0) >= 0.8) {
     logger.info(
       { service, monitorId, summary: aiResult.summary },
       'Change classified as noise — suppressing alert'

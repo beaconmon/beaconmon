@@ -4,6 +4,7 @@ export interface SnapshotSummary {
   id: string;
   capturedAt: Date;
   bytes: number;
+  classification: string | null;
 }
 
 export interface SnapshotFull {
@@ -11,6 +12,16 @@ export interface SnapshotFull {
   monitorId: string;
   content: string;
   capturedAt: Date;
+}
+
+export interface SnapshotWithMeta {
+  id: string;
+  monitorId: string;
+  monitorName: string;
+  monitorUrl: string;
+  capturedAt: Date;
+  diffSummary: string | null;
+  classification: string | null;
 }
 
 export const contentSnapshotRepository = {
@@ -29,7 +40,7 @@ export const contentSnapshotRepository = {
   async list(teamId: string, monitorId: string, limit: number): Promise<SnapshotSummary[]> {
     const rows = await prisma.contentSnapshot.findMany({
       where: { monitorId, teamId },
-      select: { id: true, capturedAt: true, content: true },
+      select: { id: true, capturedAt: true, content: true, classification: true },
       orderBy: { capturedAt: 'desc' },
       take: limit,
     });
@@ -37,6 +48,7 @@ export const contentSnapshotRepository = {
       id: r.id,
       capturedAt: r.capturedAt,
       bytes: Buffer.byteLength(r.content, 'utf8'),
+      classification: r.classification,
     }));
   },
 
@@ -46,5 +58,33 @@ export const contentSnapshotRepository = {
       select: { id: true, monitorId: true, content: true, capturedAt: true },
     });
     return row;
+  },
+
+  async getByIdWithMeta(
+    teamId: string,
+    monitorId: string,
+    id: string
+  ): Promise<SnapshotWithMeta | null> {
+    const row = await prisma.contentSnapshot.findFirst({
+      where: { id, monitorId, teamId },
+      select: {
+        id: true,
+        monitorId: true,
+        capturedAt: true,
+        diffSummary: true,
+        classification: true,
+        monitor: { select: { name: true, url: true } },
+      },
+    });
+    if (!row) return null;
+    return {
+      id: row.id,
+      monitorId: row.monitorId,
+      monitorName: row.monitor.name,
+      monitorUrl: row.monitor.url,
+      capturedAt: row.capturedAt,
+      diffSummary: row.diffSummary,
+      classification: row.classification,
+    };
   },
 };

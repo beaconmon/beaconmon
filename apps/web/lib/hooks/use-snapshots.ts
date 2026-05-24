@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import type { SnapshotSummary } from '@/lib/repositories/content-snapshots';
 
 export interface SnapshotListResponse {
@@ -45,5 +45,18 @@ export function useSnapshotDiff(monitorId: string, fromId: string | null, toId: 
       return res.json();
     },
     enabled: Boolean(monitorId && fromId && toId),
+  });
+}
+
+export function useNotifySnapshot(monitorId: string) {
+  return useMutation({
+    mutationFn: async (snapshotId: string) => {
+      const res = await fetch(
+        `/api/monitors/${monitorId}/snapshots/${snapshotId}/notify`,
+        { method: 'POST' }
+      );
+      if (!res.ok) throw new Error('Failed to send notification');
+      return res.json();
+    },
   });
 }

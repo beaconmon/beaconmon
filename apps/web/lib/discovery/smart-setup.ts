@@ -1,6 +1,6 @@
 import 'server-only';
 import * as cheerio from 'cheerio';
-import { classifySite, proposeSelectors } from '@beaconmon/ai';
+import { classifySite, proposeSelectors, rankUrls } from '@beaconmon/ai';
 import type { ClassifyOutput } from '@beaconmon/ai';
 import { fetchPageHtml } from './page-fetch';
 import { pickBestSelector } from './selector-validate';
@@ -71,10 +71,10 @@ export async function runSmartSetupOrDegrade(input: SmartSetupInput): Promise<Sm
     }
 
     const homepageText = extractText(html);
-    const urlsForClassify = [
+    const urlsForClassify = rankUrls([
       `https://${domain}`,
       ...(baseline.sitemapUrls ?? baseline.suggestions.map((s) => s.url)),
-    ].slice(0, 200);
+    ]).slice(0, 200);
 
     // Phase 2: classify site (race against classifyMs)
     const provider = getWebAiProvider();
