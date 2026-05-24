@@ -691,6 +691,7 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
   const { data, isLoading, isError, refetch } = useSnapshots(monitorId);
   const snapshots = data?.snapshots ?? [];
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [pendingSnapshotId, setPendingSnapshotId] = useState<string | null>(null);
   const notifyMutation = useNotifySnapshot(monitorId);
 
   const fromId = snapshots[selectedIdx + 1]?.id ?? null;
@@ -762,12 +763,15 @@ function SnapshotsTab({ monitorId }: { monitorId: string }) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      notifyMutation.mutate(snap.id);
+                      setPendingSnapshotId(snap.id);
+                      notifyMutation.mutate(snap.id, {
+                        onSettled: () => setPendingSnapshotId(null),
+                      });
                     }}
-                    disabled={notifyMutation.isPending}
+                    disabled={pendingSnapshotId === snap.id}
                     className="text-[10px] text-brand-blue hover:underline disabled:opacity-50"
                   >
-                    {notifyMutation.isPending ? 'Sending…' : 'Notify anyway'}
+                    {pendingSnapshotId === snap.id ? 'Sending…' : 'Notify anyway'}
                   </button>
                 )}
               </div>

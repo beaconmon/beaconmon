@@ -22,7 +22,7 @@ export const POST = withAuth<Params>(async (_req, { teamId }, params) => {
     changedAt: snapshot.capturedAt.toISOString(),
     summary: snapshot.diffSummary ?? undefined,
     classification: snapshot.classification ?? undefined,
-    appUrl: process.env['BETTER_AUTH_URL'],
+    appUrl: process.env['BETTER_AUTH_URL'] ?? '',
   });
 
   return Response.json({ ok: true });

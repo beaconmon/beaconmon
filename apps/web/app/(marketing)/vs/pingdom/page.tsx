@@ -18,7 +18,7 @@ const TABLE_ROWS = [
     feature: 'Free plan',
     beaconmon: '10 monitors',
     competitor: 'None (30-day trial)',
-    beaconmonGood: false,
+    beaconmonGood: true,
   },
   {
     feature: 'Real User Monitoring',
