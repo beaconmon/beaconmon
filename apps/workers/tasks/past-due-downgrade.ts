@@ -21,31 +21,39 @@ export const pastDueDowngradeTask: SchedulerTask = {
       if (overdue.length === 0) return;
 
       for (const sub of overdue) {
-        await prisma.$transaction([
-          prisma.subscription.update({
-            where: { id: sub.id },
-            data: { status: 'canceled', plan: 'free' },
-          }),
-          prisma.team.update({
-            where: { id: sub.teamId },
-            data: { plan: 'free' },
-          }),
-        ]);
-
         try {
-          await alertChannelRepository.disableSurplusForPlan(sub.teamId, 'free');
-        } catch (alertErr) {
-          logger.error(
-            { service: 'scheduler', teamId: sub.teamId, err: alertErr },
-            'past_due downgrade: failed to disable surplus alert channels'
-          );
-          Sentry.captureException(alertErr);
-        }
+          await prisma.$transaction([
+            prisma.subscription.update({
+              where: { id: sub.id },
+              data: { status: 'canceled', plan: 'free' },
+            }),
+            prisma.team.update({
+              where: { id: sub.teamId },
+              data: { plan: 'free' },
+            }),
+          ]);
 
-        logger.info(
-          { service: 'scheduler', teamId: sub.teamId, subscriptionId: sub.id },
-          'past_due subscription auto-downgraded to free after grace period'
-        );
+          try {
+            await alertChannelRepository.disableSurplusForPlan(sub.teamId, 'free');
+          } catch (alertErr) {
+            logger.error(
+              { service: 'scheduler', teamId: sub.teamId, err: alertErr },
+              'past_due downgrade: failed to disable surplus alert channels'
+            );
+            Sentry.captureException(alertErr);
+          }
+
+          logger.info(
+            { service: 'scheduler', teamId: sub.teamId, subscriptionId: sub.id },
+            'past_due subscription auto-downgraded to free after grace period'
+          );
+        } catch (err) {
+          logger.error(
+            { service: 'scheduler', teamId: sub.teamId, subscriptionId: sub.id, err },
+            'past_due downgrade: failed to downgrade subscription, skipping'
+          );
+          Sentry.captureException(err);
+        }
       }
     } catch (err) {
       logger.error({ service: 'scheduler', err }, 'past_due downgrade job failed');

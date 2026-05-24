@@ -32,8 +32,8 @@ export const contentSnapshotWorkerRepository = {
   /**
    * Record a new snapshot for a content monitor and update the monitor's hot
    * snapshot column atomically. Workers call this on every detected change.
-   * Returns null when a snapshot with the same contentHash already exists for
-   * this monitor (unique constraint violation — concurrent worker beat us to it).
+   * Returns null when a recent duplicate was detected (caller already checked
+   * a Redis NX key — this path should only be hit on Redis unavailability).
    */
   async recordChange(
     monitorId: string,
@@ -42,44 +42,25 @@ export const contentSnapshotWorkerRepository = {
     capturedAt: Date,
     contentHash: string
   ): Promise<ContentSnapshotRecord | null> {
-    try {
-      const [snapshot] = await prisma.$transaction([
-        prisma.contentSnapshot.create({
-          data: { monitorId, teamId, content, contentHash, capturedAt },
-          select: {
-            id: true,
-            monitorId: true,
-            content: true,
-            capturedAt: true,
-            diffSummary: true,
-          },
-        }),
-        prisma.monitor.update({
-          where: { id: monitorId },
-          data: { contentSnapshot: content, contentLastChangedAt: capturedAt },
-          select: { id: true },
-        }),
-      ]);
+    const [snapshot] = await prisma.$transaction([
+      prisma.contentSnapshot.create({
+        data: { monitorId, teamId, content, contentHash, capturedAt },
+        select: {
+          id: true,
+          monitorId: true,
+          content: true,
+          capturedAt: true,
+          diffSummary: true,
+        },
+      }),
+      prisma.monitor.update({
+        where: { id: monitorId },
+        data: { contentSnapshot: content, contentLastChangedAt: capturedAt },
+        select: { id: true },
+      }),
+    ]);
 
-      return snapshot;
-    } catch (err: unknown) {
-      // P2002 = unique constraint violation: same (monitorId, contentHash) already exists.
-      // Sync the hot column in case a previous insert missed it, then treat as no-op.
-      if (
-        typeof err === 'object' &&
-        err !== null &&
-        'code' in err &&
-        (err as { code: string }).code === 'P2002'
-      ) {
-        await prisma.monitor.update({
-          where: { id: monitorId },
-          data: { contentSnapshot: content },
-          select: { id: true },
-        });
-        return null;
-      }
-      throw err;
-    }
+    return snapshot;
   },
 
   /**

@@ -10,6 +10,10 @@ export const partitionPurgeTask: SchedulerTask = {
   async run(): Promise<void> {
     const cutoff = new Date();
     cutoff.setFullYear(cutoff.getFullYear() - 1);
+    // Step back one more month so we only drop partitions where every row is
+    // older than 365 days. Without this, a partition for the cutoff month would
+    // be dropped while the second half of that month is still within 365 days.
+    cutoff.setMonth(cutoff.getMonth() - 1);
 
     const year = cutoff.getFullYear();
     const month = String(cutoff.getMonth() + 1).padStart(2, '0');

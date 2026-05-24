@@ -40,7 +40,10 @@ export const trialRemindersTask: SchedulerTask = {
       const teams = await prisma.team.findMany({
         where: {
           plan: 'free',
-          trialEndsAt: { not: null },
+          trialEndsAt: {
+            gte: window1Start,
+            lt: window7End,
+          },
           subscription: null,
         },
         select: {

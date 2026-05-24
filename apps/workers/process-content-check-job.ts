@@ -60,11 +60,10 @@ export async function processContentCheckJob(
   const contentHash = createHash('sha256').update(content).digest('hex');
 
   // 5. First run — initialize snapshot (also write the first history row).
-  // The unique constraint on (monitorId, contentHash) prevents duplicate inserts from concurrent workers.
   if (monitor.contentSnapshot === null) {
     try {
-      const created = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
-      logger.info({ service, monitorId, duplicate: !created }, 'Content snapshot initialized');
+      await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
+      logger.info({ service, monitorId }, 'Content snapshot initialized');
     } catch (err) {
       logger.error({ service, monitorId, err }, 'Failed to initialize content snapshot');
     }
@@ -77,7 +76,19 @@ export async function processContentCheckJob(
     return;
   }
 
-  // 7. Content changed
+  // 7. Content changed — guard against concurrent workers processing the same
+  // change simultaneously (e.g., a BullMQ retry arriving before the first run
+  // finishes). The key expires after 60 seconds, so content reversions (A->B->A)
+  // are correctly detected once the window passes.
+  if (redis) {
+    const dedupKey = `content:dedup:${monitorId}:${contentHash}`;
+    const claimed = await redis.set(dedupKey, '1', 'EX', 60, 'NX');
+    if (!claimed) {
+      logger.info({ service, monitorId }, 'Duplicate snapshot skipped by dedup guard (Redis)');
+      return;
+    }
+  }
+
   logger.info({ service, monitorId }, 'Content change detected');
 
   const previousContent = monitor.contentSnapshot;
@@ -99,15 +110,10 @@ export async function processContentCheckJob(
 
   // 7a. Persist new snapshot (history row + hot column) — abort before notifying
   // so retries see no diff and don't double-notify.
-  let snapshotCreated: Awaited<ReturnType<typeof contentSnapshotWorkerRepository.recordChange>>;
   try {
-    snapshotCreated = await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
+    await contentSnapshotWorkerRepository.recordChange(monitorId, monitor.teamId, content, checkedAt, contentHash);
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Failed to update content snapshot, skipping notification');
-    return;
-  }
-  if (!snapshotCreated) {
-    logger.info({ service, monitorId }, 'Duplicate snapshot skipped by dedup guard');
     return;
   }
 

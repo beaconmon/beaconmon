@@ -645,7 +645,6 @@ model ContentSnapshot {
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
-  @@unique([monitorId, contentHash])
   @@index([monitorId, capturedAt(sort: Desc)])
   @@map("content_snapshots")
 }
