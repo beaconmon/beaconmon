@@ -8,6 +8,13 @@
 
 name: beaconmon
 
+# POSTGRES_USER, POSTGRES_PASSWORD must be set in .env.
+# DATABASE_URL and DATABASE_URL_POOLED must point to the postgres service:
+#   postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@postgres:5432/beaconmon
+# Run migrations via SSH tunnel, not from inside the container:
+#   ssh -L 5432:localhost:5432 user@server
+#   then: DATABASE_URL=postgresql://...@localhost:5432/beaconmon pnpm db:migrate
+
 x-web: &web
   image: ghcr.io/${GHCR_OWNER}/beaconmon-web:latest
   pull_policy: always
@@ -45,6 +52,8 @@ services:
       start_period: 60s
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   check-worker:
@@ -99,6 +108,41 @@ services:
       redis:
         condition: service_healthy
 
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: beaconmon
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Tuned for 4 GB RAM (CPX21). Upgrade shared_buffers to 2GB on CPX31 (8 GB RAM).
+    command: >
+      postgres
+      -c shared_buffers=1GB
+      -c effective_cache_size=3GB
+      -c work_mem=8MB
+      -c maintenance_work_mem=128MB
+      -c wal_buffers=16MB
+      -c max_connections=50
+      -c checkpoint_timeout=10min
+      -c max_wal_size=512MB
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c shared_preload_libraries=pg_stat_statements
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d beaconmon"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -126,4 +170,5 @@ services:
         max-file: "3"
 
 volumes:
+  postgres_data:
   redis_data:
