@@ -62,12 +62,16 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
 
   content-worker:
     <<: *workers
     command: ["pnpm", "run", "start:worker:content"]
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   alert-worker:
@@ -76,12 +80,16 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
 
   escalation-worker:
     <<: *workers
     command: ["pnpm", "run", "start:worker:escalation"]
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   report-worker:
@@ -90,12 +98,16 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
 
   digest-worker:
     <<: *workers
     command: ["pnpm", "run", "start:worker:digest"]
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
@@ -106,6 +118,8 @@ services:
       replicas: 1
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   postgres:
