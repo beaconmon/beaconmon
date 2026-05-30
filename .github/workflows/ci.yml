@@ -112,6 +112,7 @@ jobs:
             NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST=${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
             NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET=${{ secrets.NEXT_PUBLIC_CUSTOM_DOMAIN_CNAME_TARGET }}
+            NEXT_PUBLIC_INDEXNOW_KEY=${{ secrets.INDEXNOW_KEY }}
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
 
@@ -160,6 +161,24 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Trigger deployment
         run: |
           curl -fsSL -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
+
+      - name: Submit to IndexNow
+        env:
+          KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: |
+          URL_LIST=$(python3 << 'PYEOF'
+          import re, json
+          with open('apps/web/app/sitemap.ts') as f:
+              content = f.read()
+          paths = re.findall(r'url: `\$\{BASE_URL\}([^`]*)`', content)
+          print(json.dumps(['https://beaconmon.com' + p for p in paths]))
+          PYEOF
+          )
+          curl -fsSL -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\": \"beaconmon.com\", \"key\": \"$KEY\", \"keyLocation\": \"https://beaconmon.com/$KEY.txt\", \"urlList\": $URL_LIST}" || true
