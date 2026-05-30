@@ -1,4 +1,5 @@
 import NavBar from '@/components/marketing/NavBar';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -54,7 +55,7 @@ export default function TermsPage() {
             <ul>
               <li>All prices are in USD. Annual prices are charged upfront.</li>
               <li>Upgrades take effect immediately and are prorated. Downgrades take effect at the end of the current billing period.</li>
-              <li>Refunds are handled by Freemius in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee. See our <a href="/refund-policy">Refund Policy</a> for full details.</li>
+              <li>Refunds are handled by Freemius in accordance with their refund policy. New subscriptions are covered by a 14-day money-back guarantee. See our <Link href="/refund-policy">Refund Policy</Link> for full details.</li>
             </ul>
 
             <h2>5. Cancellation</h2>

@@ -216,7 +216,7 @@ export default function EcommerceUptimeMonitoringGuidePage() {
             </h2>
             <div className="space-y-4 text-brand-dim text-[16px] leading-[1.7]">
               <p>
-                Uptime monitoring is the practice of automatically checking your store's pages on a fixed interval and alerting your team when one fails. For a generic website, a single homepage check every 5 minutes is usually enough. For an ecommerce store, the requirements are different.
+                Uptime monitoring is the practice of automatically checking your store&apos;s pages on a fixed interval and alerting your team when one fails. For a generic website, a single homepage check every 5 minutes is usually enough. For an ecommerce store, the requirements are different.
               </p>
               <p>
                 Your homepage, product pages, cart, and checkout are four distinct systems. Any one of them can fail independently. A broken deploy might leave your homepage serving normally while the checkout returns a 500 error. A Shopify app conflict might cause the cart to silently drop items. A 200 OK response does not mean your store is working.

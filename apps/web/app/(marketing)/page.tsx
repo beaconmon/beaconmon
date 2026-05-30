@@ -125,12 +125,12 @@ export default function LandingPage() {
           <div className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] max-[1024px]:grid-cols-1 gap-16 max-[1024px]:gap-12 items-center">
             {/* Left */}
             <div>
-              <a
+              <Link
                 href="/features"
                 className="inline-flex items-center gap-2 text-[12px] font-semibold text-brand-green-ink border border-[var(--brand-green-border-25)] bg-[var(--brand-green-glow-06)] rounded-full px-3 py-1 mb-5 hover:bg-[var(--brand-green-glow-10)] transition-colors"
               >
                 Now for ecommerce · competitor monitoring is live →
-              </a>
+              </Link>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
                 Monitor your store and{' '}
                 <span className="text-brand-green-ink">competitors automatically.</span>

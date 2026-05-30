@@ -122,7 +122,7 @@ export default function AboutPage() {
                 Most uptime monitoring tools were built for enterprise teams. They charge enterprise prices, require enterprise setup, and generate enterprise volumes of alerts, most of which are meaningless by the time someone looks at them.
               </p>
               <p>
-                We believe ecommerce store owners deserve better. The Shopify or WooCommerce merchant who needs to know the moment their checkout goes down, or when a competitor drops prices overnight, shouldn't need a dedicated ops team to get that visibility.
+                We believe ecommerce store owners deserve better. The Shopify or WooCommerce merchant who needs to know the moment their checkout goes down, or when a competitor drops prices overnight, shouldn&apos;t need a dedicated ops team to get that visibility.
               </p>
               <p>
                 We&apos;re a small team obsessed with reliability, and with the idea that monitoring should be something you set up once and forget about, until it matters.

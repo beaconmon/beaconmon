@@ -137,6 +137,7 @@ export default function AlertChannelsPage() {
             variant="outline"
             asChild
           >
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/api/integrations/slack/connect">
               <SlackIcon className="mr-1.5 h-4 w-4" />
               Connect Slack
