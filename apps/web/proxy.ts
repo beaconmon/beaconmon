@@ -106,6 +106,14 @@ export default async function proxy(req: NextRequest) {
       return NextResponse.redirect(new URL('/intelligence', req.url), 301);
     }
 
+    // Redirect trailing-slash URLs to their canonical non-slash form to prevent
+    // duplicate content (skipTrailingSlashRedirect: true means Next.js won't do this).
+    if (pathname !== '/' && pathname.endsWith('/')) {
+      const url = req.nextUrl.clone();
+      url.pathname = pathname.slice(0, -1);
+      return NextResponse.redirect(url, 301);
+    }
+
     const method = req.method.toUpperCase();
     const cookieToken = req.cookies.get(CSRF_COOKIE)?.value;
 
