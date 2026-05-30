@@ -25,6 +25,8 @@ function SignInForm() {
   const redirect = searchParams.get('redirect') ?? '/monitors';
   const resetSuccess = searchParams.get('reset') === '1';
 
+  const lastMethod = authClient.getLastUsedLoginMethod();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,11 +88,14 @@ function SignInForm() {
           </p>
         </div>
 
-        <SocialButtons onGoogle={() => handleSocial('google')} onGitHub={() => handleSocial('github')} loading={loading} />
+        <SocialButtons onGoogle={() => handleSocial('google')} onGitHub={() => handleSocial('github')} loading={loading} lastMethod={lastMethod} />
 
         <Divider />
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {lastMethod === 'email' && (
+            <p className="text-[11px] text-brand-green-ink">Last used</p>
+          )}
           {hasError && <ErrorBanner message={error} />}
 
           <div>
@@ -135,14 +140,19 @@ function SignInForm() {
 
         <Divider label="or sign in without a password" />
 
-        <button
-          type="button"
-          onClick={handleMagicLink}
-          disabled={loading || magicSent}
-          className="w-full text-center text-sm text-brand-dim hover:text-brand-green-ink transition-colors disabled:opacity-50"
-        >
-          {magicSent ? 'Magic link sent — check your inbox' : 'Send me a magic link →'}
-        </button>
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={handleMagicLink}
+            disabled={loading || magicSent}
+            className="text-sm text-brand-dim hover:text-brand-green-ink transition-colors disabled:opacity-50"
+          >
+            {magicSent ? 'Magic link sent — check your inbox' : 'Send me a magic link →'}
+          </button>
+          {lastMethod === 'magic-link' && !magicSent && (
+            <span className="text-[10px] font-medium text-brand-green-ink">Last used</span>
+          )}
+        </div>
 
         <p className="text-center text-xs text-brand-muted">
           Don&apos;t have an account?{' '}
