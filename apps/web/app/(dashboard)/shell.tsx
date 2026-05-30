@@ -206,7 +206,11 @@ function TopBar({
   const showAddMonitor = ADD_MONITOR_ROUTES.some((r) => pathname.startsWith(r));
 
   async function handleSignOut() {
-    await authClient.signOut();
+    try {
+      await authClient.signOut();
+    } catch {
+      // sign-out failed; proceed with local cleanup anyway
+    }
     analytics.reset();
     window.location.href = '/sign-in';
   }

@@ -24,61 +24,6 @@ const articleSchema = {
   publisher: { '@type': 'Organization', name: 'Beaconmon', url: 'https://beaconmon.com' },
 };
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'How often should an ecommerce store be checked for uptime?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'For most stores, every 1 to 2 minutes is a reasonable baseline. During peak periods like Black Friday or promotional campaigns, 30-second checks let you catch and respond to outages before losing more than a handful of orders.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What is keyword monitoring and why does it matter for ecommerce?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Keyword monitoring checks that a specific word or phrase is present in the HTTP response body. For ecommerce, this means verifying that "Add to Cart" is on your product page or "Place order" is on your checkout, even if the server returns a 200 OK status. A broken deploy can return 200 with an error page. Keyword monitoring catches that.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What pages should I monitor on my ecommerce store?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'At minimum: your homepage, one representative product page, your cart page, and your checkout. Each is a distinct failure point. A checkout outage can occur while your homepage is fully healthy, so monitoring only the homepage misses the revenue-critical failure.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What is multi-location monitoring?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Multi-location monitoring sends checks from multiple geographic regions simultaneously. If your store is slow in Europe but fast in the US, a single-location check from the US would miss the problem entirely. Beaconmon checks from up to 5 regions so you see exactly where performance is degraded.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How long does it take Beaconmon to detect and alert on an outage?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Beaconmon requires two consecutive failed checks before creating an incident, which prevents false alarms from transient network errors. On the Scale plan with 30-second checks, detection and alerting happen within 60 seconds of an outage starting.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Does Beaconmon work for Shopify stores?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Yes. Beaconmon monitors any HTTP endpoint, including Shopify storefronts. Note that Shopify's platform-level outages affect all merchants simultaneously and show up on Shopify's status page. Beaconmon monitors your specific store URL, which catches theme errors, app conflicts, and partial outages that Shopify's status page does not reflect.",
-      },
-    },
-  ],
-};
-
 const FUNNEL_MONITORS = [
   {
     page: 'Homepage',
@@ -164,17 +109,21 @@ const FAQS = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
 export default function EcommerceUptimeMonitoringGuidePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={articleSchema} />
+      <JsonLd data={faqSchema} />
       <JsonLd data={breadcrumbSchema({ name: 'Ecommerce Uptime Monitoring Guide', path: '/ecommerce-uptime-monitoring-guide' })} />
       <NavBar />
 

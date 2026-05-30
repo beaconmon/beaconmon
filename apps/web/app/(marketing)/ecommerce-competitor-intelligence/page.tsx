@@ -14,61 +14,6 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
 };
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What competitor changes does Beaconmon detect?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Beaconmon detects any text or content change on a competitor page: price updates, promotion launches, shipping policy changes, new product additions, homepage copy rewrites, and more. You choose which pages to monitor and how specific to make the targeting.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How is competitor intelligence different from simple price tracking?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Price tracking monitors one data point. Competitor intelligence covers the full picture: prices, promotions, product availability, shipping offers, and site-wide content shifts. Beaconmon lets you monitor any element on any page, so you see everything changing across your competitor set, not just listed prices.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How often does Beaconmon check competitor pages?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Free plan: every 5 minutes. Starter plan: every 1 minute. Growth plan: every 1 minute. Scale plan: every 30 seconds. For competitors running flash sales or limited-time promotions, faster check intervals mean you catch changes before they drive significant volume.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Does Beaconmon work on JavaScript-rendered competitor sites?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Beaconmon uses HTML-only parsing. Most ecommerce storefronts are server-rendered by default, including Shopify and WooCommerce stores. If a competitor page requires JavaScript to display content, full-page monitoring will still work but CSS selector targeting may not capture dynamically injected elements.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How many competitors can I track?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Starter: up to 5 content monitors. Growth: up to 25. Scale: unlimited. Each competitor page (pricing, product listing, homepage) counts as one monitor.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can I get a weekly summary instead of individual alerts?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes. Growth plan and above includes the Intelligence Digest: a daily or weekly summary of all competitor activity, filtered by significance. Instead of a Slack ping for every minor CSS update, you get one consolidated view of what actually changed.',
-      },
-    },
-  ],
-};
-
 const FEATURES = [
   {
     heading: 'Full-page and element-level tracking',
@@ -139,13 +84,20 @@ const FAQS = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
 export default function EcommerceCompetitorIntelligencePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={faqSchema} />
       <JsonLd data={breadcrumbSchema({ name: 'Ecommerce Competitor Intelligence', path: '/ecommerce-competitor-intelligence' })} />
       <NavBar />
 
