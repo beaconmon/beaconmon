@@ -1,21 +1,93 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import LogoMark from './LogoMark';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
+const PRODUCT_LINKS = [
+  { href: '/features', label: 'Features', desc: 'Uptime, content, and competitor monitoring in one place' },
+  { href: '/features/intelligence', label: 'Intelligence', desc: 'AI-powered digests and insights' },
+  { href: '/integrations', label: 'Integrations', desc: 'Connect your existing tools and workflows' },
+  { href: '/security', label: 'Security', desc: 'How we protect your data' },
+];
+
+const SOLUTIONS_LINKS = [
+  { href: '/for/shopify', label: 'For Shopify', desc: 'Monitor your Shopify store and track competitors' },
+  { href: '/for/woocommerce', label: 'For WooCommerce', desc: 'WooCommerce uptime and change detection' },
+  { href: '/for/dtc-brands', label: 'For DTC Brands', desc: 'Stay ahead of direct-to-consumer competitors' },
+  { href: '/for/ecommerce', label: 'For eCommerce', desc: 'Built for online store operators' },
+  { href: '/for/solo-founders', label: 'For Solo Founders', desc: 'Lightweight monitoring that scales with you' },
+];
+
+type NavItem = { href: string; label: string; desc: string };
+
+type NavDropdownProps = {
+  label: string;
+  items: NavItem[];
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+};
+
+function NavDropdown({ label, items, open, onToggle, onClose }: NavDropdownProps) {
+  return (
+    <div className="relative">
+      <button
+        className="text-[14px] font-medium text-brand-dim hover:text-brand-text transition-colors flex items-center gap-1"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={onToggle}
+      >
+        {label}
+        <ChevronDown className={`w-3 h-3 opacity-60 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
+          <div className="bg-brand-bg1 border border-brand-line-soft rounded-[10px] py-2 min-w-[240px] shadow-lg">
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col px-4 py-2 hover:bg-brand-bg2 transition-colors"
+                onClick={onClose}
+              >
+                <span className="font-medium text-sm text-brand-text">{item.label}</span>
+                <span className="text-xs text-muted-foreground">{item.desc}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const desktopNavRef = useRef<HTMLDivElement>(null);
+
+  const closeAll = () => {
+    setProductOpen(false);
+    setSolutionsOpen(false);
+  };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    let rafId: number;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => setScrolled(window.scrollY > 8));
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
@@ -47,6 +119,24 @@ export default function NavBar() {
     return () => document.removeEventListener('mousedown', onClick);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!productOpen && !solutionsOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (desktopNavRef.current && !desktopNavRef.current.contains(e.target as Node)) {
+        closeAll();
+      }
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, [productOpen, solutionsOpen]);
+
+  useEffect(() => {
+    if (!productOpen && !solutionsOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeAll(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [productOpen, solutionsOpen]);
+
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-200 ${
@@ -61,20 +151,27 @@ export default function NavBar() {
           <span>Beaconmon</span>
         </Link>
 
-        <div className="flex gap-8 text-sm text-brand-dim max-[880px]:hidden">
-          <div className="relative group">
-            <button className="text-[14px] font-medium text-brand-dim hover:text-brand-text transition-colors flex items-center gap-1">
-              Product
-              <ChevronDown className="w-3 h-3 opacity-60" />
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 hidden group-hover:block">
-              <div className="bg-brand-bg1 border border-brand-line-soft rounded-[10px] py-1 min-w-[160px] shadow-lg">
-                <Link href="/features" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Features</Link>
-                <Link href="/pricing" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Pricing</Link>
-                <Link href="/vs" className="block px-4 py-2 text-[13px] text-brand-dim hover:text-brand-text hover:bg-brand-bg2 transition-colors" onClick={() => setMenuOpen(false)}>Compare</Link>
-              </div>
-            </div>
-          </div>
+        <div ref={desktopNavRef} className="flex gap-8 text-sm text-brand-dim max-[880px]:hidden">
+          <NavDropdown
+            label="Product"
+            items={PRODUCT_LINKS}
+            open={productOpen}
+            onToggle={() => { setSolutionsOpen(false); setProductOpen((v) => !v); }}
+            onClose={closeAll}
+          />
+          <NavDropdown
+            label="Solutions"
+            items={SOLUTIONS_LINKS}
+            open={solutionsOpen}
+            onToggle={() => { setProductOpen(false); setSolutionsOpen((v) => !v); }}
+            onClose={closeAll}
+          />
+          <Link
+            href="/pricing"
+            className="text-[14px] font-medium text-brand-dim hover:text-brand-text transition-colors"
+          >
+            Pricing
+          </Link>
         </div>
 
         <div className="flex items-center gap-5">
@@ -123,11 +220,49 @@ export default function NavBar() {
               </button>
               {productOpen && (
                 <div className="pl-3 flex flex-col gap-0">
-                  <Link href="/features" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Features</Link>
-                  <Link href="/pricing" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Pricing</Link>
-                  <Link href="/vs" className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block" onClick={() => setMenuOpen(false)}>Compare</Link>
+                  {PRODUCT_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                 </div>
               )}
+
+              <button
+                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors flex items-center gap-1 text-left"
+                onClick={() => setSolutionsOpen((v) => !v)}
+              >
+                Solutions
+                <ChevronDown className={`w-3 h-3 opacity-60 transition-transform ${solutionsOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {solutionsOpen && (
+                <div className="pl-3 flex flex-col gap-0">
+                  {SOLUTIONS_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              <Link
+                href="/pricing"
+                className="py-2 text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                onClick={() => setMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+
               <div className="border-t border-brand-line-soft mt-3 pt-3">
                 <Link
                   href="/sign-in"
