@@ -171,6 +171,10 @@ jobs:
         env:
           KEY: ${{ secrets.INDEXNOW_KEY }}
         run: |
+          if [ -z "$KEY" ]; then
+            echo "INDEXNOW_KEY secret not set, skipping."
+            exit 0
+          fi
           URL_LIST=$(python3 << 'PYEOF'
           import re, json
           with open('apps/web/app/sitemap.ts') as f:
