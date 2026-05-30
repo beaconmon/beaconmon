@@ -278,7 +278,7 @@ export default function PricingPage() {
             </div>
             <div className="reveal">
               {BILLING_FAQ.map(({ id, q, a }) => (
-                <details key={id} id={id} className="group border-b border-brand-line-soft">
+                <details key={id} id={id} open className="group border-b border-brand-line-soft">
                   <summary className="flex items-center justify-between py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[16px] font-semibold tracking-[-0.01em] text-brand-text">
                     {q}
                     <svg className="w-4 h-4 shrink-0 text-brand-muted transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
