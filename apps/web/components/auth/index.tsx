@@ -366,20 +366,36 @@ export function SocialButtons({
   onGoogle,
   onGitHub,
   loading,
+  lastMethod,
 }: {
   onGoogle: () => void;
   onGitHub: () => void;
   loading?: boolean;
+  lastMethod?: string | null;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3">
-      <OutlineBtn onClick={onGoogle} disabled={loading}>
+      <OutlineBtn
+        onClick={onGoogle}
+        disabled={loading}
+        className={lastMethod === 'google' ? 'border-brand-green/40' : undefined}
+      >
         <GoogleIcon />
         Google
+        {lastMethod === 'google' && (
+          <span className="ml-auto text-[10px] font-medium text-brand-green-ink">Last used</span>
+        )}
       </OutlineBtn>
-      <OutlineBtn onClick={onGitHub} disabled={loading}>
+      <OutlineBtn
+        onClick={onGitHub}
+        disabled={loading}
+        className={lastMethod === 'github' ? 'border-brand-green/40' : undefined}
+      >
         <GitHubIcon />
         GitHub
+        {lastMethod === 'github' && (
+          <span className="ml-auto text-[10px] font-medium text-brand-green-ink">Last used</span>
+        )}
       </OutlineBtn>
     </div>
   );
