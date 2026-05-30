@@ -2,6 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -142,18 +143,11 @@ const INTEGRATIONS: Integration[] = [
   },
 ];
 
-const COMING_SOON = [
-  {
-    name: 'SMS',
-    description: 'Text alerts for when email and Slack aren\'t enough. Ideal for on-call scenarios or critical production monitors. Business plan only.',
-    plan: 'Business',
-  },
-];
-
 export default function IntegrationsPage() {
   return (
     <>
       <JsonLd data={[INTEGRATIONS_SCHEMA, FAQ_SCHEMA]} />
+      <JsonLd data={breadcrumbSchema({ name: 'Integrations', path: '/integrations' })} />
       <NavBar />
 
       {/* Hero */}
@@ -224,27 +218,6 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Coming soon */}
-      <section className="py-[80px] border-t border-brand-line-soft">
-        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="reveal text-center mb-10">
-            <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">Coming soon</h2>
-            <p className="text-brand-dim text-[15px]">More ways to get alerted, without leaving this page to check your monitoring tool.</p>
-          </div>
-          <div className="grid grid-cols-3 max-[640px]:grid-cols-1 gap-5 max-w-[780px] mx-auto">
-            {COMING_SOON.map(({ name, description, plan }) => (
-              <div key={name} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-7 opacity-70">
-                <div className="inline-block text-[11px] font-semibold px-2 py-[3px] rounded bg-brand-bg3 text-brand-muted border border-brand-line mb-4">
-                  {plan}
-                </div>
-                <h3 className="text-[17px] font-bold tracking-[-0.015em] mb-2">{name}</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.6]">{description}</p>
               </div>
             ))}
           </div>

@@ -2,6 +2,8 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import IntelligenceMockup from '@/components/marketing/IntelligenceMockup';
+import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -41,6 +43,7 @@ const FEATURES = [
 export default function ForShopifyPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema({ name: 'For Shopify', path: '/for/shopify' })} />
       <NavBar />
 
       {/* Hero */}

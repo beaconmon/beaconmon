@@ -3,7 +3,9 @@ import PricingToggle from '@/components/marketing/PricingToggle';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import { PRICING } from '@/lib/pricing';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -76,9 +78,10 @@ const PRICING_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'Beaconmon',
+  url: 'https://beaconmon.com/pricing',
+  brand: { '@type': 'Brand', name: 'Beaconmon' },
   description:
     'Ecommerce website and competitor intelligence platform. Monitor your store and competitors automatically, uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
-  url: 'https://beaconmon.com',
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
@@ -86,12 +89,21 @@ const PRICING_SCHEMA = {
     priceCurrency: 'USD',
     offerCount: 4,
     offers: [
-      { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
+      {
+        '@type': 'Offer',
+        name: 'Free',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: 'https://beaconmon.com/sign-up',
+      },
       {
         '@type': 'Offer',
         name: 'Starter',
         price: String(PRICING.starter.monthly),
         priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: 'https://beaconmon.com/sign-up',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
           price: String(PRICING.starter.monthly),
@@ -104,6 +116,8 @@ const PRICING_SCHEMA = {
         name: 'Growth',
         price: String(PRICING.growth.monthly),
         priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: 'https://beaconmon.com/sign-up',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
           price: String(PRICING.growth.monthly),
@@ -116,6 +130,8 @@ const PRICING_SCHEMA = {
         name: 'Scale',
         price: String(PRICING.scale.monthly),
         priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: 'https://beaconmon.com/sign-up',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
           price: String(PRICING.scale.monthly),
@@ -125,6 +141,16 @@ const PRICING_SCHEMA = {
       },
     ],
   },
+};
+
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: BILLING_FAQ.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
 };
 
 function renderCell(value: string) {
@@ -164,6 +190,8 @@ export default function PricingPage() {
   return (
     <>
       <JsonLd data={PRICING_SCHEMA} />
+      <JsonLd data={FAQ_SCHEMA} />
+      <JsonLd data={breadcrumbSchema({ name: 'Pricing', path: '/pricing' })} />
       <NavBar />
 
       {/* Hero */}
@@ -243,10 +271,14 @@ export default function PricingPage() {
               <p className="text-brand-dim text-[15px] leading-[1.6]">
                 Payments are handled by Freemius, Inc., a trusted Merchant of Record used by thousands of SaaS companies. They handle tax, compliance, and card processing on our behalf.
               </p>
+              <p className="text-brand-dim text-[15px] leading-[1.6] mt-4">
+                Read about our infrastructure, encryption, and data handling on the{' '}
+                <Link href="/security" className="text-brand-green-ink hover:underline">Security page</Link>.
+              </p>
             </div>
             <div className="reveal">
-              {BILLING_FAQ.map(({ id, q, a }, i) => (
-                <details key={id} id={id} open={i === 0} className="group border-b border-brand-line-soft">
+              {BILLING_FAQ.map(({ id, q, a }) => (
+                <details key={id} id={id} className="group border-b border-brand-line-soft">
                   <summary className="flex items-center justify-between py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[16px] font-semibold tracking-[-0.01em] text-brand-text">
                     {q}
                     <svg className="w-4 h-4 shrink-0 text-brand-muted transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

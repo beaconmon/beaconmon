@@ -2,6 +2,8 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -114,6 +116,7 @@ export default function PricingChangeAlertsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      <JsonLd data={breadcrumbSchema({ name: 'Pricing Change Alerts', path: '/pricing-change-alerts' })} />
       <NavBar />
 
       {/* Hero */}

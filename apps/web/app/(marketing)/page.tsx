@@ -17,39 +17,12 @@ export const metadata: Metadata = {
   openGraph: { url: 'https://beaconmon.com' },
 };
 
-const HOW_TO_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'Set up store and competitor monitoring',
-  description: 'No agents. No DNS config. No code changes. Paste, pick, done.',
-  totalTime: 'PT5M',
-  step: [
-    {
-      '@type': 'HowToStep',
-      position: 1,
-      name: 'Add your store',
-      text: 'Paste your Shopify or WooCommerce URL. We auto-detect product pages, cart, and checkout, and propose a sensible monitor bundle. Confirm and you\'re live in under a minute.',
-    },
-    {
-      '@type': 'HowToStep',
-      position: 2,
-      name: 'Add competitors to watch',
-      text: 'List the brands you actually compare against. We snapshot their content, prices, and homepage hero every check. Any change lands in your feed and your digest automatically.',
-    },
-    {
-      '@type': 'HowToStep',
-      position: 3,
-      name: 'Read your morning digest',
-      text: 'Every morning at 8am: outages, content edits, pricing changes, SEO moves. In your inbox, Slack, or webhook of choice. No dashboard required.',
-    },
-  ],
-};
-
 const SOFTWARE_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Beaconmon',
   applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'Uptime Monitoring, Competitor Intelligence',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com',
   description:
@@ -60,6 +33,8 @@ const SOFTWARE_SCHEMA = {
       name: 'Free',
       price: '0',
       priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: 'https://beaconmon.com/sign-up',
       description: '10 monitors, 5-minute check interval, 1 status page',
     },
     {
@@ -67,6 +42,8 @@ const SOFTWARE_SCHEMA = {
       name: 'Starter',
       price: String(PRICING.starter.monthly),
       priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: 'https://beaconmon.com/sign-up',
       description: '25 monitors, 1-minute check interval, 5 competitor monitors, 3 status pages',
     },
     {
@@ -74,6 +51,8 @@ const SOFTWARE_SCHEMA = {
       name: 'Growth',
       price: String(PRICING.growth.monthly),
       priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: 'https://beaconmon.com/sign-up',
       description: '100 monitors, 25 competitor monitors, AI content-diff, multi-location checks',
     },
     {
@@ -81,6 +60,8 @@ const SOFTWARE_SCHEMA = {
       name: 'Scale',
       price: String(PRICING.scale.monthly),
       priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: 'https://beaconmon.com/sign-up',
       description: 'Unlimited monitors, 30-second check interval, unlimited competitor monitors',
     },
   ],
@@ -121,7 +102,7 @@ const HERO_EVENTS = [
 export default function LandingPage() {
   return (
     <>
-      <JsonLd data={[SOFTWARE_SCHEMA, HOW_TO_SCHEMA]} />
+      <JsonLd data={SOFTWARE_SCHEMA} />
 
       {/* ====== NAV ====== */}
       <NavBar />
@@ -193,8 +174,8 @@ export default function LandingPage() {
             Built for stores on
           </p>
           <div className="flex justify-between items-center gap-8 flex-wrap">
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</span>
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</span>
+            <Link href="/for/shopify" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</Link>
+            <Link href="/for/woocommerce" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</Link>
             <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">BigCommerce</span>
             <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Webflow Ecom</span>
             <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Squarespace</span>
@@ -298,6 +279,7 @@ export default function LandingPage() {
                 <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-amber-500 mb-[10px]">Competitor intelligence</span>
                 <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">See what your competitors changed. Before your customers point it out.</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.55]">Track competitor price pages and product listings. Get alerted the moment they update pricing, run a promotion, or rewrite their hero.</p>
+                <Link href="/competitor-price-tracking" className="inline-block mt-3 text-[13px] font-medium text-brand-green-ink hover:underline">How competitor price tracking works →</Link>
               </div>
               <div className="mt-auto p-2 pt-0 flex items-end flex-1">
                 <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] mx-[10px] mb-[10px] w-full overflow-hidden">

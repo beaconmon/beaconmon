@@ -1,5 +1,7 @@
 import NavBar from '@/components/marketing/NavBar';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -99,6 +101,7 @@ const SECTIONS = [
 export default function SecurityPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema({ name: 'Security', path: '/security' })} />
       <NavBar />
 
       {/* Hero */}
