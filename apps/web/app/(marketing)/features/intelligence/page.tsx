@@ -2,6 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -91,6 +92,7 @@ export default function IntelligencePage() {
   return (
     <>
       <JsonLd data={SCHEMA} />
+      <JsonLd data={breadcrumbSchema({ name: 'Features', path: '/features' }, { name: 'Competitor Intelligence', path: '/features/intelligence' })} />
       <NavBar />
 
       {/* Hero */}

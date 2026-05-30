@@ -35,9 +35,6 @@ CREATE TABLE "maintenance_window_monitors" (
 -- CreateIndex
 CREATE INDEX "maintenance_windows_team_id_ends_at_idx" ON "maintenance_windows"("team_id", "ends_at" DESC);
 
--- CreateIndex: partial index for heartbeat token lookups
-CREATE INDEX "monitors_heartbeat_token" ON "monitors" ((config->>'token')) WHERE type = 'heartbeat';
-
 -- CreateUniqueIndex
 CREATE UNIQUE INDEX "maintenance_window_monitors_window_id_monitor_id_key" ON "maintenance_window_monitors"("window_id", "monitor_id");
 

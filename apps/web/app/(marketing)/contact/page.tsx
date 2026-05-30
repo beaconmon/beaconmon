@@ -51,6 +51,10 @@ export default function ContactPage() {
           <p className="mt-6 text-[13px] text-brand-muted">
             Typical response time: within 1 business day.
           </p>
+          <p className="mt-3 text-[12px] text-brand-muted opacity-60">
+            Beaconmon is operated by Haimanot Getu. For data protection enquiries, email{' '}
+            <a href="mailto:privacy@beaconmon.com" className="underline hover:opacity-100 transition-opacity">privacy@beaconmon.com</a>.
+          </p>
         </div>
       </section>
 

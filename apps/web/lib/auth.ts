@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { magicLink, customSession } from 'better-auth/plugins';
+import { magicLink, customSession, lastLoginMethod } from 'better-auth/plugins';
 import { createAuthMiddleware, APIError } from 'better-auth/api';
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -112,6 +112,7 @@ const options = {
         });
       },
     }),
+    lastLoginMethod({ storeInDatabase: true }),
     nextCookies()
   ],
   databaseHooks: {

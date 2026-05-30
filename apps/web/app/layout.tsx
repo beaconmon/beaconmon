@@ -72,6 +72,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${dmSans.variable} ${mono.variable}`}>
       <head>
+        <link rel="dns-prefetch" href="https://checkout.freemius.com" />
+        <link rel="dns-prefetch" href="https://ingest.sentry.io" />
         <JsonLd data={SITE_SCHEMA} />
       </head>
       <body>

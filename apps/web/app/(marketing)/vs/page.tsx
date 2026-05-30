@@ -2,6 +2,7 @@ import NavBar from '@/components/marketing/NavBar';
 import CtaForm from '@/components/marketing/CtaForm';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import { Bot, Activity, Clock, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -118,6 +119,7 @@ export default function VsHubPage() {
   return (
     <>
       <JsonLd data={faqSchema} />
+      <JsonLd data={breadcrumbSchema({ name: 'Compare', path: '/vs' })} />
       <NavBar />
 
       {/* Hero */}

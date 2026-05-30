@@ -5,9 +5,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Beaconmon | Uptime Monitoring Built for Freelancers',
+  title: 'About Beaconmon | Store and Competitor Monitoring for eCommerce',
   description:
-    'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
+    'Beaconmon is an ecommerce monitoring platform built for Shopify and WooCommerce store owners who need to know about outages, competitor price drops, and content changes before their customers do.',
   alternates: { canonical: 'https://beaconmon.com/about' },
 };
 
@@ -25,7 +25,7 @@ const ABOUT_SCHEMA = [
     '@type': 'AboutPage',
     name: 'About Beaconmon',
     description:
-      'We built Beaconmon because the tools we used were either too expensive, too complex, or too slow. Simple, reliable uptime monitoring for freelancers and agencies.',
+      'Beaconmon is an ecommerce monitoring platform built for Shopify and WooCommerce store owners who need to know about outages, competitor price drops, and content changes before their customers do.',
     url: 'https://beaconmon.com/about',
   },
   {
@@ -33,7 +33,7 @@ const ABOUT_SCHEMA = [
     '@type': 'Organization',
     name: 'Beaconmon',
     url: 'https://beaconmon.com',
-    description: 'Website uptime and performance monitoring for freelancers and agencies.',
+    description: 'Store monitoring and competitor intelligence for ecommerce businesses. Tracks uptime, pricing changes, content updates, and competitor activity across Shopify and WooCommerce stores.',
     email: 'hello@beaconmon.com',
     founder: { '@type': 'Person', name: 'Haimanot Getu' },
   },
@@ -55,7 +55,7 @@ const ABOUT_SCHEMA = [
 const PHILOSOPHY = [
   {
     heading: 'Reliability is not optional.',
-    body: 'Every minute your client\'s site is down costs them money and costs you trust. We built Beaconmon to make professional-grade monitoring accessible to freelancers and small teams, not just enterprise teams with dedicated DevOps.',
+    body: 'Every minute your store is down costs you sales. We built Beaconmon to give ecommerce store owners professional-grade monitoring without enterprise pricing or the need for a dedicated DevOps team.',
   },
   {
     heading: 'Simple tools get used.',
@@ -122,7 +122,7 @@ export default function AboutPage() {
                 Most uptime monitoring tools were built for enterprise teams. They charge enterprise prices, require enterprise setup, and generate enterprise volumes of alerts, most of which are meaningless by the time someone looks at them.
               </p>
               <p>
-                We believe the freelancers and small agencies who build and manage most of the web deserve better. A tool that checks your sites every 30 seconds, confirms failures before crying wolf, and sends one clear, actionable alert to the right channel.
+                We believe ecommerce store owners deserve better. The Shopify or WooCommerce merchant who needs to know the moment their checkout goes down, or when a competitor drops prices overnight, shouldn&apos;t need a dedicated ops team to get that visibility.
               </p>
               <p>
                 We&apos;re a small team obsessed with reliability, and with the idea that monitoring should be something you set up once and forget about, until it matters.
@@ -146,7 +146,7 @@ export default function AboutPage() {
               <p className="text-[17px] font-bold tracking-[-0.02em] leading-[1.2]">Haimanot Getu</p>
               <p className="text-brand-dim text-[14px] mb-2">Founder, Beaconmon</p>
               <p className="text-brand-dim text-[15px] leading-[1.65] max-w-[540px]">
-                Built Beaconmon after getting burned by false-positive alerts on client stores.
+                Built Beaconmon after spending too much time manually checking competitor prices and getting paged for outages that had already resolved.
               </p>
               <a
                 href="https://www.linkedin.com/in/haimanot-getu/"

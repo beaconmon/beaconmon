@@ -20,7 +20,7 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Starter',
     price: `$${PRICING.starter.monthly}`,
-    tagline: 'For DTC brands that are starting to care.',
+    tagline: 'For DTC brands managing $5M-$50M in annual revenue and scaling marketing spend.',
     features: [
       '25 monitors',
       '1-minute check intervals',
@@ -37,7 +37,7 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Growth',
     price: `$${PRICING.growth.monthly}`,
-    tagline: 'For brands taking ecommerce seriously.',
+    tagline: 'For brands past $50M in revenue running dedicated performance marketing teams.',
     features: [
       '100 monitors',
       '25 competitor monitors',
@@ -57,7 +57,7 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Scale',
     price: `$${PRICING.scale.monthly}`,
-    tagline: 'For multi-store and high-volume brands.',
+    tagline: 'For operators managing 5+ storefronts or exceeding $10M in monthly checkout volume.',
     features: [
       'Unlimited monitors',
       '30-second check intervals',

@@ -3,6 +3,8 @@ import { PRICING } from '@/lib/pricing';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
+import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
@@ -37,10 +39,30 @@ const FEATURES = [
 ];
 
 const COST_OF_DOWNTIME = [
-  { metric: 'Average cart abandonment on slow pages', value: '53%' },
-  { metric: 'Typical conversion drop during checkout errors', value: '100%' },
-  { metric: 'Average time before owner discovers self-detected outage', value: '>2 hrs' },
-  { metric: 'Beaconmon alert time after confirmed failure', value: '<60 sec' },
+  {
+    metric: 'of mobile users abandon sites that take over 3 seconds to load',
+    value: '53%',
+    source: 'Think with Google',
+    sourceUrl: 'https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/mobile-page-speed-new-industry-benchmarks/',
+  },
+  {
+    metric: 'Typical conversion drop during checkout errors',
+    value: '100%',
+    source: null,
+    sourceUrl: null,
+  },
+  {
+    metric: 'Average time before owner discovers a self-detected outage',
+    value: '>2 hrs',
+    source: null,
+    sourceUrl: null,
+  },
+  {
+    metric: 'Beaconmon alert time after confirmed failure',
+    value: '<60 sec',
+    source: null,
+    sourceUrl: null,
+  },
 ];
 
 const HOW_IT_HELPS = [
@@ -53,6 +75,7 @@ const HOW_IT_HELPS = [
 export default function ForEcommercePage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema({ name: 'For Ecommerce', path: '/for/ecommerce' })} />
       <NavBar />
 
       {/* Hero */}
@@ -119,10 +142,15 @@ export default function ForEcommercePage() {
           <div className="reveal max-w-[860px] mx-auto">
             <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-8 text-center">The real cost of e-commerce downtime</h2>
             <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-4">
-              {COST_OF_DOWNTIME.map(({ metric, value }) => (
+              {COST_OF_DOWNTIME.map(({ metric, value, source, sourceUrl }) => (
                 <div key={metric} className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 flex flex-col gap-2">
                   <span className="text-[clamp(28px,3.5vw,40px)] font-extrabold tracking-[-0.03em] text-brand-green-ink">{value}</span>
                   <span className="text-brand-dim text-[14px] leading-[1.5]">{metric}</span>
+                  {source && sourceUrl && (
+                    <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] text-brand-muted hover:text-brand-dim transition-colors">
+                      Source: {source}
+                    </a>
+                  )}
                 </div>
               ))}
             </div>

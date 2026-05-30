@@ -21,7 +21,10 @@ export default function PrivacyPage() {
 
             <h2>1. Who we are</h2>
             <p>
-              Beaconmon (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;) provides website uptime and performance monitoring services accessible at beaconmon.com. This policy explains what personal data we collect, why we collect it, how we use it, and your rights in relation to it.
+              Beaconmon is operated by Haimanot Getu (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;), trading as Beaconmon. For the purposes of the GDPR and other applicable data protection laws, Haimanot Getu is the data controller for personal data collected through beaconmon.com.
+            </p>
+            <p>
+              We provide website uptime and performance monitoring services accessible at beaconmon.com. This policy explains what personal data we collect, why we collect it, how we use it, and your rights in relation to it.
             </p>
 
             <h2>2. What data we collect</h2>
@@ -89,6 +92,9 @@ export default function PrivacyPage() {
             <p>
               Questions about this policy? Email us at{' '}
               <a href="mailto:privacy@beaconmon.com">privacy@beaconmon.com</a>.
+            </p>
+            <p>
+              Data controller: Haimanot Getu, operating as Beaconmon (beaconmon.com).
             </p>
           </div>
         </div>
