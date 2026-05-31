@@ -108,7 +108,10 @@ export default async function proxy(req: NextRequest) {
 
     // Redirect trailing-slash URLs to their canonical non-slash form to prevent
     // duplicate content (skipTrailingSlashRedirect: true means Next.js won't do this).
-    if (pathname !== '/' && pathname.endsWith('/')) {
+    // Exclude /ingest/ proxy paths: posthog-js POSTs to /ingest/e/ and /ingest/decide/
+    // with trailing slashes, and a 301 on a POST causes browsers to re-issue as GET,
+    // silently dropping the event body.
+    if (pathname !== '/' && pathname.endsWith('/') && !pathname.startsWith('/ingest/')) {
       const url = req.nextUrl.clone();
       url.pathname = pathname.slice(0, -1);
       return NextResponse.redirect(url, 301);

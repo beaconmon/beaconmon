@@ -2,12 +2,14 @@ import 'server-only';
 import { PostHog } from 'posthog-node';
 
 let posthogClient: PostHog | null = null;
+const noopClient = new Proxy({} as PostHog, { get: () => () => {} });
 
 export function getPostHogClient(): PostHog {
   if (!posthogClient) {
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
     if (!key) {
-      throw new Error('NEXT_PUBLIC_POSTHOG_KEY is not configured');
+      console.warn('[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set — server analytics disabled');
+      return noopClient;
     }
     posthogClient = new PostHog(key, {
       host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
