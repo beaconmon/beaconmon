@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/lib/hooks/use-session';
+import { analytics } from '@/lib/analytics';
 import type { PlanTier } from '@beaconmon/types';
 
 type FreemiusCheckoutHandler = {
@@ -71,6 +72,7 @@ export function UpgradePrompt({ currentPlan, limitReached }: UpgradePromptProps)
       return;
     }
 
+    analytics.upgradeClicked({ plan: 'starter', source: 'limit_prompt' });
     handler.open({
       name: 'Starter Monthly',
       plan_id: Number(starterPlanId),
