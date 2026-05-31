@@ -11,7 +11,9 @@ name: beaconmon
 # POSTGRES_USER, POSTGRES_PASSWORD must be set in .env.
 # DATABASE_URL and DATABASE_URL_POOLED must point to the postgres service:
 #   postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@postgres:5432/beaconmon
-# Run migrations via SSH tunnel, not from inside the container:
+#
+# Migrations run automatically via the `migrate` service on every `docker compose up`.
+# To run migrations manually via SSH tunnel (useful before the first deploy):
 #   ssh -L 5432:localhost:5432 user@server
 #   then: DATABASE_URL=postgresql://...@localhost:5432/beaconmon pnpm db:migrate
 
@@ -40,6 +42,14 @@ x-workers: &workers
       max-file: "3"
 
 services:
+  migrate:
+    <<: *workers
+    command: ["pnpm", "--filter", "@beaconmon/db", "exec", "prisma", "migrate", "deploy"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   web:
     <<: *web
     expose:
@@ -53,8 +63,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   check-worker:
     <<: *workers
@@ -62,8 +72,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   content-worker:
     <<: *workers
@@ -71,8 +81,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   alert-worker:
     <<: *workers
@@ -80,8 +90,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   escalation-worker:
     <<: *workers
@@ -89,8 +99,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   report-worker:
     <<: *workers
@@ -98,8 +108,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   digest-worker:
     <<: *workers
@@ -107,8 +117,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
   scheduler:
@@ -119,8 +129,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   postgres:
     image: postgres:17-alpine
