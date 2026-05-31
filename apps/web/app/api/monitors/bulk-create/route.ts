@@ -79,11 +79,19 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   );
 
   try {
-    getPostHogClient().capture({
+    const ph = getPostHogClient();
+    ph.capture({
       distinctId: teamId,
       event: 'monitors_bulk_created',
       properties: { count: created.length, source: source ?? 'manual' },
     });
+    for (const m of created) {
+      ph.capture({
+        distinctId: teamId,
+        event: 'monitor_created',
+        properties: { type: m.type, intervalSeconds: m.intervalSeconds },
+      });
+    }
   } catch {
     // PostHog not configured locally — non-fatal
   }

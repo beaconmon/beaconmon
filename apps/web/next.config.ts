@@ -3,6 +3,11 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Inline above-the-fold CSS into the HTML and defer the full stylesheet as
+    // non-blocking, eliminating the render-blocking critical request chain.
+    optimizeCss: true,
+  },
   // Expose FREEMIUS_SANDBOX to client components so the checkout overlay
   // can switch between sandbox and production without a separate NEXT_PUBLIC_ var.
   env: {
@@ -13,10 +18,6 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
-      {
-        source: '/ingest/static/:path*',
-        destination: 'https://us-assets.i.posthog.com/static/:path*',
-      },
       {
         source: '/ingest/array/:path*',
         destination: 'https://us-assets.i.posthog.com/array/:path*',
@@ -63,14 +64,6 @@ const nextConfig: NextConfig = {
         source: '/:path*\\.(svg|png|ico|webp|jpg|jpeg|woff2|woff|ttf)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
-        ],
-      },
-      // PostHog static assets are proxied through /ingest/static/ and version-pinned by
-      // PostHog (?v=1.372.10), so a 7-day cache is safe and reduces repeat-visit load.
-      {
-        source: '/ingest/static/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
         ],
       },
     ];

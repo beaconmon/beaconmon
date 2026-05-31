@@ -186,6 +186,7 @@ export default function BillingPage() {
     }
 
     const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
+    analytics.upgradeClicked({ plan, source: 'billing' });
     analytics.checkoutOpened({ plan, billing_period: selectedPeriod });
     handler.open({
       name: `${planLabel} ${selectedPeriod === 'annual' ? 'Annual' : 'Monthly'}`,
