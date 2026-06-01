@@ -46,9 +46,14 @@ export default function Footer() {
             </Link>
             <p className="text-[13px] text-brand-muted mt-[14px] max-w-[260px]">Website and competitor intelligence for ecommerce brands. Watch your store, watch theirs.</p>
             <p className="text-[12px] text-brand-muted mt-8">© 2026 Beaconmon. Made for ecommerce.</p>
-            <a href="https://launchigniter.com/product/beaconmon?ref=badge-beaconmon" target="_blank" rel="noopener noreferrer" className="inline-block mt-4">
-              <img src="https://launchigniter.com/api/badge/beaconmon?theme=neutral" alt="Featured on LaunchIgniter" width={212} height={55} loading="lazy" />
-            </a>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <a href="https://launchigniter.com/product/beaconmon?ref=badge-beaconmon" target="_blank" rel="noopener noreferrer" className="inline-block">
+                <img src="https://launchigniter.com/api/badge/beaconmon?theme=neutral" alt="Featured on LaunchIgniter" width={212} height={55} loading="lazy" />
+              </a>
+              <a href="https://postyourstartup.co/startup/beaconmon?ref=badge" target="_blank" rel="noopener noreferrer" className="inline-block">
+                <img src="https://postyourstartup.co/api/badge/beaconmon?theme=light" alt="Featured on PostYourStartup" width={212} height={55} loading="lazy" />
+              </a>
+            </div>
           </div>
           <div className="grid grid-cols-4 max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-8">
             <div>
