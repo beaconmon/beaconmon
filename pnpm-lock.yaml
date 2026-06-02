@@ -276,9 +276,6 @@ importers:
       resend:
         specifier: ^4.8.0
         version: 4.8.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      undici:
-        specifier: ^7.0.0
-        version: 7.25.0
       zod:
         specifier: ^4.0.0
         version: 4.3.6
