@@ -19,7 +19,7 @@ export async function processCompetitorPageCheckJob(
   redis: Redis,
   notifyQueue: Queue<CompetitorNotifyJob>
 ): Promise<void> {
-  const { competitorPageId, competitorId, teamId, url, selector } = data;
+  const { competitorPageId } = data;
   const now = new Date();
 
   // 1. Load page with billing plan
@@ -28,6 +28,9 @@ export async function processCompetitorPageCheckJob(
     logger.warn({ service, competitorPageId }, 'CompetitorPage not found, skipping');
     return;
   }
+
+  // Use fresh DB values, not potentially stale payload fields
+  const { url, selector, teamId, competitorId } = page;
 
   // 2. Processing dedup — prevent concurrent workers checking the same page simultaneously
   const processingKey = `cpc:processing:${competitorPageId}`;
@@ -38,7 +41,7 @@ export async function processCompetitorPageCheckJob(
   }
 
   // 3. Fetch and parse
-  const result = await runContentCheck({ monitorId: competitorPageId, url, selector, timeoutMs: 15000 });
+  const result = await runContentCheck({ monitorId: competitorPageId, url, selector: selector ?? undefined, timeoutMs: 15000 });
 
   // 4. Fetch failed — advance schedule so we don't hammer a failing URL
   if (!result.success || result.content === null) {

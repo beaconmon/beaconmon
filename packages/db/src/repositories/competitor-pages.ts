@@ -29,7 +29,7 @@ export const competitorPageRepository = {
     return prisma.competitorPage.findMany({
       where: {
         isActive: true,
-        nextCheckAt: { lte: now },
+        OR: [{ nextCheckAt: null }, { nextCheckAt: { lte: now } }],
       },
       select: {
         id: true,

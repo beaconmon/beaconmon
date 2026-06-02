@@ -30,61 +30,67 @@ export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redi
     return;
   }
 
-  // 2. Load event with competitor name
-  const event = await prisma.competitorEvent.findUnique({
-    where: { id: competitorEventId },
-    include: { competitor: true },
-  });
-  if (!event) {
-    logger.warn({ service, competitorEventId }, 'CompetitorEvent not found');
-    return;
-  }
-
-  // 3. Load linked notification channels
-  const channelLinks = await prisma.competitorNotificationChannel.findMany({
-    where: { competitorId },
-    include: { channel: true },
-  });
-
-  // 4. No channels configured
-  if (channelLinks.length === 0) {
-    logger.info({ service, competitorId }, 'No notification channels configured');
-    return;
-  }
-
-  // 5. Build competitor detail URL
-  const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
-
-  // 6. Extract payload fields
-  const payload = event.payload as {
-    pageUrl?: string;
-    diffSummary?: string | null;
-    classification?: string | null;
-  };
-
-  const monitorName = event.competitor.name;
-  const monitorUrl = payload.pageUrl ?? '';
-  const changedAt = event.detectedAt;
-  const summary = payload.diffSummary ?? undefined;
-  const classification = payload.classification ?? undefined;
-
-  for (const link of channelLinks) {
-    const channel = link.channel;
-    try {
-      switch (channel.type) {
-        case 'email':
-          await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
-          break;
-        case 'slack':
-          await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
-          break;
-        default:
-          logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for competitor notification');
-      }
-      logger.info({ service, channelId: channel.id, channelType: channel.type }, 'Competitor change notification sent');
-    } catch (err) {
-      logger.error({ service, channelId: channel.id, channelType: channel.type, err }, 'Failed to send competitor change notification');
+  try {
+    // 2. Load event with competitor name
+    const event = await prisma.competitorEvent.findUnique({
+      where: { id: competitorEventId },
+      include: { competitor: true },
+    });
+    if (!event) {
+      logger.warn({ service, competitorEventId }, 'CompetitorEvent not found');
+      return;
     }
+
+    // 3. Load linked notification channels
+    const channelLinks = await prisma.competitorNotificationChannel.findMany({
+      where: { competitorId },
+      include: { channel: true },
+    });
+
+    // 4. No channels configured
+    if (channelLinks.length === 0) {
+      logger.info({ service, competitorId }, 'No notification channels configured');
+      return;
+    }
+
+    // 5. Build competitor detail URL
+    const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
+
+    // 6. Extract payload fields
+    const payload = event.payload as {
+      pageUrl?: string;
+      diffSummary?: string | null;
+      classification?: string | null;
+    };
+
+    const monitorName = event.competitor.name;
+    const monitorUrl = payload.pageUrl ?? '';
+    const changedAt = event.detectedAt;
+    const summary = payload.diffSummary ?? undefined;
+    const classification = payload.classification ?? undefined;
+
+    for (const link of channelLinks) {
+      const channel = link.channel;
+      try {
+        switch (channel.type) {
+          case 'email':
+            await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
+            break;
+          case 'slack':
+            await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
+            break;
+          default:
+            logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for competitor notification');
+        }
+        logger.info({ service, channelId: channel.id, channelType: channel.type }, 'Competitor change notification sent');
+      } catch (err) {
+        logger.error({ service, channelId: channel.id, channelType: channel.type, err }, 'Failed to send competitor change notification');
+      }
+    }
+  } catch (err) {
+    // Release the key so BullMQ retries can re-attempt delivery
+    await redis.del(idempotencyKey);
+    throw err;
   }
 }
 
