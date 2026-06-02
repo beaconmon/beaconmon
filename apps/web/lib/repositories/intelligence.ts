@@ -58,7 +58,7 @@ export const intelligenceRepository = {
 
       const from = clampToPlanRetention(rangeFrom, plan);
       const { limit, before, monitorId } = opts;
-      const types = opts.types ?? ['content_change', 'pricing_change', 'expiry_alert'];
+      const types = opts.types ?? ['content_change', 'pricing_change', 'expiry_alert', 'competitor_event'];
 
       const wantsContent = types.some((t) => t === 'content_change' || t === 'pricing_change');
       const wantsCompetitorEvent = types.includes('competitor_event');
@@ -70,7 +70,7 @@ export const intelligenceRepository = {
                 teamId,
                 competitorPageId: { not: null },
                 capturedAt: { gte: from, ...(before ? { lt: before } : {}) },
-                ...(monitorId ? { competitorPageId: monitorId } : {}),
+                ...(monitorId ? { competitorPage: { competitorId: monitorId } } : {}),
               },
               select: {
                 id: true,
