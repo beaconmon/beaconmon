@@ -16,6 +16,8 @@ import {
   contentQueue,
   sloBurnQueue,
   intelligenceDigestQueue,
+  shopifyFeedQueue,
+  competitorPageCheckQueue,
 } from './lib/redis.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { getEffectivePlan } from '@beaconmon/billing';
@@ -274,6 +276,57 @@ async function scheduleChecks(): Promise<void> {
       }
     }
 
+    // Competitor page scheduling
+    const duePages = await prisma.competitorPage.findMany({
+      where: {
+        isActive: true,
+        OR: [{ nextCheckAt: { lte: now } }, { nextCheckAt: null }],
+      },
+      select: {
+        id: true,
+        competitorId: true,
+        teamId: true,
+        url: true,
+        selector: true,
+        intervalSeconds: true,
+      },
+    });
+    for (const page of duePages) {
+      await competitorPageCheckQueue.add(
+        'competitor-page-check',
+        {
+          competitorPageId: page.id,
+          competitorId: page.competitorId,
+          teamId: page.teamId,
+          url: page.url,
+          selector: page.selector ?? undefined,
+          intervalSeconds: page.intervalSeconds,
+        },
+        { jobId: `cpc:${page.id}` }
+      );
+      await prisma.competitorPage.update({
+        where: { id: page.id },
+        data: { nextCheckAt: new Date(now.getTime() + page.intervalSeconds * 1000) },
+      });
+    }
+
+    // Shopify feed scheduling — 60-min cadence enforced via Redis NX key (55-min TTL)
+    const shopifyCompetitors = await prisma.competitor.findMany({
+      where: { platform: 'shopify', isActive: true },
+      select: { id: true, teamId: true, domain: true },
+    });
+    for (const c of shopifyCompetitors) {
+      const key = `shopify:scheduled:${c.id}`;
+      const set = await connection.set(key, '1', 'EX', 3600, 'NX');
+      if (set === 'OK') {
+        await shopifyFeedQueue.add(
+          'shopify-feed',
+          { competitorId: c.id, teamId: c.teamId, domain: c.domain },
+          { jobId: `sf:${c.id}:${now.getTime()}` }
+        );
+      }
+    }
+
     await connection.set('scheduler:last_run', new Date().toISOString());
     await connection.set(HEARTBEAT_KEY, new Date().toISOString(), 'EX', 120);
 
@@ -349,6 +402,8 @@ const shutdown = async (signal: string) => {
   await contentQueue.close();
   await sloBurnQueue.close();
   await intelligenceDigestQueue.close();
+  await shopifyFeedQueue.close();
+  await competitorPageCheckQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 
