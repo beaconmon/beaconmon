@@ -3,6 +3,25 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api-fetch';
 
+export interface CompetitorItem {
+  id: string;
+  name: string;
+  domain: string;
+  isActive: boolean;
+}
+
+export function useCompetitors() {
+  return useQuery<CompetitorItem[]>({
+    queryKey: ['competitors'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/competitors');
+      if (!res.ok) throw new Error('Failed to fetch competitors');
+      return res.json();
+    },
+    refetchInterval: 60_000,
+  });
+}
+
 export interface CompetitorFeedItem {
   monitorId: string;
   monitorName: string;

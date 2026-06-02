@@ -33,7 +33,6 @@ export interface Monitor {
   // Content monitor
   contentSnapshot: string | null;
   contentLastChangedAt: Date | null;
-  requiresJs: boolean;
 
   // Type-specific config (port number for TCP, selector for content, etc.)
   config: Record<string, unknown>;

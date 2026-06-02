@@ -128,6 +128,7 @@ export const contentSnapshotWorkerRepository = {
         capturedAt: { gte: windowStart, lte: windowEnd },
         competitorPageId: { not: null },
         NOT: { classification: 'noise' },
+        competitorPage: { isActive: true, competitor: { isActive: true } },
       },
       select: {
         id: true,

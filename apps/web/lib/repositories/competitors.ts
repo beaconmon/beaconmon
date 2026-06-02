@@ -8,11 +8,33 @@ export interface CompetitorFeedItem {
   capturedAt: Date;
 }
 
+export interface CompetitorListItem {
+  id: string;
+  name: string;
+  domain: string;
+  isActive: boolean;
+}
+
 export const competitorRepository = {
   async countActive(teamId: string): Promise<number> {
     return prisma.competitor.count({
       where: { teamId, isActive: true },
     });
+  },
+
+  async findAll(teamId: string): Promise<CompetitorListItem[]> {
+    return prisma.competitor.findMany({
+      where: { teamId },
+      select: { id: true, name: true, domain: true, isActive: true },
+      orderBy: { name: 'asc' },
+    });
+  },
+
+  async deleteById(teamId: string, competitorId: string): Promise<boolean> {
+    const result = await prisma.competitor.deleteMany({
+      where: { id: competitorId, teamId },
+    });
+    return result.count > 0;
   },
 
   async findFeed(

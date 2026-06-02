@@ -118,6 +118,10 @@ model Team {
   userNotificationPreferences UserNotificationPreference[]
   performanceAlerts           PerformanceAlert[]
   competitors                 Competitor[]
+  competitorPages             CompetitorPage[]
+  competitorProducts          CompetitorProduct[]
+  competitorEvents            CompetitorEvent[]
+  competitorDecisions         CompetitorDecision[]
 
   @@map("teams")
 }
@@ -263,7 +267,6 @@ model Monitor {
   // Content monitor
   contentSnapshot      String?   @map("content_snapshot")
   contentLastChangedAt DateTime? @map("content_last_changed_at")
-  requiresJs           Boolean   @default(false) @map("requires_js")
 
   // Heartbeat monitor
   lastHeartbeatAt DateTime? @map("last_heartbeat_at")
@@ -306,9 +309,9 @@ model Monitor {
   @@map("monitors")
 }
 
-// ─── Check Results (partitioned — see migration 0002) ─────────────────────────
+// ─── Check Results (partitioned — see migration 0001_init) ───────────────────
 // Prisma maps to the partition parent table for type generation only.
-// Actual partitioned DDL is in migration 0002_check_results_partition.
+// Actual partitioned DDL is in migration 0001_init.
 
 model CheckResult {
   id             String   @id @default(cuid())
@@ -690,7 +693,9 @@ model CompetitorPage {
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
   competitor Competitor        @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  team       Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
   snapshots  ContentSnapshot[]
+  events     CompetitorEvent[]
 
   @@map("competitor_pages")
 }
@@ -716,6 +721,7 @@ model CompetitorProduct {
   updatedAt        DateTime @updatedAt @map("updated_at")
 
   competitor Competitor        @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  team       Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
   events     CompetitorEvent[]
 
   @@unique([competitorId, shopifyProductId])
@@ -735,7 +741,9 @@ model CompetitorEvent {
   createdAt    DateTime @default(now()) @map("created_at")
 
   competitor Competitor         @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  team       Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
   product    CompetitorProduct? @relation(fields: [productId], references: [id])
+  page       CompetitorPage?    @relation(fields: [pageId], references: [id])
   decision   CompetitorDecision?
 
   @@index([teamId, detectedAt(sort: Desc)])
@@ -754,6 +762,7 @@ model CompetitorDecision {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   event CompetitorEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team  Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("competitor_decisions")
 }

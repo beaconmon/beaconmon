@@ -18,7 +18,7 @@ import { PLAN_LIMITS } from '@beaconmon/types';
 interface CompetitorMonitor {
   id: string;
   name: string;
-  url: string;
+  domain: string;
 }
 
 interface CompetitorManagementSheetProps {
@@ -46,7 +46,11 @@ export function CompetitorManagementSheet({
   async function loadCompetitors() {
     setLoading(true);
     try {
-      setCompetitors([]);
+      const res = await apiFetch('/api/competitors');
+      if (res.ok) {
+        const data: CompetitorMonitor[] = await res.json();
+        setCompetitors(data);
+      }
     } finally {
       setLoading(false);
     }
@@ -86,15 +90,10 @@ export function CompetitorManagementSheet({
     setAddError(null);
     try {
       const fullUrl = url.startsWith('http') ? url : `https://${url}`;
-      const res = await apiFetch('/api/monitors', {
+      const res = await apiFetch('/api/competitors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          url: fullUrl,
-          type: 'content',
-          intervalSeconds: PLAN_LIMITS[plan].checkIntervalSeconds,
-        }),
+        body: JSON.stringify({ name, url: fullUrl }),
       });
       if (!res.ok) {
         const err: { error?: string } = await res.json();
@@ -116,7 +115,7 @@ export function CompetitorManagementSheet({
     setDeletingId(id);
     setDeleteError(null);
     try {
-      const res = await apiFetch(`/api/monitors/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/competitors/${id}`, { method: 'DELETE' });
       if (!res.ok) {
         const err: { error?: string } = await res.json().catch(() => ({}));
         setDeleteError(err.error ?? 'Failed to delete competitor');
@@ -192,10 +191,10 @@ export function CompetitorManagementSheet({
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-brand-text truncate">{c.name}</p>
-                      <p className="font-mono text-xs text-brand-muted truncate">{c.url}</p>
+                      <p className="font-mono text-xs text-brand-muted truncate">{c.domain}</p>
                     </div>
                     <a
-                      href={c.url}
+                      href={`https://${c.domain}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="shrink-0 text-brand-muted hover:text-brand-dim"

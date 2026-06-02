@@ -13,7 +13,7 @@ import { CompetitorWatchlistPanel } from '@/components/intelligence/competitor-w
 import { CompetitorManagementSheet } from '@/components/intelligence/competitor-management-sheet';
 import { DigestPreviewPanel } from '@/components/intelligence/digest-preview-panel';
 import { useIntelligenceFeed } from '@/lib/hooks/use-intelligence-feed';
-import { useMonitors } from '@/lib/hooks/use-monitors';
+import { useCompetitors } from '@/lib/hooks/use-competitors';
 import { useSession } from '@/lib/hooks/use-session';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { QueryState } from '@/components/dashboard/query-state';
@@ -32,8 +32,8 @@ function IntelligencePageInner() {
   const { events, hasMore, activeCompetitorCount, isLoading, isError, loadMore, refresh } =
     useIntelligenceFeed({ monitorId, type, range });
 
-  const { data: monitors } = useMonitors();
-  const competitorMonitors = [] as NonNullable<typeof monitors>;
+  const { data: competitors } = useCompetitors();
+  const competitorMonitors = competitors ?? [];
 
   const monitorIsCompetitorMap = new Map<string, boolean>();
 
