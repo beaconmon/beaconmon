@@ -553,7 +553,7 @@ model EscalationStepRecipient {
 
   step    EscalationStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
   channel AlertChannel?  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user    User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user    User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([stepId])
   @@index([userId])

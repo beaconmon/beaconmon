@@ -148,7 +148,7 @@ export const competitorRepository = {
 
   async softDelete(teamId: string, id: string): Promise<boolean> {
     const result = await prisma.competitor.updateMany({
-      where: { id, teamId },
+      where: { id, teamId, deletedAt: null },
       data: { deletedAt: new Date() },
     });
     return result.count > 0;
@@ -160,13 +160,27 @@ export const competitorRepository = {
     opts: { limit: number; before?: string }
   ): Promise<{ events: CompetitorEventRow[]; nextCursor: string | null }> {
     await assertOwnership(teamId, competitorId);
+
+    let beforeFilter: object = {};
+    if (opts.before) {
+      const pipeIdx = opts.before.indexOf('|');
+      if (pipeIdx !== -1) {
+        const beforeDate = new Date(opts.before.slice(0, pipeIdx));
+        const beforeId = opts.before.slice(pipeIdx + 1);
+        beforeFilter = {
+          OR: [
+            { detectedAt: { lt: beforeDate } },
+            { detectedAt: { equals: beforeDate }, id: { lt: beforeId } },
+          ],
+        };
+      } else {
+        beforeFilter = { detectedAt: { lt: new Date(opts.before) } };
+      }
+    }
+
     const rows = await prisma.competitorEvent.findMany({
-      where: {
-        teamId,
-        competitorId,
-        ...(opts.before ? { detectedAt: { lt: new Date(opts.before) } } : {}),
-      },
-      orderBy: { detectedAt: 'desc' },
+      where: { teamId, competitorId, ...beforeFilter },
+      orderBy: [{ detectedAt: 'desc' }, { id: 'desc' }],
       take: opts.limit + 1,
     });
     const hasMore = rows.length > opts.limit;
@@ -174,7 +188,7 @@ export const competitorRepository = {
     const lastEvent = events[events.length - 1];
     return {
       events,
-      nextCursor: hasMore && lastEvent ? lastEvent.detectedAt.toISOString() : null,
+      nextCursor: hasMore && lastEvent ? `${lastEvent.detectedAt.toISOString()}|${lastEvent.id}` : null,
     };
   },
 
@@ -230,8 +244,10 @@ export const competitorRepository = {
       select: { id: true },
     });
     if (!channel) throw new NotFoundError();
-    await prisma.competitorNotificationChannel.create({
-      data: { competitorId, channelId, teamId },
+    await prisma.competitorNotificationChannel.upsert({
+      where: { competitorId_channelId: { competitorId, channelId } },
+      create: { competitorId, channelId, teamId },
+      update: {},
     });
   },
 

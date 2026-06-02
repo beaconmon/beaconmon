@@ -87,6 +87,7 @@ export const intelligenceRepository = {
           ? prisma.competitorEvent.findMany({
               where: {
                 teamId,
+                ...(monitorId ? { competitorId: monitorId } : {}),
                 detectedAt: { gte: from, ...(before ? { lt: before } : {}) },
               },
               select: {
