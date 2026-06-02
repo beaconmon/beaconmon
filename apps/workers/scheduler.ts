@@ -180,8 +180,6 @@ async function scheduleChecks(): Promise<void> {
         teamId: true,
         currentStatus: true,
         consecutiveFailures: true,
-        isCompetitor: true,
-        instantAlerts: true,
         team: {
           select: {
             id: true,
@@ -254,8 +252,6 @@ async function scheduleChecks(): Promise<void> {
           intervalSeconds: monitor.intervalSeconds,
           selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
           inMaintenance,
-          isCompetitor: monitor.isCompetitor,
-          instantAlerts: monitor.instantAlerts,
         });
       } else {
         const planRegionCount = PLAN_LIMITS[effectivePlan].regions;

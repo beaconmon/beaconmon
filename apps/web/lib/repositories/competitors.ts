@@ -1,18 +1,40 @@
 import { prisma } from '@beaconmon/db';
 
 export interface CompetitorFeedItem {
-  monitorId: string;
-  monitorName: string;
-  monitorUrl: string;
+  competitorPageId: string;
+  competitorName: string;
+  pageUrl: string;
   snapshotId: string;
   capturedAt: Date;
 }
 
+export interface CompetitorListItem {
+  id: string;
+  name: string;
+  domain: string;
+  isActive: boolean;
+}
+
 export const competitorRepository = {
   async countActive(teamId: string): Promise<number> {
-    return prisma.monitor.count({
-      where: { teamId, isCompetitor: true, isActive: true, deletedAt: null },
+    return prisma.competitor.count({
+      where: { teamId, isActive: true },
     });
+  },
+
+  async findAll(teamId: string): Promise<CompetitorListItem[]> {
+    return prisma.competitor.findMany({
+      where: { teamId },
+      select: { id: true, name: true, domain: true, isActive: true },
+      orderBy: { name: 'asc' },
+    });
+  },
+
+  async deleteById(teamId: string, competitorId: string): Promise<boolean> {
+    const result = await prisma.competitor.deleteMany({
+      where: { id: competitorId, teamId },
+    });
+    return result.count > 0;
   },
 
   async findFeed(
@@ -22,23 +44,23 @@ export const competitorRepository = {
     const rows = await prisma.contentSnapshot.findMany({
       where: {
         teamId,
-        monitor: { isCompetitor: true, deletedAt: null },
+        competitorPageId: { not: null },
         ...(opts.before ? { capturedAt: { lt: opts.before } } : {}),
       },
       select: {
         id: true,
-        monitorId: true,
+        competitorPageId: true,
         capturedAt: true,
-        monitor: { select: { name: true, url: true } },
+        competitorPage: { select: { url: true, competitor: { select: { name: true } } } },
       },
       orderBy: { capturedAt: 'desc' },
       take: opts.limit,
     });
 
     return rows.map((r) => ({
-      monitorId: r.monitorId,
-      monitorName: r.monitor.name,
-      monitorUrl: r.monitor.url,
+      competitorPageId: r.competitorPageId!,
+      competitorName: r.competitorPage!.competitor.name,
+      pageUrl: r.competitorPage!.url,
       snapshotId: r.id,
       capturedAt: r.capturedAt,
     }));

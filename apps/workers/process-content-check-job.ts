@@ -20,7 +20,7 @@ export async function processContentCheckJob(
   redis?: Redis,
   notifyQueue?: Queue<ContentNotifyJob>
 ): Promise<void> {
-  const { monitorId, url, selector, isCompetitor: _isCompetitor = false, instantAlerts: _instantAlerts = false } = data;
+  const { monitorId, url, selector } = data;
 
   // 1. Load monitor — bail if missing. Include the team's plan/billing state
   // so step 7b can plan-gate AI analysis without a second query.
@@ -147,15 +147,6 @@ export async function processContentCheckJob(
       { service, monitorId, summary: aiResult.summary },
       'Change classified as noise — suppressing alert'
     );
-    return;
-  }
-
-  // 7d. Notify all active channels.
-  // Competitor monitors skip per-change notifications unless instant alerts is enabled —
-  // changes are batched into the daily digest instead. Use live DB values (not job payload)
-  // so a mid-flight toggle is respected.
-  if (monitor.isCompetitor && !monitor.instantAlerts) {
-    logger.info({ service, monitorId }, 'Competitor change recorded — skipping per-change alert (digest mode)');
     return;
   }
 

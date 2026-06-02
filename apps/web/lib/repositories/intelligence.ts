@@ -55,85 +55,53 @@ export const intelligenceRepository = {
       const types = opts.types ?? ['content_change', 'pricing_change', 'expiry_alert'];
 
       const wantsContent = types.some((t) => t === 'content_change' || t === 'pricing_change');
-      const wantsExpiry = types.includes('expiry_alert');
 
-      const monitorFilter = monitorId ? { id: monitorId } : {};
-
-      const [snapshotRows, expiryRows, activeCompetitorCount] = await Promise.all([
+      const [snapshotRows, , activeCompetitorCount] = await Promise.all([
         wantsContent
           ? prisma.contentSnapshot.findMany({
               where: {
                 teamId,
-                monitor: { isCompetitor: true, deletedAt: null, ...monitorFilter },
+                competitorPageId: { not: null },
                 capturedAt: { gte: from, ...(before ? { lt: before } : {}) },
+                ...(monitorId ? { competitorPageId: monitorId } : {}),
               },
               select: {
                 id: true,
-                monitorId: true,
+                competitorPageId: true,
                 capturedAt: true,
                 diffSummary: true,
-                monitor: { select: { name: true, url: true, config: true } },
+                competitorPage: { select: { url: true, label: true, selector: true, competitor: { select: { id: true, name: true } } } },
               },
               orderBy: { capturedAt: 'desc' },
               take: limit + 1,
             })
           : Promise.resolve([]),
-        wantsExpiry
-          ? prisma.expiryAlert.findMany({
-              where: {
-                teamId,
-                sentAt: { gte: from, ...(before ? { lt: before } : {}) },
-                monitor: { isCompetitor: true, deletedAt: null, ...monitorFilter },
-              },
-              select: {
-                id: true,
-                type: true,
-                daysRemaining: true,
-                threshold: true,
-                sentAt: true,
-                monitor: { select: { id: true, name: true, url: true } },
-              },
-              orderBy: { sentAt: 'desc' },
-              take: limit + 1,
-            })
-          : Promise.resolve([]),
+        Promise.resolve([]),
         competitorRepository.countActive(teamId),
       ]);
 
       const contentEvents: IntelligenceEvent[] = snapshotRows.map((r) => {
-        const config = r.monitor.config as { selector?: string } | null;
-        const selector = config?.selector;
-        const derivedType: IntelligenceEventType = isPricingMonitor(r.monitor.url, selector)
+        const page = r.competitorPage!;
+        const selector = page.selector ?? undefined;
+        const derivedType: IntelligenceEventType = isPricingMonitor(page.url, selector)
           ? 'pricing_change'
           : 'content_change';
         return {
           id: r.id,
           type: derivedType,
           timestamp: r.capturedAt,
-          monitorId: r.monitorId,
-          monitorName: r.monitor.name,
-          monitorUrl: r.monitor.url,
+          monitorId: page.competitor.id,
+          monitorName: page.competitor.name,
+          monitorUrl: page.url,
           monitorSelector: selector,
           snapshotId: r.id,
           diffSummary: r.diffSummary ?? undefined,
         };
       });
 
-      const expiryEvents: IntelligenceEvent[] = expiryRows.map((r) => ({
-        id: r.id,
-        type: 'expiry_alert',
-        timestamp: r.sentAt,
-        monitorId: r.monitor.id,
-        monitorName: r.monitor.name,
-        monitorUrl: r.monitor.url,
-        expiryType: r.type as 'ssl' | 'domain',
-        daysRemaining: r.daysRemaining,
-        threshold: r.threshold,
-      }));
-
       const filteredContent = contentEvents.filter((e) => types.includes(e.type));
 
-      const merged = [...filteredContent, ...expiryEvents].sort(
+      const merged = [...filteredContent].sort(
         (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
       );
 

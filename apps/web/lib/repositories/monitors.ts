@@ -17,8 +17,6 @@ export interface MonitorRow {
   keyword: string | null;
   keywordCondition: string | null;
   config: Record<string, unknown>;
-  isCompetitor: boolean;
-  instantAlerts: boolean;
   anomalyDetectionEnabled: boolean;
   tags: string[];
   createdAt: Date;
@@ -64,8 +62,6 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
-        isCompetitor: true,
-        instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
@@ -94,8 +90,6 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
-        isCompetitor: true,
-        instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
@@ -123,7 +117,6 @@ export const monitorRepository: {
         keyword: data.keyword ?? null,
         keywordCondition: data.keywordCondition ?? null,
         config: config as unknown as Prisma.InputJsonValue,
-        isCompetitor: data.isCompetitor ?? false,
         tags: dedupeTags(data.tags),
         // Make immediately eligible for the scheduler to pick up
         nextCheckAt: new Date(),
@@ -143,8 +136,6 @@ export const monitorRepository: {
         keyword: true,
         keywordCondition: true,
         config: true,
-        isCompetitor: true,
-        instantAlerts: true,
         anomalyDetectionEnabled: true,
         tags: true,
         createdAt: true,
@@ -175,7 +166,6 @@ export const monitorRepository: {
             keyword: data.keyword ?? null,
             keywordCondition: data.keywordCondition ?? null,
             config: config as unknown as Prisma.InputJsonValue,
-            isCompetitor: data.isCompetitor ?? false,
             tags: dedupeTags(data.tags),
             nextCheckAt: now,
           },
@@ -194,7 +184,7 @@ export const monitorRepository: {
             keyword: true,
             keywordCondition: true,
             config: true,
-            isCompetitor: true,
+            anomalyDetectionEnabled: true,
             tags: true,
             createdAt: true,
             updatedAt: true,
@@ -220,8 +210,6 @@ export const monitorRepository: {
         ...(data.keyword !== undefined && { keyword: data.keyword }),
         ...(data.keywordCondition !== undefined && { keywordCondition: data.keywordCondition }),
         ...(data.config !== undefined && { config: data.config as unknown as Prisma.InputJsonValue }),
-        ...(data.isCompetitor !== undefined && { isCompetitor: data.isCompetitor }),
-        ...(data.instantAlerts !== undefined && { instantAlerts: data.instantAlerts }),
         ...(data.anomalyDetectionEnabled !== undefined && { anomalyDetectionEnabled: data.anomalyDetectionEnabled }),
         ...(data.tags !== undefined && { tags: dedupeTags(data.tags) }),
       },

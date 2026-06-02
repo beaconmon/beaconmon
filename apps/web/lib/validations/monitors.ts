@@ -16,16 +16,11 @@ const monitorBaseSchema = z.object({
   keyword: z.string().optional(),
   keywordCondition: z.enum(['present', 'absent']).optional(),
   config: z.record(z.string(), z.unknown()).optional(),
-  isCompetitor: z.boolean().optional(),
-  instantAlerts: z.boolean().optional(),
   anomalyDetectionEnabled: z.boolean().optional(),
   tags: z.array(tagSchema).max(20).optional(),
 });
 
-export const createMonitorSchema = monitorBaseSchema.refine(
-  (d) => !d.isCompetitor || d.type === 'content',
-  { message: 'isCompetitor is only supported for content monitors', path: ['isCompetitor'] }
-);
+export const createMonitorSchema = monitorBaseSchema;
 
 export type CreateMonitorInput = z.infer<typeof createMonitorSchema>;
 

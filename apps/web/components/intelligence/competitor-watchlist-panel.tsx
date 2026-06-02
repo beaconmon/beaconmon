@@ -6,11 +6,11 @@ import { Sparkline } from '@/components/dashboard/sparkline';
 import { CompetitorManagementSheet } from './competitor-management-sheet';
 import { binBy7Days } from '@/lib/utils/intelligence';
 import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
-import type { MonitorRow } from '@/lib/repositories/monitors';
+import type { CompetitorItem } from '@/lib/hooks/use-competitors';
 import type { PlanTier } from '@beaconmon/types';
 
 interface CompetitorWatchlistPanelProps {
-  competitors: MonitorRow[];
+  competitors: CompetitorItem[];
   events: IntelligenceEvent[];
   plan: PlanTier;
   onChanged: () => void;
