@@ -302,7 +302,7 @@ async function scheduleChecks(): Promise<void> {
           selector: page.selector ?? undefined,
           intervalSeconds: page.intervalSeconds,
         },
-        { jobId: `cpc:${page.id}:${now.getTime()}` }
+        { jobId: `cpc:${page.id}` }
       );
       await prisma.competitorPage.update({
         where: { id: page.id },
@@ -317,7 +317,7 @@ async function scheduleChecks(): Promise<void> {
     });
     for (const c of shopifyCompetitors) {
       const key = `shopify:scheduled:${c.id}`;
-      const set = await connection.set(key, '1', 'EX', 3300, 'NX');
+      const set = await connection.set(key, '1', 'EX', 3600, 'NX');
       if (set === 'OK') {
         await shopifyFeedQueue.add(
           'shopify-feed',

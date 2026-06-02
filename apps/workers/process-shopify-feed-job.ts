@@ -1,4 +1,3 @@
-import { fetch } from 'undici';
 import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import type { ShopifyFeedJob, CompetitorNotifyJob } from '@beaconmon/queue';
@@ -114,95 +113,100 @@ export async function processShopifyFeedJob(
       }
     }
 
-    // 5. Diff fetched products against existing
-    for (const product of fetched) {
-      const shopifyProductId = String(product.id);
-      fetchedIds.add(shopifyProductId);
+    // 5. Diff fetched products against existing — process in parallel chunks to avoid O(N) serial round-trips
+    const CHUNK_SIZE = 50;
+    for (let i = 0; i < fetched.length; i += CHUNK_SIZE) {
+      await Promise.all(
+        fetched.slice(i, i + CHUNK_SIZE).map(async (product) => {
+          const shopifyProductId = String(product.id);
+          fetchedIds.add(shopifyProductId);
 
-      const firstVariant = product.variants[0];
-      const newPrice = firstVariant?.price ?? '0';
-      const newAvailable = product.variants.some((v) => v.available);
-      const trimmedVariants = product.variants.map((v) => ({
-        id: v.id,
-        price: v.price,
-        compareAtPrice: v.compare_at_price,
-        available: v.available,
-        sku: v.sku,
-        title: v.title,
-      }));
+          const firstVariant = product.variants[0];
+          const newPrice = firstVariant?.price ?? '0';
+          const newAvailable = product.variants.some((v) => v.available);
+          const trimmedVariants = product.variants.map((v) => ({
+            id: v.id,
+            price: v.price,
+            compareAtPrice: v.compare_at_price,
+            available: v.available,
+            sku: v.sku,
+            title: v.title,
+          }));
 
-      const upsertData = {
-        competitorId,
-        teamId,
-        shopifyProductId,
-        title: product.title,
-        handle: product.handle,
-        vendor: product.vendor || undefined,
-        productType: product.product_type || undefined,
-        isAvailable: newAvailable,
-        variants: trimmedVariants,
-        currentPrice: newPrice,
-        compareAtPrice: firstVariant?.compare_at_price ?? null,
-        currency: 'USD',
-        lastSeenAt: now,
-      };
-
-      const existingProduct = existingByShopifyId.get(shopifyProductId);
-
-      if (!existingProduct) {
-        const productId = await competitorProductRepository.upsertProduct(upsertData);
-        const event = await competitorEventRepository.createEvent({
-          teamId,
-          competitorId,
-          productId,
-          type: 'product_added',
-          payload: { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' },
-          detectedAt: now,
-        });
-        await maybeEnqueueNotify(event.id);
-      } else {
-        const oldPrice = existingProduct.currentPrice?.toString() ?? '0';
-        const oldAvailable = existingProduct.isAvailable;
-        const priceChanged = parseFloat(newPrice) !== parseFloat(oldPrice);
-        const availabilityChanged = newAvailable !== oldAvailable;
-
-        const productId = await competitorProductRepository.upsertProduct(upsertData);
-
-        if (priceChanged) {
-          const event = await competitorEventRepository.createEvent({
-            teamId,
+          const upsertData = {
             competitorId,
-            productId,
-            type: 'price_changed',
-            payload: {
-              productHandle: product.handle,
-              oldPrice,
-              newPrice,
-              currency: 'USD',
-              variantId: firstVariant?.id,
-            },
-            detectedAt: now,
-          });
-          await maybeEnqueueNotify(event.id);
-        }
-
-        if (availabilityChanged) {
-          const event = await competitorEventRepository.createEvent({
             teamId,
-            competitorId,
-            productId,
-            type: 'stock_changed',
-            payload: { productHandle: product.handle, oldAvailable, newAvailable },
-            detectedAt: now,
-          });
-          await maybeEnqueueNotify(event.id);
-        }
-      }
+            shopifyProductId,
+            title: product.title,
+            handle: product.handle,
+            vendor: product.vendor || undefined,
+            productType: product.product_type || undefined,
+            isAvailable: newAvailable,
+            variants: trimmedVariants,
+            currentPrice: newPrice,
+            compareAtPrice: firstVariant?.compare_at_price ?? null,
+            currency: 'USD',
+            lastSeenAt: now,
+          };
+
+          const existingProduct = existingByShopifyId.get(shopifyProductId);
+
+          if (!existingProduct) {
+            const productId = await competitorProductRepository.upsertProduct(upsertData);
+            const event = await competitorEventRepository.createEvent({
+              teamId,
+              competitorId,
+              productId,
+              type: 'product_added',
+              payload: { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' },
+              detectedAt: now,
+            });
+            await maybeEnqueueNotify(event.id);
+          } else {
+            const oldPrice = existingProduct.currentPrice?.toString() ?? '0';
+            const oldAvailable = existingProduct.isAvailable;
+            const priceChanged = parseFloat(newPrice) !== parseFloat(oldPrice);
+            const availabilityChanged = newAvailable !== oldAvailable;
+
+            const productId = await competitorProductRepository.upsertProduct(upsertData);
+
+            if (priceChanged) {
+              const event = await competitorEventRepository.createEvent({
+                teamId,
+                competitorId,
+                productId,
+                type: 'price_changed',
+                payload: {
+                  productHandle: product.handle,
+                  oldPrice,
+                  newPrice,
+                  currency: 'USD',
+                  variantId: firstVariant?.id,
+                },
+                detectedAt: now,
+              });
+              await maybeEnqueueNotify(event.id);
+            }
+
+            if (availabilityChanged) {
+              const event = await competitorEventRepository.createEvent({
+                teamId,
+                competitorId,
+                productId,
+                type: 'stock_changed',
+                payload: { productHandle: product.handle, oldAvailable, newAvailable },
+                detectedAt: now,
+              });
+              await maybeEnqueueNotify(event.id);
+            }
+          }
+        })
+      );
     }
 
-    // 6. Mark products not in the feed as unavailable
+    // 6. Mark products not in the feed as unavailable — only act on products currently available
     for (const [shopifyProductId, existingProduct] of existingByShopifyId) {
-      if (!fetchedIds.has(shopifyProductId)) {
+      if (!fetchedIds.has(shopifyProductId) && existingProduct.isAvailable) {
         await competitorProductRepository.markUnavailable(competitorId, shopifyProductId);
         const event = await competitorEventRepository.createEvent({
           teamId,
