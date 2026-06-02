@@ -17,8 +17,6 @@ export interface MonitorForCheck {
   keywordCondition: 'present' | 'absent' | null;
   escalationPolicyId: string | null;
   anomalyDetectionEnabled: boolean;
-  isCompetitor: boolean;
-  instantAlerts: boolean;
 }
 
 /**
@@ -59,8 +57,6 @@ export const monitorRepository = {
         keywordCondition: true,
         escalationPolicyId: true,
         anomalyDetectionEnabled: true,
-        isCompetitor: true,
-        instantAlerts: true,
       },
     });
 
@@ -76,8 +72,6 @@ export const monitorRepository = {
       keywordCondition: monitor.keywordCondition as 'present' | 'absent' | null,
       escalationPolicyId: monitor.escalationPolicyId,
       anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
-      isCompetitor: monitor.isCompetitor,
-      instantAlerts: monitor.instantAlerts,
     };
   },
 
@@ -103,8 +97,6 @@ export const monitorRepository = {
         keywordCondition: true,
         escalationPolicyId: true,
         anomalyDetectionEnabled: true,
-        isCompetitor: true,
-        instantAlerts: true,
         team: {
           select: {
             plan: true,
@@ -133,8 +125,6 @@ export const monitorRepository = {
       keywordCondition: monitor.keywordCondition as 'present' | 'absent' | null,
       escalationPolicyId: monitor.escalationPolicyId,
       anomalyDetectionEnabled: monitor.anomalyDetectionEnabled,
-      isCompetitor: monitor.isCompetitor,
-      instantAlerts: monitor.instantAlerts,
       teamPlan: monitor.team.plan,
       teamTrialEndsAt: monitor.team.trialEndsAt,
       teamSubscriptionStatus: monitor.team.subscription?.status ?? null,

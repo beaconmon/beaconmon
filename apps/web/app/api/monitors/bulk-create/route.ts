@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
-import { competitorRepository } from '@/lib/repositories/competitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
@@ -46,20 +45,6 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
       throw new PlanLimitError(
         `Your plan allows ${limits.monitors} monitors — you have ${existing} and tried to add ${inputs.length}.`
       );
-    }
-  }
-
-  // Check competitor monitor quota for any competitor monitors in the batch
-  const incomingCompetitorCount = inputs.filter((i) => i.isCompetitor).length;
-  if (incomingCompetitorCount > 0) {
-    const competitorLimit = limits.competitorMonitors;
-    if (competitorLimit !== -1) {
-      const existingCompetitors = await competitorRepository.countActive(teamId);
-      if (existingCompetitors + incomingCompetitorCount > competitorLimit) {
-        throw new PlanLimitError(
-          `Your plan allows a maximum of ${competitorLimit} competitor monitors`
-        );
-      }
     }
   }
 

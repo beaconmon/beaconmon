@@ -935,7 +935,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const multiLocationEnabled = process.env['NEXT_PUBLIC_FEATURE_MULTI_LOCATION'] === 'true';
   const hasRegionData = results.some((r) => r.region != null);
   const isContentMonitor = monitor?.type === 'content';
-  const isCompetitorMonitor = monitor?.isCompetitor === true;
+  const isCompetitorMonitor = false;
   const isAnomalyMonitor = (monitor?.type === 'http' || monitor?.type === 'keyword') && monitor?.anomalyDetectionEnabled;
 
   const bucketFmt =
@@ -1345,26 +1345,6 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               </SidebarCard>
             );
           })()}
-
-          {isCompetitorMonitor && monitor && (
-            <SidebarCard title="Competitor settings">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-brand-dim">Instant alerts</p>
-                  <p className="mt-0.5 text-[11px] text-brand-muted leading-snug">
-                    Send an alert immediately on change instead of batching into the daily digest.
-                  </p>
-                </div>
-                <Switch
-                  checked={monitor.instantAlerts}
-                  disabled={updateMonitor.isPending}
-                  onCheckedChange={(checked) => {
-                    updateMonitor.mutate({ instantAlerts: checked });
-                  }}
-                />
-              </div>
-            </SidebarCard>
-          )}
 
           {monitor && (monitor.type === 'http' || monitor.type === 'keyword') && (
             <SidebarCard title="Smart Alerts">

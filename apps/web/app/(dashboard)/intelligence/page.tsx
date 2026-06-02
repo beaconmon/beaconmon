@@ -33,11 +33,9 @@ function IntelligencePageInner() {
     useIntelligenceFeed({ monitorId, type, range });
 
   const { data: monitors } = useMonitors();
-  const competitorMonitors = (monitors ?? []).filter((m) => m.isCompetitor && m.isActive);
+  const competitorMonitors = [] as NonNullable<typeof monitors>;
 
-  const monitorIsCompetitorMap = new Map(
-    (monitors ?? []).map((m) => [m.id, m.isCompetitor])
-  );
+  const monitorIsCompetitorMap = new Map<string, boolean>();
 
   const isFreePlan = plan === 'free';
   const competitorLimit = PLAN_LIMITS[plan].competitorMonitors;

@@ -2,7 +2,7 @@ import { prisma } from '../index.js';
 
 export interface ContentSnapshotRecord {
   id: string;
-  monitorId: string;
+  monitorId: string | null;
   content: string;
   capturedAt: Date;
   diffSummary: string | null;
@@ -18,9 +18,9 @@ export interface AttachAiAnalysisInput {
 }
 
 export interface DigestSnapshotRow {
-  monitorId: string;
-  monitorName: string;
-  monitorUrl: string;
+  competitorPageId: string;
+  competitorName: string;
+  pageUrl: string;
   snapshotId: string;
   capturedAt: Date;
   content: string;
@@ -126,25 +126,25 @@ export const contentSnapshotWorkerRepository = {
       where: {
         teamId,
         capturedAt: { gte: windowStart, lte: windowEnd },
-        monitor: { isCompetitor: true, isActive: true, deletedAt: null },
+        competitorPageId: { not: null },
         NOT: { classification: 'noise' },
       },
       select: {
         id: true,
-        monitorId: true,
+        competitorPageId: true,
         capturedAt: true,
         content: true,
         diffSummary: true,
         classification: true,
-        monitor: { select: { name: true, url: true } },
+        competitorPage: { select: { url: true, competitor: { select: { name: true } } } },
       },
       orderBy: { capturedAt: 'asc' },
     });
 
     return rows.map((r) => ({
-      monitorId: r.monitorId,
-      monitorName: r.monitor.name,
-      monitorUrl: r.monitor.url,
+      competitorPageId: r.competitorPageId!,
+      competitorName: r.competitorPage!.competitor.name,
+      pageUrl: r.competitorPage!.url,
       snapshotId: r.id,
       capturedAt: r.capturedAt,
       content: r.content,

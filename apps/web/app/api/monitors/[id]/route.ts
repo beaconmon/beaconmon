@@ -1,6 +1,5 @@
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
-import { competitorRepository } from '@/lib/repositories/competitors';
 import { updateMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
@@ -34,23 +33,6 @@ export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params
     const minInterval = PLAN_LIMITS[plan].checkIntervalSeconds;
     if (data.intervalSeconds < minInterval) {
       throw new PlanLimitError(`Your plan minimum check interval is ${minInterval}s`);
-    }
-  }
-
-  // Check competitor monitor quota when enabling isCompetitor
-  if (data.isCompetitor) {
-    const existing = await monitorRepository.findById(teamId, params.id);
-    if (existing && !existing.isCompetitor) {
-      const limits = PLAN_LIMITS[plan];
-      const competitorLimit = limits.competitorMonitors;
-      if (competitorLimit !== -1) {
-        const competitorCount = await competitorRepository.countActive(teamId);
-        if (competitorCount >= competitorLimit) {
-          throw new PlanLimitError(
-            `Your plan allows a maximum of ${competitorLimit} competitor monitors`
-          );
-        }
-      }
     }
   }
 

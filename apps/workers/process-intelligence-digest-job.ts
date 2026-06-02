@@ -208,9 +208,9 @@ export async function processIntelligenceDigestJob(
     const snaps = await contentSnapshotWorkerRepository.findSnapshotsForDigest(teamId, start, end);
     sections.competitors = snaps
       .map((s) => ({
-        monitorId: s.monitorId,
-        monitorName: s.monitorName,
-        monitorUrl: s.monitorUrl,
+        monitorId: s.competitorPageId,
+        monitorName: s.competitorName,
+        monitorUrl: s.pageUrl,
         capturedAt: s.capturedAt,
         diffSummary: s.diffSummary,
         classification: s.classification,

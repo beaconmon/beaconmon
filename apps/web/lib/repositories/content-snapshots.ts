@@ -9,14 +9,14 @@ export interface SnapshotSummary {
 
 export interface SnapshotFull {
   id: string;
-  monitorId: string;
+  monitorId: string | null;
   content: string;
   capturedAt: Date;
 }
 
 export interface SnapshotWithMeta {
   id: string;
-  monitorId: string;
+  monitorId: string | null;
   monitorName: string;
   monitorUrl: string;
   capturedAt: Date;
@@ -80,8 +80,8 @@ export const contentSnapshotRepository = {
     return {
       id: row.id,
       monitorId: row.monitorId,
-      monitorName: row.monitor.name,
-      monitorUrl: row.monitor.url,
+      monitorName: row.monitor!.name,
+      monitorUrl: row.monitor!.url,
       capturedAt: row.capturedAt,
       diffSummary: row.diffSummary,
       classification: row.classification,

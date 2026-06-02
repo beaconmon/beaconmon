@@ -46,10 +46,7 @@ export function CompetitorManagementSheet({
   async function loadCompetitors() {
     setLoading(true);
     try {
-      const res = await apiFetch('/api/monitors');
-      if (!res.ok) return;
-      const data: { id: string; name: string; url: string; isCompetitor: boolean }[] = await res.json();
-      setCompetitors(data.filter((m) => m.isCompetitor).map((m) => ({ id: m.id, name: m.name, url: m.url })));
+      setCompetitors([]);
     } finally {
       setLoading(false);
     }
@@ -97,7 +94,6 @@ export function CompetitorManagementSheet({
           url: fullUrl,
           type: 'content',
           intervalSeconds: PLAN_LIMITS[plan].checkIntervalSeconds,
-          isCompetitor: true,
         }),
       });
       if (!res.ok) {

@@ -18,7 +18,7 @@ export const POST = withAuth<Params>(async (_req, { teamId }, params) => {
     teamId,
     monitorName: snapshot.monitorName,
     monitorUrl: snapshot.monitorUrl,
-    monitorId: snapshot.monitorId,
+    monitorId: snapshot.monitorId!,
     changedAt: snapshot.capturedAt.toISOString(),
     summary: snapshot.diffSummary ?? undefined,
     classification: snapshot.classification ?? undefined,

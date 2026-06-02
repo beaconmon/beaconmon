@@ -85,7 +85,8 @@ export const digestRepository = {
       where: {
         teamId,
         capturedAt: { gte: windowStart, lte: windowEnd },
-        monitor: { isCompetitor: false, isActive: true, deletedAt: null },
+        monitorId: { not: null },
+        monitor: { isActive: true, deletedAt: null },
         NOT: { classification: 'noise' },
       },
       select: {
@@ -101,9 +102,9 @@ export const digestRepository = {
 
     return rows.map((r) => ({
       snapshotId: r.id,
-      monitorId: r.monitorId,
-      monitorName: r.monitor.name,
-      monitorUrl: r.monitor.url,
+      monitorId: r.monitorId!,
+      monitorName: r.monitor!.name,
+      monitorUrl: r.monitor!.url,
       capturedAt: r.capturedAt,
       diffSummary: r.diffSummary,
       classification: r.classification,
