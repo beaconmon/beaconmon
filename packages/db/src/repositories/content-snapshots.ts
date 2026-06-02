@@ -83,6 +83,41 @@ export const contentSnapshotWorkerRepository = {
     return result.count;
   },
 
+  async recordChangeForCompetitorPage(
+    competitorPageId: string,
+    teamId: string,
+    content: string,
+    capturedAt: Date,
+    contentHash: string
+  ): Promise<ContentSnapshotRecord> {
+    return prisma.contentSnapshot.create({
+      data: { competitorPageId, teamId, content, contentHash, capturedAt },
+      select: {
+        id: true,
+        monitorId: true,
+        content: true,
+        capturedAt: true,
+        diffSummary: true,
+      },
+    });
+  },
+
+  async attachAiAnalysisById(
+    snapshotId: string,
+    data: { summary: string; classification: string; confidence?: number; model: string }
+  ): Promise<void> {
+    await prisma.contentSnapshot.update({
+      where: { id: snapshotId },
+      data: {
+        diffSummary: data.summary,
+        classification: data.classification,
+        aiConfidence: data.confidence,
+        aiModel: data.model,
+        aiAnalyzedAt: new Date(),
+      },
+    });
+  },
+
   /**
    * Delete snapshots beyond the retention limit per monitor.
    * Keeps the latest `keepCount` snapshots and drops the rest.
