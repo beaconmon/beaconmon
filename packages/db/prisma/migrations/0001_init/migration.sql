@@ -18,9 +18,9 @@ CREATE TABLE "teams" (
     "id"                            TEXT        NOT NULL,
     "name"                          TEXT        NOT NULL,
     "plan"                          "PlanTier"  NOT NULL DEFAULT 'free',
-    "trial_ends_at"                 TIMESTAMPTZ,
-    "created_at"                    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"                    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "trial_ends_at"                 TIMESTAMP(3),
+    "created_at"                    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"                    TIMESTAMP(3) NOT NULL,
     "report_logo_url"               TEXT,
     "report_brand_color"            TEXT,
     "report_agency_name"            TEXT,
@@ -38,8 +38,8 @@ CREATE TABLE "users" (
     "email_verified"    BOOLEAN     NOT NULL DEFAULT false,
     "image"             TEXT,
     "last_login_method" TEXT,
-    "created_at"        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"        TIMESTAMP(3) NOT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -50,11 +50,11 @@ CREATE TABLE "sessions" (
     "id"          TEXT        NOT NULL,
     "user_id"     TEXT        NOT NULL,
     "token"       TEXT        NOT NULL,
-    "expires_at"  TIMESTAMPTZ NOT NULL,
+    "expires_at"  TIMESTAMP(3) NOT NULL,
     "ip_address"  TEXT,
     "user_agent"  TEXT,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "sessions_token_key" ON "sessions"("token");
@@ -69,12 +69,12 @@ CREATE TABLE "accounts" (
     "access_token"              TEXT,
     "refresh_token"             TEXT,
     "id_token"                  TEXT,
-    "access_token_expires_at"   TIMESTAMPTZ,
-    "refresh_token_expires_at"  TIMESTAMPTZ,
+    "access_token_expires_at"   TIMESTAMP(3),
+    "refresh_token_expires_at"  TIMESTAMP(3),
     "scope"                     TEXT,
     "password"                  TEXT,
-    "created_at"                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"                TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"                TIMESTAMP(3) NOT NULL,
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "accounts_provider_id_account_id_key" ON "accounts"("provider_id", "account_id");
@@ -85,9 +85,9 @@ CREATE TABLE "verifications" (
     "id"          TEXT        NOT NULL,
     "identifier"  TEXT        NOT NULL,
     "value"       TEXT        NOT NULL,
-    "expires_at"  TIMESTAMPTZ NOT NULL,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "expires_at"  TIMESTAMP(3) NOT NULL,
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "verifications_pkey" PRIMARY KEY ("id")
 );
 
@@ -98,8 +98,8 @@ CREATE TABLE "team_members" (
     "team_id"     TEXT        NOT NULL,
     "user_id"     TEXT        NOT NULL,
     "role"        "TeamRole"  NOT NULL DEFAULT 'viewer',
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "team_members_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "team_members_team_id_user_id_key" ON "team_members"("team_id", "user_id");
@@ -112,9 +112,9 @@ CREATE TABLE "team_invitations" (
     "email"       TEXT        NOT NULL,
     "role"        "TeamRole"  NOT NULL DEFAULT 'viewer',
     "token"       TEXT        NOT NULL,
-    "expires_at"  TIMESTAMPTZ NOT NULL,
-    "accepted_at" TIMESTAMPTZ,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "expires_at"  TIMESTAMP(3) NOT NULL,
+    "accepted_at" TIMESTAMP(3),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "team_invitations_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "team_invitations_token_key" ON "team_invitations"("token");
@@ -129,10 +129,10 @@ CREATE TABLE "subscriptions" (
     "plan"                      "PlanTier"              NOT NULL DEFAULT 'free',
     "status"                    "SubscriptionStatus"    NOT NULL DEFAULT 'trialing',
     "billing_period"            "BillingPeriod"         NOT NULL DEFAULT 'monthly',
-    "trial_ends_at"             TIMESTAMPTZ,
-    "current_period_end"        TIMESTAMPTZ,
-    "created_at"                TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
-    "updated_at"                TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
+    "trial_ends_at"             TIMESTAMP(3),
+    "current_period_end"        TIMESTAMP(3),
+    "created_at"                TIMESTAMP(3)             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"                TIMESTAMP(3)             NOT NULL,
     CONSTRAINT "subscriptions_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "subscriptions_team_id_key"                   ON "subscriptions"("team_id");
@@ -145,8 +145,8 @@ CREATE TABLE "escalation_policies" (
     "id"          TEXT        NOT NULL,
     "team_id"     TEXT        NOT NULL,
     "name"        TEXT        NOT NULL,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "escalation_policies_pkey" PRIMARY KEY ("id")
 );
 
@@ -164,8 +164,8 @@ CREATE TABLE "escalation_step_recipients" (
     "step_id"     TEXT        NOT NULL,
     "channel_id"  TEXT,
     "user_id"     TEXT,
-    "removed_at"  TIMESTAMPTZ,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "removed_at"  TIMESTAMP(3),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "escalation_step_recipients_pkey" PRIMARY KEY ("id"),
     -- Exactly one of channel_id or user_id must be set; both-null only when removed_at marks a tombstone.
     CONSTRAINT "escalation_step_recipients_target_check" CHECK (
@@ -189,15 +189,15 @@ CREATE TABLE "monitors" (
     "current_status"                "MonitorStatus"   NOT NULL DEFAULT 'up',
     "interval_seconds"              INTEGER           NOT NULL DEFAULT 300,
     "timeout_ms"                    INTEGER           NOT NULL DEFAULT 30000,
-    "next_check_at"                 TIMESTAMPTZ,
-    "last_checked_at"               TIMESTAMPTZ,
+    "next_check_at"                 TIMESTAMP(3),
+    "last_checked_at"               TIMESTAMP(3),
     "consecutive_failures"          INTEGER           NOT NULL DEFAULT 0,
     "response_time_threshold_ms"    INTEGER,
     "keyword"                       TEXT,
     "keyword_condition"             "KeywordCondition",
     "content_snapshot"              TEXT,
-    "content_last_changed_at"       TIMESTAMPTZ,
-    "last_heartbeat_at"             TIMESTAMPTZ,
+    "content_last_changed_at"       TIMESTAMP(3),
+    "last_heartbeat_at"             TIMESTAMP(3),
     "escalation_policy_id"          TEXT,
     "anomaly_detection_enabled"     BOOLEAN           NOT NULL DEFAULT false,
     "slo_target"                    DECIMAL(6,4),
@@ -206,13 +206,12 @@ CREATE TABLE "monitors" (
     "slo_burn_rate_slow_threshold"  DOUBLE PRECISION,
     "config"                        JSONB             NOT NULL DEFAULT '{}',
     "tags"                          TEXT[]            NOT NULL DEFAULT ARRAY[]::TEXT[],
-    "deleted_at"                    TIMESTAMPTZ,
-    "created_at"                    TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
-    "updated_at"                    TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
+    "deleted_at"                    TIMESTAMP(3),
+    "created_at"                    TIMESTAMP(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"                    TIMESTAMP(3)       NOT NULL,
     CONSTRAINT "monitors_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "monitors_next_check"      ON "monitors"("next_check_at") WHERE "is_active" = true;
-CREATE INDEX "monitors_tags_gin"        ON "monitors" USING GIN ("tags");
 CREATE INDEX "monitors_heartbeat_token" ON "monitors" ((config->>'token')) WHERE type = 'heartbeat';
 
 -- ─── Check Results (partitioned by month on checked_at) ───────────────────────
@@ -224,7 +223,7 @@ CREATE INDEX "monitors_heartbeat_token" ON "monitors" ((config->>'token')) WHERE
 CREATE TABLE "check_results" (
     "id"                TEXT        NOT NULL,
     "monitor_id"        TEXT        NOT NULL,
-    "checked_at"        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "checked_at"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "success"           BOOLEAN     NOT NULL,
     "status_code"       INTEGER,
     "response_time_ms"  INTEGER,
@@ -246,7 +245,6 @@ CREATE TABLE "check_results_2026_11" PARTITION OF "check_results" FOR VALUES FRO
 CREATE TABLE "check_results_2026_12" PARTITION OF "check_results" FOR VALUES FROM ('2026-12-01') TO ('2027-01-01');
 
 -- Always query with monitor_id + checked_at range; never scan the full parent.
-CREATE INDEX "check_results_monitor_time"        ON "check_results" ("monitor_id", "checked_at" DESC);
 CREATE INDEX "check_results_monitor_region_time" ON "check_results" ("monitor_id", "region", "checked_at" DESC)
     WHERE "region" IS NOT NULL;
 
@@ -256,13 +254,13 @@ CREATE TABLE "incidents" (
     "id"                TEXT              NOT NULL,
     "team_id"           TEXT              NOT NULL,
     "monitor_id"        TEXT              NOT NULL,
-    "started_at"        TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
-    "resolved_at"       TIMESTAMPTZ,
+    "started_at"        TIMESTAMP(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "resolved_at"       TIMESTAMP(3),
     "resolution_type"   "ResolutionType",
-    "acknowledged_at"   TIMESTAMPTZ,
+    "acknowledged_at"   TIMESTAMP(3),
     "acknowledged_by"   TEXT,
-    "created_at"        TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
-    "updated_at"        TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
+    "created_at"        TIMESTAMP(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"        TIMESTAMP(3)       NOT NULL,
     CONSTRAINT "incidents_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "incidents_team_id_started_at_idx" ON "incidents"("team_id", "started_at" DESC);
@@ -276,8 +274,8 @@ CREATE TABLE "expiry_alerts" (
     "type"            "ExpiryAlertType" NOT NULL,
     "days_remaining"  INTEGER           NOT NULL,
     "threshold"       INTEGER           NOT NULL,
-    "sent_at"         TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
-    "created_at"      TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
+    "sent_at"         TIMESTAMP(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at"      TIMESTAMP(3)       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "expiry_alerts_pkey" PRIMARY KEY ("id")
 );
 
@@ -291,10 +289,10 @@ CREATE TABLE "alert_channels" (
     "type"            "AlertChannelType"  NOT NULL,
     "config"          JSONB               NOT NULL DEFAULT '{}',
     "is_active"       BOOLEAN             NOT NULL DEFAULT true,
-    "disabled_at"     TIMESTAMPTZ,
+    "disabled_at"     TIMESTAMP(3),
     "disabled_reason" TEXT,
-    "created_at"      TIMESTAMPTZ         NOT NULL DEFAULT NOW(),
-    "updated_at"      TIMESTAMPTZ         NOT NULL DEFAULT NOW(),
+    "created_at"      TIMESTAMP(3)         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"      TIMESTAMP(3)         NOT NULL,
     CONSTRAINT "alert_channels_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "alert_channels_team_id_user_id_idx" ON "alert_channels"("team_id", "user_id");
@@ -309,14 +307,14 @@ CREATE TABLE "notifications" (
     "incident_id"         TEXT                NOT NULL,
     "channel_id"          TEXT                NOT NULL,
     "kind"                "NotificationKind"  NOT NULL DEFAULT 'down',
-    "sent_window_bucket"  TIMESTAMPTZ         NOT NULL,
-    "sent_at"             TIMESTAMPTZ,
-    "created_at"          TIMESTAMPTZ         NOT NULL DEFAULT NOW(),
+    "sent_window_bucket"  TIMESTAMP(3)         NOT NULL,
+    "sent_at"             TIMESTAMP(3),
+    "created_at"          TIMESTAMP(3)         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "notifications_idem_unique"
     ON "notifications"("incident_id", "channel_id", "kind", "sent_window_bucket");
-CREATE INDEX "notifications_incident_channel_sent_idx"
+CREATE INDEX "notifications_incident_id_channel_id_sent_at_idx"
     ON "notifications"("incident_id", "channel_id", "sent_at" DESC);
 
 -- ─── Status Pages ─────────────────────────────────────────────────────────────
@@ -331,8 +329,8 @@ CREATE TABLE "status_pages" (
     "detected_dns_provider"   TEXT,
     "cloudflare_hostname_id"  TEXT,
     "is_public"               BOOLEAN     NOT NULL DEFAULT true,
-    "created_at"              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"              TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"              TIMESTAMP(3) NOT NULL,
     CONSTRAINT "status_pages_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "status_pages_slug_key"      ON "status_pages"("slug");
@@ -353,10 +351,10 @@ CREATE UNIQUE INDEX "status_page_monitors_status_page_id_monitor_id_key"
 CREATE TABLE "maintenance_windows" (
     "id"          TEXT        NOT NULL,
     "team_id"     TEXT        NOT NULL,
-    "starts_at"   TIMESTAMPTZ NOT NULL,
-    "ends_at"     TIMESTAMPTZ NOT NULL,
+    "starts_at"   TIMESTAMP(3) NOT NULL,
+    "ends_at"     TIMESTAMP(3) NOT NULL,
     "reason"      TEXT,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "maintenance_windows_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "maintenance_windows_team_id_ends_at_idx" ON "maintenance_windows"("team_id", "ends_at" DESC);
@@ -376,8 +374,8 @@ CREATE TABLE "notification_read_state" (
     "id"            TEXT        NOT NULL,
     "team_id"       TEXT        NOT NULL,
     "user_id"       TEXT        NOT NULL,
-    "last_seen_at"  TIMESTAMPTZ NOT NULL,
-    "updated_at"    TIMESTAMPTZ NOT NULL,
+    "last_seen_at"  TIMESTAMP(3) NOT NULL,
+    "updated_at"    TIMESTAMP(3) NOT NULL,
     CONSTRAINT "notification_read_state_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "notification_read_state_team_id_user_id_key"
@@ -390,11 +388,11 @@ CREATE TABLE "user_notification_preferences" (
     "user_id"             TEXT        NOT NULL,
     "team_id"             TEXT        NOT NULL,
     "primary_channel_id"  TEXT,
-    "created_at"          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"          TIMESTAMP(3) NOT NULL,
     CONSTRAINT "user_notification_preferences_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "user_notification_prefs_user_id_team_id_key"
+CREATE UNIQUE INDEX "user_notification_preferences_user_id_team_id_key"
     ON "user_notification_preferences"("user_id", "team_id");
 
 -- ─── Performance Alerts ───────────────────────────────────────────────────────
@@ -403,13 +401,13 @@ CREATE TABLE "performance_alerts" (
     "id"                TEXT             NOT NULL,
     "team_id"           TEXT             NOT NULL,
     "monitor_id"        TEXT             NOT NULL,
-    "checked_at"        TIMESTAMPTZ      NOT NULL,
+    "checked_at"        TIMESTAMP(3)      NOT NULL,
     "response_time_ms"  INTEGER          NOT NULL,
     "mean_ms"           DOUBLE PRECISION NOT NULL,
     "std_dev_ms"        DOUBLE PRECISION NOT NULL,
     "z_score"           DOUBLE PRECISION NOT NULL,
-    "notified_at"       TIMESTAMPTZ,
-    "created_at"        TIMESTAMPTZ      NOT NULL DEFAULT NOW(),
+    "notified_at"       TIMESTAMP(3),
+    "created_at"        TIMESTAMP(3)      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "performance_alerts_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "performance_alerts_monitor_id_checked_at_idx"
@@ -421,12 +419,12 @@ CREATE TABLE "deploy_events" (
     "id"              TEXT        NOT NULL,
     "monitor_id"      TEXT        NOT NULL,
     "team_id"         TEXT        NOT NULL,
-    "started_at"      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "ended_at"        TIMESTAMPTZ,
+    "started_at"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "ended_at"        TIMESTAMP(3),
     "commit_sha"      TEXT,
     "description"     TEXT,
     "suppress_alerts" BOOLEAN     NOT NULL DEFAULT true,
-    "created_at"      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "deploy_events_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "deploy_events_monitor_id_started_at_idx"
@@ -437,7 +435,7 @@ CREATE INDEX "deploy_events_monitor_id_started_at_idx"
 CREATE TABLE "processed_webhook_events" (
     "id"            TEXT        NOT NULL,
     "type"          TEXT        NOT NULL,
-    "processed_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "processed_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "processed_webhook_events_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "processed_webhook_events_processed_at_idx"
@@ -451,9 +449,10 @@ CREATE TABLE "competitors" (
     "name"        TEXT        NOT NULL,
     "domain"      TEXT        NOT NULL,
     "platform"    TEXT        NOT NULL,
-    "is_active"   BOOLEAN     NOT NULL DEFAULT true,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "is_active"   BOOLEAN      NOT NULL DEFAULT true,
+    "deleted_at"  TIMESTAMP(3),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "competitors_pkey" PRIMARY KEY ("id")
 );
 
@@ -467,10 +466,10 @@ CREATE TABLE "competitor_pages" (
     "interval_seconds"    INTEGER     NOT NULL DEFAULT 3600,
     "is_active"           BOOLEAN     NOT NULL DEFAULT true,
     "last_snapshot_hash"  TEXT,
-    "last_checked_at"     TIMESTAMPTZ,
-    "next_check_at"       TIMESTAMPTZ,
-    "created_at"          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "last_checked_at"     TIMESTAMP(3),
+    "next_check_at"       TIMESTAMP(3),
+    "created_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"          TIMESTAMP(3) NOT NULL,
     CONSTRAINT "competitor_pages_pkey" PRIMARY KEY ("id")
 );
 
@@ -490,9 +489,9 @@ CREATE TABLE "competitor_products" (
     "current_price"       DECIMAL(10,2),
     "compare_at_price"    DECIMAL(10,2),
     "currency"            TEXT            NOT NULL DEFAULT 'USD',
-    "last_seen_at"        TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
-    "created_at"          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
-    "updated_at"          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+    "last_seen_at"        TIMESTAMP(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at"          TIMESTAMP(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"          TIMESTAMP(3)     NOT NULL,
     CONSTRAINT "competitor_products_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "competitor_products_competitor_id_shopify_product_id_key"
@@ -506,8 +505,8 @@ CREATE TABLE "competitor_events" (
     "page_id"         TEXT,
     "type"            TEXT        NOT NULL,
     "payload"         JSONB       NOT NULL DEFAULT '{}',
-    "detected_at"     TIMESTAMPTZ NOT NULL,
-    "created_at"      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "detected_at"     TIMESTAMP(3) NOT NULL,
+    "created_at"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "competitor_events_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "competitor_events_team_id_detected_at_idx"
@@ -522,8 +521,8 @@ CREATE TABLE "competitor_decisions" (
     "response"    TEXT        NOT NULL,
     "note"        TEXT,
     "decided_by"  TEXT        NOT NULL,
-    "created_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "updated_at"  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "created_at"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  TIMESTAMP(3) NOT NULL,
     CONSTRAINT "competitor_decisions_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "competitor_decisions_event_id_key" ON "competitor_decisions"("event_id");
@@ -532,11 +531,14 @@ CREATE TABLE "competitor_notification_channels" (
     "id"              TEXT        NOT NULL,
     "competitor_id"   TEXT        NOT NULL,
     "channel_id"      TEXT        NOT NULL,
-    "created_at"      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "team_id"         TEXT        NOT NULL,
+    "created_at"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "competitor_notification_channels_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "competitor_notification_channels_competitor_id_channel_id_key"
     ON "competitor_notification_channels"("competitor_id", "channel_id");
+CREATE INDEX "competitor_notification_channels_team_id_idx"
+    ON "competitor_notification_channels"("team_id");
 
 -- ─── Content Snapshots ────────────────────────────────────────────────────────
 -- Exactly one of monitor_id or competitor_page_id must be set.
@@ -548,12 +550,12 @@ CREATE TABLE "content_snapshots" (
     "team_id"             TEXT        NOT NULL,
     "content"             TEXT        NOT NULL,
     "content_hash"        TEXT,
-    "captured_at"         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "captured_at"         TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "diff_summary"        TEXT,
     "classification"      TEXT,
     "ai_confidence"       DOUBLE PRECISION,
     "ai_model"            TEXT,
-    "ai_analyzed_at"      TIMESTAMPTZ,
+    "ai_analyzed_at"      TIMESTAMP(3),
     CONSTRAINT "content_snapshots_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "content_snapshots_source_check" CHECK (
         ("monitor_id" IS NOT NULL AND "competitor_page_id" IS NULL)
@@ -592,8 +594,7 @@ ALTER TABLE "subscriptions"
 -- Teams self-ref (must come after escalation_policies is created above)
 ALTER TABLE "teams"
     ADD CONSTRAINT "teams_default_escalation_policy_id_fkey"
-    FOREIGN KEY ("default_escalation_policy_id") REFERENCES "escalation_policies"("id") ON DELETE SET NULL;
-CREATE INDEX "teams_default_escalation_policy_id_idx" ON "teams"("default_escalation_policy_id");
+    FOREIGN KEY ("default_escalation_policy_id") REFERENCES "escalation_policies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Escalation
 ALTER TABLE "escalation_policies"
@@ -607,10 +608,10 @@ ALTER TABLE "escalation_step_recipients"
     FOREIGN KEY ("step_id") REFERENCES "escalation_steps"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "escalation_step_recipients"
     ADD CONSTRAINT "escalation_step_recipients_channel_id_fkey"
-    FOREIGN KEY ("channel_id") REFERENCES "alert_channels"("id") ON DELETE CASCADE;
+    FOREIGN KEY ("channel_id") REFERENCES "alert_channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "escalation_step_recipients"
     ADD CONSTRAINT "escalation_step_recipients_user_id_fkey"
-    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
+    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Monitors
 ALTER TABLE "monitors"
@@ -618,7 +619,7 @@ ALTER TABLE "monitors"
     FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "monitors"
     ADD CONSTRAINT "monitors_escalation_policy_id_fkey"
-    FOREIGN KEY ("escalation_policy_id") REFERENCES "escalation_policies"("id") ON DELETE SET NULL;
+    FOREIGN KEY ("escalation_policy_id") REFERENCES "escalation_policies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Check results (FK on partition parent propagates to all child partitions)
 ALTER TABLE "check_results"
@@ -647,7 +648,7 @@ ALTER TABLE "alert_channels"
     FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "alert_channels"
     ADD CONSTRAINT "alert_channels_user_id_fkey"
-    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
+    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- Notifications
 ALTER TABLE "notifications"
@@ -692,14 +693,14 @@ ALTER TABLE "notification_read_state"
 
 -- User notification preferences
 ALTER TABLE "user_notification_preferences"
-    ADD CONSTRAINT "user_notification_prefs_user_id_fkey"
-    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "user_notification_preferences_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "user_notification_preferences"
-    ADD CONSTRAINT "user_notification_prefs_team_id_fkey"
-    FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "user_notification_preferences_team_id_fkey"
+    FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "user_notification_preferences"
-    ADD CONSTRAINT "user_notification_prefs_primary_channel_id_fkey"
-    FOREIGN KEY ("primary_channel_id") REFERENCES "alert_channels"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "user_notification_preferences_primary_channel_id_fkey"
+    FOREIGN KEY ("primary_channel_id") REFERENCES "alert_channels"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Performance alerts
 ALTER TABLE "performance_alerts"
@@ -768,3 +769,6 @@ ALTER TABLE "competitor_notification_channels"
 ALTER TABLE "competitor_notification_channels"
     ADD CONSTRAINT "competitor_notification_channels_channel_id_fkey"
     FOREIGN KEY ("channel_id") REFERENCES "alert_channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "competitor_notification_channels"
+    ADD CONSTRAINT "competitor_notification_channels_team_id_fkey"
+    FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
