@@ -9,6 +9,9 @@ import type {
   EscalationStepJob,
   SloBurnAlertJob,
   IntelligenceDigestJob,
+  ShopifyFeedJob,
+  CompetitorPageCheckJob,
+  CompetitorNotifyJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -105,6 +108,42 @@ export function createIntelligenceDigestQueue(connection: Redis): Queue<Intellig
       backoff: { type: 'exponential', delay: 5000 },
       removeOnComplete: { count: 100 },
       removeOnFail: { count: 200 },
+    },
+  });
+}
+
+export function createShopifyFeedQueue(connection: Redis): Queue<ShopifyFeedJob> {
+  return new Queue<ShopifyFeedJob>(QUEUE_NAMES.SHOPIFY_FEED, {
+    connection,
+    defaultJobOptions: {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { count: 100 },
+      removeOnFail: { count: 500 },
+    },
+  });
+}
+
+export function createCompetitorPageCheckQueue(connection: Redis): Queue<CompetitorPageCheckJob> {
+  return new Queue<CompetitorPageCheckJob>(QUEUE_NAMES.COMPETITOR_PAGE_CHECK, {
+    connection,
+    defaultJobOptions: {
+      attempts: 2,
+      backoff: { type: 'fixed', delay: 5000 },
+      removeOnComplete: { count: 100 },
+      removeOnFail: { count: 500 },
+    },
+  });
+}
+
+export function createCompetitorNotifyQueue(connection: Redis): Queue<CompetitorNotifyJob> {
+  return new Queue<CompetitorNotifyJob>(QUEUE_NAMES.COMPETITOR_NOTIFY, {
+    connection,
+    defaultJobOptions: {
+      attempts: 5,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: { count: 500 },
+      removeOnFail: { count: 1000 },
     },
   });
 }

@@ -11,3 +11,5 @@ export * from './slo.js';
 export * from './content-snapshots.js';
 export * from './escalation-recipients.js';
 export * from './digest.js';
+export * from './competitor-products.js';
+export * from './competitor-events.js';
