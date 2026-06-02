@@ -3,7 +3,11 @@ import { clampToPlanRetention, type Result, ok, err } from '@beaconmon/types';
 import type { PlanTier } from '@beaconmon/types';
 import { competitorRepository } from './competitors';
 
-export type IntelligenceEventType = 'content_change' | 'pricing_change' | 'expiry_alert';
+export type IntelligenceEventType =
+  | 'content_change'
+  | 'pricing_change'
+  | 'expiry_alert'
+  | 'competitor_event';
 
 export interface IntelligenceEvent {
   id: string;
@@ -18,6 +22,8 @@ export interface IntelligenceEvent {
   expiryType?: 'ssl' | 'domain';
   daysRemaining?: number;
   threshold?: number;
+  competitorEventType?: string;
+  payload?: Record<string, unknown>;
 }
 
 const PRICING_PATTERN = /price|pricing|\.price|#price|\/pricing/i;
@@ -52,18 +58,19 @@ export const intelligenceRepository = {
 
       const from = clampToPlanRetention(rangeFrom, plan);
       const { limit, before, monitorId } = opts;
-      const types = opts.types ?? ['content_change', 'pricing_change', 'expiry_alert'];
+      const types = opts.types ?? ['content_change', 'pricing_change', 'expiry_alert', 'competitor_event'];
 
       const wantsContent = types.some((t) => t === 'content_change' || t === 'pricing_change');
+      const wantsCompetitorEvent = types.includes('competitor_event');
 
-      const [snapshotRows, , activeCompetitorCount] = await Promise.all([
+      const [snapshotRows, competitorEventRows, activeCompetitorCount] = await Promise.all([
         wantsContent
           ? prisma.contentSnapshot.findMany({
               where: {
                 teamId,
                 competitorPageId: { not: null },
                 capturedAt: { gte: from, ...(before ? { lt: before } : {}) },
-                ...(monitorId ? { competitorPageId: monitorId } : {}),
+                ...(monitorId ? { competitorPage: { competitorId: monitorId } } : {}),
               },
               select: {
                 id: true,
@@ -76,7 +83,27 @@ export const intelligenceRepository = {
               take: limit + 1,
             })
           : Promise.resolve([]),
-        Promise.resolve([]),
+        wantsCompetitorEvent
+          ? prisma.competitorEvent.findMany({
+              where: {
+                teamId,
+                ...(monitorId ? { competitorId: monitorId } : {}),
+                detectedAt: { gte: from, ...(before ? { lt: before } : {}) },
+              },
+              select: {
+                id: true,
+                competitorId: true,
+                pageId: true,
+                productId: true,
+                type: true,
+                payload: true,
+                detectedAt: true,
+                competitor: { select: { id: true, name: true, domain: true } },
+              },
+              orderBy: { detectedAt: 'desc' },
+              take: limit + 1,
+            })
+          : Promise.resolve([]),
         competitorRepository.countActive(teamId),
       ]);
 
@@ -99,9 +126,20 @@ export const intelligenceRepository = {
         };
       });
 
+      const competitorEvents: IntelligenceEvent[] = competitorEventRows.map((r) => ({
+        id: r.id,
+        type: 'competitor_event' as const,
+        timestamp: r.detectedAt,
+        monitorId: r.competitor.id,
+        monitorName: r.competitor.name,
+        monitorUrl: r.competitor.domain,
+        competitorEventType: r.type,
+        payload: r.payload as Record<string, unknown>,
+      }));
+
       const filteredContent = contentEvents.filter((e) => types.includes(e.type));
 
-      const merged = [...filteredContent].sort(
+      const merged = [...filteredContent, ...competitorEvents].sort(
         (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
       );
 
