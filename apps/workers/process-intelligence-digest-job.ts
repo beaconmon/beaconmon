@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import type { Redis } from 'ioredis';
-import { prisma, contentSnapshotWorkerRepository, digestRepository } from '@beaconmon/db';
+import { prisma, digestRepository } from '@beaconmon/db';
 import type { IntelligenceDigestJob } from '@beaconmon/queue';
 import { digestPrefsSchema } from '@beaconmon/types';
 import { emailChannelConfigSchema, slackChannelConfigSchema } from '@beaconmon/types';
@@ -18,6 +18,24 @@ import type {
 } from './emails/intelligence-digest.js';
 
 const service = 'digest-worker';
+
+function formatEventSummary(type: string, payload: Record<string, unknown>): string {
+  switch (type) {
+    case 'price_changed':
+      return `$${payload.oldPrice} → $${payload.newPrice}`;
+    case 'product_added':
+      return `New: ${payload.title}`;
+    case 'product_removed':
+      return `Removed: ${payload.title}`;
+    case 'stock_changed':
+      return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'site_changed':
+    case 'promo_detected':
+      return (payload.diffSummary as string | undefined) ?? 'Content changed';
+    default:
+      return 'Competitor event';
+  }
+}
 
 // Slack Block Kit digest payload
 function buildSlackPayload(
@@ -205,17 +223,16 @@ export async function processIntelligenceDigestJob(
   }
 
   if (prefs.sections.competitors) {
-    const snaps = await contentSnapshotWorkerRepository.findSnapshotsForDigest(teamId, start, end);
-    sections.competitors = snaps
-      .map((s) => ({
-        monitorId: s.competitorPageId,
-        monitorName: s.competitorName,
-        monitorUrl: s.pageUrl,
-        capturedAt: s.capturedAt,
-        diffSummary: s.diffSummary,
-        classification: s.classification,
-        dashboardUrl: `${appUrl}/intelligence`,
-      }));
+    const events = await digestRepository.findCompetitorEventsForDigest(teamId, start, end);
+    sections.competitors = events.map((e) => ({
+      monitorId: e.competitorId,
+      monitorName: e.competitorName,
+      monitorUrl: e.competitorDomain,
+      capturedAt: e.detectedAt,
+      diffSummary: formatEventSummary(e.type, e.payload),
+      classification: e.type,
+      dashboardUrl: `${appUrl}/competitors/${e.competitorId}`,
+    }));
   }
 
   if (prefs.sections.smartAlerts) {

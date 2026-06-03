@@ -3,6 +3,12 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'launchigniter.com' },
+      { protocol: 'https', hostname: 'postyourstartup.co' },
+    ],
+  },
   experimental: {
     // Inline above-the-fold CSS into the HTML and defer the full stylesheet as
     // non-blocking, eliminating the render-blocking critical request chain.
