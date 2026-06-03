@@ -129,7 +129,7 @@ function ProductsTab({ competitorId }: { competitorId: string }) {
 function EventsTab({ competitorId }: { competitorId: string }) {
   const { events, hasMore, isLoading, isError, loadMore } = useCompetitorEvents(competitorId);
 
-  if (isError) {
+  if (isError && events.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-sm text-brand-red">
         Failed to load events. Please try again.

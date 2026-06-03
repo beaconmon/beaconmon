@@ -188,7 +188,6 @@ export function useCompetitorEvents(id: string): EventsState {
   const fetchPage = useCallback(
     async (before?: string, append = false) => {
       const capturedId = id;
-      setIsError(false);
       try {
         const params = new URLSearchParams({ limit: '50' });
         if (before) params.set('before', before);
@@ -214,7 +213,9 @@ export function useCompetitorEvents(id: string): EventsState {
       setEvents([]);
       setCursor(null);
       setIsLoading(true);
+      setIsError(false);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetchPage only calls setState after await, not synchronously
     void fetchPage(undefined, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -222,6 +223,7 @@ export function useCompetitorEvents(id: string): EventsState {
   const loadMore = useCallback(() => {
     if (!hasMore || isLoading || !cursor) return;
     setIsLoading(true);
+    setIsError(false);
     void fetchPage(cursor, true);
   }, [hasMore, isLoading, cursor, fetchPage]);
 

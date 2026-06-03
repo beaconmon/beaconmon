@@ -49,10 +49,10 @@ export default function Footer() {
             <p className="text-[12px] text-brand-muted mt-8">© 2026 Beaconmon. Made for ecommerce.</p>
             <div className="flex flex-wrap gap-2 mt-4">
               <a href="https://launchigniter.com/product/beaconmon?ref=badge-beaconmon" target="_blank" rel="noopener noreferrer" className="inline-block">
-                <Image src="https://launchigniter.com/api/badge/beaconmon?theme=neutral" alt="Featured on LaunchIgniter" width={212} height={55} />
+                <Image src="https://launchigniter.com/api/badge/beaconmon?theme=neutral" alt="Featured on LaunchIgniter" width={212} height={55} unoptimized />
               </a>
               <a href="https://postyourstartup.co/startup/beaconmon?ref=badge" target="_blank" rel="noopener noreferrer" className="inline-block">
-                <Image src="https://postyourstartup.co/api/badge/beaconmon?theme=light" alt="Featured on PostYourStartup" width={212} height={55} />
+                <Image src="https://postyourstartup.co/api/badge/beaconmon?theme=light" alt="Featured on PostYourStartup" width={212} height={55} unoptimized />
               </a>
             </div>
           </div>
