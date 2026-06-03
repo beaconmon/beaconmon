@@ -130,7 +130,11 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
             </Link>
           ) : !isExpiry && event.snapshotId ? (
             <Link
-              href={`/monitors/${event.monitorId}?tab=snapshots`}
+              href={
+                isCompetitor
+                  ? `/competitors/${event.monitorId}?tab=pages`
+                  : `/monitors/${event.monitorId}?tab=snapshots`
+              }
               className="text-xs text-brand-green-ink hover:underline"
             >
               View change
