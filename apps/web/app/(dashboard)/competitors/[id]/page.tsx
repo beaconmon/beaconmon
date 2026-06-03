@@ -24,6 +24,7 @@ import {
   useAddCompetitorChannel,
   useRemoveCompetitorChannel,
 } from '@/lib/hooks/use-competitors';
+import { DecisionActionBar } from '@/components/competitors/decision-action-bar';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -127,7 +128,7 @@ function ProductsTab({ competitorId }: { competitorId: string }) {
 // ─── Events tab ───────────────────────────────────────────────────────────────
 
 function EventsTab({ competitorId }: { competitorId: string }) {
-  const { events, hasMore, isLoading, isError, loadMore } = useCompetitorEvents(competitorId);
+  const { events, hasMore, isLoading, isError, loadMore, updateEventDecision } = useCompetitorEvents(competitorId);
 
   if (isError && events.length === 0) {
     return (
@@ -163,24 +164,32 @@ function EventsTab({ competitorId }: { competitorId: string }) {
               return (
                 <div
                   key={e.id}
-                  className={`grid grid-cols-[1fr_120px] gap-3 px-4 py-3 hover:bg-brand-bg3/30 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
+                  className={`px-4 py-3 hover:bg-brand-bg3/30 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
                 >
-                  <div className="min-w-0 space-y-0.5">
-                    <span
-                      className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
-                      style={{ background: 'rgba(180,83,9,0.1)', color: 'var(--brand-amber)' }}
-                    >
-                      {label}
-                    </span>
-                    {summary && (
-                      <p className="text-sm text-brand-dim">{summary}</p>
-                    )}
+                  <div className="grid grid-cols-[1fr_120px] gap-3">
+                    <div className="min-w-0 space-y-0.5">
+                      <span
+                        className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                        style={{ background: 'rgba(180,83,9,0.1)', color: 'var(--brand-amber)' }}
+                      >
+                        {label}
+                      </span>
+                      {summary && (
+                        <p className="text-sm text-brand-dim">{summary}</p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <time className="font-mono text-[11px] text-brand-muted">
+                        {formatDistanceToNow(new Date(e.detectedAt), { addSuffix: true })}
+                      </time>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <time className="font-mono text-[11px] text-brand-muted">
-                      {formatDistanceToNow(new Date(e.detectedAt), { addSuffix: true })}
-                    </time>
-                  </div>
+                  <DecisionActionBar
+                    eventId={e.id}
+                    competitorId={competitorId}
+                    currentDecision={e.decision}
+                    onDecisionChange={(d) => updateEventDecision(e.id, d)}
+                  />
                 </div>
               );
             })}

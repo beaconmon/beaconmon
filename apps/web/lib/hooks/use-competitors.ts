@@ -25,6 +25,12 @@ export interface CompetitorDetail {
   createdAt: string;
 }
 
+export interface CompetitorDecisionData {
+  id: string;
+  response: string;
+  note: string | null;
+}
+
 export interface CompetitorEventRow {
   id: string;
   competitorId: string;
@@ -33,6 +39,7 @@ export interface CompetitorEventRow {
   type: string;
   payload: Record<string, unknown>;
   detectedAt: string;
+  decision?: CompetitorDecisionData | null;
 }
 
 export interface CompetitorProductRow {
@@ -175,6 +182,7 @@ interface EventsState {
   isError: boolean;
   cursor: string | null;
   loadMore: () => void;
+  updateEventDecision: (eventId: string, decision: CompetitorDecisionData | null) => void;
 }
 
 export function useCompetitorEvents(id: string): EventsState {
@@ -227,7 +235,11 @@ export function useCompetitorEvents(id: string): EventsState {
     void fetchPage(cursor, true);
   }, [hasMore, isLoading, cursor, fetchPage]);
 
-  return { events, hasMore, isLoading, isError, cursor, loadMore };
+  const updateEventDecision = useCallback((eventId: string, decision: CompetitorDecisionData | null) => {
+    setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, decision } : e)));
+  }, []);
+
+  return { events, hasMore, isLoading, isError, cursor, loadMore, updateEventDecision };
 }
 
 // ─── Legacy feed (kept for backward compat) ───────────────────────────────────

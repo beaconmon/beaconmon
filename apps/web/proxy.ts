@@ -102,10 +102,6 @@ export default async function proxy(req: NextRequest) {
     if (pathname === '/for/freelancers') {
       return NextResponse.redirect(new URL('/for/solo-founders', req.url), 301);
     }
-    if (pathname === '/competitors' || pathname.startsWith('/competitors/')) {
-      return NextResponse.redirect(new URL('/intelligence', req.url), 301);
-    }
-
     // Redirect trailing-slash URLs to their canonical non-slash form to prevent
     // duplicate content (skipTrailingSlashRedirect: true means Next.js won't do this).
     // Exclude /ingest/ proxy paths: posthog-js POSTs to /ingest/e/ and /ingest/decide/

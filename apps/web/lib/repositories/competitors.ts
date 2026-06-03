@@ -30,6 +30,16 @@ export interface CompetitorRow {
   updatedAt: Date;
 }
 
+export interface CompetitorDecisionRow {
+  id: string;
+  eventId: string;
+  response: string;
+  note: string | null;
+  decidedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CompetitorEventRow {
   id: string;
   teamId: string;
@@ -40,6 +50,7 @@ export interface CompetitorEventRow {
   payload: unknown;
   detectedAt: Date;
   createdAt: Date;
+  decision?: CompetitorDecisionRow | null;
 }
 
 export interface CompetitorProductRow {
@@ -182,6 +193,7 @@ export const competitorRepository = {
       where: { teamId, competitorId, ...beforeFilter },
       orderBy: [{ detectedAt: 'desc' }, { id: 'desc' }],
       take: opts.limit + 1,
+      include: { decision: true },
     });
     const hasMore = rows.length > opts.limit;
     const events = rows.slice(0, opts.limit);
@@ -190,6 +202,24 @@ export const competitorRepository = {
       events,
       nextCursor: hasMore && lastEvent ? `${lastEvent.detectedAt.toISOString()}|${lastEvent.id}` : null,
     };
+  },
+
+  async upsertDecision(
+    teamId: string,
+    eventId: string,
+    response: string,
+    note: string | undefined,
+    decidedBy: string
+  ): Promise<CompetitorDecisionRow> {
+    return prisma.competitorDecision.upsert({
+      where: { eventId },
+      create: { teamId, eventId, response, note: note ?? null, decidedBy },
+      update: { response, note: note ?? null, decidedBy },
+    });
+  },
+
+  async deleteDecision(teamId: string, eventId: string): Promise<void> {
+    await prisma.competitorDecision.deleteMany({ where: { eventId, teamId } });
   },
 
   async findProducts(teamId: string, competitorId: string): Promise<CompetitorProductRow[]> {

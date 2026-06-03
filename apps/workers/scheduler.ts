@@ -302,7 +302,7 @@ async function scheduleChecks(): Promise<void> {
           selector: page.selector ?? undefined,
           intervalSeconds: page.intervalSeconds,
         },
-        { jobId: `cpc:${page.id}` }
+        { jobId: `cpc_${page.id}` }
       );
       await prisma.competitorPage.update({
         where: { id: page.id },
@@ -322,7 +322,7 @@ async function scheduleChecks(): Promise<void> {
         await shopifyFeedQueue.add(
           'shopify-feed',
           { competitorId: c.id, teamId: c.teamId, domain: c.domain },
-          { jobId: `sf:${c.id}:${now.getTime()}` }
+          { jobId: `sf_${c.id}_${now.getTime()}` }
         );
       }
     }
