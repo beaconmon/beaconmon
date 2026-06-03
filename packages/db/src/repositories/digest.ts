@@ -45,6 +45,16 @@ export interface DigestOwnContentSnapshot {
   classification: string | null;
 }
 
+export interface DigestCompetitorEvent {
+  id: string;
+  competitorId: string;
+  competitorName: string;
+  competitorDomain: string;
+  type: string;
+  payload: Record<string, unknown>;
+  detectedAt: Date;
+}
+
 export const digestRepository = {
   async getDigestPrefs(teamId: string): Promise<unknown> {
     const team = await prisma.team.findUnique({
@@ -171,6 +181,28 @@ export const digestRepository = {
       sentAt: r.sentAt,
       monitorName: r.monitor.name,
       monitorUrl: r.monitor.url,
+    }));
+  },
+
+  async findCompetitorEventsForDigest(
+    teamId: string,
+    start: Date,
+    end: Date
+  ): Promise<DigestCompetitorEvent[]> {
+    const rows = await prisma.competitorEvent.findMany({
+      where: { teamId, detectedAt: { gte: start, lte: end } },
+      include: { competitor: { select: { id: true, name: true, domain: true } } },
+      orderBy: { detectedAt: 'desc' },
+    });
+
+    return rows.map((r) => ({
+      id: r.id,
+      competitorId: r.competitor.id,
+      competitorName: r.competitor.name,
+      competitorDomain: r.competitor.domain,
+      type: r.type,
+      payload: r.payload as Record<string, unknown>,
+      detectedAt: r.detectedAt,
     }));
   },
 

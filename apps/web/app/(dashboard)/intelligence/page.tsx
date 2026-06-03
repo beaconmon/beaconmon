@@ -13,7 +13,6 @@ import { CompetitorWatchlistPanel } from '@/components/intelligence/competitor-w
 import { CompetitorManagementSheet } from '@/components/intelligence/competitor-management-sheet';
 import { DigestPreviewPanel } from '@/components/intelligence/digest-preview-panel';
 import { useIntelligenceFeed } from '@/lib/hooks/use-intelligence-feed';
-import { useCompetitors } from '@/lib/hooks/use-competitors';
 import { useSession } from '@/lib/hooks/use-session';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { QueryState } from '@/components/dashboard/query-state';
@@ -31,11 +30,6 @@ function IntelligencePageInner() {
 
   const { events, hasMore, activeCompetitorCount, isLoading, isError, loadMore, refresh } =
     useIntelligenceFeed({ monitorId, type, range });
-
-  const { data: competitors } = useCompetitors();
-  const competitorMonitors = competitors ?? [];
-
-  const monitorIsCompetitorMap = new Map<string, boolean>();
 
   const isFreePlan = plan === 'free';
   const competitorLimit = PLAN_LIMITS[plan].competitorMonitors;
@@ -104,7 +98,7 @@ function IntelligencePageInner() {
                       hasMore={hasMore}
                       isLoading={isLoading}
                       onLoadMore={loadMore}
-                      monitorIsCompetitorMap={monitorIsCompetitorMap}
+                      monitorIsCompetitorMap={new Map()}
                     />
                   )}
                 </QueryState>
@@ -114,7 +108,6 @@ function IntelligencePageInner() {
             {/* Right rail */}
             <div className="space-y-4">
               <CompetitorWatchlistPanel
-                competitors={competitorMonitors}
                 events={events}
                 plan={plan}
                 onChanged={refresh}

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShieldAlert, Globe, DollarSign, FileText } from 'lucide-react';
+import { ShieldAlert, Globe, DollarSign, FileText, TrendingDown } from 'lucide-react';
 import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
 
 interface IntelligenceEventCardProps {
@@ -18,6 +18,28 @@ function formatTimestamp(ts: string | Date): string {
   });
 }
 
+function formatPayloadSummary(
+  type: string | undefined,
+  payload: Record<string, unknown> | undefined
+): string {
+  if (!type || !payload) return '';
+  switch (type) {
+    case 'price_changed':
+      return `$${payload.oldPrice} → $${payload.newPrice}`;
+    case 'product_added':
+      return `New: ${payload.title}`;
+    case 'product_removed':
+      return `Removed: ${payload.title}`;
+    case 'stock_changed':
+      return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'site_changed':
+    case 'promo_detected':
+      return (payload.diffSummary as string | undefined) ?? 'Content changed';
+    default:
+      return '';
+  }
+}
+
 function EventIcon({ event }: { event: IntelligenceEvent }) {
   if (event.type === 'expiry_alert') {
     return event.expiryType === 'ssl'
@@ -27,26 +49,41 @@ function EventIcon({ event }: { event: IntelligenceEvent }) {
   if (event.type === 'pricing_change') {
     return <DollarSign className="h-4 w-4 text-amber-500 dark:text-amber-400" />;
   }
+  if (event.type === 'competitor_event') {
+    return <TrendingDown className="h-4 w-4 text-amber-500 dark:text-amber-400" />;
+  }
   return <FileText className="h-4 w-4 text-brand-dim" />;
 }
 
 export function IntelligenceEventCard({ event, isCompetitor = true }: IntelligenceEventCardProps) {
   const isExpiry = event.type === 'expiry_alert';
+  const isCompetitorEvent = event.type === 'competitor_event';
 
   const sourceKicker = isExpiry
     ? null
-    : isCompetitor
+    : (isCompetitor || isCompetitorEvent)
       ? { label: 'COMPETITOR', color: 'text-amber-500 dark:text-amber-400' }
       : { label: 'YOUR STORE', color: 'text-brand-muted' };
 
-  const typeLabel =
-    event.type === 'pricing_change'
-      ? 'Pricing change'
-      : event.type === 'content_change'
-        ? 'Content edit'
-        : event.expiryType === 'ssl'
-          ? 'SSL expiring'
-          : 'Domain expiring';
+  const typeLabel = (() => {
+    if (isCompetitorEvent) {
+      const map: Record<string, string> = {
+        price_changed: 'Price change',
+        product_added: 'New product',
+        product_removed: 'Product removed',
+        stock_changed: 'Stock change',
+        site_changed: 'Site change',
+        promo_detected: 'Promo detected',
+      };
+      return map[event.competitorEventType ?? ''] ?? 'Competitor event';
+    }
+    if (event.type === 'pricing_change') return 'Pricing change';
+    if (event.type === 'content_change') return 'Content edit';
+    return event.expiryType === 'ssl' ? 'SSL expiring' : 'Domain expiring';
+  })();
+
+  const badgeAmber = event.type === 'pricing_change' || isCompetitorEvent;
+  const badgeRed = event.type === 'expiry_alert' && (event.daysRemaining ?? 99) <= 7;
 
   return (
     <div className="grid grid-cols-[38px_1fr_120px] gap-3 px-4 py-3 transition-colors hover:bg-brand-bg3/30">
@@ -68,8 +105,13 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
           </p>
         )}
         <p className="truncate text-sm font-medium italic text-brand-text">{event.monitorName}</p>
-        <p className="font-mono text-xs text-brand-muted truncate">{event.monitorUrl}</p>
-        {!isExpiry && event.diffSummary && (
+        <p className="truncate font-mono text-xs text-brand-muted">{event.monitorUrl}</p>
+        {isCompetitorEvent && (
+          <p className="mt-1 text-sm text-brand-dim">
+            {formatPayloadSummary(event.competitorEventType, event.payload)}
+          </p>
+        )}
+        {!isCompetitorEvent && !isExpiry && event.diffSummary && (
           <p className="mt-1 line-clamp-2 text-sm text-brand-dim">{event.diffSummary}</p>
         )}
         {isExpiry && event.daysRemaining != null && (
@@ -79,14 +121,21 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
         )}
         {/* Action row */}
         <div className="flex items-center gap-3 pt-0.5">
-          {!isExpiry && event.snapshotId && (
+          {isCompetitorEvent ? (
+            <Link
+              href={`/competitors/${event.monitorId}?tab=events`}
+              className="text-xs text-brand-green-ink hover:underline"
+            >
+              View event
+            </Link>
+          ) : !isExpiry && event.snapshotId ? (
             <Link
               href={`/monitors/${event.monitorId}?tab=snapshots`}
               className="text-xs text-brand-green-ink hover:underline"
             >
               View change
             </Link>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -101,18 +150,16 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
         <span
           className="rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
           style={{
-            background:
-              event.type === 'pricing_change'
-                ? 'rgba(180,83,9,0.1)'
-                : event.type === 'expiry_alert' && (event.daysRemaining ?? 99) <= 7
-                  ? 'rgba(220,38,38,0.08)'
-                  : 'var(--brand-bg3)',
-            color:
-              event.type === 'pricing_change'
-                ? 'var(--brand-amber)'
-                : event.type === 'expiry_alert' && (event.daysRemaining ?? 99) <= 7
-                  ? 'var(--brand-red)'
-                  : 'var(--brand-muted)',
+            background: badgeAmber
+              ? 'rgba(180,83,9,0.1)'
+              : badgeRed
+                ? 'rgba(220,38,38,0.08)'
+                : 'var(--brand-bg3)',
+            color: badgeAmber
+              ? 'var(--brand-amber)'
+              : badgeRed
+                ? 'var(--brand-red)'
+                : 'var(--brand-muted)',
           }}
         >
           {typeLabel}

@@ -1,28 +1,28 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Sparkline } from '@/components/dashboard/sparkline';
 import { CompetitorManagementSheet } from './competitor-management-sheet';
 import { binBy7Days } from '@/lib/utils/intelligence';
 import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
-import type { CompetitorItem } from '@/lib/hooks/use-competitors';
+import { useCompetitors } from '@/lib/hooks/use-competitors';
 import type { PlanTier } from '@beaconmon/types';
 
 interface CompetitorWatchlistPanelProps {
-  competitors: CompetitorItem[];
   events: IntelligenceEvent[];
   plan: PlanTier;
   onChanged: () => void;
 }
 
 export function CompetitorWatchlistPanel({
-  competitors,
   events,
   plan,
   onChanged,
 }: CompetitorWatchlistPanelProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { data: competitors = [] } = useCompetitors();
 
   const withCounts = competitors
     .map((c) => ({
@@ -66,9 +66,10 @@ export function CompetitorWatchlistPanel({
         ) : (
           <div>
             {withCounts.map((c, i) => (
-              <div
+              <Link
                 key={c.id}
-                className={`flex items-center gap-3 px-4 py-2.5 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
+                href={`/competitors/${c.id}`}
+                className={`flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-brand-bg3/40 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
               >
                 <div
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[10px] font-bold"
@@ -78,6 +79,7 @@ export function CompetitorWatchlistPanel({
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-brand-text">{c.name}</p>
+                  <p className="truncate font-mono text-[10px] text-brand-muted">{c.domain}</p>
                 </div>
                 {top2Ids.has(c.id) && (
                   <span
@@ -102,7 +104,7 @@ export function CompetitorWatchlistPanel({
                 <span className="w-6 shrink-0 text-right font-mono text-[11px] text-brand-muted">
                   {c.count}
                 </span>
-              </div>
+              </Link>
             ))}
           </div>
         )}
