@@ -127,7 +127,15 @@ function ProductsTab({ competitorId }: { competitorId: string }) {
 // ─── Events tab ───────────────────────────────────────────────────────────────
 
 function EventsTab({ competitorId }: { competitorId: string }) {
-  const { events, hasMore, isLoading, loadMore } = useCompetitorEvents(competitorId);
+  const { events, hasMore, isLoading, isError, loadMore } = useCompetitorEvents(competitorId);
+
+  if (isError) {
+    return (
+      <p className="px-4 py-8 text-center text-sm text-brand-red">
+        Failed to load events. Please try again.
+      </p>
+    );
+  }
 
   if (isLoading && events.length === 0) {
     return (
@@ -257,7 +265,7 @@ function PagesTab({ competitorId }: { competitorId: string }) {
 function SettingsTab({ competitorId }: { competitorId: string }) {
   const [selectedChannelId, setSelectedChannelId] = useState('');
   const { data: linkedChannels, isLoading: loadingLinked } = useCompetitorChannels(competitorId);
-  const { data: allChannels } = useAlertChannels();
+  const { data: allChannels, isLoading: loadingChannels } = useAlertChannels();
   const addChannel = useAddCompetitorChannel(competitorId);
   const removeChannel = useRemoveCompetitorChannel(competitorId);
 
@@ -326,7 +334,9 @@ function SettingsTab({ competitorId }: { competitorId: string }) {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
           Add channel
         </h3>
-        {availableChannels.length === 0 ? (
+        {loadingChannels ? (
+          <div className="h-8 animate-pulse rounded bg-brand-bg3" />
+        ) : availableChannels.length === 0 ? (
           <p className="text-sm text-brand-muted">
             All configured channels are already linked.{' '}
             <Link href="/alert-channels" className="text-brand-green-ink hover:underline">
@@ -372,7 +382,10 @@ function SettingsTab({ competitorId }: { competitorId: string }) {
 export default function CompetitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get('tab') ?? 'products';
+  const VALID_TABS = ['products', 'events', 'pages', 'settings'] as const;
+  type TabValue = (typeof VALID_TABS)[number];
+  const rawTab = searchParams.get('tab');
+  const initialTab: TabValue = VALID_TABS.includes(rawTab as TabValue) ? (rawTab as TabValue) : 'products';
 
   const { data: competitor, isLoading, isError, refetch } = useCompetitor(id);
 

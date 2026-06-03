@@ -172,6 +172,7 @@ interface EventsState {
   events: CompetitorEventRow[];
   hasMore: boolean;
   isLoading: boolean;
+  isError: boolean;
   cursor: string | null;
   loadMore: () => void;
 }
@@ -180,23 +181,28 @@ export function useCompetitorEvents(id: string): EventsState {
   const [events, setEvents] = useState<CompetitorEventRow[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const [cursor, setCursor] = useState<string | null>(null);
   const idRef = useRef(id);
 
   const fetchPage = useCallback(
     async (before?: string, append = false) => {
-      setIsLoading(true);
+      const capturedId = id;
+      setIsError(false);
       try {
         const params = new URLSearchParams({ limit: '50' });
         if (before) params.set('before', before);
-        const res = await apiFetch(`/api/competitors/${id}/events?${params.toString()}`);
+        const res = await apiFetch(`/api/competitors/${capturedId}/events?${params.toString()}`);
         if (!res.ok) throw new Error('Failed to fetch competitor events');
         const data: { events: CompetitorEventRow[]; nextCursor: string | null } = await res.json();
+        if (idRef.current !== capturedId) return;
         setEvents((prev) => (append ? [...prev, ...data.events] : data.events));
         setHasMore(data.nextCursor !== null);
         setCursor(data.nextCursor);
+      } catch {
+        if (idRef.current === capturedId) setIsError(true);
       } finally {
-        setIsLoading(false);
+        if (idRef.current === capturedId) setIsLoading(false);
       }
     },
     [id]
@@ -207,6 +213,7 @@ export function useCompetitorEvents(id: string): EventsState {
       idRef.current = id;
       setEvents([]);
       setCursor(null);
+      setIsLoading(true);
     }
     void fetchPage(undefined, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,10 +221,11 @@ export function useCompetitorEvents(id: string): EventsState {
 
   const loadMore = useCallback(() => {
     if (!hasMore || isLoading || !cursor) return;
+    setIsLoading(true);
     void fetchPage(cursor, true);
   }, [hasMore, isLoading, cursor, fetchPage]);
 
-  return { events, hasMore, isLoading, cursor, loadMore };
+  return { events, hasMore, isLoading, isError, cursor, loadMore };
 }
 
 // ─── Legacy feed (kept for backward compat) ───────────────────────────────────
