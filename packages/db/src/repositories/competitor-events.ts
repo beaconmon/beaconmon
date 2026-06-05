@@ -5,7 +5,7 @@ export interface CreateEventData {
   competitorId: string;
   productId?: string;
   pageId?: string;
-  type: 'product_added' | 'product_removed' | 'price_changed' | 'stock_changed' | 'site_changed' | 'promo_detected' | 'sale_started' | 'sale_ended';
+  type: 'product_added' | 'product_removed' | 'price_changed' | 'stock_changed' | 'out_of_stock' | 'back_in_stock' | 'site_changed' | 'promo_detected' | 'sale_started' | 'sale_ended';
   payload: Record<string, unknown>;
   detectedAt: Date;
 }

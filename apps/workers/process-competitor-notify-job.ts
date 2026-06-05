@@ -19,6 +19,28 @@ const SlackChannelConfig = z.object({
 
 const service = 'competitor-notify-worker';
 
+function deriveEventSummary(type: string, payload: Record<string, unknown>): string | undefined {
+  switch (type) {
+    case 'out_of_stock': return `Out of stock: ${payload.productHandle ?? 'product'}`;
+    case 'back_in_stock': return `Back in stock: ${payload.productHandle ?? 'product'}`;
+    case 'price_changed': return `Price: $${payload.oldPrice} → $${payload.newPrice}`;
+    case 'sale_started': return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
+    case 'sale_ended': return `Sale ended (was $${payload.wasCompareAtPrice})`;
+    case 'product_added': return `New product: ${payload.title}`;
+    case 'product_removed': return `Product removed: ${payload.title}`;
+    default: return (payload.diffSummary as string | undefined) ?? undefined;
+  }
+}
+
+function deriveNotifySubject(type: string, monitorName: string): string {
+  switch (type) {
+    case 'out_of_stock': return `Stockout alert: ${monitorName}`;
+    case 'back_in_stock': return `Back in stock: ${monitorName}`;
+    case 'sale_started': return `Sale started: ${monitorName}`;
+    default: return `Competitor change detected on '${monitorName}'`;
+  }
+}
+
 export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redis: Redis): Promise<void> {
   const { competitorEventId, teamId: _teamId, competitorId } = data;
 
@@ -57,24 +79,21 @@ export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redi
     const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
 
     // 6. Extract payload fields
-    const payload = event.payload as {
-      pageUrl?: string;
-      diffSummary?: string | null;
-      classification?: string | null;
-    };
+    const payload = event.payload as Record<string, unknown>;
 
     const monitorName = event.competitor.name;
-    const monitorUrl = payload.pageUrl ?? '';
+    const monitorUrl = (payload.pageUrl as string | undefined) ?? '';
     const changedAt = event.detectedAt;
-    const summary = payload.diffSummary ?? undefined;
-    const classification = payload.classification ?? undefined;
+    const summary = deriveEventSummary(event.type, payload);
+    const classification = event.type;
+    const subject = deriveNotifySubject(event.type, monitorName);
 
     for (const link of channelLinks) {
       const channel = link.channel;
       try {
         switch (channel.type) {
           case 'email':
-            await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
+            await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl, subject);
             break;
           case 'slack':
             await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
@@ -101,7 +120,8 @@ async function sendEmailNotification(
   changedAt: Date,
   summary?: string,
   classification?: string,
-  diffUrl?: string
+  diffUrl?: string,
+  subject?: string
 ): Promise<void> {
   const config = EmailChannelConfig.parse(rawConfig);
 
@@ -125,7 +145,7 @@ async function sendEmailNotification(
   const { error } = await resend.emails.send({
     from: env.EMAIL_FROM,
     to: config.recipients,
-    subject: `Competitor change detected on '${monitorName}'`,
+    subject: subject ?? `Competitor change detected on '${monitorName}'`,
     html,
   });
 

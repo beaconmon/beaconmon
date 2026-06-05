@@ -254,7 +254,7 @@ export async function processShopifyFeedJob(
               }
 
               if (availabilityChanged) {
-                const event = await competitorEventRepository.createEvent({
+                await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
@@ -262,7 +262,16 @@ export async function processShopifyFeedJob(
                   payload: { productHandle: product.handle, oldAvailable, newAvailable },
                   detectedAt: now,
                 });
-                await maybeEnqueueNotify(event.id);
+                const granularType = newAvailable ? 'back_in_stock' : 'out_of_stock';
+                const granularEvent = await competitorEventRepository.createEvent({
+                  teamId,
+                  competitorId,
+                  productId,
+                  type: granularType,
+                  payload: { productHandle: product.handle, oldAvailable, newAvailable, previouslyAvailable: oldAvailable },
+                  detectedAt: now,
+                });
+                await maybeEnqueueNotify(granularEvent.id);
               }
 
               const oldCompareAt = existingProduct.compareAtPrice != null ? String(existingProduct.compareAtPrice) : null;
