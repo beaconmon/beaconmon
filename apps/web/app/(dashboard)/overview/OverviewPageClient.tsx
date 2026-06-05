@@ -4,6 +4,7 @@ import { OverviewHero } from '@/components/dashboard/overview-hero';
 import { OverviewMonitorsTable } from '@/components/dashboard/overview-monitors-table';
 import { ReliabilityPanel } from '@/components/dashboard/reliability-panel';
 import { RecentAlertsPanel } from '@/components/dashboard/recent-alerts-panel';
+import { CompetitorSignalsPanel } from '@/components/dashboard/competitor-signals-panel';
 import { useMonitors, useMonitorSummaries } from '@/lib/hooks/use-monitors';
 import { useIntelligenceFeed } from '@/lib/hooks/use-intelligence-feed';
 import { useSession } from '@/lib/hooks/use-session';
@@ -27,6 +28,7 @@ export function OverviewPageClient() {
 
         {/* Right rail */}
         <div className="space-y-4">
+          <CompetitorSignalsPanel events={feedEvents} />
           <ReliabilityPanel primaryMonitor={primaryMonitor} plan={plan} />
           <RecentAlertsPanel />
         </div>

@@ -5,7 +5,7 @@ import {
   buildDiffPrompt,
 } from './prompt.js';
 
-const MAX_TOKENS = 600;
+const MAX_TOKENS = 1024;
 
 export async function summarizeContentDiff(
   provider: AiProvider,

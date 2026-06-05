@@ -32,6 +32,10 @@ function formatPayloadSummary(
       return `Removed: ${payload.title}`;
     case 'stock_changed':
       return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'sale_started':
+      return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
+    case 'sale_ended':
+      return `Sale ended (was $${payload.wasCompareAtPrice})`;
     case 'site_changed':
     case 'promo_detected':
       return (payload.diffSummary as string | undefined) ?? 'Content changed';
@@ -72,6 +76,8 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
         product_added: 'New product',
         product_removed: 'Product removed',
         stock_changed: 'Stock change',
+        sale_started: 'Sale started',
+        sale_ended: 'Sale ended',
         site_changed: 'Site change',
         promo_detected: 'Promo detected',
       };

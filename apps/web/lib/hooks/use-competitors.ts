@@ -242,6 +242,42 @@ export function useCompetitorEvents(id: string): EventsState {
   return { events, hasMore, isLoading, isError, cursor, loadMore, updateEventDecision };
 }
 
+// ─── Price history ────────────────────────────────────────────────────────────
+
+export interface PriceHistoryPoint {
+  price: string;
+  detectedAt: string;
+}
+
+export function usePriceHistory(competitorId: string, productId: string, enabled: boolean) {
+  return useQuery<PriceHistoryPoint[]>({
+    queryKey: ['price-history', competitorId, productId],
+    queryFn: async () => {
+      const res = await apiFetch(`/api/competitors/${competitorId}/products/${productId}/price-history`);
+      if (!res.ok) throw new Error('Failed to fetch price history');
+      return res.json();
+    },
+    enabled,
+    staleTime: 5 * 60_000,
+  });
+}
+
+// ─── Bulk dismiss ─────────────────────────────────────────────────────────────
+
+export function useDismissBulk(competitorId: string) {
+  const qc = useQueryClient();
+  return useMutation<{ count: number }, Error, void>({
+    mutationFn: async () => {
+      const res = await apiFetch(`/api/competitors/${competitorId}/events/dismiss-bulk`, { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to dismiss events');
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitor-events', competitorId] });
+    },
+  });
+}
+
 // ─── Legacy feed (kept for backward compat) ───────────────────────────────────
 
 export interface CompetitorFeedItem {

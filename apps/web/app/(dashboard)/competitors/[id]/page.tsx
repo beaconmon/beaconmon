@@ -4,7 +4,7 @@ import { use, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, ExternalLink, Bell, Trash2 } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Bell, Trash2, BarChart2, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +23,9 @@ import {
   useCompetitorEvents,
   useAddCompetitorChannel,
   useRemoveCompetitorChannel,
+  usePriceHistory,
+  useDismissBulk,
+  type PriceHistoryPoint,
 } from '@/lib/hooks/use-competitors';
 import { DecisionActionBar } from '@/components/competitors/decision-action-bar';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
@@ -50,6 +53,10 @@ function formatPayloadSummary(
       return `Removed: ${payload.title}`;
     case 'stock_changed':
       return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'sale_started':
+      return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
+    case 'sale_ended':
+      return `Sale ended (was $${payload.wasCompareAtPrice})`;
     case 'site_changed':
     case 'promo_detected':
       return (payload.diffSummary as string | undefined) ?? 'Content changed';
@@ -63,9 +70,85 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
   product_added: 'New product',
   product_removed: 'Product removed',
   stock_changed: 'Stock change',
+  sale_started: 'Sale started',
+  sale_ended: 'Sale ended',
   site_changed: 'Site change',
   promo_detected: 'Promo detected',
 };
+
+// ─── Price sparkline ──────────────────────────────────────────────────────────
+
+function PriceSparkline({ points }: { points: PriceHistoryPoint[] }) {
+  if (points.length < 2) return <span className="font-mono text-[10px] text-brand-muted">no history</span>;
+
+  const values = points.map((p) => parseFloat(p.price));
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const W = 80;
+  const H = 28;
+  const pad = 3;
+
+  const coords = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * W;
+    const y = H - pad - ((v - min) / range) * (H - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  const last = values[values.length - 1]!;
+  const prev = values[values.length - 2]!;
+  const strokeClass = last > prev ? 'text-brand-red' : last < prev ? 'text-brand-green-ink' : 'text-brand-muted';
+
+  return (
+    <svg width={W} height={H} className={`overflow-visible ${strokeClass}`}>
+      <polyline points={coords.join(' ')} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ProductRow({ p, competitorId }: { p: { id: string; title: string; handle: string; currentPrice: unknown; compareAtPrice: unknown; isAvailable: boolean; currency: string; lastSeenAt: string }; competitorId: string }) {
+  const [showHistory, setShowHistory] = useState(false);
+  const { data: history, isLoading: historyLoading } = usePriceHistory(competitorId, p.id, showHistory);
+
+  return (
+    <>
+      <div className="grid grid-cols-[1fr_100px_100px_80px_90px_44px] items-center border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-brand-text">{p.title}</p>
+          <p className="truncate font-mono text-[10px] text-brand-muted">{p.handle}</p>
+        </div>
+        <span className="font-mono text-sm text-brand-dim">{formatPrice(p.currentPrice, p.currency)}</span>
+        <span className="font-mono text-sm text-brand-muted">{formatPrice(p.compareAtPrice, p.currency)}</span>
+        <span className={`text-xs font-semibold uppercase tracking-wider ${p.isAvailable ? 'text-brand-green-ink' : 'text-brand-muted'}`}>
+          {p.isAvailable ? 'Yes' : 'No'}
+        </span>
+        <span className="font-mono text-xs text-brand-muted">
+          {formatDistanceToNow(new Date(p.lastSeenAt), { addSuffix: true })}
+        </span>
+        <button
+          onClick={() => setShowHistory((s) => !s)}
+          className="flex items-center justify-center rounded p-1 text-brand-muted transition-colors hover:bg-brand-bg3 hover:text-brand-dim"
+          title={showHistory ? 'Hide price history' : 'Show price history'}
+        >
+          {showHistory ? <X className="h-3.5 w-3.5" /> : <BarChart2 className="h-3.5 w-3.5" />}
+        </button>
+      </div>
+      {showHistory && (
+        <div className="flex items-center gap-4 border-b border-brand-line/60 bg-brand-bg3/20 px-4 py-3">
+          <p className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-brand-muted">Price history</p>
+          {historyLoading ? (
+            <div className="h-7 w-20 animate-pulse rounded bg-brand-bg3" />
+          ) : (
+            <PriceSparkline points={history ?? []} />
+          )}
+          {history && history.length >= 2 && (
+            <span className="font-mono text-[10px] text-brand-muted">{history.length} changes tracked</span>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
 
 // ─── Products tab ─────────────────────────────────────────────────────────────
 
@@ -86,37 +169,15 @@ function ProductsTab({ competitorId }: { competitorId: string }) {
           </p>
         ) : (
           <div>
-            <div className="grid grid-cols-[1fr_100px_100px_80px_100px] border-b border-brand-line px-4 py-2">
-              {['Title', 'Price', 'Compare-at', 'Available', 'Last seen'].map((h) => (
+            <div className="grid grid-cols-[1fr_100px_100px_80px_90px_44px] border-b border-brand-line px-4 py-2">
+              {['Title', 'Price', 'Compare-at', 'Available', 'Last seen', ''].map((h) => (
                 <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
                   {h}
                 </span>
               ))}
             </div>
             {products.map((p) => (
-              <div
-                key={p.id}
-                className="grid grid-cols-[1fr_100px_100px_80px_100px] items-center border-b border-brand-line px-4 py-2.5 last:border-b-0 hover:bg-brand-bg3/30"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-brand-text">{p.title}</p>
-                  <p className="truncate font-mono text-[10px] text-brand-muted">{p.handle}</p>
-                </div>
-                <span className="font-mono text-sm text-brand-dim">
-                  {formatPrice(p.currentPrice, p.currency)}
-                </span>
-                <span className="font-mono text-sm text-brand-muted">
-                  {formatPrice(p.compareAtPrice, p.currency)}
-                </span>
-                <span
-                  className={`text-xs font-semibold uppercase tracking-wider ${p.isAvailable ? 'text-brand-green-ink' : 'text-brand-muted'}`}
-                >
-                  {p.isAvailable ? 'Yes' : 'No'}
-                </span>
-                <span className="font-mono text-xs text-brand-muted">
-                  {formatDistanceToNow(new Date(p.lastSeenAt), { addSuffix: true })}
-                </span>
-              </div>
+              <ProductRow key={p.id} p={p} competitorId={competitorId} />
             ))}
           </div>
         )}
@@ -129,6 +190,7 @@ function ProductsTab({ competitorId }: { competitorId: string }) {
 
 function EventsTab({ competitorId }: { competitorId: string }) {
   const { events, hasMore, isLoading, isError, loadMore, updateEventDecision } = useCompetitorEvents(competitorId);
+  const dismissBulk = useDismissBulk(competitorId);
 
   if (isError && events.length === 0) {
     return (
@@ -151,8 +213,19 @@ function EventsTab({ competitorId }: { competitorId: string }) {
   return (
     <div className="pb-24">
       <div className="rounded-lg border border-brand-line bg-brand-surface">
-        <div className="border-b border-brand-line px-4 py-3">
+        <div className="flex items-center justify-between border-b border-brand-line px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Event timeline</h2>
+          {events.some((e) => !e.decision) && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 px-2 text-xs text-brand-muted hover:text-brand-dim"
+              disabled={dismissBulk.isPending}
+              onClick={() => dismissBulk.mutate()}
+            >
+              {dismissBulk.isPending ? 'Dismissing...' : 'Dismiss all undecided'}
+            </Button>
+          )}
         </div>
         {events.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-brand-muted">No events recorded yet.</p>
