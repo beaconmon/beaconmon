@@ -52,6 +52,7 @@ export interface DigestCompetitorEvent {
   competitorDomain: string;
   type: string;
   payload: Record<string, unknown>;
+  significance: string | null;
   detectedAt: Date;
 }
 
@@ -190,7 +191,15 @@ export const digestRepository = {
     end: Date
   ): Promise<DigestCompetitorEvent[]> {
     const rows = await prisma.competitorEvent.findMany({
-      where: { teamId, detectedAt: { gte: start, lte: end } },
+      where: {
+        teamId,
+        detectedAt: { gte: start, lte: end },
+        OR: [
+          { significance: null },
+          { significance: 'medium' },
+          { significance: 'high' },
+        ],
+      },
       include: { competitor: { select: { id: true, name: true, domain: true } } },
       orderBy: { detectedAt: 'desc' },
     });
@@ -202,6 +211,7 @@ export const digestRepository = {
       competitorDomain: r.competitor.domain,
       type: r.type,
       payload: r.payload as Record<string, unknown>,
+      significance: r.significance,
       detectedAt: r.detectedAt,
     }));
   },

@@ -19,10 +19,10 @@ import type {
 
 const service = 'digest-worker';
 
-const HIGH_PRIORITY_COMPETITOR_TYPES = new Set(['out_of_stock', 'back_in_stock', 'sale_started']);
-
-export function priorityWeightForCompetitorEvent(type: string): number {
-  return HIGH_PRIORITY_COMPETITOR_TYPES.has(type) ? 0 : 1;
+export function significanceWeight(significance: string | null): number {
+  if (significance === 'high') return 0;
+  if (significance === 'low') return 2;
+  return 1; // 'medium' or null
 }
 
 function formatEventSummary(type: string, payload: Record<string, unknown>): string {
@@ -235,6 +235,12 @@ export async function processIntelligenceDigestJob(
   if (prefs.sections.competitors) {
     const events = await digestRepository.findCompetitorEventsForDigest(teamId, start, end);
     sections.competitors = events
+      .sort((a, b) => {
+        const aw = significanceWeight(a.significance);
+        const bw = significanceWeight(b.significance);
+        if (aw !== bw) return aw - bw;
+        return b.detectedAt.getTime() - a.detectedAt.getTime();
+      })
       .map((e) => ({
         monitorId: e.competitorId,
         monitorName: e.competitorName,
@@ -243,13 +249,7 @@ export async function processIntelligenceDigestJob(
         diffSummary: formatEventSummary(e.type, e.payload),
         classification: e.type,
         dashboardUrl: `${appUrl}/competitors/${e.competitorId}`,
-      }))
-      .sort((a, b) => {
-        const ap = priorityWeightForCompetitorEvent(a.classification ?? '');
-        const bp = priorityWeightForCompetitorEvent(b.classification ?? '');
-        if (ap !== bp) return ap - bp;
-        return b.capturedAt.getTime() - a.capturedAt.getTime();
-      });
+      }));
   }
 
   if (prefs.sections.smartAlerts) {

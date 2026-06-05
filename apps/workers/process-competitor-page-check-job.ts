@@ -6,10 +6,12 @@ import {
   competitorPageRepository,
 } from '@beaconmon/db';
 import { runContentCheck } from '@beaconmon/checker';
+import { createAiProvider, scoreSiteChange } from '@beaconmon/ai';
 import type { CompetitorPageCheckJob, CompetitorNotifyJob } from '@beaconmon/queue';
 import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import { logger } from './lib/logger.js';
+import { env } from './lib/env.js';
 import { runAiAnalysisIfEligible } from './lib/ai-content-diff.js';
 
 const service = 'competitor-page-worker';
@@ -229,6 +231,11 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
   const eventType: 'site_changed' | 'promo_detected' =
     aiResult?.classification === 'pricing' ? 'promo_detected' : 'site_changed';
 
+  const significance = await scoreSiteChange(
+    aiResult?.summary ?? '',
+    createAiProvider({ provider: env.AI_PROVIDER, apiKey: env.AI_API_KEY, model: env.AI_MODEL })
+  );
+
   // Atomically persist snapshot, event, and updated page hash — partial writes would
   // cause duplicate events on BullMQ retry once the dedup TTL expires
   const [snapshot, { id: eventId }] = await prisma.$transaction([
@@ -248,6 +255,7 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
           classification: aiResult?.classification ?? null,
           aiConfidence: aiResult?.confidence ?? null,
         } as Prisma.InputJsonValue,
+        significance,
         detectedAt: now,
       },
       select: { id: true },

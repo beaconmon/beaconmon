@@ -3,6 +3,7 @@ import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import type { ShopifyFeedJob, CompetitorNotifyJob } from '@beaconmon/queue';
 import { prisma, competitorProductRepository, competitorEventRepository, updateCompetitorDiscoveryState } from '@beaconmon/db';
+import { scoreRuleBased } from '@beaconmon/ai';
 import { logger } from './lib/logger.js';
 
 const service = 'shopify-feed-worker';
@@ -218,12 +219,14 @@ export async function processShopifyFeedJob(
 
             if (!existingProduct) {
               const productId = await competitorProductRepository.upsertProduct(upsertData);
+              const addedPayload = { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' };
               const event = await competitorEventRepository.createEvent({
                 teamId,
                 competitorId,
                 productId,
                 type: 'product_added',
-                payload: { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' },
+                payload: addedPayload,
+                significance: scoreRuleBased('product_added', addedPayload),
                 detectedAt: now,
               });
               await maybeEnqueueNotify(event.id);
@@ -236,39 +239,45 @@ export async function processShopifyFeedJob(
               const productId = await competitorProductRepository.upsertProduct(upsertData);
 
               if (priceChanged) {
+                const pricePayload = {
+                  productHandle: product.handle,
+                  oldPrice,
+                  newPrice,
+                  currency: 'USD',
+                  variantId: priceVariant?.id,
+                };
                 const event = await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
                   type: 'price_changed',
-                  payload: {
-                    productHandle: product.handle,
-                    oldPrice,
-                    newPrice,
-                    currency: 'USD',
-                    variantId: priceVariant?.id,
-                  },
+                  payload: pricePayload,
+                  significance: scoreRuleBased('price_changed', pricePayload),
                   detectedAt: now,
                 });
                 await maybeEnqueueNotify(event.id);
               }
 
               if (availabilityChanged) {
+                const stockPayload = { productHandle: product.handle, oldAvailable, newAvailable };
                 await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
                   type: 'stock_changed',
-                  payload: { productHandle: product.handle, oldAvailable, newAvailable },
+                  payload: stockPayload,
+                  significance: scoreRuleBased('stock_changed', stockPayload),
                   detectedAt: now,
                 });
                 const granularType = newAvailable ? 'back_in_stock' : 'out_of_stock';
+                const granularPayload = { productHandle: product.handle, oldAvailable, newAvailable, previouslyAvailable: oldAvailable };
                 const granularEvent = await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
                   type: granularType,
-                  payload: { productHandle: product.handle, oldAvailable, newAvailable, previouslyAvailable: oldAvailable },
+                  payload: granularPayload,
+                  significance: scoreRuleBased(granularType, granularPayload),
                   detectedAt: now,
                 });
                 await maybeEnqueueNotify(granularEvent.id);
@@ -280,24 +289,28 @@ export async function processShopifyFeedJob(
               const saleEnded = !!oldCompareAt && !newCompareAt;
 
               if (saleStarted) {
+                const saleStartedPayload = { productHandle: product.handle, title: product.title, compareAtPrice: newCompareAt, currentPrice: newPrice, currency: 'USD' };
                 const event = await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
                   type: 'sale_started',
-                  payload: { productHandle: product.handle, title: product.title, compareAtPrice: newCompareAt, currentPrice: newPrice, currency: 'USD' },
+                  payload: saleStartedPayload,
+                  significance: scoreRuleBased('sale_started', saleStartedPayload),
                   detectedAt: now,
                 });
                 await maybeEnqueueNotify(event.id);
               }
 
               if (saleEnded) {
+                const saleEndedPayload = { productHandle: product.handle, title: product.title, wasCompareAtPrice: oldCompareAt, currency: 'USD' };
                 const event = await competitorEventRepository.createEvent({
                   teamId,
                   competitorId,
                   productId,
                   type: 'sale_ended',
-                  payload: { productHandle: product.handle, title: product.title, wasCompareAtPrice: oldCompareAt, currency: 'USD' },
+                  payload: saleEndedPayload,
+                  significance: scoreRuleBased('sale_ended', saleEndedPayload),
                   detectedAt: now,
                 });
                 await maybeEnqueueNotify(event.id);
@@ -318,12 +331,14 @@ export async function processShopifyFeedJob(
     for (const [shopifyProductId, existingProduct] of existingByShopifyId) {
       if (!fetchedIds.has(shopifyProductId) && existingProduct.isAvailable) {
         await competitorProductRepository.markUnavailable(competitorId, shopifyProductId);
+        const removedPayload = { productHandle: existingProduct.handle, title: existingProduct.title };
         const event = await competitorEventRepository.createEvent({
           teamId,
           competitorId,
           productId: existingProduct.id,
           type: 'product_removed',
-          payload: { productHandle: existingProduct.handle, title: existingProduct.title },
+          payload: removedPayload,
+          significance: scoreRuleBased('product_removed', removedPayload),
           detectedAt: now,
         });
         await maybeEnqueueNotify(event.id);
