@@ -44,6 +44,7 @@ export interface FeedResult {
   events: IntelligenceEvent[];
   hasMore: boolean;
   activeCompetitorCount: number;
+  last24hCompetitorEventCount: number;
 }
 
 const RANGE_DAYS: Record<string, number> = { '7d': 7, '30d': 30, '90d': 90 };
@@ -63,7 +64,9 @@ export const intelligenceRepository = {
       const wantsContent = types.some((t) => t === 'content_change' || t === 'pricing_change');
       const wantsCompetitorEvent = types.includes('competitor_event');
 
-      const [snapshotRows, competitorEventRows, activeCompetitorCount] = await Promise.all([
+      const last24hFrom = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+      const [snapshotRows, competitorEventRows, activeCompetitorCount, last24hCompetitorEventCount] = await Promise.all([
         wantsContent
           ? prisma.contentSnapshot.findMany({
               where: {
@@ -105,6 +108,9 @@ export const intelligenceRepository = {
             })
           : Promise.resolve([]),
         competitorRepository.countActive(teamId),
+        prisma.competitorEvent.count({
+          where: { teamId, detectedAt: { gte: last24hFrom } },
+        }),
       ]);
 
       const contentEvents: IntelligenceEvent[] = snapshotRows.map((r) => {
@@ -146,7 +152,7 @@ export const intelligenceRepository = {
       const hasMore = merged.length > limit;
       const events = merged.slice(0, limit);
 
-      return ok({ events, hasMore, activeCompetitorCount });
+      return ok({ events, hasMore, activeCompetitorCount, last24hCompetitorEventCount });
     } catch (e) {
       return err(e instanceof Error ? e.message : 'unknown_error');
     }

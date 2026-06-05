@@ -10,6 +10,7 @@ interface FeedResponse {
   events: IntelligenceEvent[];
   hasMore: boolean;
   activeCompetitorCount: number;
+  last24hCompetitorEventCount: number;
 }
 
 export interface FilterParams {
@@ -22,6 +23,7 @@ interface UseFeedResult {
   events: IntelligenceEvent[];
   hasMore: boolean;
   activeCompetitorCount: number;
+  last24hCompetitorEventCount: number;
   isLoading: boolean;
   isError: boolean;
   loadMore: () => void;
@@ -41,6 +43,7 @@ export function useIntelligenceFeed(filters: FilterParams): UseFeedResult {
   const [events, setEvents] = useState<IntelligenceEvent[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [activeCompetitorCount, setActiveCompetitorCount] = useState(0);
+  const [last24hCompetitorEventCount, setLast24hCompetitorEventCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
@@ -58,6 +61,7 @@ export function useIntelligenceFeed(filters: FilterParams): UseFeedResult {
         setEvents((prev) => (append ? [...prev, ...data.events] : data.events));
         setHasMore(data.hasMore);
         setActiveCompetitorCount(data.activeCompetitorCount);
+        setLast24hCompetitorEventCount(data.last24hCompetitorEventCount);
         if (data.events.length > 0) {
           const last = data.events[data.events.length - 1];
           setCursor(last ? new Date(last.timestamp).toISOString() : undefined);
@@ -94,5 +98,5 @@ export function useIntelligenceFeed(filters: FilterParams): UseFeedResult {
     void fetchPage(undefined, false);
   }, [fetchPage]);
 
-  return { events, hasMore, activeCompetitorCount, isLoading, isError, loadMore, refresh };
+  return { events, hasMore, activeCompetitorCount, last24hCompetitorEventCount, isLoading, isError, loadMore, refresh };
 }

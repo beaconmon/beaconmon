@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import {
   Prisma,
   prisma,
@@ -13,6 +13,10 @@ import { logger } from './lib/logger.js';
 import { runAiAnalysisIfEligible } from './lib/ai-content-diff.js';
 
 const service = 'competitor-page-worker';
+
+// Atomically delete a Redis key only if the stored value matches the caller's token.
+// Prevents a worker whose lock expired from deleting a successor's lock.
+const RELEASE_LOCK_IF_OWNER = `if redis.call("get",KEYS[1])==ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end`;
 
 const PROCESSING_LOCK_TTL_S = 120;
 const CHANGE_DEDUP_TTL_S = 300;
@@ -44,7 +48,8 @@ export async function processCompetitorPageCheckJob(
 
   // Prevent concurrent workers from checking the same page simultaneously
   const processingKey = `cpc:processing:${competitorPageId}`;
-  const claimed = await redis.set(processingKey, '1', 'EX', PROCESSING_LOCK_TTL_S, 'NX');
+  const lockValue = randomUUID();
+  const claimed = await redis.set(processingKey, lockValue, 'EX', PROCESSING_LOCK_TTL_S, 'NX');
   if (!claimed) {
     logger.info({ service, competitorPageId }, 'Skipping — already processing');
     return;
@@ -98,7 +103,7 @@ export async function processCompetitorPageCheckJob(
       startedAt,
     });
   } finally {
-    await redis.del(processingKey);
+    await redis.eval(RELEASE_LOCK_IF_OWNER, 1, processingKey, lockValue);
   }
 }
 
@@ -172,6 +177,10 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
     return;
   }
 
+  // If the work below fails, remove the dedup key so BullMQ can retry the job.
+  // Successful completion (including noise suppression) intentionally leaves the key set.
+  try {
+
   // Load previous content for AI diff
   const prevRow = await prisma.contentSnapshot.findFirst({
     where: { competitorPageId },
@@ -197,14 +206,23 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
     );
   }
 
-  // Suppress events for high-confidence noise — only update page state, no event or notification
+  // Suppress events for high-confidence noise — persist snapshot for audit trail and future
+  // AI diffs, but create no event or notification
   if (aiResult?.classification === 'noise' && (aiResult.confidence ?? 0) >= NOISE_CONFIDENCE_THRESHOLD) {
     logger.info({ service, competitorPageId, summary: aiResult.summary }, 'Change classified as noise — suppressing event');
-    await competitorPageRepository.updateAfterCheck(competitorPageId, {
-      lastSnapshotHash: contentHash,
-      lastCheckedAt: now,
-      nextCheckAt: computeNextCheckAt(now, intervalSeconds),
-    });
+    await prisma.$transaction([
+      prisma.contentSnapshot.create({
+        data: { competitorPageId, teamId, content, contentHash, capturedAt: checkedAt },
+      }),
+      prisma.competitorPage.update({
+        where: { id: competitorPageId },
+        data: {
+          lastSnapshotHash: contentHash,
+          lastCheckedAt: now,
+          nextCheckAt: computeNextCheckAt(now, intervalSeconds),
+        },
+      }),
+    ]);
     return;
   }
 
@@ -272,5 +290,10 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
     }
   } else {
     logger.debug({ service, competitorPageId }, 'No notification channels configured');
+  }
+
+  } catch (err) {
+    await redis.del(dedupKey);
+    throw err;
   }
 }

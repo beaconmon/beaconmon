@@ -182,6 +182,7 @@ interface EventsState {
   isError: boolean;
   cursor: string | null;
   loadMore: () => void;
+  refresh: () => void;
   updateEventDecision: (eventId: string, decision: CompetitorDecisionData | null) => void;
 }
 
@@ -239,7 +240,15 @@ export function useCompetitorEvents(id: string): EventsState {
     setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, decision } : e)));
   }, []);
 
-  return { events, hasMore, isLoading, isError, cursor, loadMore, updateEventDecision };
+  const refresh = useCallback(() => {
+    setEvents([]);
+    setCursor(null);
+    setIsLoading(true);
+    setIsError(false);
+    void fetchPage(undefined, false);
+  }, [fetchPage]);
+
+  return { events, hasMore, isLoading, isError, cursor, loadMore, refresh, updateEventDecision };
 }
 
 // ─── Price history ────────────────────────────────────────────────────────────
@@ -265,7 +274,7 @@ export function usePriceHistory(competitorId: string, productId: string, enabled
 // ─── Bulk dismiss ─────────────────────────────────────────────────────────────
 
 export function useDismissBulk(competitorId: string) {
-  const qc = useQueryClient();
+  const _qc = useQueryClient();
   return useMutation<{ count: number }, Error, void>({
     mutationFn: async () => {
       const res = await apiFetch(`/api/competitors/${competitorId}/events/dismiss-bulk`, { method: 'POST' });
@@ -273,7 +282,7 @@ export function useDismissBulk(competitorId: string) {
       return res.json();
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['competitor-events', competitorId] });
+      // useCompetitorEvents uses its own state — caller must pass { onSuccess: refresh } to mutate()
     },
   });
 }

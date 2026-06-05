@@ -12,17 +12,12 @@ import { useSession } from '@/lib/hooks/use-session';
 export function OverviewPageClient() {
   const { data: monitors = [] } = useMonitors();
   const { data: summaries = {} } = useMonitorSummaries();
-  const { events: feedEvents } = useIntelligenceFeed({ range: '7d' });
+  const { events: feedEvents, last24hCompetitorEventCount } = useIntelligenceFeed({ range: '7d' });
   const { data: session } = useSession();
 
   const plan = session?.plan ?? 'free';
   const primaryMonitor = monitors.find((m) => m.currentStatus === 'down') ?? monitors[0];
-
-  // eslint-disable-next-line react-hooks/purity
-  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const last24hCount = feedEvents.filter(
-    (e) => e.type === 'competitor_event' && new Date(e.timestamp) > oneDayAgo,
-  ).length;
+  const last24hCount = last24hCompetitorEventCount;
 
   return (
     <div className="space-y-5">

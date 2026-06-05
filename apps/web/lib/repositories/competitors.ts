@@ -18,13 +18,15 @@ export interface CompetitorListItem {
   createdAt: Date;
 }
 
+export type DiscoveryState = 'pending' | 'syncing' | 'ready' | 'failed' | 'not_applicable';
+
 export interface CompetitorRow {
   id: string;
   teamId: string;
   name: string;
   domain: string;
   platform: string;
-  discoveryState: string;
+  discoveryState: DiscoveryState;
   discoverySyncedAt: Date | null;
   discoveryError: string | null;
   isActive: boolean;
@@ -103,12 +105,13 @@ export interface CompetitorChannelRow {
 async function updateDiscoveryState(
   teamId: string,
   competitorId: string,
-  patch: { discoveryState: string; discoverySyncedAt?: Date | null; discoveryError?: string | null }
-): Promise<void> {
-  await prisma.competitor.updateMany({
+  patch: { discoveryState: DiscoveryState; discoverySyncedAt?: Date | null; discoveryError?: string | null }
+): Promise<boolean> {
+  const result = await prisma.competitor.updateMany({
     where: { id: competitorId, teamId, deletedAt: null },
     data: patch,
   });
+  return result.count > 0;
 }
 
 async function assertOwnership(teamId: string, competitorId: string): Promise<void> {
@@ -135,9 +138,10 @@ export const competitorRepository = {
   },
 
   async findById(teamId: string, id: string): Promise<CompetitorRow | null> {
-    return prisma.competitor.findFirst({
+    const row = await prisma.competitor.findFirst({
       where: { id, teamId, deletedAt: null },
     });
+    return row as CompetitorRow | null;
   },
 
   async create(
@@ -145,7 +149,7 @@ export const competitorRepository = {
     data: { name: string; url: string; platform: string }
   ): Promise<CompetitorRow> {
     const domain = new URL(data.url).hostname;
-    return prisma.competitor.create({
+    const row = await prisma.competitor.create({
       data: {
         teamId,
         name: data.name,
@@ -156,6 +160,7 @@ export const competitorRepository = {
         },
       },
     });
+    return row as CompetitorRow;
   },
 
   async update(
@@ -168,7 +173,8 @@ export const competitorRepository = {
       data,
     });
     if (result.count === 0) return null;
-    return prisma.competitor.findFirst({ where: { id, teamId, deletedAt: null } });
+    const row = await prisma.competitor.findFirst({ where: { id, teamId, deletedAt: null } });
+    return row as CompetitorRow | null;
   },
 
   updateDiscoveryState,

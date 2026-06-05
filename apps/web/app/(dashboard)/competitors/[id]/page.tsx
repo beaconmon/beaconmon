@@ -232,7 +232,7 @@ function ProductsTab({ competitorId, platform }: { competitorId: string; platfor
 // ─── Events tab ───────────────────────────────────────────────────────────────
 
 function EventsTab({ competitorId }: { competitorId: string }) {
-  const { events, hasMore, isLoading, isError, loadMore, updateEventDecision } = useCompetitorEvents(competitorId);
+  const { events, hasMore, isLoading, isError, loadMore, refresh, updateEventDecision } = useCompetitorEvents(competitorId);
   const dismissBulk = useDismissBulk(competitorId);
 
   if (isError && events.length === 0) {
@@ -264,7 +264,7 @@ function EventsTab({ competitorId }: { competitorId: string }) {
               variant="ghost"
               className="h-7 px-2 text-xs text-brand-muted hover:text-brand-dim"
               disabled={dismissBulk.isPending}
-              onClick={() => dismissBulk.mutate()}
+              onClick={() => dismissBulk.mutate(undefined, { onSuccess: refresh })}
             >
               {dismissBulk.isPending ? 'Dismissing...' : 'Dismiss all undecided'}
             </Button>

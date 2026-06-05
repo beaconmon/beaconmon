@@ -86,7 +86,21 @@ async function fetchAllProducts(domain: string): Promise<ShopifyProduct[]> {
     allProducts.push(...data.products);
 
     const linkHeader = res.headers.get('link');
-    url = parseNextPageUrl(linkHeader);
+    const nextUrl = parseNextPageUrl(linkHeader);
+    if (nextUrl) {
+      let parsed: URL;
+      try {
+        parsed = new URL(nextUrl);
+      } catch {
+        throw new Error(`Malformed pagination URL in Link header: ${nextUrl}`);
+      }
+      if (parsed.protocol !== 'https:' || parsed.hostname !== domain) {
+        throw new Error(`Pagination URL ${nextUrl} does not match expected domain ${domain}`);
+      }
+      url = nextUrl;
+    } else {
+      url = null;
+    }
   }
 
   return allProducts;
@@ -112,8 +126,6 @@ export async function processShopifyFeedJob(
 
   validateShopifyDomain(domain);
 
-  await updateCompetitorDiscoveryState(competitorId, { discoveryState: 'syncing' });
-
   // 1. Acquire job-level lock — skip if another worker is already processing this competitor
   const lockKey = `shopify:processing:${competitorId}`;
   const lockValue = randomUUID();
@@ -122,6 +134,8 @@ export async function processShopifyFeedJob(
     logger.info({ service, competitorId }, 'Skipping — lock already held');
     return;
   }
+
+  await updateCompetitorDiscoveryState(competitorId, { discoveryState: 'syncing' });
 
   try {
     // 2. Load existing products
@@ -139,6 +153,7 @@ export async function processShopifyFeedJob(
 
     const fetchedIds = new Set<string>();
     const now = new Date();
+    let productErrors = 0;
 
     // Cache notification channel count so we don't query once per event
     let hasChannels: boolean | null = null;
@@ -282,8 +297,9 @@ export async function processShopifyFeedJob(
           } catch (err) {
             logger.error(
               { service, competitorId, shopifyProductId: String(product.id), err },
-              'Failed to process product — skipping'
+              'Failed to process product'
             );
+            productErrors++;
           }
         })
       );
@@ -303,6 +319,14 @@ export async function processShopifyFeedJob(
         });
         await maybeEnqueueNotify(event.id);
       }
+    }
+
+    if (productErrors > 0) {
+      await updateCompetitorDiscoveryState(competitorId, {
+        discoveryState: 'failed',
+        discoveryError: `${productErrors} product(s) failed to process`,
+      });
+      throw new Error(`Shopify feed sync failed: ${productErrors} product(s) could not be processed`);
     }
 
     await updateCompetitorDiscoveryState(competitorId, {
