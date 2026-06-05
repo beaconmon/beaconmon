@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createCompetitorNotifyQueue, createManagedWorker } from '@beaconmon/queue';
 import type { ShopifyFeedJob } from '@beaconmon/queue';
-import { prisma, updateCompetitorDiscoveryState } from '@beaconmon/db';
+import { prisma, updateCompetitorDiscoveryState, monitoringRunWorkerRepository } from '@beaconmon/db';
 import { processShopifyFeedJob } from './process-shopify-feed-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -31,6 +31,16 @@ const { worker } = createManagedWorker<ShopifyFeedJob>({
   },
 });
 
+worker.on('completed', (job) => {
+  monitoringRunWorkerRepository.recordSuccess({
+    teamId: job.data.teamId,
+    jobType: 'shopify_feed',
+    jobId: job.id ?? '',
+    startedAt: new Date(job.processedOn ?? Date.now()),
+    finishedAt: new Date(job.finishedOn ?? Date.now()),
+  }).catch((err) => logger.error({ service: 'shopify-feed-worker', err }, 'Failed to record monitoring run'));
+});
+
 worker.on('failed', (job, err) => {
   logger.error(
     { service: 'shopify-feed-worker', jobId: job?.id, competitorId: job?.data.competitorId, err },
@@ -40,7 +50,6 @@ worker.on('failed', (job, err) => {
     extra: { jobId: job?.id, competitorId: job?.data.competitorId, domain: job?.data.domain },
   });
 
-  // Write failed state only when all retries are exhausted
   const maxAttempts = job?.opts.attempts ?? 3;
   if (job && job.attemptsMade >= maxAttempts) {
     const errorMessage = err instanceof Error ? err.message : String(err);
@@ -50,6 +59,14 @@ worker.on('failed', (job, err) => {
     }).catch((updateErr) => {
       logger.error({ service: 'shopify-feed-worker', competitorId: job.data.competitorId, updateErr }, 'Failed to write failed discovery state');
     });
+    monitoringRunWorkerRepository.recordFailure({
+      teamId: job.data.teamId,
+      jobType: 'shopify_feed',
+      jobId: job.id ?? '',
+      startedAt: new Date(job.processedOn ?? Date.now()),
+      finishedAt: new Date(job.finishedOn ?? Date.now()),
+      errorMessage: errorMessage.slice(0, 500),
+    }).catch((recordErr) => logger.error({ service: 'shopify-feed-worker', recordErr }, 'Failed to record monitoring run failure'));
   }
 });
 

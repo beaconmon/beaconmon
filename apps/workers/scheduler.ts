@@ -250,6 +250,7 @@ async function scheduleChecks(): Promise<void> {
       if (monitor.type === 'content') {
         await contentQueue.add(`content:${monitor.id}:${now.getTime()}`, {
           monitorId: monitor.id,
+          teamId: monitor.teamId,
           url: monitor.url,
           intervalSeconds: monitor.intervalSeconds,
           selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
@@ -262,6 +263,7 @@ async function scheduleChecks(): Promise<void> {
 
         await checkQueue.add(`check:${monitor.id}:${now.getTime()}`, {
           monitorId: monitor.id,
+          teamId: monitor.teamId,
           url: monitor.url,
           type: monitor.type as 'http' | 'ssl' | 'domain' | 'tcp' | 'keyword',
           intervalSeconds: monitor.intervalSeconds,

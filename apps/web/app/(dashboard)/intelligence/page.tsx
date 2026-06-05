@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Brain } from 'lucide-react';
+import { Brain, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IntelligenceFeed } from '@/components/intelligence/intelligence-feed';
 import { IntelligenceFilters } from '@/components/intelligence/intelligence-filters';
@@ -66,9 +66,18 @@ function IntelligencePageInner() {
                   <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                     Activity feed
                   </p>
-                  <span className="font-mono text-[11px] text-brand-muted">
-                    {activeCompetitorCount} active
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[11px] text-brand-muted">
+                      {activeCompetitorCount} active
+                    </span>
+                    <a
+                      href="/api/competitors/products.csv"
+                      className="inline-flex items-center gap-1 font-mono text-[10px] text-brand-muted transition-colors hover:text-brand-dim"
+                    >
+                      <Download className="h-3 w-3" />
+                      export all products
+                    </a>
+                  </div>
                 </div>
 
                 <QueryState

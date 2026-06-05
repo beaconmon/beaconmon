@@ -6,6 +6,7 @@ import type { ProbeRegion } from '@beaconmon/types';
 /** Enqueued by scheduler per active non-content monitor */
 export interface CheckJob {
   monitorId: string;
+  teamId: string;
   url: string;
   type: 'http' | 'ssl' | 'domain' | 'tcp' | 'keyword';
   intervalSeconds: number;
@@ -19,6 +20,7 @@ export interface CheckJob {
 /** Enqueued by scheduler for content monitors */
 export interface ContentCheckJob {
   monitorId: string;
+  teamId: string;
   url: string;
   intervalSeconds: number;
   selector?: string; // CSS selector from monitor.config, if set

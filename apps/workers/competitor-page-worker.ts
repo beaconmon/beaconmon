@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createCompetitorNotifyQueue, createManagedWorker } from '@beaconmon/queue';
 import type { CompetitorPageCheckJob } from '@beaconmon/queue';
-import { prisma } from '@beaconmon/db';
+import { prisma, monitoringRunWorkerRepository } from '@beaconmon/db';
 import { processCompetitorPageCheckJob } from './process-competitor-page-check-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -31,6 +31,16 @@ const { worker } = createManagedWorker<CompetitorPageCheckJob>({
   },
 });
 
+worker.on('completed', (job) => {
+  monitoringRunWorkerRepository.recordSuccess({
+    teamId: job.data.teamId,
+    jobType: 'competitor_page',
+    jobId: job.id ?? '',
+    startedAt: new Date(job.processedOn ?? Date.now()),
+    finishedAt: new Date(job.finishedOn ?? Date.now()),
+  }).catch((err) => logger.error({ service: 'competitor-page-worker', err }, 'Failed to record monitoring run'));
+});
+
 worker.on('failed', (job, err) => {
   logger.error(
     { service: 'competitor-page-worker', jobId: job?.id, competitorPageId: job?.data.competitorPageId, err },
@@ -39,6 +49,17 @@ worker.on('failed', (job, err) => {
   Sentry.captureException(err, {
     extra: { jobId: job?.id, competitorPageId: job?.data.competitorPageId, competitorId: job?.data.competitorId },
   });
+  const maxAttempts = job?.opts.attempts ?? 3;
+  if (job && job.attemptsMade >= maxAttempts) {
+    monitoringRunWorkerRepository.recordFailure({
+      teamId: job.data.teamId,
+      jobType: 'competitor_page',
+      jobId: job.id ?? '',
+      startedAt: new Date(job.processedOn ?? Date.now()),
+      finishedAt: new Date(job.finishedOn ?? Date.now()),
+      errorMessage: (err instanceof Error ? err.message : String(err)).slice(0, 500),
+    }).catch((recordErr) => logger.error({ service: 'competitor-page-worker', recordErr }, 'Failed to record monitoring run failure'));
+  }
 });
 
 logger.info({ service: 'competitor-page-worker', concurrency: 5 }, 'Competitor page worker started');

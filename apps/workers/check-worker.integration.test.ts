@@ -110,6 +110,7 @@ describe('processCheckJob', () => {
     await processCheckJob(
       {
         monitorId,
+        teamId,
         url: serverUrl,
         type: 'http',
         intervalSeconds: 60,

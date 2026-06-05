@@ -4,7 +4,7 @@ import { use, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, ExternalLink, Bell, Trash2, BarChart2, X } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Bell, Trash2, BarChart2, X, Download } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import {
@@ -205,10 +205,17 @@ function ProductsTab({ competitorId, platform }: { competitorId: string; platfor
     <div className="space-y-0">
       <DiscoveryBanner competitorId={competitorId} platform={platform} />
       <div className="rounded-lg border border-brand-line bg-brand-surface">
-        <div className="border-b border-brand-line px-4 py-3">
+        <div className="flex items-center justify-between border-b border-brand-line px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
             Product catalog
           </h2>
+          <a
+            href={`/api/competitors/${competitorId}/products.csv`}
+            className="inline-flex items-center gap-1 text-xs text-brand-muted transition-colors hover:text-brand-dim"
+          >
+            <Download className="h-3 w-3" />
+            Export CSV
+          </a>
         </div>
         <QueryState isLoading={isLoading} isError={isError} onRetry={() => refetch()} skeletonRows={5}>
           {!products || products.length === 0 ? (

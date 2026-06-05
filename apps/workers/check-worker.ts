@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createAlertQueue, createEscalationQueue, createManagedWorker } from '@beaconmon/queue';
 import type { CheckJob } from '@beaconmon/queue';
-import { prisma } from '@beaconmon/db';
+import { prisma, monitoringRunWorkerRepository } from '@beaconmon/db';
 import { processCheckJob } from './process-check-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -44,6 +44,16 @@ const { worker } = createManagedWorker<CheckJob>({
   },
 });
 
+worker.on('completed', (job) => {
+  monitoringRunWorkerRepository.recordSuccess({
+    teamId: job.data.teamId,
+    jobType: 'check',
+    jobId: job.id ?? '',
+    startedAt: new Date(job.processedOn ?? Date.now()),
+    finishedAt: new Date(job.finishedOn ?? Date.now()),
+  }).catch((err) => logger.error({ service: 'check-worker', err }, 'Failed to record monitoring run'));
+});
+
 worker.on('failed', (job, err) => {
   logger.error(
     { service: 'check-worker', jobId: job?.id, monitorId: job?.data.monitorId, err },
@@ -52,6 +62,17 @@ worker.on('failed', (job, err) => {
   Sentry.captureException(err, {
     extra: { jobId: job?.id, monitorId: job?.data.monitorId, type: job?.data.type },
   });
+  const maxAttempts = job?.opts.attempts ?? 3;
+  if (job && job.attemptsMade >= maxAttempts) {
+    monitoringRunWorkerRepository.recordFailure({
+      teamId: job.data.teamId,
+      jobType: 'check',
+      jobId: job.id ?? '',
+      startedAt: new Date(job.processedOn ?? Date.now()),
+      finishedAt: new Date(job.finishedOn ?? Date.now()),
+      errorMessage: (err instanceof Error ? err.message : String(err)).slice(0, 500),
+    }).catch((recordErr) => logger.error({ service: 'check-worker', recordErr }, 'Failed to record monitoring run failure'));
+  }
 });
 
 logger.info({ service: 'check-worker', concurrency }, 'Check worker started');

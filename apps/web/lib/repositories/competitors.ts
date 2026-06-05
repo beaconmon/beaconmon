@@ -102,6 +102,19 @@ export interface CompetitorChannelRow {
   isActive: boolean;
 }
 
+export interface CompetitorProductExportRow extends CompetitorProductRow {
+  competitorName: string;
+  competitorDomain: string;
+}
+
+export interface CompetitorEventExportRow {
+  id: string;
+  type: string;
+  payload: unknown;
+  detectedAt: Date;
+  productTitle: string | null;
+}
+
 async function updateDiscoveryState(
   teamId: string,
   competitorId: string,
@@ -249,6 +262,7 @@ export const competitorRepository = {
     return prisma.competitorProduct.findMany({
       where: { teamId, competitorId },
       orderBy: { title: 'asc' },
+      take: 25_001,
     });
   },
 
@@ -308,6 +322,72 @@ export const competitorRepository = {
     await prisma.competitorNotificationChannel.deleteMany({
       where: { competitorId, channelId, teamId },
     });
+  },
+
+  async findEventsForExport(
+    teamId: string,
+    competitorId: string,
+    opts: { days: number; types?: string[] }
+  ): Promise<CompetitorEventExportRow[]> {
+    await assertOwnership(teamId, competitorId);
+    const since = new Date(Date.now() - opts.days * 24 * 60 * 60 * 1000);
+    const rows = await prisma.competitorEvent.findMany({
+      where: {
+        teamId,
+        competitorId,
+        detectedAt: { gte: since },
+        ...(opts.types && opts.types.length > 0 ? { type: { in: opts.types } } : {}),
+      },
+      orderBy: [{ detectedAt: 'desc' }, { id: 'desc' }],
+      take: 25_001,
+      select: {
+        id: true,
+        type: true,
+        payload: true,
+        detectedAt: true,
+        product: { select: { title: true } },
+      },
+    });
+    return rows.map((r) => ({ ...r, productTitle: r.product?.title ?? null }));
+  },
+
+  async findLatestPriceEventsByProduct(
+    teamId: string,
+    competitorId?: string
+  ): Promise<Map<string, unknown>> {
+    const rows = await prisma.competitorEvent.findMany({
+      where: {
+        teamId,
+        type: 'price_changed',
+        productId: { not: null },
+        ...(competitorId ? { competitorId } : {}),
+      },
+      orderBy: [{ productId: 'asc' }, { detectedAt: 'desc' }, { id: 'desc' }],
+      distinct: ['productId'],
+      select: { productId: true, payload: true },
+      take: 25_001,
+    });
+    const map = new Map<string, unknown>();
+    for (const row of rows) {
+      if (row.productId) {
+        map.set(row.productId, (row.payload as Record<string, unknown>).oldPrice ?? null);
+      }
+    }
+    return map;
+  },
+
+  async findAllProductsForExport(teamId: string): Promise<CompetitorProductExportRow[]> {
+    const rows = await prisma.competitorProduct.findMany({
+      where: { teamId, competitor: { deletedAt: null } },
+      orderBy: [{ competitorId: 'asc' }, { title: 'asc' }],
+      include: { competitor: { select: { name: true, domain: true } } },
+      take: 25_001,
+    });
+    return rows.map((r) => ({
+      ...(r as unknown as CompetitorProductRow),
+      competitorName: r.competitor.name,
+      competitorDomain: r.competitor.domain,
+    }));
   },
 
   async findFeed(
