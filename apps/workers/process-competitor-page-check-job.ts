@@ -6,7 +6,7 @@ import {
   competitorPageRepository,
 } from '@beaconmon/db';
 import { runContentCheck } from '@beaconmon/checker';
-import { createAiProvider, scoreSiteChange } from '@beaconmon/ai';
+import { createAiProvider, scoreSiteChange, scoreRuleBased } from '@beaconmon/ai';
 import type { CompetitorPageCheckJob, CompetitorNotifyJob } from '@beaconmon/queue';
 import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
@@ -231,10 +231,12 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
   const eventType: 'site_changed' | 'promo_detected' =
     aiResult?.classification === 'pricing' ? 'promo_detected' : 'site_changed';
 
-  const significance = await scoreSiteChange(
-    aiResult?.summary ?? '',
-    createAiProvider({ provider: env.AI_PROVIDER, apiKey: env.AI_API_KEY, model: env.AI_MODEL })
-  );
+  const significance = aiResult
+    ? await scoreSiteChange(
+        aiResult.summary,
+        createAiProvider({ provider: env.AI_PROVIDER, apiKey: env.AI_API_KEY, model: env.AI_MODEL })
+      )
+    : scoreRuleBased(eventType, {});
 
   // Atomically persist snapshot, event, and updated page hash — partial writes would
   // cause duplicate events on BullMQ retry once the dedup TTL expires
