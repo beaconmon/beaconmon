@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createCompetitorNotifyQueue, createManagedWorker } from '@beaconmon/queue';
 import type { ShopifyFeedJob } from '@beaconmon/queue';
-import { prisma } from '@beaconmon/db';
+import { prisma, updateCompetitorDiscoveryState } from '@beaconmon/db';
 import { processShopifyFeedJob } from './process-shopify-feed-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -39,6 +39,18 @@ worker.on('failed', (job, err) => {
   Sentry.captureException(err, {
     extra: { jobId: job?.id, competitorId: job?.data.competitorId, domain: job?.data.domain },
   });
+
+  // Write failed state only when all retries are exhausted
+  const maxAttempts = job?.opts.attempts ?? 3;
+  if (job && job.attemptsMade >= maxAttempts) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    updateCompetitorDiscoveryState(job.data.competitorId, {
+      discoveryState: 'failed',
+      discoveryError: errorMessage.slice(0, 500),
+    }).catch((updateErr) => {
+      logger.error({ service: 'shopify-feed-worker', competitorId: job.data.competitorId, updateErr }, 'Failed to write failed discovery state');
+    });
+  }
 });
 
 logger.info({ service: 'shopify-feed-worker', concurrency: 3 }, 'Shopify feed worker started');

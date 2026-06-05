@@ -7,6 +7,7 @@ import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
 
 interface CompetitorSignalsPanelProps {
   events: IntelligenceEvent[];
+  last24hCount: number;
 }
 
 const EVENT_LABEL: Record<string, string> = {
@@ -20,11 +21,8 @@ const EVENT_LABEL: Record<string, string> = {
   promo_detected: 'Promo detected',
 };
 
-export function CompetitorSignalsPanel({ events }: CompetitorSignalsPanelProps) {
+export function CompetitorSignalsPanel({ events, last24hCount }: CompetitorSignalsPanelProps) {
   const competitorEvents = events.filter((e) => e.type === 'competitor_event');
-
-  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const last24hCount = competitorEvents.filter((e) => new Date(e.timestamp) > oneDayAgo).length;
 
   if (competitorEvents.length === 0) return null;
 

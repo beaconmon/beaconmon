@@ -12,16 +12,24 @@ export const GET = withAuth<Params>(async (_req, { teamId }, params) => {
   if (!product) throw new NotFoundError();
 
   const events = await prisma.competitorEvent.findMany({
-    where: { competitorId: params.id, productId: params.productId, teamId, type: 'price_changed' },
-    select: { payload: true, detectedAt: true },
+    where: {
+      competitorId: params.id,
+      productId: params.productId,
+      teamId,
+      type: { in: ['product_added', 'price_changed'] },
+    },
+    select: { payload: true, detectedAt: true, type: true },
     orderBy: { detectedAt: 'asc' },
     take: 90,
   });
 
-  const points = events.map((e) => ({
-    price: ((e.payload as Record<string, unknown>).newPrice as string) ?? '0',
-    detectedAt: e.detectedAt,
-  }));
+  const points = events.map((e) => {
+    const p = e.payload as Record<string, unknown>;
+    const price = e.type === 'product_added'
+      ? (p.price as string) ?? '0'
+      : (p.newPrice as string) ?? '0';
+    return { price, detectedAt: e.detectedAt };
+  });
 
   return Response.json(points);
 });

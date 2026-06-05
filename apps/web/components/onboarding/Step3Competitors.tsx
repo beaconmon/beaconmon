@@ -332,19 +332,26 @@ export function Step3Competitors({
             >
               Skip &middot; I&apos;ll add later
             </button>
-            <button
-              onClick={() => void onSubmit()}
-              disabled={submitting}
-              className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{
-                background: 'var(--brand-green, #00e57a)',
-                boxShadow: '0 0 24px rgba(0,229,122,0.35)',
-              }}
-            >
-              {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              Take me to my dashboard
-              <span className="ml-0.5">&rarr;</span>
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={() => void onSubmit()}
+                disabled={submitting}
+                className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-60"
+                style={{
+                  background: 'var(--brand-green, #00e57a)',
+                  boxShadow: '0 0 24px rgba(0,229,122,0.35)',
+                }}
+              >
+                {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                Take me to my dashboard
+                <span className="ml-0.5">&rarr;</span>
+              </button>
+              {competitors.length > 0 && (
+                <p className="text-[11px] text-brand-muted">
+                  Syncing catalog now, products appear within 30s.
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>

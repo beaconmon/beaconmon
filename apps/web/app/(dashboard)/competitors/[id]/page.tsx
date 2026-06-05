@@ -27,6 +27,7 @@ import {
   useDismissBulk,
   type PriceHistoryPoint,
 } from '@/lib/hooks/use-competitors';
+import { useCompetitorDiscovery } from '@/lib/hooks/use-competitor-discovery';
 import { DecisionActionBar } from '@/components/competitors/decision-action-bar';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 
@@ -150,38 +151,80 @@ function ProductRow({ p, competitorId }: { p: { id: string; title: string; handl
   );
 }
 
+// ─── Discovery banner ─────────────────────────────────────────────────────────
+
+function DiscoveryBanner({ competitorId, platform }: { competitorId: string; platform: string }) {
+  const { data: discovery } = useCompetitorDiscovery(competitorId);
+  const state = discovery?.state;
+
+  if (platform !== 'shopify') {
+    return (
+      <div className="mb-4 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3 text-sm text-brand-muted">
+        Catalog tracking is Shopify-only today. We are monitoring this competitor&apos;s homepage and key pages for changes.
+      </div>
+    );
+  }
+
+  if (!state || state === 'ready') return null;
+
+  if (state === 'pending' || state === 'syncing') {
+    return (
+      <div className="mb-4 flex items-center gap-2 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3">
+        <div className="h-2 w-2 animate-pulse rounded-full bg-brand-amber" />
+        <p className="text-sm text-brand-dim">Syncing catalog. Products will appear within 30s.</p>
+      </div>
+    );
+  }
+
+  if (state === 'failed') {
+    return (
+      <div className="mb-4 rounded-lg border border-brand-red/30 bg-brand-red/5 px-4 py-3">
+        <p className="text-sm text-brand-red">Catalog sync failed. The scheduler will retry automatically.</p>
+        {discovery?.error && (
+          <p className="mt-1 font-mono text-[11px] text-brand-muted">{discovery.error}</p>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
+
 // ─── Products tab ─────────────────────────────────────────────────────────────
 
-function ProductsTab({ competitorId }: { competitorId: string }) {
+function ProductsTab({ competitorId, platform }: { competitorId: string; platform: string }) {
   const { data: products, isLoading, isError, refetch } = useCompetitorProducts(competitorId);
 
   return (
-    <div className="rounded-lg border border-brand-line bg-brand-surface">
-      <div className="border-b border-brand-line px-4 py-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
-          Product catalog
-        </h2>
-      </div>
-      <QueryState isLoading={isLoading} isError={isError} onRetry={() => refetch()} skeletonRows={5}>
-        {!products || products.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-brand-muted">
-            No products tracked yet. Products appear after the first Shopify feed sync.
-          </p>
-        ) : (
-          <div>
-            <div className="grid grid-cols-[1fr_100px_100px_80px_90px_44px] border-b border-brand-line px-4 py-2">
-              {['Title', 'Price', 'Compare-at', 'Available', 'Last seen', ''].map((h) => (
-                <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
-                  {h}
-                </span>
+    <div className="space-y-0">
+      <DiscoveryBanner competitorId={competitorId} platform={platform} />
+      <div className="rounded-lg border border-brand-line bg-brand-surface">
+        <div className="border-b border-brand-line px-4 py-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
+            Product catalog
+          </h2>
+        </div>
+        <QueryState isLoading={isLoading} isError={isError} onRetry={() => refetch()} skeletonRows={5}>
+          {!products || products.length === 0 ? (
+            <p className="px-4 py-8 text-center text-sm text-brand-muted">
+              No products tracked yet. Products appear after the first Shopify feed sync.
+            </p>
+          ) : (
+            <div>
+              <div className="grid grid-cols-[1fr_100px_100px_80px_90px_44px] border-b border-brand-line px-4 py-2">
+                {['Title', 'Price', 'Compare-at', 'Available', 'Last seen', ''].map((h) => (
+                  <span key={h} className="text-[10px] font-medium uppercase tracking-wider text-brand-muted">
+                    {h}
+                  </span>
+                ))}
+              </div>
+              {products.map((p) => (
+                <ProductRow key={p.id} p={p} competitorId={competitorId} />
               ))}
             </div>
-            {products.map((p) => (
-              <ProductRow key={p.id} p={p} competitorId={competitorId} />
-            ))}
-          </div>
-        )}
-      </QueryState>
+          )}
+        </QueryState>
+      </div>
     </div>
   );
 }
@@ -530,7 +573,7 @@ export default function CompetitorDetailPage({ params }: { params: Promise<{ id:
         </TabsList>
 
         <TabsContent value="products" className="mt-0">
-          <ProductsTab competitorId={id} />
+          <ProductsTab competitorId={id} platform={competitor?.platform ?? 'other'} />
         </TabsContent>
 
         <TabsContent value="events" className="mt-0">

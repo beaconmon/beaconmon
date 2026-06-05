@@ -18,6 +18,12 @@ export function OverviewPageClient() {
   const plan = session?.plan ?? 'free';
   const primaryMonitor = monitors.find((m) => m.currentStatus === 'down') ?? monitors[0];
 
+  // eslint-disable-next-line react-hooks/purity
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const last24hCount = feedEvents.filter(
+    (e) => e.type === 'competitor_event' && new Date(e.timestamp) > oneDayAgo,
+  ).length;
+
   return (
     <div className="space-y-5">
       <OverviewHero monitors={monitors} feedEvents={feedEvents} />
@@ -28,7 +34,7 @@ export function OverviewPageClient() {
 
         {/* Right rail */}
         <div className="space-y-4">
-          <CompetitorSignalsPanel events={feedEvents} />
+          <CompetitorSignalsPanel events={feedEvents} last24hCount={last24hCount} />
           <ReliabilityPanel primaryMonitor={primaryMonitor} plan={plan} />
           <RecentAlertsPanel />
         </div>

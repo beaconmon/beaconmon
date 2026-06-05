@@ -3,6 +3,8 @@ import { PLAN_LIMITS } from '@beaconmon/types';
 import { withAuth } from '@/lib/api/with-auth';
 import { competitorRepository } from '@/lib/repositories/competitors';
 import { ForbiddenError, PlanLimitError, ValidationError } from '@/lib/api/errors';
+import { getShopifyFeedQueue, getQueueRedis } from '@/lib/queue';
+import { logger } from '@/lib/logger';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const competitors = await competitorRepository.findAll(teamId);
@@ -37,5 +39,27 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
 
   const competitor = await competitorRepository.create(teamId, parsed.data);
+
+  if (parsed.data.platform === 'shopify') {
+    try {
+      const domain = new URL(parsed.data.url).hostname;
+      const queue = getShopifyFeedQueue();
+      const redis = getQueueRedis();
+      await queue.add(
+        'shopify-feed',
+        { competitorId: competitor.id, teamId, domain },
+        { jobId: `sf_${competitor.id}_initial` }
+      );
+      // Prevent scheduler from double-enqueueing within the same hour
+      await redis.set(`shopify:scheduled:${competitor.id}`, '1', 'EX', 3600, 'NX');
+      await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'syncing' });
+    } catch (err) {
+      logger.error({ competitorId: competitor.id, err }, 'Failed to enqueue initial Shopify feed job');
+      // Fail open: scheduler will pick it up later
+    }
+  } else {
+    await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'not_applicable' });
+  }
+
   return Response.json(competitor, { status: 201 });
 });

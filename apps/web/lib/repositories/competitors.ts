@@ -24,6 +24,9 @@ export interface CompetitorRow {
   name: string;
   domain: string;
   platform: string;
+  discoveryState: string;
+  discoverySyncedAt: Date | null;
+  discoveryError: string | null;
   isActive: boolean;
   deletedAt: Date | null;
   createdAt: Date;
@@ -97,6 +100,17 @@ export interface CompetitorChannelRow {
   isActive: boolean;
 }
 
+async function updateDiscoveryState(
+  teamId: string,
+  competitorId: string,
+  patch: { discoveryState: string; discoverySyncedAt?: Date | null; discoveryError?: string | null }
+): Promise<void> {
+  await prisma.competitor.updateMany({
+    where: { id: competitorId, teamId, deletedAt: null },
+    data: patch,
+  });
+}
+
 async function assertOwnership(teamId: string, competitorId: string): Promise<void> {
   const row = await prisma.competitor.findFirst({
     where: { id: competitorId, teamId, deletedAt: null },
@@ -156,6 +170,8 @@ export const competitorRepository = {
     if (result.count === 0) return null;
     return prisma.competitor.findFirst({ where: { id, teamId, deletedAt: null } });
   },
+
+  updateDiscoveryState,
 
   async softDelete(teamId: string, id: string): Promise<boolean> {
     const result = await prisma.competitor.updateMany({

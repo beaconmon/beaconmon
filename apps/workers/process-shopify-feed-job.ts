@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import type { ShopifyFeedJob, CompetitorNotifyJob } from '@beaconmon/queue';
-import { prisma, competitorProductRepository, competitorEventRepository } from '@beaconmon/db';
+import { prisma, competitorProductRepository, competitorEventRepository, updateCompetitorDiscoveryState } from '@beaconmon/db';
 import { logger } from './lib/logger.js';
 
 const service = 'shopify-feed-worker';
@@ -112,6 +112,8 @@ export async function processShopifyFeedJob(
 
   validateShopifyDomain(domain);
 
+  await updateCompetitorDiscoveryState(competitorId, { discoveryState: 'syncing' });
+
   // 1. Acquire job-level lock — skip if another worker is already processing this competitor
   const lockKey = `shopify:processing:${competitorId}`;
   const lockValue = randomUUID();
@@ -126,13 +128,13 @@ export async function processShopifyFeedJob(
     const existing = await competitorProductRepository.findByCompetitorId(competitorId);
     const existingByShopifyId = new Map(existing.map((p) => [p.shopifyProductId, p]));
 
-    // 3. Fetch all pages from Shopify
+    // 3. Fetch all pages from Shopify — throws on failure so BullMQ can retry
     let fetched: ShopifyProduct[];
     try {
       fetched = await fetchAllProducts(domain);
     } catch (err) {
       logger.error({ service, competitorId, domain, err }, 'Failed to fetch Shopify feed');
-      return;
+      throw err;
     }
 
     const fetchedIds = new Set<string>();
@@ -302,6 +304,12 @@ export async function processShopifyFeedJob(
         await maybeEnqueueNotify(event.id);
       }
     }
+
+    await updateCompetitorDiscoveryState(competitorId, {
+      discoveryState: 'ready',
+      discoverySyncedAt: new Date(),
+      discoveryError: null,
+    });
 
     logger.info(
       { service, competitorId, domain, fetched: fetched.length, existing: existing.length },

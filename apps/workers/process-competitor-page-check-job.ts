@@ -50,52 +50,56 @@ export async function processCompetitorPageCheckJob(
     return;
   }
 
-  const result = await runContentCheck({
-    monitorId: competitorPageId,
-    url,
-    selector: selector ?? undefined,
-    timeoutMs: CONTENT_CHECK_TIMEOUT_MS,
-  });
-
-  if (!result.success || result.content === null) {
-    logger.warn({ service, competitorPageId, errorType: result.errorType }, 'Content check failed');
-    await competitorPageRepository.updateAfterCheck(competitorPageId, {
-      lastCheckedAt: now,
-      nextCheckAt: computeNextCheckAt(now, page.intervalSeconds),
+  try {
+    const result = await runContentCheck({
+      monitorId: competitorPageId,
+      url,
+      selector: selector ?? undefined,
+      timeoutMs: CONTENT_CHECK_TIMEOUT_MS,
     });
-    return;
+
+    if (!result.success || result.content === null) {
+      logger.warn({ service, competitorPageId, errorType: result.errorType }, 'Content check failed');
+      await competitorPageRepository.updateAfterCheck(competitorPageId, {
+        lastCheckedAt: now,
+        nextCheckAt: computeNextCheckAt(now, page.intervalSeconds),
+      });
+      return;
+    }
+
+    const { content, checkedAt } = result;
+    const contentHash = createHash('sha256').update(content).digest('hex');
+
+    if (page.lastSnapshotHash === null) {
+      await handleFirstRun(competitorPageId, teamId, content, checkedAt, contentHash, now, page.intervalSeconds);
+      return;
+    }
+
+    if (contentHash === page.lastSnapshotHash) {
+      await handleNoChange(competitorPageId, now, page.intervalSeconds, startedAt);
+      return;
+    }
+
+    await handleContentChange({
+      competitorPageId,
+      teamId,
+      competitorId,
+      url,
+      content,
+      contentHash,
+      checkedAt,
+      now,
+      intervalSeconds: page.intervalSeconds,
+      teamPlan: page.teamPlan,
+      teamTrialEndsAt: page.teamTrialEndsAt,
+      teamSubscriptionStatus: page.teamSubscriptionStatus,
+      redis,
+      notifyQueue,
+      startedAt,
+    });
+  } finally {
+    await redis.del(processingKey);
   }
-
-  const { content, checkedAt } = result;
-  const contentHash = createHash('sha256').update(content).digest('hex');
-
-  if (page.lastSnapshotHash === null) {
-    await handleFirstRun(competitorPageId, teamId, content, checkedAt, contentHash, now, page.intervalSeconds);
-    return;
-  }
-
-  if (contentHash === page.lastSnapshotHash) {
-    await handleNoChange(competitorPageId, now, page.intervalSeconds, startedAt);
-    return;
-  }
-
-  await handleContentChange({
-    competitorPageId,
-    teamId,
-    competitorId,
-    url,
-    content,
-    contentHash,
-    checkedAt,
-    now,
-    intervalSeconds: page.intervalSeconds,
-    teamPlan: page.teamPlan,
-    teamTrialEndsAt: page.teamTrialEndsAt,
-    teamSubscriptionStatus: page.teamSubscriptionStatus,
-    redis,
-    notifyQueue,
-    startedAt,
-  });
 }
 
 async function handleFirstRun(
