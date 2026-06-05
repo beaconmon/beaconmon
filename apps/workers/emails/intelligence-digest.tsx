@@ -142,12 +142,15 @@ export function IntelligenceDigestEmail({
           {sections.competitors && sections.competitors.length > 0 && (
             <Section>
               <Text style={sectionTitle}>Competitor Changes</Text>
-              {sections.competitors.map((change, i) => (
-                <Section key={String(i)} style={card}>
+              {sections.competitors.map((change, i) => {
+                const isHighPriority = change.classification != null &&
+                  ['out_of_stock', 'back_in_stock', 'sale_started'].includes(change.classification);
+                return (
+                <Section key={String(i)} style={isHighPriority ? { ...card, borderColor: '#b45309' } : card}>
                   <Text style={cardTitle}>
                     {change.monitorName}
                     {change.classification ? (
-                      <span style={classificationTag}>{change.classification}</span>
+                      <span style={isHighPriority ? highPriorityTag : classificationTag}>{change.classification.replace(/_/g, ' ')}</span>
                     ) : null}
                   </Text>
                   <Text style={cardUrl}>{change.monitorUrl}</Text>
@@ -157,7 +160,8 @@ export function IntelligenceDigestEmail({
                     View diff
                   </Button>
                 </Section>
-              ))}
+                );
+              })}
             </Section>
           )}
 
@@ -282,6 +286,18 @@ const cardMeta: React.CSSProperties = {
 const classificationTag: React.CSSProperties = {
   backgroundColor: '#eff6ff',
   color: '#2563eb',
+  fontSize: '10px',
+  fontWeight: '600',
+  textTransform: 'uppercase',
+  letterSpacing: '0.04em',
+  padding: '2px 6px',
+  borderRadius: '3px',
+  marginLeft: '8px',
+};
+
+const highPriorityTag: React.CSSProperties = {
+  backgroundColor: '#fffbeb',
+  color: '#b45309',
   fontSize: '10px',
   fontWeight: '600',
   textTransform: 'uppercase',

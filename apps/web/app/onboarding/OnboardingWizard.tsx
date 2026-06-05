@@ -10,9 +10,21 @@ import { StepIndicator } from '@/components/onboarding/StepIndicator';
 import { Step1Store } from '@/components/onboarding/Step1Store';
 import { Step2Bundle, type BundleItem } from '@/components/onboarding/Step2Bundle';
 import { Step3Competitors } from '@/components/onboarding/Step3Competitors';
+import type { CatalogPreviewResult } from '@/components/onboarding/Step3Competitors';
 import { ONBOARDING_TEMPLATES } from '@/lib/onboarding-templates';
 import type { PlatformType } from '@/lib/onboarding-templates';
 import Logo from '@/components/logo';
+
+const catalogPreviewResultSchema = z.object({
+  domain: z.string(),
+  productCount: z.number(),
+  recentChanges30d: z.number(),
+  error: z.string().optional(),
+});
+
+const catalogPreviewResponseSchema = z.object({
+  results: z.array(catalogPreviewResultSchema),
+});
 
 const discoverResponseSchema = z.object({
   suggestions: z.array(
@@ -127,6 +139,9 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   const [bundle, setBundle] = useState<BundleItem[]>([]);
   const [competitors, setCompetitors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [catalogPreviewLoading, setCatalogPreviewLoading] = useState(false);
+  const [catalogPreview, setCatalogPreview] = useState<CatalogPreviewResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [discoverLoading, setDiscoverLoading] = useState(false);
   const [discoverDegraded, setDiscoverDegraded] = useState(false);
@@ -305,7 +320,31 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       }
 
       markComplete(teamId);
-      router.push('/monitors');
+
+      const shopifyCompetitors =
+        platform === 'shopify' ? competitors.slice(0, 5) : [];
+
+      if (shopifyCompetitors.length > 0) {
+        setSubmitted(true);
+        setCatalogPreviewLoading(true);
+        try {
+          const previewRes = await apiFetch('/api/onboarding/catalog-preview', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ domains: shopifyCompetitors }),
+          });
+          if (previewRes.ok) {
+            const raw = await previewRes.json();
+            const parsed2 = catalogPreviewResponseSchema.safeParse(raw);
+            if (parsed2.success) setCatalogPreview(parsed2.data.results);
+          }
+        } catch {
+          // fail silently — success screen still shows without ROI numbers
+        }
+        setCatalogPreviewLoading(false);
+      } else {
+        router.push('/monitors');
+      }
     } catch {
       setError('Something went wrong. Try again.');
     } finally {
@@ -385,6 +424,10 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
               onSubmit={handleSubmit}
               submitting={submitting}
               error={error}
+              submitted={submitted}
+              catalogPreviewLoading={catalogPreviewLoading}
+              catalogPreview={catalogPreview}
+              onDone={() => router.push('/monitors')}
             />
           )}
         </div>

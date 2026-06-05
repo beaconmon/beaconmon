@@ -19,6 +19,12 @@ import type {
 
 const service = 'digest-worker';
 
+const HIGH_PRIORITY_COMPETITOR_TYPES = new Set(['out_of_stock', 'back_in_stock', 'sale_started']);
+
+export function priorityWeightForCompetitorEvent(type: string): number {
+  return HIGH_PRIORITY_COMPETITOR_TYPES.has(type) ? 0 : 1;
+}
+
 function formatEventSummary(type: string, payload: Record<string, unknown>): string {
   switch (type) {
     case 'price_changed':
@@ -29,6 +35,10 @@ function formatEventSummary(type: string, payload: Record<string, unknown>): str
       return `Removed: ${payload.title}`;
     case 'stock_changed':
       return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'out_of_stock':
+      return `Out of stock: ${payload.productHandle ?? 'product'}`;
+    case 'back_in_stock':
+      return `Back in stock: ${payload.productHandle ?? 'product'}`;
     case 'site_changed':
     case 'promo_detected':
       return (payload.diffSummary as string | undefined) ?? 'Content changed';
@@ -224,15 +234,22 @@ export async function processIntelligenceDigestJob(
 
   if (prefs.sections.competitors) {
     const events = await digestRepository.findCompetitorEventsForDigest(teamId, start, end);
-    sections.competitors = events.map((e) => ({
-      monitorId: e.competitorId,
-      monitorName: e.competitorName,
-      monitorUrl: e.competitorDomain,
-      capturedAt: e.detectedAt,
-      diffSummary: formatEventSummary(e.type, e.payload),
-      classification: e.type,
-      dashboardUrl: `${appUrl}/competitors/${e.competitorId}`,
-    }));
+    sections.competitors = events
+      .map((e) => ({
+        monitorId: e.competitorId,
+        monitorName: e.competitorName,
+        monitorUrl: e.competitorDomain,
+        capturedAt: e.detectedAt,
+        diffSummary: formatEventSummary(e.type, e.payload),
+        classification: e.type,
+        dashboardUrl: `${appUrl}/competitors/${e.competitorId}`,
+      }))
+      .sort((a, b) => {
+        const ap = priorityWeightForCompetitorEvent(a.classification ?? '');
+        const bp = priorityWeightForCompetitorEvent(b.classification ?? '');
+        if (ap !== bp) return ap - bp;
+        return b.capturedAt.getTime() - a.capturedAt.getTime();
+      });
   }
 
   if (prefs.sections.smartAlerts) {

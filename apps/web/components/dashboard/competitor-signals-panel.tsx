@@ -15,6 +15,8 @@ const EVENT_LABEL: Record<string, string> = {
   product_added: 'New product',
   product_removed: 'Removed',
   stock_changed: 'Stock change',
+  out_of_stock: 'Out of stock',
+  back_in_stock: 'Back in stock',
   sale_started: 'Sale started',
   sale_ended: 'Sale ended',
   site_changed: 'Site change',

@@ -54,6 +54,10 @@ function formatPayloadSummary(
       return `Removed: ${payload.title}`;
     case 'stock_changed':
       return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'out_of_stock':
+      return `Out of stock: ${payload.productHandle ?? ''}`;
+    case 'back_in_stock':
+      return `Back in stock: ${payload.productHandle ?? ''}`;
     case 'sale_started':
       return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
     case 'sale_ended':
@@ -71,6 +75,8 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
   product_added: 'New product',
   product_removed: 'Product removed',
   stock_changed: 'Stock change',
+  out_of_stock: 'Out of stock',
+  back_in_stock: 'Back in stock',
   sale_started: 'Sale started',
   sale_ended: 'Sale ended',
   site_changed: 'Site change',
