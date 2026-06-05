@@ -42,3 +42,5 @@ export type {
   SuggestCompetitorsInput,
   SuggestCompetitorsResult,
 } from './smart-setup/index.js';
+export { scoreRuleBased, scoreSiteChange } from './significance.js';
+export type { Significance } from './significance.js';

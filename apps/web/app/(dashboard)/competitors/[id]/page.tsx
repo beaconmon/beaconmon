@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,6 +30,7 @@ import {
 import { useCompetitorDiscovery } from '@/lib/hooks/use-competitor-discovery';
 import { DecisionActionBar } from '@/components/competitors/decision-action-bar';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
+import type { CompetitorEventRow, CompetitorDecisionData } from '@/lib/hooks/use-competitors';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -242,6 +243,106 @@ function ProductsTab({ competitorId, platform }: { competitorId: string; platfor
   );
 }
 
+// ─── Significance badge ───────────────────────────────────────────────────────
+
+function SignificanceBadge({ significance }: { significance?: string | null }) {
+  if (significance !== 'high') return null;
+  return (
+    <span
+      className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+      style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--brand-red)' }}
+    >
+      high
+    </span>
+  );
+}
+
+// ─── Event grouping ───────────────────────────────────────────────────────────
+
+type EventGroup =
+  | { kind: 'event'; event: CompetitorEventRow }
+  | { kind: 'low-group'; events: CompetitorEventRow[] };
+
+function groupBySignificance(events: CompetitorEventRow[]): EventGroup[] {
+  const groups: EventGroup[] = [];
+  let lowBuffer: CompetitorEventRow[] = [];
+
+  for (const event of events) {
+    if ((event.significance ?? 'medium') === 'low') {
+      lowBuffer.push(event);
+    } else {
+      if (lowBuffer.length > 0) {
+        groups.push({ kind: 'low-group', events: lowBuffer });
+        lowBuffer = [];
+      }
+      groups.push({ kind: 'event', event });
+    }
+  }
+
+  if (lowBuffer.length > 0) {
+    groups.push({ kind: 'low-group', events: lowBuffer });
+  }
+
+  return groups;
+}
+
+function LowEventGroup({
+  events,
+  competitorId,
+  updateEventDecision,
+}: {
+  events: CompetitorEventRow[];
+  competitorId: string;
+  updateEventDecision: (id: string, d: CompetitorDecisionData | null) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <>
+      <div
+        className="flex cursor-pointer items-center justify-between border-t border-brand-line/60 px-4 py-2 hover:bg-brand-bg3/30"
+        onClick={() => setExpanded((s) => !s)}
+      >
+        <span className="font-mono text-[11px] text-brand-muted">
+          {events.length} low-signal event{events.length !== 1 ? 's' : ''} hidden
+        </span>
+        <span className="font-mono text-[10px] text-brand-muted">{expanded ? '▲' : '▼'}</span>
+      </div>
+      {expanded &&
+        events.map((e) => {
+          const summary = formatPayloadSummary(e.type, e.payload);
+          const label = EVENT_TYPE_LABEL[e.type] ?? 'Event';
+          return (
+            <div key={e.id} className="border-t border-brand-line/60 px-4 py-3 opacity-60 hover:bg-brand-bg3/30">
+              <div className="grid grid-cols-[1fr_120px] gap-3">
+                <div className="min-w-0 space-y-0.5">
+                  <span
+                    className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                    style={{ background: 'rgba(180,83,9,0.1)', color: 'var(--brand-amber)' }}
+                  >
+                    {label}
+                  </span>
+                  {summary && <p className="text-sm text-brand-dim">{summary}</p>}
+                </div>
+                <div className="flex flex-col items-end">
+                  <time className="font-mono text-[11px] text-brand-muted">
+                    {formatDistanceToNow(new Date(e.detectedAt), { addSuffix: true })}
+                  </time>
+                </div>
+              </div>
+              <DecisionActionBar
+                eventId={e.id}
+                competitorId={competitorId}
+                currentDecision={e.decision}
+                onDecisionChange={(d) => updateEventDecision(e.id, d)}
+              />
+            </div>
+          );
+        })}
+    </>
+  );
+}
+
 // ─── Events tab ───────────────────────────────────────────────────────────────
 
 function EventsTab({ competitorId }: { competitorId: string }) {
@@ -287,7 +388,18 @@ function EventsTab({ competitorId }: { competitorId: string }) {
           <p className="px-4 py-8 text-center text-sm text-brand-muted">No events recorded yet.</p>
         ) : (
           <div>
-            {events.map((e, i) => {
+            {groupBySignificance(events).map((group, i) => {
+              if (group.kind === 'low-group') {
+                return (
+                  <LowEventGroup
+                    key={`low-group-${i}`}
+                    events={group.events}
+                    competitorId={competitorId}
+                    updateEventDecision={updateEventDecision}
+                  />
+                );
+              }
+              const e = group.event;
               const summary = formatPayloadSummary(e.type, e.payload);
               const label = EVENT_TYPE_LABEL[e.type] ?? 'Event';
               return (
@@ -297,12 +409,15 @@ function EventsTab({ competitorId }: { competitorId: string }) {
                 >
                   <div className="grid grid-cols-[1fr_120px] gap-3">
                     <div className="min-w-0 space-y-0.5">
-                      <span
-                        className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
-                        style={{ background: 'rgba(180,83,9,0.1)', color: 'var(--brand-amber)' }}
-                      >
-                        {label}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className="inline-block rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                          style={{ background: 'rgba(180,83,9,0.1)', color: 'var(--brand-amber)' }}
+                        >
+                          {label}
+                        </span>
+                        <SignificanceBadge significance={e.significance} />
+                      </div>
                       {summary && (
                         <p className="text-sm text-brand-dim">{summary}</p>
                       )}

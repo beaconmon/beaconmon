@@ -38,6 +38,7 @@ export interface CompetitorEventRow {
   pageId: string | null;
   type: string;
   payload: Record<string, unknown>;
+  significance?: string | null;
   detectedAt: string;
   decision?: CompetitorDecisionData | null;
 }
