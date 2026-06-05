@@ -262,6 +262,7 @@ export const competitorRepository = {
     return prisma.competitorProduct.findMany({
       where: { teamId, competitorId },
       orderBy: { title: 'asc' },
+      take: 25_001,
     });
   },
 
@@ -361,9 +362,10 @@ export const competitorRepository = {
         productId: { not: null },
         ...(competitorId ? { competitorId } : {}),
       },
-      orderBy: [{ productId: 'asc' }, { detectedAt: 'desc' }],
+      orderBy: [{ productId: 'asc' }, { detectedAt: 'desc' }, { id: 'desc' }],
       distinct: ['productId'],
       select: { productId: true, payload: true },
+      take: 25_001,
     });
     const map = new Map<string, unknown>();
     for (const row of rows) {

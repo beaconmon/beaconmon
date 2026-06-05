@@ -23,8 +23,10 @@ export function toCsv(rows: Record<string, unknown>[], columns: CsvColumn[]): st
 }
 
 function escapeField(value: string): string {
-  if (/[",\r\n]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
+  // Prefix formula-starting chars to prevent spreadsheet injection
+  const sanitized = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  if (/[",\r\n]/.test(sanitized)) {
+    return `"${sanitized.replace(/"/g, '""')}"`;
   }
-  return value;
+  return sanitized;
 }
