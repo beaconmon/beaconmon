@@ -9,7 +9,7 @@ import { PLAN_LIMITS } from '@beaconmon/types';
 export function normalizeDomain(input: string): string {
   let s = input.trim();
   s = s.replace(/^https?:\/\//, '');
-  s = (s.split('/')[0] ?? s).toLowerCase();
+  s = (s.split(/[/?#]/)[0] ?? s).toLowerCase();
   return s;
 }
 
@@ -71,9 +71,9 @@ export function CompetitorDomainInput({
     setSuggestedSet((prev) => new Set([...prev, normalized]));
   }
 
-  const visibleSuggestions = aiSuggestions
-    .map(normalizeDomain)
-    .filter((d) => d && !value.includes(d));
+  const visibleSuggestions = [...new Set(aiSuggestions.map(normalizeDomain))].filter(
+    (d) => d && !value.includes(d)
+  );
 
   return (
     <div className="space-y-4">

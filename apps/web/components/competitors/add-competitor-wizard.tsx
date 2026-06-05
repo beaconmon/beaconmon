@@ -47,6 +47,7 @@ export function AddCompetitorWizard({
     if (domains.length === 0) return;
     setError(null);
     setSubmitting(true);
+    const created: string[] = [];
     try {
       for (const domain of domains) {
         const res = await apiFetch('/api/competitors', {
@@ -60,6 +61,10 @@ export function AddCompetitorWizard({
         });
         if (!res.ok) {
           const data = (await res.json()) as { error?: string };
+          if (created.length > 0) {
+            setDomains((prev) => prev.filter((d) => !created.includes(d)));
+            onCreated();
+          }
           if (res.status === 403) {
             setError('You need editor permissions to add competitors.');
           } else {
@@ -67,10 +72,15 @@ export function AddCompetitorWizard({
           }
           return;
         }
+        created.push(domain);
       }
       onCreated();
       handleOpenChange(false);
     } catch {
+      if (created.length > 0) {
+        setDomains((prev) => prev.filter((d) => !created.includes(d)));
+        onCreated();
+      }
       setError('Network error. Please try again.');
     } finally {
       setSubmitting(false);
