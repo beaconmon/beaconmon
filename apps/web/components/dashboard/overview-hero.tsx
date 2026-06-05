@@ -8,6 +8,7 @@ import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
 interface OverviewHeroProps {
   monitors: MonitorRow[];
   feedEvents: IntelligenceEvent[];
+  reliabilityRate?: number;
 }
 
 function pad(n: number) {
@@ -27,7 +28,7 @@ function editorialHeadline(downCount: number, total: number): string {
   return `${downCount} monitor${downCount === 1 ? '' : 's'} need${downCount === 1 ? 's' : ''} attention.`;
 }
 
-export function OverviewHero({ monitors, feedEvents }: OverviewHeroProps) {
+export function OverviewHero({ monitors, feedEvents, reliabilityRate }: OverviewHeroProps) {
   const now = new Date();
   const dayLabel = `${DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}`;
   const timeLabel = formatTime(now);
@@ -86,6 +87,13 @@ export function OverviewHero({ monitors, feedEvents }: OverviewHeroProps) {
             <span className="font-mono text-xs uppercase tracking-wider text-brand-muted">Signals</span>
             <span className={`mt-0.5 text-xl font-bold ${competitorMoves > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-brand-muted'}`}>
               {competitorMoves}
+            </span>
+          </div>
+          <div className="w-px bg-brand-line" />
+          <div className="flex flex-col items-center justify-center px-5 py-3">
+            <span className="font-mono text-xs uppercase tracking-wider text-brand-muted">30d Jobs</span>
+            <span className={`mt-0.5 font-mono text-lg font-bold ${reliabilityRate !== undefined && reliabilityRate < 99 ? 'text-amber-500 dark:text-amber-400' : 'text-brand-green-ink'}`}>
+              {reliabilityRate !== undefined ? `${reliabilityRate === 100 ? '100' : reliabilityRate.toFixed(1)}%` : '--'}
             </span>
           </div>
         </div>

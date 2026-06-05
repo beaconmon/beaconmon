@@ -123,6 +123,7 @@ model Team {
   competitorEvents                 CompetitorEvent[]
   competitorDecisions              CompetitorDecision[]
   competitorNotificationChannels   CompetitorNotificationChannel[]
+  monitoringRuns                   MonitoringRun[]
 
   @@map("teams")
 }
@@ -786,4 +787,21 @@ model CompetitorNotificationChannel {
   @@unique([competitorId, channelId])
   @@index([teamId])
   @@map("competitor_notification_channels")
+}
+
+model MonitoringRun {
+  id           String   @id @default(cuid())
+  teamId       String   @map("team_id")
+  jobType      String   @map("job_type")
+  jobId        String   @map("job_id")
+  status       String
+  startedAt    DateTime @map("started_at")
+  finishedAt   DateTime @map("finished_at")
+  errorMessage String?  @map("error_message")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, finishedAt(sort: Desc)])
+  @@index([finishedAt])
+  @@map("monitoring_runs")
 }

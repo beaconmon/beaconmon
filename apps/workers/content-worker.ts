@@ -7,7 +7,7 @@ import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createContentNotifyQueue, createManagedWorker } from '@beaconmon/queue';
 import type { ContentCheckJob, ContentNotifyJob } from '@beaconmon/queue';
-import { prisma } from '@beaconmon/db';
+import { prisma, monitoringRunWorkerRepository } from '@beaconmon/db';
 import { processContentCheckJob } from './process-content-check-job.js';
 import { processContentNotifyJob } from './process-content-notify-job.js';
 
@@ -45,6 +45,16 @@ const { worker: notifyWorker } = createManagedWorker<ContentNotifyJob>({
   onShutdown: async () => { /* shared connection closed above */ },
 });
 
+worker.on('completed', (job) => {
+  monitoringRunWorkerRepository.recordSuccess({
+    teamId: job.data.teamId,
+    jobType: 'content',
+    jobId: job.id ?? '',
+    startedAt: new Date(job.processedOn ?? Date.now()),
+    finishedAt: new Date(job.finishedOn ?? Date.now()),
+  }).catch((err) => logger.error({ service: 'content-worker', err }, 'Failed to record monitoring run'));
+});
+
 worker.on('failed', (job, err) => {
   logger.error(
     { service: 'content-worker', jobId: job?.id, monitorId: job?.data.monitorId, err },
@@ -53,6 +63,17 @@ worker.on('failed', (job, err) => {
   Sentry.captureException(err, {
     extra: { jobId: job?.id, monitorId: job?.data.monitorId, url: job?.data.url },
   });
+  const maxAttempts = job?.opts.attempts ?? 3;
+  if (job && job.attemptsMade >= maxAttempts) {
+    monitoringRunWorkerRepository.recordFailure({
+      teamId: job.data.teamId,
+      jobType: 'content',
+      jobId: job.id ?? '',
+      startedAt: new Date(job.processedOn ?? Date.now()),
+      finishedAt: new Date(job.finishedOn ?? Date.now()),
+      errorMessage: (err instanceof Error ? err.message : String(err)).slice(0, 500),
+    }).catch((recordErr) => logger.error({ service: 'content-worker', recordErr }, 'Failed to record monitoring run failure'));
+  }
 });
 
 notifyWorker.on('failed', (job, err) => {
