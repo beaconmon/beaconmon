@@ -182,6 +182,7 @@ interface EventsState {
   isError: boolean;
   cursor: string | null;
   loadMore: () => void;
+  refresh: () => void;
   updateEventDecision: (eventId: string, decision: CompetitorDecisionData | null) => void;
 }
 
@@ -239,7 +240,51 @@ export function useCompetitorEvents(id: string): EventsState {
     setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, decision } : e)));
   }, []);
 
-  return { events, hasMore, isLoading, isError, cursor, loadMore, updateEventDecision };
+  const refresh = useCallback(() => {
+    setEvents([]);
+    setCursor(null);
+    setIsLoading(true);
+    setIsError(false);
+    void fetchPage(undefined, false);
+  }, [fetchPage]);
+
+  return { events, hasMore, isLoading, isError, cursor, loadMore, refresh, updateEventDecision };
+}
+
+// ─── Price history ────────────────────────────────────────────────────────────
+
+export interface PriceHistoryPoint {
+  price: string;
+  detectedAt: string;
+}
+
+export function usePriceHistory(competitorId: string, productId: string, enabled: boolean) {
+  return useQuery<PriceHistoryPoint[]>({
+    queryKey: ['price-history', competitorId, productId],
+    queryFn: async () => {
+      const res = await apiFetch(`/api/competitors/${competitorId}/products/${productId}/price-history`);
+      if (!res.ok) throw new Error('Failed to fetch price history');
+      return res.json();
+    },
+    enabled,
+    staleTime: 5 * 60_000,
+  });
+}
+
+// ─── Bulk dismiss ─────────────────────────────────────────────────────────────
+
+export function useDismissBulk(competitorId: string) {
+  const _qc = useQueryClient();
+  return useMutation<{ count: number }, Error, void>({
+    mutationFn: async () => {
+      const res = await apiFetch(`/api/competitors/${competitorId}/events/dismiss-bulk`, { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to dismiss events');
+      return res.json();
+    },
+    onSuccess: () => {
+      // useCompetitorEvents uses its own state — caller must pass { onSuccess: refresh } to mutate()
+    },
+  });
 }
 
 // ─── Legacy feed (kept for backward compat) ───────────────────────────────────
