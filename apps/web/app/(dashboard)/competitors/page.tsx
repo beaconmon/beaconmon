@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Brain, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { QueryState } from '@/components/dashboard/query-state';
-import { CompetitorManagementSheet } from '@/components/intelligence/competitor-management-sheet';
+import { AddCompetitorWizard } from '@/components/competitors/add-competitor-wizard';
 import { useCompetitors } from '@/lib/hooks/use-competitors';
 import { useSession } from '@/lib/hooks/use-session';
 
@@ -16,7 +16,7 @@ const PLATFORM_LABEL: Record<string, string> = {
 };
 
 export default function CompetitorsPage() {
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [wizardOpen, setWizardOpen] = useState(false);
   const { data: session } = useSession();
   const plan = session?.plan ?? 'free';
   const { data: competitors, isLoading, isError, refetch } = useCompetitors();
@@ -30,7 +30,7 @@ export default function CompetitorsPage() {
             Track price, content, and product changes across your competitive landscape.
           </p>
         </div>
-        <Button size="sm" onClick={() => setSheetOpen(true)}>
+        <Button size="sm" onClick={() => setWizardOpen(true)}>
           Add competitor
         </Button>
       </div>
@@ -58,7 +58,7 @@ export default function CompetitorsPage() {
               <p className="mt-1 max-w-xs text-sm text-brand-muted">
                 Add a competitor to start tracking their prices, products, and content changes.
               </p>
-              <Button size="sm" className="mt-4" onClick={() => setSheetOpen(true)}>
+              <Button size="sm" className="mt-4" onClick={() => setWizardOpen(true)}>
                 Add competitor
               </Button>
             </div>
@@ -101,14 +101,11 @@ export default function CompetitorsPage() {
         </QueryState>
       </div>
 
-      <CompetitorManagementSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
+      <AddCompetitorWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
         plan={plan}
-        onChanged={() => {
-          setSheetOpen(false);
-          void refetch();
-        }}
+        onCreated={() => void refetch()}
       />
     </div>
   );
