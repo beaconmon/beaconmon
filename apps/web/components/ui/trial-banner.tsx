@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import type { PlanTier } from '@beaconmon/types';
@@ -59,22 +59,31 @@ interface TrialBannerProps {
 }
 
 export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
-  const [bannerState, setBannerState] = useState<BannerState>('none');
-
-  useEffect(() => {
-    const now = Date.now();
-    const state = computeBannerState(plan, trialEndsAt, now);
-    setBannerState(state === 'none' || isDismissed(STORAGE_KEYS[state], now) ? 'none' : state);
-  }, [plan, trialEndsAt]);
-
+  type DismissMap = Partial<Record<Exclude<BannerState, 'none'>, boolean>>;
+  const [{ now, dismissed }, setDismissedState] = useState<{ now: number; dismissed: DismissMap }>(() => {
+    const ts = Date.now();
+    return {
+      now: ts,
+      dismissed: typeof window !== 'undefined'
+        ? {
+            inTrialPositive: isDismissed(STORAGE_KEYS.inTrialPositive, ts),
+            inTrialCountdown: isDismissed(STORAGE_KEYS.inTrialCountdown, ts),
+            expired: isDismissed(STORAGE_KEYS.expired, ts),
+          }
+        : {},
+    };
+  });
+  const computed = computeBannerState(plan, trialEndsAt, now);
+  const bannerState: BannerState =
+    computed === 'none' || dismissed[computed as Exclude<BannerState, 'none'>] ? 'none' : computed;
   const daysLeft =
     bannerState === 'inTrialCountdown' && trialEndsAt
-      ? Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000))
+      ? Math.ceil((new Date(trialEndsAt).getTime() - now) / (24 * 60 * 60 * 1000))
       : 0;
 
   function dismissBanner(state: Exclude<BannerState, 'none'>) {
     persistDismiss(STORAGE_KEYS[state]);
-    setBannerState('none');
+    setDismissedState((prev) => ({ ...prev, dismissed: { ...prev.dismissed, [state]: true } }));
   }
 
   if (bannerState === 'inTrialPositive') {
