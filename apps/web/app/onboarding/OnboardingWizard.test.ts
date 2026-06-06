@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { buildBundle } from './OnboardingWizard';
+import { STEPS } from '@/components/onboarding/StepIndicator';
 
 const STORE = 'https://example.myshopify.com';
+
+describe('STEPS', () => {
+  it('has the correct order: store, competitors, bundle', () => {
+    expect(STEPS).toEqual(['Your store', 'Competitors', 'Smart Setup']);
+  });
+});
 
 describe('buildBundle', () => {
   it('excludes ssl and domain items for Shopify', () => {

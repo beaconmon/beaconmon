@@ -8,6 +8,7 @@ import {
   createShopifyFeedQueue,
   createCompetitorPageCheckQueue,
   createCompetitorNotifyQueue,
+  createLifecycleEmailQueue,
 } from '@beaconmon/queue';
 
 export const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
@@ -18,3 +19,4 @@ export const intelligenceDigestQueue = createIntelligenceDigestQueue(connection)
 export const shopifyFeedQueue = createShopifyFeedQueue(connection);
 export const competitorPageCheckQueue = createCompetitorPageCheckQueue(connection);
 export const competitorNotifyQueue = createCompetitorNotifyQueue(connection);
+export const lifecycleEmailQueue = createLifecycleEmailQueue(connection);

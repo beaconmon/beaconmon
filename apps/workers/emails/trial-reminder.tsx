@@ -15,9 +15,10 @@ import {
 export interface TrialReminderProps {
   daysLeft: number;
   appUrl: string;
+  unsubscribeUrl?: string;
 }
 
-export function TrialReminder({ daysLeft, appUrl }: TrialReminderProps) {
+export function TrialReminder({ daysLeft, appUrl, unsubscribeUrl }: TrialReminderProps) {
   const isLastDay = daysLeft <= 1;
   const preview = isLastDay
     ? 'Your Beaconmon trial ends tomorrow — upgrade to keep your monitors running'
@@ -64,6 +65,14 @@ export function TrialReminder({ daysLeft, appUrl }: TrialReminderProps) {
             <Link href={`${appUrl}/settings/billing`} style={footerLink}>
               Manage your account
             </Link>
+            {unsubscribeUrl && (
+              <>
+                {' · '}
+                <Link href={unsubscribeUrl} style={footerLink}>
+                  Unsubscribe
+                </Link>
+              </>
+            )}
           </Text>
         </Container>
       </Body>

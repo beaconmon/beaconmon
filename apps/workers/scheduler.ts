@@ -18,6 +18,7 @@ import {
   intelligenceDigestQueue,
   shopifyFeedQueue,
   competitorPageCheckQueue,
+  lifecycleEmailQueue,
 } from './lib/redis.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { getEffectivePlan } from '@beaconmon/billing';
@@ -406,6 +407,7 @@ const shutdown = async (signal: string) => {
   await intelligenceDigestQueue.close();
   await shopifyFeedQueue.close();
   await competitorPageCheckQueue.close();
+  await lifecycleEmailQueue.close();
   await prisma.$disconnect();
   await connection.quit();
 

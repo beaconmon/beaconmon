@@ -241,7 +241,7 @@ export function Step1Store({
           className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90"
         >
           {continuing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Continue to Smart Setup →
+          Continue to Competitors →
         </Button>
       </div>
     </div>

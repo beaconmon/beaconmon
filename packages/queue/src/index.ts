@@ -2,3 +2,4 @@ export * from './types';
 export * from './queues';
 export * from './workers';
 export * from './lifecycle';
+export * from './lifecycle-tokens';

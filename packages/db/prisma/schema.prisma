@@ -124,6 +124,8 @@ model Team {
   competitorDecisions              CompetitorDecision[]
   competitorNotificationChannels   CompetitorNotificationChannel[]
   monitoringRuns                   MonitoringRun[]
+  lifecycleEmailSends              LifecycleEmailSend[]
+  emailUnsubscribes                EmailUnsubscribe[]
 
   @@map("teams")
 }
@@ -807,4 +809,34 @@ model MonitoringRun {
   @@index([teamId, finishedAt(sort: Desc)])
   @@index([finishedAt])
   @@map("monitoring_runs")
+}
+
+// ─── Lifecycle Emails ─────────────────────────────────────────────────────────
+
+model LifecycleEmailSend {
+  id        String   @id @default(cuid())
+  teamId    String   @map("team_id")
+  emailType String   @map("email_type")
+  sentAt    DateTime @default(now()) @map("sent_at")
+  dedupKey  String   @unique @map("dedup_key")
+  status    String   @default("sent")
+  error     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, sentAt(sort: Desc)])
+  @@map("lifecycle_email_sends")
+}
+
+model EmailUnsubscribe {
+  id             String   @id @default(cuid())
+  teamId         String   @map("team_id")
+  category       String
+  unsubscribedAt DateTime @default(now()) @map("unsubscribed_at")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, category])
+  @@map("email_unsubscribes")
 }

@@ -1,9 +1,13 @@
 'use client';
 
-import { Globe, Lock, DollarSign, Zap, LayoutGrid, FileText, X, ChevronRight, Plus, Check } from 'lucide-react';
+import {
+  Globe, Lock, DollarSign, Zap, LayoutGrid, FileText,
+  X, ChevronRight, Plus, Check, Loader2, AlertCircle,
+} from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { PlanTier } from '@beaconmon/types';
 import { reliabilityLabel } from '@/lib/onboarding-templates';
 import type { PlatformType } from '@/lib/onboarding-templates';
@@ -21,7 +25,7 @@ export interface BundleItem {
   description?: string;
 }
 
-interface Step2BundleProps {
+interface BundleStepProps {
   storeUrl: string;
   platform: PlatformType;
   bundle: BundleItem[];
@@ -31,7 +35,9 @@ interface Step2BundleProps {
   degraded?: boolean;
   onBack: () => void;
   onSkip: () => void;
-  onContinue: () => void;
+  onSubmit: () => Promise<void>;
+  submitting: boolean;
+  error: string | null;
 }
 
 const TYPE_LABEL: Record<BundleItem['type'], string> = {
@@ -134,7 +140,7 @@ function SkeletonRow({ last }: { last?: boolean }) {
   );
 }
 
-export function Step2Bundle({
+export function BundleStep({
   storeUrl,
   platform,
   bundle,
@@ -144,8 +150,10 @@ export function Step2Bundle({
   degraded = false,
   onBack,
   onSkip,
-  onContinue,
-}: Step2BundleProps) {
+  onSubmit,
+  submitting,
+  error,
+}: BundleStepProps) {
   const [degradedDismissed, setDegradedDismissed] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [addUrl, setAddUrl] = useState('');
@@ -225,7 +233,7 @@ export function Step2Bundle({
           Smart Setup
         </p>
         <h1 className="text-4xl font-semibold italic leading-tight text-brand-text">
-          {loading ? 'Analyzing your store…' : 'Here’s what we’d monitor for you.'}
+          {loading ? 'Setting up your monitoring...' : 'Protect your own store too.'}
         </h1>
         {!loading && (
           <p className="mx-auto max-w-md text-sm text-brand-dim">
@@ -286,7 +294,6 @@ export function Step2Bundle({
 
       {/* Monitor list */}
       <div className="overflow-hidden rounded-lg border border-brand-line">
-        {/* List header */}
         {!loading && (
           <div className="flex items-center justify-between border-b border-brand-line bg-brand-bg2 px-4 py-3">
             <span className="text-sm font-medium text-brand-text">
@@ -324,12 +331,10 @@ export function Step2Bundle({
                   !item.enabled && 'opacity-40'
                 )}
               >
-                {/* Icon tile */}
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-green/10 text-brand-green-ink">
                   {getItemIcon(item)}
                 </div>
 
-                {/* Name + path + description */}
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-brand-text">{item.label}</p>
                   <p className="mt-0.5 truncate text-xs text-brand-muted">
@@ -340,14 +345,12 @@ export function Step2Bundle({
                   </p>
                 </div>
 
-                {/* AI badge */}
                 {item.source === 'ai' && (
                   <span className="shrink-0 rounded-full bg-brand-green/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-green-ink">
                     AI
                   </span>
                 )}
 
-                {/* Type chip */}
                 <span
                   className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-medium text-brand-dim"
                   style={{ boxShadow: 'inset 0 0 0 1px var(--brand-line)' }}
@@ -355,12 +358,10 @@ export function Step2Bundle({
                   {TYPE_LABEL[item.type]}
                 </span>
 
-                {/* Interval */}
                 <span className="w-12 shrink-0 text-right font-mono text-xs text-brand-muted">
                   {formatInterval(item.intervalSeconds)}
                 </span>
 
-                {/* iOS toggle */}
                 <Toggle
                   enabled={item.enabled}
                   onToggle={() => toggle(item.id)}
@@ -369,7 +370,6 @@ export function Step2Bundle({
               </div>
             ))}
 
-            {/* Inline add form */}
             {showAddForm && (
               <div className="border-t border-brand-line bg-brand-bg2 px-4 py-3">
                 <div className="flex items-center gap-2">
@@ -419,6 +419,22 @@ export function Step2Bundle({
         )}
       </div>
 
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {error}{' '}
+            <button
+              onClick={() => void onSubmit()}
+              disabled={submitting}
+              className="ml-1 font-medium underline"
+            >
+              Retry
+            </button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Footer */}
       <div className="flex items-center justify-between pt-1">
         <Button
@@ -427,7 +443,7 @@ export function Step2Bundle({
           className="gap-1.5 text-brand-dim hover:text-brand-text"
         >
           <ChevronRight className="h-3.5 w-3.5 rotate-180" />
-          Back to platform
+          Back to Competitors
         </Button>
 
         <div className="flex items-center gap-4">
@@ -438,11 +454,12 @@ export function Step2Bundle({
             Skip &middot; I&apos;ll add manually
           </button>
           <Button
-            onClick={onContinue}
-            disabled={loading}
+            onClick={() => void onSubmit()}
+            disabled={loading || submitting}
             className="gap-1.5 bg-brand-green text-brand-green-fg hover:bg-brand-green/90 disabled:opacity-50"
           >
-            Looks good, next
+            {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            Set it up
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

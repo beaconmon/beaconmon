@@ -8,9 +8,9 @@ import type { PlanTier } from '@beaconmon/types';
 import { apiFetch } from '@/lib/api-fetch';
 import { StepIndicator } from '@/components/onboarding/StepIndicator';
 import { Step1Store } from '@/components/onboarding/Step1Store';
-import { Step2Bundle, type BundleItem } from '@/components/onboarding/Step2Bundle';
-import { Step3Competitors } from '@/components/onboarding/Step3Competitors';
-import type { CatalogPreviewResult } from '@/components/onboarding/Step3Competitors';
+import { CompetitorsStep } from '@/components/onboarding/CompetitorsStep';
+import { BundleStep, type BundleItem } from '@/components/onboarding/BundleStep';
+import { OnboardingSuccess, type CatalogPreviewResult } from '@/components/onboarding/OnboardingSuccess';
 import { ONBOARDING_TEMPLATES } from '@/lib/onboarding-templates';
 import type { PlatformType } from '@/lib/onboarding-templates';
 import Logo from '@/components/logo';
@@ -153,6 +153,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     discover: Promise<z.infer<typeof discoverResponseSchema>>;
     competitors: Promise<z.infer<typeof suggestCompetitorsResponseSchema>>;
   } | null>(null);
+  const bundleSourceRef = useRef<{ storeUrl: string; platform: string } | null>(null);
   const [ready] = useState(() => {
     try {
       return localStorage.getItem(obKey(teamId)) === null;
@@ -200,73 +201,89 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     };
   }
 
+  // Step 1 → Step 2 (competitors). Kicks off both prefetches; competitor
+  // suggestions fill in asynchronously so the transition is instant.
   async function goToStep2(): Promise<void> {
-    const isAiPlan = plan === 'growth' || plan === 'scale';
+    const hostname = (() => {
+      try { return new URL(storeUrl).hostname; }
+      catch { return storeUrl; }
+    })();
 
-    if (isAiPlan) {
-      setDiscoverDegraded(false);
-      setDiscoverLoading(true);
-      setStep(2);
+    prefetchDiscover(hostname);
 
-      const hostname = (() => {
-        try {
-          return new URL(storeUrl).hostname;
-        } catch {
-          return storeUrl;
-        }
-      })();
+    if (prefetchRef.current) {
+      void prefetchRef.current.competitors
+        .then((result) => {
+          if (!result.degraded) setCompetitorSuggestions(result.suggestions);
+        })
+        .catch(() => {});
+    }
 
-      // Fire prefetch now if it wasn't already started on Step 1 check success
-      prefetchDiscover(hostname);
+    setStep(2);
+  }
 
-      const [discoverResult, competitorResult] = await Promise.allSettled([
-        prefetchRef.current!.discover,
-        prefetchRef.current!.competitors,
-      ]);
+  // Step 2 → Step 3 (bundle). For AI plans, awaits the already-in-flight
+  // discover promise and renders a loading skeleton while it resolves.
+  // For free/starter, fetches products.json for Shopify slugs.
+  // Skips recomputation only when the bundle is already built for the same store and platform.
+  async function goToStep3(): Promise<void> {
+    const currentPlatform = platform ?? 'other';
+    const bundleCurrent =
+      bundle.length > 0 &&
+      bundleSourceRef.current?.storeUrl === storeUrl &&
+      bundleSourceRef.current?.platform === currentPlatform;
 
-      if (discoverResult.status === 'fulfilled') {
-        const discovered = mapDiscoverToBundle(discoverResult.value.suggestions, storeUrl);
-        const filtered = platform === 'shopify'
-          ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
-          : discovered;
-        setBundle(filtered);
-        setDiscoverDegraded(discoverResult.value.degraded === true);
-      } else {
-        setBundle(buildBundle(storeUrl, platform ?? 'other', []));
-        setDiscoverDegraded(true);
-      }
-
-      if (competitorResult.status === 'fulfilled' && !competitorResult.value.degraded) {
-        setCompetitorSuggestions(competitorResult.value.suggestions);
-      }
-
-      setDiscoverLoading(false);
+    if (bundleCurrent) {
+      setStep(3);
       return;
     }
 
-    // Free/Starter: template path
-    let slugs: string[] = [];
-    if (platform === 'shopify') {
+    const isAiPlan = plan === 'growth' || plan === 'scale';
+    setDiscoverDegraded(false);
+    setDiscoverLoading(true);
+    setStep(3);
+
+    if (isAiPlan && prefetchRef.current) {
       try {
-        const hostname = new URL(storeUrl).hostname;
-        const controller = new AbortController();
-        const t = setTimeout(() => controller.abort(), 3000);
-        const res = await fetch(`https://${hostname}/products.json?limit=3`, {
-          signal: controller.signal,
-        });
-        clearTimeout(t);
-        if (res.ok) {
-          const parsed = shopifyProductsSchema.safeParse(await res.json());
-          if (parsed.success) {
-            slugs = parsed.data.products.slice(0, 3).map((p) => p.handle);
-          }
-        }
+        const discoverResult = await prefetchRef.current.discover;
+        const discovered = mapDiscoverToBundle(discoverResult.suggestions, storeUrl);
+        const filtered = currentPlatform === 'shopify'
+          ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
+          : discovered;
+        bundleSourceRef.current = { storeUrl, platform: currentPlatform };
+        setBundle(filtered);
+        setDiscoverDegraded(discoverResult.degraded === true);
       } catch {
-        slugs = ['your-product-1', 'your-product-2', 'your-product-3'];
+        bundleSourceRef.current = { storeUrl, platform: currentPlatform };
+        setBundle(buildBundle(storeUrl, currentPlatform, []));
+        setDiscoverDegraded(true);
       }
+    } else {
+      let slugs: string[] = [];
+      if (currentPlatform === 'shopify') {
+        try {
+          const hostname = new URL(storeUrl).hostname;
+          const controller = new AbortController();
+          const t = setTimeout(() => controller.abort(), 3000);
+          const res = await fetch(`https://${hostname}/products.json?limit=3`, {
+            signal: controller.signal,
+          });
+          clearTimeout(t);
+          if (res.ok) {
+            const parsed = shopifyProductsSchema.safeParse(await res.json());
+            if (parsed.success) {
+              slugs = parsed.data.products.slice(0, 3).map((p) => p.handle);
+            }
+          }
+        } catch {
+          slugs = ['your-product-1', 'your-product-2', 'your-product-3'];
+        }
+      }
+      bundleSourceRef.current = { storeUrl, platform: currentPlatform };
+      setBundle(buildBundle(storeUrl, currentPlatform, slugs));
     }
-    setBundle(buildBundle(storeUrl, platform ?? 'other', slugs));
-    setStep(2);
+
+    setDiscoverLoading(false);
   }
 
   async function handleSubmit(): Promise<void> {
@@ -303,7 +320,6 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
         return;
       }
 
-      // Client-side plan limit check
       if (limits.monitors !== -1 && total > limits.monitors) {
         setError(
           `This bundle would create ${total} monitors, exceeding your plan limit of ${limits.monitors}. Disable some monitors or upgrade.`
@@ -345,7 +361,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
             if (parsed2.success) setCatalogPreview(parsed2.data.results);
           }
         } catch {
-          // fail silently — success screen still shows without ROI numbers
+          // fail silently, success screen still renders without ROI numbers
         }
         setCatalogPreviewLoading(false);
       } else {
@@ -383,68 +399,78 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       </header>
 
       {/* Progress bar */}
-      <div className="flex justify-center border-b border-brand-line/50 px-6 py-4">
-        <div className="w-full max-w-[720px]">
-          <StepIndicator current={step} />
+      {!submitted && (
+        <div className="flex justify-center border-b border-brand-line/50 px-6 py-4">
+          <div className="w-full max-w-[720px]">
+            <StepIndicator current={step} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
       <main className="flex flex-1 items-start justify-center px-6 py-10 sm:items-center">
         <div className="w-full max-w-[760px]">
-          {step === 1 && (
-            <Step1Store
-              storeUrl={storeUrl}
-              onStoreUrlChange={setStoreUrl}
-              platform={platform}
-              onPlatformChange={setPlatform}
-              onContinue={goToStep2}
-              onSkip={skip}
-              onCheckSuccess={prefetchDiscover}
-            />
-          )}
-          {step === 2 && (
-            <Step2Bundle
-              storeUrl={storeUrl}
-              platform={platform ?? 'other'}
-              bundle={bundle}
-              onBundleChange={setBundle}
-              plan={plan}
-              loading={discoverLoading}
-              degraded={discoverDegraded}
-              onBack={() => setStep(1)}
-              onSkip={skip}
-              onContinue={() => setStep(3)}
-            />
-          )}
-          {step === 3 && (
-            <Step3Competitors
-              competitors={competitors}
-              onCompetitorsChange={setCompetitors}
-              plan={plan}
-              teamId={teamId}
-              email={email}
-              aiSuggestions={competitorSuggestions}
-              onBack={() => setStep(2)}
-              onSkip={skip}
-              onSubmit={handleSubmit}
-              submitting={submitting}
-              error={error}
-              submitted={submitted}
+          {submitted ? (
+            <OnboardingSuccess
               catalogPreviewLoading={catalogPreviewLoading}
               catalogPreview={catalogPreview}
               onDone={() => router.push('/monitors')}
             />
+          ) : (
+            <>
+              {step === 1 && (
+                <Step1Store
+                  storeUrl={storeUrl}
+                  onStoreUrlChange={setStoreUrl}
+                  platform={platform}
+                  onPlatformChange={setPlatform}
+                  onContinue={goToStep2}
+                  onSkip={skip}
+                  onCheckSuccess={prefetchDiscover}
+                />
+              )}
+              {step === 2 && (
+                <CompetitorsStep
+                  competitors={competitors}
+                  onCompetitorsChange={setCompetitors}
+                  plan={plan}
+                  teamId={teamId}
+                  email={email}
+                  aiSuggestions={competitorSuggestions}
+                  onBack={() => setStep(1)}
+                  onContinue={goToStep3}
+                  continuing={discoverLoading}
+                />
+              )}
+              {step === 3 && (
+                <BundleStep
+                  storeUrl={storeUrl}
+                  platform={platform ?? 'other'}
+                  bundle={bundle}
+                  onBundleChange={setBundle}
+                  plan={plan}
+                  loading={discoverLoading}
+                  degraded={discoverDegraded}
+                  onBack={() => setStep(2)}
+                  onSkip={skip}
+                  onSubmit={handleSubmit}
+                  submitting={submitting}
+                  error={error}
+                />
+              )}
+            </>
           )}
         </div>
       </main>
 
       {/* Mono hint footer */}
-      <footer className="flex justify-center pb-8">
-        <p className="font-mono text-[11px] text-brand-muted">
-          Step {step} of 3 · No credit card, ever, even for the trial.
-        </p>
-      </footer>
+      {!submitted && (
+        <footer className="flex justify-center pb-8">
+          <p className="font-mono text-[11px] text-brand-muted">
+            Step {step} of 3 · No credit card, ever, even for the trial.
+          </p>
+        </footer>
+      )}
     </div>
   );
 }
