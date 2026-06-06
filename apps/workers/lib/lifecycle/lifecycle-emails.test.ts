@@ -60,10 +60,6 @@ function makeTeam(overrides: Partial<TeamForLifecycle> = {}): TeamForLifecycle {
   };
 }
 
-function nowWithOffset(offsetDays: number): Date {
-  const now = new Date('2026-06-06T12:00:00Z');
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - offsetDays));
-}
 
 describe('trial_reminder_7d trigger', () => {
   const config = lifecycleEmailRegistry.get('trial_reminder_7d')!;
