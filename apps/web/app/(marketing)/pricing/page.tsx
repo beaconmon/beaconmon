@@ -27,7 +27,7 @@ const CORE_MONITORING: MatrixRow[] = [
 ];
 
 const INTELLIGENCE: MatrixRow[] = [
-  { feature: 'Competitor monitors',   free: '—',           starter: '5',         growth: '25',               scale: 'Unlimited' },
+  { feature: 'Competitor monitors',   free: '1',           starter: '5',         growth: '25',               scale: 'Unlimited' },
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
   { feature: 'Intelligence Digest',   free: '—',           starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
@@ -215,7 +215,7 @@ export default function PricingPage() {
             Start free. Pay when intelligence pays you back.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Every plan includes uptime, SSL and domain checks. Competitor monitoring and AI summaries unlock on Starter and Growth.
+            Every plan includes uptime, SSL and domain checks. Free includes 1 competitor monitor. Full competitor monitoring and AI summaries unlock on Starter and above.
           </p>
         </div>
       </section>

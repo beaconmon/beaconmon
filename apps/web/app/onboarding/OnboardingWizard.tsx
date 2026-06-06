@@ -68,19 +68,21 @@ function markComplete(teamId: string): void {
   }
 }
 
-function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: string[]): BundleItem[] {
+export function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: string[]): BundleItem[] {
   const base = storeUrl.replace(/\/$/, '');
-  const items = ONBOARDING_TEMPLATES[platform].map((t, i): BundleItem => ({
-    id: `${t.type}-${i}`,
-    label: t.label,
-    type: t.type,
-    path: t.path,
-    url: t.path === null ? storeUrl : `${base}${t.path}`,
-    intervalSeconds: t.intervalSeconds,
-    enabled: true,
-    source: 'template',
-    description: t.description,
-  }));
+  const items = ONBOARDING_TEMPLATES[platform]
+    .filter((t) => platform !== 'shopify' || (t.type !== 'ssl' && t.type !== 'domain'))
+    .map((t, i): BundleItem => ({
+      id: `${t.type}-${i}`,
+      label: t.label,
+      type: t.type,
+      path: t.path,
+      url: t.path === null ? storeUrl : `${base}${t.path}`,
+      intervalSeconds: t.intervalSeconds,
+      enabled: true,
+      source: 'template',
+      description: t.description,
+    }));
 
   if (platform === 'shopify' && productSlugs.length > 0) {
     const products = productSlugs.map((slug, i): BundleItem => ({

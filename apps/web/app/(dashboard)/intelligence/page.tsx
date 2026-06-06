@@ -33,7 +33,7 @@ function IntelligencePageInner() {
 
   const isFreePlan = plan === 'free';
   const competitorLimit = PLAN_LIMITS[plan].competitorMonitors;
-  const hasCompetitorAccess = competitorLimit !== 0;
+  const hasCompetitorAccess = competitorLimit > 0 || competitorLimit === -1;
 
   return (
     <div className="space-y-5">

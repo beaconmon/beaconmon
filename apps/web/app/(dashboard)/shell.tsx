@@ -309,8 +309,8 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onOpenCommandPalette={() => setCmdOpen(true)} />
-        {session?.plan && session.teamCreatedAt && (
-          <TrialBanner plan={session.plan} teamCreatedAt={session.teamCreatedAt} />
+        {session?.plan && (
+          <TrialBanner plan={session.plan} trialEndsAt={session.trialEndsAt ?? null} />
         )}
         <main className="flex-1 overflow-y-auto bg-brand-bg-section p-4 lg:p-8">{children}</main>
       </div>

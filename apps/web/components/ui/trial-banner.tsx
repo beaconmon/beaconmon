@@ -3,94 +3,114 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
+import type { PlanTier } from '@beaconmon/types';
 
-const EXPIRED_STORAGE_KEY = 'trial_banner_dismissed';
-const COUNTDOWN_STORAGE_KEY = 'trial_countdown_dismissed';
-const TRIAL_DAYS = 14;
-const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const COUNTDOWN_THRESHOLD_DAYS = 7;
+const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-interface TrialBannerProps {
-  plan: string;
-  teamCreatedAt: string; // ISO date string
+const STORAGE_KEYS = {
+  inTrialPositive: 'trial_banner_positive_dismissed',
+  inTrialCountdown: 'trial_banner_countdown_dismissed',
+  expired: 'trial_banner_expired_dismissed',
+} as const;
+
+export type BannerState = 'inTrialPositive' | 'inTrialCountdown' | 'expired' | 'none';
+
+export function computeBannerState(
+  effectivePlan: PlanTier,
+  trialEndsAt: string | null,
+  now = Date.now(),
+): BannerState {
+  if (!trialEndsAt) return 'none';
+  const expiryMs = new Date(trialEndsAt).getTime();
+  if (!Number.isFinite(expiryMs)) return 'none';
+
+  if (effectivePlan !== 'free') {
+    const daysLeft = Math.ceil((expiryMs - now) / (24 * 60 * 60 * 1000));
+    return daysLeft > 7 ? 'inTrialPositive' : 'inTrialCountdown';
+  }
+
+  if (expiryMs < now) return 'expired';
+  return 'none';
 }
 
-export function TrialBanner({ plan, teamCreatedAt }: TrialBannerProps) {
-  const [expiredVisible, setExpiredVisible] = useState(false);
-  const [daysLeft, setDaysLeft] = useState<number | null>(null);
+function isDismissed(key: string, now: number): boolean {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    const { dismissed } = JSON.parse(raw) as { dismissed: number };
+    return now - dismissed < DISMISS_TTL_MS;
+  } catch {
+    return false;
+  }
+}
+
+function persistDismiss(key: string) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ dismissed: Date.now() }));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+interface TrialBannerProps {
+  plan: PlanTier;
+  trialEndsAt: string | null;
+}
+
+export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
+  const [bannerState, setBannerState] = useState<BannerState>('none');
+  const [daysLeft, setDaysLeft] = useState(0);
 
   useEffect(() => {
-    if (plan !== 'free') return;
-
-    const createdAt = new Date(teamCreatedAt).getTime();
-    if (!Number.isFinite(createdAt)) return;
-    const trialExpiry = createdAt + TRIAL_DAYS * 24 * 60 * 60 * 1000;
     const now = Date.now();
+    const state = computeBannerState(plan, trialEndsAt, now);
+    if (state === 'none' || isDismissed(STORAGE_KEYS[state], now)) return;
 
-    if (now > trialExpiry) {
-      // Trial expired
-      try {
-        const raw = localStorage.getItem(EXPIRED_STORAGE_KEY);
-        if (raw) {
-          const { dismissed } = JSON.parse(raw) as { dismissed: number };
-          if (now - dismissed < DISMISS_TTL_MS) return;
-        }
-      } catch {
-        // ignore parse errors
-      }
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setExpiredVisible(true);
-      return;
+    if (state === 'inTrialCountdown' && trialEndsAt) {
+      const expiryMs = new Date(trialEndsAt).getTime();
+      setDaysLeft(Math.ceil((expiryMs - now) / (24 * 60 * 60 * 1000)));
     }
+    setBannerState(state);
+  }, [plan, trialEndsAt]);
 
-    // Trial still active — show countdown if within 7 days
-    const remainingMs = trialExpiry - now;
-    const remainingDays = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
-    if (remainingDays > COUNTDOWN_THRESHOLD_DAYS) return;
-
-    try {
-      const raw = localStorage.getItem(COUNTDOWN_STORAGE_KEY);
-      if (raw) {
-        const { dismissed } = JSON.parse(raw) as { dismissed: number };
-        if (now - dismissed < DISMISS_TTL_MS) return;
-      }
-    } catch {
-      // ignore parse errors
-    }
-
-    setDaysLeft(remainingDays);
-  }, [plan, teamCreatedAt]);
-
-  function dismissExpired() {
-    try {
-      localStorage.setItem(EXPIRED_STORAGE_KEY, JSON.stringify({ dismissed: Date.now() }));
-    } catch {
-      // ignore storage errors
-    }
-    setExpiredVisible(false);
+  function dismissBanner(state: Exclude<BannerState, 'none'>) {
+    persistDismiss(STORAGE_KEYS[state]);
+    setBannerState('none');
   }
 
-  function dismissCountdown() {
-    try {
-      localStorage.setItem(COUNTDOWN_STORAGE_KEY, JSON.stringify({ dismissed: Date.now() }));
-    } catch {
-      // ignore storage errors
-    }
-    setDaysLeft(null);
+  if (bannerState === 'inTrialPositive') {
+    return (
+      <div className="flex items-center justify-between gap-4 border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-sm text-blue-800">
+        <span>
+          You're on a Growth trial. Explore{' '}
+          <Link href="/intelligence" className="font-medium underline hover:no-underline">
+            competitor intelligence
+          </Link>{' '}
+          and AI-powered insights while your trial is active.
+        </span>
+        <button
+          onClick={() => dismissBanner('inTrialPositive')}
+          aria-label="Dismiss"
+          className="shrink-0 rounded p-0.5 hover:bg-blue-200 transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    );
   }
 
-  if (expiredVisible) {
+  if (bannerState === 'inTrialCountdown') {
     return (
       <div className="flex items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
         <span>
-          Your 14-day trial has ended.{' '}
-          <Link href="/settings/billing" className="font-medium underline hover:no-underline">
-            Upgrade to Starter
+          <span className="font-semibold">{daysLeft} {daysLeft === 1 ? 'day' : 'days'} left</span> in your Growth trial.{' '}
+          <Link href="/pricing?plan=growth" className="font-medium underline hover:no-underline">
+            Convert to Growth
           </Link>{' '}
-          to keep all your monitors running.
+          to keep your monitors and intelligence running.
         </span>
         <button
-          onClick={dismissExpired}
+          onClick={() => dismissBanner('inTrialCountdown')}
           aria-label="Dismiss"
           className="shrink-0 rounded p-0.5 hover:bg-amber-200 transition-colors"
         >
@@ -100,18 +120,18 @@ export function TrialBanner({ plan, teamCreatedAt }: TrialBannerProps) {
     );
   }
 
-  if (daysLeft !== null) {
+  if (bannerState === 'expired') {
     return (
       <div className="flex items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
         <span>
-          <span className="font-semibold">{daysLeft} {daysLeft === 1 ? 'day' : 'days'} left</span> in your trial.{' '}
-          <Link href="/settings/billing" className="font-medium underline hover:no-underline">
-            Upgrade to Starter
+          Your Growth trial has ended.{' '}
+          <Link href="/pricing?plan=growth" className="font-medium underline hover:no-underline">
+            Resume Growth
           </Link>{' '}
-          to keep your monitors running after it ends.
+          to keep all your monitors running.
         </span>
         <button
-          onClick={dismissCountdown}
+          onClick={() => dismissBanner('expired')}
           aria-label="Dismiss"
           className="shrink-0 rounded p-0.5 hover:bg-amber-200 transition-colors"
         >

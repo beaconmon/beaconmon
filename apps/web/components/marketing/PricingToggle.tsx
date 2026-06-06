@@ -9,6 +9,7 @@ const MONTHLY_TIERS: PricingTier[] = [
     features: [
       '10 monitors',
       '5-minute check intervals',
+      '1 competitor monitor',
       'Email alerts',
       '1 status page',
       'SSL & domain expiry alerts',

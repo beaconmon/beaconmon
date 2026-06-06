@@ -3,6 +3,7 @@ import IntelligenceMockup from '@/components/marketing/IntelligenceMockup';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import PricingToggle from '@/components/marketing/PricingToggle';
+import Testimonials from '@/components/marketing/Testimonials';
 import { PRICING } from '@/lib/pricing';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
@@ -35,7 +36,7 @@ const SOFTWARE_SCHEMA = {
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       url: 'https://beaconmon.com/sign-up',
-      description: '10 monitors, 5-minute check interval, 1 status page',
+      description: '10 monitors, 5-minute check interval, 1 competitor monitor, 1 status page',
     },
     {
       '@type': 'Offer',
@@ -132,8 +133,8 @@ export default function LandingPage() {
                 Now for ecommerce · competitor monitoring is live →
               </Link>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
-                Monitor your store and{' '}
-                <span className="text-brand-green-ink">competitors automatically.</span>
+                Know what your competitors changed{' '}
+                <span className="text-brand-green-ink">before your team opens Slack.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
                 Beaconmon is an ecommerce monitoring platform that combines uptime monitoring with automated competitor intelligence, tracking pricing changes, content updates, and page edits across your store and every competitor you follow. Find out before your customers do. Or before your customers go to them.
@@ -141,7 +142,7 @@ export default function LandingPage() {
 
               <CtaForm />
               <p className="mt-[14px] text-[13px] text-brand-muted">
-                Free forever for 10 monitors. No credit card required.
+                14-day Growth trial included. No credit card required.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-x-6 gap-y-[10px] text-[13px] text-brand-dim">
@@ -368,6 +369,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ====== TESTIMONIALS ====== */}
+      <Testimonials />
+
       {/* ====== COMPARISON ====== */}
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
@@ -382,11 +386,9 @@ export default function LandingPage() {
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
-                    <Link href="/vs/uptimerobot" className="hover:text-brand-dim transition-colors">UptimeRobot</Link>
+                    <Link href="/vs/visualping" className="hover:text-brand-dim transition-colors">Visualping</Link>
                   </th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
-                    <Link href="/vs/pingdom" className="hover:text-brand-dim transition-colors">Pingdom</Link>
-                  </th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Manual tabs</th>
                 </tr>
               </thead>
               <tbody>
@@ -394,51 +396,51 @@ export default function LandingPage() {
                   {
                     feat: 'Uptime monitoring (30s)',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: <span className="font-mono">✓ <span className="text-brand-muted text-[12px]">5min</span></span>,
-                    p: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    mt: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Competitor monitoring',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: <span className="text-brand-muted">—</span>,
-                    p: <span className="text-brand-muted">—</span>,
+                    vp: <span className="text-brand-muted text-[12px]">Pages only</span>,
+                    mt: <span className="text-brand-muted text-[12px]">Manual</span>,
                   },
                   {
                     feat: 'Content change detection',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: <span className="text-brand-muted">—</span>,
-                    p: <span className="text-brand-muted text-[12px]">✓ paid</span>,
+                    vp: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    mt: <span className="text-brand-muted text-[12px]">Manual</span>,
                   },
                   {
                     feat: 'Pricing change alerts',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: <span className="text-brand-muted">—</span>,
-                    p: <span className="text-brand-muted">—</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    mt: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Daily intelligence digest',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: <span className="text-brand-muted">—</span>,
-                    p: <span className="text-brand-muted">—</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    mt: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Status pages included',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ur: 'Basic',
-                    p: 'Extra cost',
+                    vp: <span className="text-brand-muted">—</span>,
+                    mt: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Starts at',
                     bm: <span className="font-mono">$0</span>,
-                    ur: <span className="font-mono">$0</span>,
-                    p: <span className="font-mono">$15</span>,
+                    vp: <span className="font-mono">$0</span>,
+                    mt: <span className="text-brand-muted text-[12px]">Your time</span>,
                   },
-                ].map(({ feat, bm, ur, p }, i, arr) => (
+                ].map(({ feat, bm, vp, mt }, i, arr) => (
                   <tr key={feat}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feat}</td>
                     <td className={`p-4 text-[14px] bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)] ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{bm}</td>
-                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{ur}</td>
-                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{p}</td>
+                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{vp}</td>
+                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{mt}</td>
                   </tr>
                 ))}
               </tbody>
@@ -469,7 +471,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. Add competitors when you&apos;re ready. Set up in five minutes.</p>
           <CtaForm className="mx-auto mb-4" />
-          <p className="text-[13px] text-brand-muted">No credit card · Cancel anytime · Made in Europe</p>
+          <p className="text-[13px] text-brand-muted">14-day Growth trial included. No credit card required.</p>
         </div>
       </section>
 
