@@ -25,6 +25,7 @@ export function computeBannerState(
   if (!Number.isFinite(expiryMs)) return 'none';
 
   if (effectivePlan !== 'free') {
+    if (expiryMs < now) return 'none';
     const daysLeft = Math.ceil((expiryMs - now) / (24 * 60 * 60 * 1000));
     return daysLeft > 7 ? 'inTrialPositive' : 'inTrialCountdown';
   }
@@ -59,19 +60,17 @@ interface TrialBannerProps {
 
 export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
   const [bannerState, setBannerState] = useState<BannerState>('none');
-  const [daysLeft, setDaysLeft] = useState(0);
 
   useEffect(() => {
     const now = Date.now();
     const state = computeBannerState(plan, trialEndsAt, now);
-    if (state === 'none' || isDismissed(STORAGE_KEYS[state], now)) return;
-
-    if (state === 'inTrialCountdown' && trialEndsAt) {
-      const expiryMs = new Date(trialEndsAt).getTime();
-      setDaysLeft(Math.ceil((expiryMs - now) / (24 * 60 * 60 * 1000)));
-    }
-    setBannerState(state);
+    setBannerState(state === 'none' || isDismissed(STORAGE_KEYS[state], now) ? 'none' : state);
   }, [plan, trialEndsAt]);
+
+  const daysLeft =
+    bannerState === 'inTrialCountdown' && trialEndsAt
+      ? Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000))
+      : 0;
 
   function dismissBanner(state: Exclude<BannerState, 'none'>) {
     persistDismiss(STORAGE_KEYS[state]);
@@ -82,7 +81,7 @@ export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
     return (
       <div className="flex items-center justify-between gap-4 border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-sm text-blue-800">
         <span>
-          You're on a Growth trial. Explore{' '}
+          You&apos;re on a Growth trial. Explore{' '}
           <Link href="/intelligence" className="font-medium underline hover:no-underline">
             competitor intelligence
           </Link>{' '}

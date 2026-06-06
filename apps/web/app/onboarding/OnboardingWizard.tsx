@@ -225,7 +225,11 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       ]);
 
       if (discoverResult.status === 'fulfilled') {
-        setBundle(mapDiscoverToBundle(discoverResult.value.suggestions, storeUrl));
+        const discovered = mapDiscoverToBundle(discoverResult.value.suggestions, storeUrl);
+        const filtered = platform === 'shopify'
+          ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
+          : discovered;
+        setBundle(filtered);
         setDiscoverDegraded(discoverResult.value.degraded === true);
       } else {
         setBundle(buildBundle(storeUrl, platform ?? 'other', []));
