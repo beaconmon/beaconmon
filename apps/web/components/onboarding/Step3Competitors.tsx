@@ -81,7 +81,7 @@ export function Step3Competitors({
   const fsRef = useRef<FreemiusCheckoutHandler | null>(null);
 
   const limit = PLAN_LIMITS[plan].competitorMonitors;
-  const isFree = limit === 0;
+  const isFree = !(limit > 0 || limit === -1);
 
   if (submitted) {
     const validResults = (catalogPreview ?? []).filter((r) => !r.error);

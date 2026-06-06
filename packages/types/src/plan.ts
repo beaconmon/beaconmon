@@ -9,7 +9,7 @@ export const PLAN_LIMITS = {
     teamMembers: 1,
     alertChannels: 1,
     regions: 0,
-    competitorMonitors: 0,
+    competitorMonitors: 1,
   },
   starter: {
     monitors: 25,

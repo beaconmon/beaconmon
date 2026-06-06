@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Which tool should I choose if I just need basic ping checks?',
-    a: 'If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors) is better suited to ecommerce stores that will outgrow basic pings and need competitor intelligence on paid plans.',
+    a: 'If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors, 1 competitor monitor) is better suited to ecommerce stores that will outgrow basic pings and want full competitor intelligence as they grow.',
   },
   {
     q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
