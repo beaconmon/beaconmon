@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const STEPS = ['Your store', 'Smart Setup', 'Competitors'] as const;
+export const STEPS = ['Your store', 'Competitors', 'Smart Setup'] as const;
 
 export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
   return (

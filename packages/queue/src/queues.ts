@@ -12,6 +12,7 @@ import type {
   ShopifyFeedJob,
   CompetitorPageCheckJob,
   CompetitorNotifyJob,
+  LifecycleEmailJob,
 } from './types.js';
 import { QUEUE_NAMES } from './types.js';
 
@@ -144,6 +145,18 @@ export function createCompetitorNotifyQueue(connection: Redis): Queue<Competitor
       backoff: { type: 'exponential', delay: 2000 },
       removeOnComplete: { count: 500 },
       removeOnFail: { count: 1000 },
+    },
+  });
+}
+
+export function createLifecycleEmailQueue(connection: Redis): Queue<LifecycleEmailJob> {
+  return new Queue<LifecycleEmailJob>(QUEUE_NAMES.LIFECYCLE_EMAIL, {
+    connection,
+    defaultJobOptions: {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { count: 200 },
+      removeOnFail: { count: 500 },
     },
   });
 }

@@ -8,9 +8,9 @@ import type { PlanTier } from '@beaconmon/types';
 import { apiFetch } from '@/lib/api-fetch';
 import { StepIndicator } from '@/components/onboarding/StepIndicator';
 import { Step1Store } from '@/components/onboarding/Step1Store';
-import { Step2Bundle, type BundleItem } from '@/components/onboarding/Step2Bundle';
-import { Step3Competitors } from '@/components/onboarding/Step3Competitors';
-import type { CatalogPreviewResult } from '@/components/onboarding/Step3Competitors';
+import { CompetitorsStep } from '@/components/onboarding/CompetitorsStep';
+import { BundleStep, type BundleItem } from '@/components/onboarding/BundleStep';
+import { OnboardingSuccess, type CatalogPreviewResult } from '@/components/onboarding/OnboardingSuccess';
 import { ONBOARDING_TEMPLATES } from '@/lib/onboarding-templates';
 import type { PlatformType } from '@/lib/onboarding-templates';
 import Logo from '@/components/logo';
@@ -200,73 +200,80 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     };
   }
 
+  // Step 1 → Step 2 (competitors). Kicks off both prefetches; competitor
+  // suggestions fill in asynchronously so the transition is instant.
   async function goToStep2(): Promise<void> {
+    const hostname = (() => {
+      try { return new URL(storeUrl).hostname; }
+      catch { return storeUrl; }
+    })();
+
+    prefetchDiscover(hostname);
+
+    if (prefetchRef.current) {
+      void prefetchRef.current.competitors
+        .then((result) => {
+          if (!result.degraded) setCompetitorSuggestions(result.suggestions);
+        })
+        .catch(() => {});
+    }
+
+    setStep(2);
+  }
+
+  // Step 2 → Step 3 (bundle). For AI plans, awaits the already-in-flight
+  // discover promise and renders a loading skeleton while it resolves.
+  // For free/starter, fetches products.json for Shopify slugs.
+  // If the bundle is already populated (user navigated back), skip reloading.
+  async function goToStep3(): Promise<void> {
+    if (bundle.length > 0) {
+      setStep(3);
+      return;
+    }
+
     const isAiPlan = plan === 'growth' || plan === 'scale';
+    setDiscoverDegraded(false);
+    setDiscoverLoading(true);
+    setStep(3);
 
-    if (isAiPlan) {
-      setDiscoverDegraded(false);
-      setDiscoverLoading(true);
-      setStep(2);
-
-      const hostname = (() => {
-        try {
-          return new URL(storeUrl).hostname;
-        } catch {
-          return storeUrl;
-        }
-      })();
-
-      // Fire prefetch now if it wasn't already started on Step 1 check success
-      prefetchDiscover(hostname);
-
-      const [discoverResult, competitorResult] = await Promise.allSettled([
-        prefetchRef.current!.discover,
-        prefetchRef.current!.competitors,
-      ]);
-
-      if (discoverResult.status === 'fulfilled') {
-        const discovered = mapDiscoverToBundle(discoverResult.value.suggestions, storeUrl);
+    if (isAiPlan && prefetchRef.current) {
+      try {
+        const discoverResult = await prefetchRef.current.discover;
+        const discovered = mapDiscoverToBundle(discoverResult.suggestions, storeUrl);
         const filtered = platform === 'shopify'
           ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
           : discovered;
         setBundle(filtered);
-        setDiscoverDegraded(discoverResult.value.degraded === true);
-      } else {
+        setDiscoverDegraded(discoverResult.degraded === true);
+      } catch {
         setBundle(buildBundle(storeUrl, platform ?? 'other', []));
         setDiscoverDegraded(true);
       }
-
-      if (competitorResult.status === 'fulfilled' && !competitorResult.value.degraded) {
-        setCompetitorSuggestions(competitorResult.value.suggestions);
-      }
-
-      setDiscoverLoading(false);
-      return;
-    }
-
-    // Free/Starter: template path
-    let slugs: string[] = [];
-    if (platform === 'shopify') {
-      try {
-        const hostname = new URL(storeUrl).hostname;
-        const controller = new AbortController();
-        const t = setTimeout(() => controller.abort(), 3000);
-        const res = await fetch(`https://${hostname}/products.json?limit=3`, {
-          signal: controller.signal,
-        });
-        clearTimeout(t);
-        if (res.ok) {
-          const parsed = shopifyProductsSchema.safeParse(await res.json());
-          if (parsed.success) {
-            slugs = parsed.data.products.slice(0, 3).map((p) => p.handle);
+    } else {
+      let slugs: string[] = [];
+      if (platform === 'shopify') {
+        try {
+          const hostname = new URL(storeUrl).hostname;
+          const controller = new AbortController();
+          const t = setTimeout(() => controller.abort(), 3000);
+          const res = await fetch(`https://${hostname}/products.json?limit=3`, {
+            signal: controller.signal,
+          });
+          clearTimeout(t);
+          if (res.ok) {
+            const parsed = shopifyProductsSchema.safeParse(await res.json());
+            if (parsed.success) {
+              slugs = parsed.data.products.slice(0, 3).map((p) => p.handle);
+            }
           }
+        } catch {
+          slugs = ['your-product-1', 'your-product-2', 'your-product-3'];
         }
-      } catch {
-        slugs = ['your-product-1', 'your-product-2', 'your-product-3'];
       }
+      setBundle(buildBundle(storeUrl, platform ?? 'other', slugs));
     }
-    setBundle(buildBundle(storeUrl, platform ?? 'other', slugs));
-    setStep(2);
+
+    setDiscoverLoading(false);
   }
 
   async function handleSubmit(): Promise<void> {
@@ -303,7 +310,6 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
         return;
       }
 
-      // Client-side plan limit check
       if (limits.monitors !== -1 && total > limits.monitors) {
         setError(
           `This bundle would create ${total} monitors, exceeding your plan limit of ${limits.monitors}. Disable some monitors or upgrade.`
@@ -345,7 +351,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
             if (parsed2.success) setCatalogPreview(parsed2.data.results);
           }
         } catch {
-          // fail silently — success screen still shows without ROI numbers
+          // fail silently, success screen still renders without ROI numbers
         }
         setCatalogPreviewLoading(false);
       } else {
@@ -383,68 +389,78 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       </header>
 
       {/* Progress bar */}
-      <div className="flex justify-center border-b border-brand-line/50 px-6 py-4">
-        <div className="w-full max-w-[720px]">
-          <StepIndicator current={step} />
+      {!submitted && (
+        <div className="flex justify-center border-b border-brand-line/50 px-6 py-4">
+          <div className="w-full max-w-[720px]">
+            <StepIndicator current={step} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
       <main className="flex flex-1 items-start justify-center px-6 py-10 sm:items-center">
         <div className="w-full max-w-[760px]">
-          {step === 1 && (
-            <Step1Store
-              storeUrl={storeUrl}
-              onStoreUrlChange={setStoreUrl}
-              platform={platform}
-              onPlatformChange={setPlatform}
-              onContinue={goToStep2}
-              onSkip={skip}
-              onCheckSuccess={prefetchDiscover}
-            />
-          )}
-          {step === 2 && (
-            <Step2Bundle
-              storeUrl={storeUrl}
-              platform={platform ?? 'other'}
-              bundle={bundle}
-              onBundleChange={setBundle}
-              plan={plan}
-              loading={discoverLoading}
-              degraded={discoverDegraded}
-              onBack={() => setStep(1)}
-              onSkip={skip}
-              onContinue={() => setStep(3)}
-            />
-          )}
-          {step === 3 && (
-            <Step3Competitors
-              competitors={competitors}
-              onCompetitorsChange={setCompetitors}
-              plan={plan}
-              teamId={teamId}
-              email={email}
-              aiSuggestions={competitorSuggestions}
-              onBack={() => setStep(2)}
-              onSkip={skip}
-              onSubmit={handleSubmit}
-              submitting={submitting}
-              error={error}
-              submitted={submitted}
+          {submitted ? (
+            <OnboardingSuccess
               catalogPreviewLoading={catalogPreviewLoading}
               catalogPreview={catalogPreview}
               onDone={() => router.push('/monitors')}
             />
+          ) : (
+            <>
+              {step === 1 && (
+                <Step1Store
+                  storeUrl={storeUrl}
+                  onStoreUrlChange={setStoreUrl}
+                  platform={platform}
+                  onPlatformChange={setPlatform}
+                  onContinue={goToStep2}
+                  onSkip={skip}
+                  onCheckSuccess={prefetchDiscover}
+                />
+              )}
+              {step === 2 && (
+                <CompetitorsStep
+                  competitors={competitors}
+                  onCompetitorsChange={setCompetitors}
+                  plan={plan}
+                  teamId={teamId}
+                  email={email}
+                  aiSuggestions={competitorSuggestions}
+                  onBack={() => setStep(1)}
+                  onContinue={goToStep3}
+                  continuing={discoverLoading}
+                />
+              )}
+              {step === 3 && (
+                <BundleStep
+                  storeUrl={storeUrl}
+                  platform={platform ?? 'other'}
+                  bundle={bundle}
+                  onBundleChange={setBundle}
+                  plan={plan}
+                  loading={discoverLoading}
+                  degraded={discoverDegraded}
+                  onBack={() => setStep(2)}
+                  onSkip={skip}
+                  onSubmit={handleSubmit}
+                  submitting={submitting}
+                  error={error}
+                />
+              )}
+            </>
           )}
         </div>
       </main>
 
       {/* Mono hint footer */}
-      <footer className="flex justify-center pb-8">
-        <p className="font-mono text-[11px] text-brand-muted">
-          Step {step} of 3 · No credit card, ever, even for the trial.
-        </p>
-      </footer>
+      {!submitted && (
+        <footer className="flex justify-center pb-8">
+          <p className="font-mono text-[11px] text-brand-muted">
+            Step {step} of 3 · No credit card, ever, even for the trial.
+          </p>
+        </footer>
+      )}
     </div>
   );
 }

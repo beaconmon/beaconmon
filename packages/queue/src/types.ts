@@ -109,6 +109,15 @@ export interface CompetitorNotifyJob {
   competitorId: string;
 }
 
+/** Enqueued by lifecycle-emails scheduler task for day-N and event-triggered emails */
+export interface LifecycleEmailJob {
+  teamId: string;
+  emailType: string;
+  payload: Record<string, unknown>;
+  dedupKey: string;
+  ownerEmail: string;
+}
+
 // ─── Queue name constants ─────────────────────────────────────────────────────
 
 export const QUEUE_NAMES = {
@@ -123,6 +132,7 @@ export const QUEUE_NAMES = {
   SHOPIFY_FEED: 'shopify-feed',
   COMPETITOR_PAGE_CHECK: 'competitor-page-check',
   COMPETITOR_NOTIFY: 'competitor-notify',
+  LIFECYCLE_EMAIL: 'lifecycle-email',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
