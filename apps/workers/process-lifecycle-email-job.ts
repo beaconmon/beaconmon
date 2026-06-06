@@ -26,17 +26,24 @@ export async function processLifecycleEmailJob(data: LifecycleEmailJob, redis?: 
   }
 
   // DB dedup (defense layer 2): attempt to create the send record first.
-  // If dedup_key already exists, Prisma throws a unique constraint error — skip.
+  // On unique conflict, only skip if a prior attempt succeeded or is still in-flight.
+  // A failed attempt is retryable.
   try {
     await prisma.lifecycleEmailSend.create({
       data: { teamId, emailType, dedupKey, status: 'pending' },
     });
   } catch (err: unknown) {
-    if (isPrismaUniqueViolation(err)) {
-      logger.info({ service, teamId, emailType, dedupKey }, 'Lifecycle email already sent, skipping (DB dedup)');
+    if (!isPrismaUniqueViolation(err)) throw err;
+    const existing = await prisma.lifecycleEmailSend.findUnique({ where: { dedupKey } });
+    if (existing?.status !== 'failed') {
+      logger.info({ service, teamId, emailType, dedupKey }, 'Lifecycle email already sent or in-flight, skipping (DB dedup)');
       return;
     }
-    throw err;
+    // Previous attempt failed — reset so this retry can proceed
+    await prisma.lifecycleEmailSend.update({
+      where: { dedupKey },
+      data: { status: 'pending', error: null },
+    });
   }
 
   const appUrl = env.APP_URL ?? process.env['BETTER_AUTH_URL'] ?? 'https://beaconmon.com';

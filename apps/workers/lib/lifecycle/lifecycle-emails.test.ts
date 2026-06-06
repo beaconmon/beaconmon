@@ -92,11 +92,32 @@ describe('trial_reminder_7d trigger', () => {
     expect(config.trigger(team, now)).toBe(false);
   });
 
-  it('does not fire when team has a subscription', () => {
+  it('does not fire when team has an active subscription', () => {
     const now = new Date('2026-06-06T12:00:00Z');
     const trialEndsAt = new Date(Date.UTC(2026, 5, 13));
     const team = makeTeam({ trialEndsAt, subscription: { status: 'active' } });
     expect(config.trigger(team, now)).toBe(false);
+  });
+
+  it('does not fire when subscription is trialing or past_due', () => {
+    const now = new Date('2026-06-06T12:00:00Z');
+    const trialEndsAt = new Date(Date.UTC(2026, 5, 13));
+    expect(config.trigger(makeTeam({ trialEndsAt, subscription: { status: 'trialing' } }), now)).toBe(false);
+    expect(config.trigger(makeTeam({ trialEndsAt, subscription: { status: 'past_due' } }), now)).toBe(false);
+  });
+
+  it('fires when subscription is canceled', () => {
+    const now = new Date('2026-06-06T12:00:00Z');
+    const trialEndsAt = new Date(Date.UTC(2026, 5, 13));
+    const team = makeTeam({ trialEndsAt, subscription: { status: 'canceled' } });
+    expect(config.trigger(team, now)).toBe(true);
+  });
+
+  it('fires when subscription is incomplete', () => {
+    const now = new Date('2026-06-06T12:00:00Z');
+    const trialEndsAt = new Date(Date.UTC(2026, 5, 13));
+    const team = makeTeam({ trialEndsAt, subscription: { status: 'incomplete' } });
+    expect(config.trigger(team, now)).toBe(true);
   });
 
   it('produces dedupKey with team id', () => {

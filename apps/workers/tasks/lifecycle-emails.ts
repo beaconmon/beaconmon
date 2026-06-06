@@ -75,19 +75,26 @@ export const lifecycleEmailsTask: SchedulerTask = {
 
           const payload = config.payload(teamData);
 
-          await lifecycleEmailQueue.add(
-            `lifecycle:${config.type}:${team.id}`,
-            {
-              teamId: team.id,
-              emailType: config.type,
-              payload,
-              dedupKey,
-              ownerEmail,
-            },
-            { jobId: `lc_${dedupKey}` }
-          );
-
-          enqueued++;
+          try {
+            await lifecycleEmailQueue.add(
+              `lifecycle:${config.type}:${team.id}`,
+              {
+                teamId: team.id,
+                emailType: config.type,
+                payload,
+                dedupKey,
+                ownerEmail,
+              },
+              { jobId: `lc_${dedupKey}` }
+            );
+            enqueued++;
+          } catch (enqueueErr) {
+            logger.error(
+              { service: 'scheduler', teamId: team.id, emailType: config.type, err: enqueueErr },
+              'Failed to enqueue lifecycle email job, continuing'
+            );
+            Sentry.captureException(enqueueErr);
+          }
         }
       }
 

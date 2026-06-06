@@ -13,7 +13,7 @@ const EnvSchema = z.object({
   SENTRY_DSN: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),
-  LIFECYCLE_EMAIL_SECRET: z.string().optional(),
+  LIFECYCLE_EMAIL_SECRET: z.string().min(32).optional(),
   FEATURE_SMS_ALERTS: z
     .string()
     .transform((v) => v === 'true')

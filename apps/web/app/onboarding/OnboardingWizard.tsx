@@ -153,6 +153,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     discover: Promise<z.infer<typeof discoverResponseSchema>>;
     competitors: Promise<z.infer<typeof suggestCompetitorsResponseSchema>>;
   } | null>(null);
+  const bundleSourceRef = useRef<{ storeUrl: string; platform: string } | null>(null);
   const [ready] = useState(() => {
     try {
       return localStorage.getItem(obKey(teamId)) === null;
@@ -224,9 +225,15 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   // Step 2 → Step 3 (bundle). For AI plans, awaits the already-in-flight
   // discover promise and renders a loading skeleton while it resolves.
   // For free/starter, fetches products.json for Shopify slugs.
-  // If the bundle is already populated (user navigated back), skip reloading.
+  // Skips recomputation only when the bundle is already built for the same store and platform.
   async function goToStep3(): Promise<void> {
-    if (bundle.length > 0) {
+    const currentPlatform = platform ?? 'other';
+    const bundleCurrent =
+      bundle.length > 0 &&
+      bundleSourceRef.current?.storeUrl === storeUrl &&
+      bundleSourceRef.current?.platform === currentPlatform;
+
+    if (bundleCurrent) {
       setStep(3);
       return;
     }
@@ -240,18 +247,20 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       try {
         const discoverResult = await prefetchRef.current.discover;
         const discovered = mapDiscoverToBundle(discoverResult.suggestions, storeUrl);
-        const filtered = platform === 'shopify'
+        const filtered = currentPlatform === 'shopify'
           ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
           : discovered;
+        bundleSourceRef.current = { storeUrl, platform: currentPlatform };
         setBundle(filtered);
         setDiscoverDegraded(discoverResult.degraded === true);
       } catch {
-        setBundle(buildBundle(storeUrl, platform ?? 'other', []));
+        bundleSourceRef.current = { storeUrl, platform: currentPlatform };
+        setBundle(buildBundle(storeUrl, currentPlatform, []));
         setDiscoverDegraded(true);
       }
     } else {
       let slugs: string[] = [];
-      if (platform === 'shopify') {
+      if (currentPlatform === 'shopify') {
         try {
           const hostname = new URL(storeUrl).hostname;
           const controller = new AbortController();
@@ -270,7 +279,8 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
           slugs = ['your-product-1', 'your-product-2', 'your-product-3'];
         }
       }
-      setBundle(buildBundle(storeUrl, platform ?? 'other', slugs));
+      bundleSourceRef.current = { storeUrl, platform: currentPlatform };
+      setBundle(buildBundle(storeUrl, currentPlatform, slugs));
     }
 
     setDiscoverLoading(false);

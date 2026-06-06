@@ -25,11 +25,15 @@ function utcDayStart(now: Date, offsetDays: number): Date {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + offsetDays));
 }
 
+// Statuses that represent a real billing relationship — suppress trial reminders
+const ACTIVE_BILLING_STATUSES = new Set(['active', 'trialing', 'past_due']);
+
 const trial7d: LifecycleEmailTriggerConfig = {
   type: 'trial_reminder_7d',
   category: 'lifecycle',
   trigger(team, now) {
-    if (team.plan !== 'free' || !team.trialEndsAt || team.subscription) return false;
+    if (team.plan !== 'free' || !team.trialEndsAt) return false;
+    if (ACTIVE_BILLING_STATUSES.has(team.subscription?.status ?? '')) return false;
     const trialEnds = team.trialEndsAt.getTime();
     return (
       trialEnds >= utcDayStart(now, 7).getTime() && trialEnds < utcDayStart(now, 8).getTime()
@@ -51,7 +55,8 @@ const trial1d: LifecycleEmailTriggerConfig = {
   type: 'trial_reminder_1d',
   category: 'lifecycle',
   trigger(team, now) {
-    if (team.plan !== 'free' || !team.trialEndsAt || team.subscription) return false;
+    if (team.plan !== 'free' || !team.trialEndsAt) return false;
+    if (ACTIVE_BILLING_STATUSES.has(team.subscription?.status ?? '')) return false;
     const trialEnds = team.trialEndsAt.getTime();
     return (
       trialEnds >= utcDayStart(now, 1).getTime() && trialEnds < utcDayStart(now, 2).getTime()
