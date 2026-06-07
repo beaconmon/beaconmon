@@ -42,7 +42,7 @@ type IntelCard = {
   slug: string;
   tagline: string;
   verdict: string;
-  comingSoon: true;
+  comingSoon?: false;
   icon: React.ReactNode;
 };
 
@@ -63,7 +63,6 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     slug: 'visualping',
     tagline: 'Visual diff tool with no ecommerce focus.',
     verdict: 'Visualping detects visual page changes but has no competitor intelligence digest, no Shopify context, and no uptime monitoring.',
-    comingSoon: true,
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
         <Eye size={24} color="#8B5CF6" strokeWidth={1.5} />
@@ -75,7 +74,6 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     slug: 'prisync',
     tagline: 'Price tracking for enterprise ecommerce teams.',
     verdict: 'Prisync is a dedicated price tracking tool with no uptime monitoring, no content change detection outside of pricing, and enterprise pricing.',
-    comingSoon: true,
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 0.12)' }}>
         <TrendingDown size={24} color="#EF4444" strokeWidth={1.5} />
@@ -87,7 +85,6 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     slug: 'distill',
     tagline: 'Browser-based page watcher, no digest or alerts.',
     verdict: 'Distill is a browser extension for personal page watching. No team features, no Slack digest, no uptime monitoring, and no Shopify-specific context.',
-    comingSoon: true,
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.12)' }}>
         <Bell size={24} color="#F59E0B" strokeWidth={1.5} />
@@ -99,7 +96,6 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     slug: 'hexowatch',
     tagline: 'General-purpose page monitoring without the intel layer.',
     verdict: 'Hexowatch monitors pages for changes but lacks a curated intelligence digest, Shopify-specific features, and competitor-first workflows.',
-    comingSoon: true,
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(20, 184, 166, 0.12)' }}>
         <Rss size={24} color="#14B8A6" strokeWidth={1.5} />
