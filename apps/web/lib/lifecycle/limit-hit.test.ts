@@ -49,7 +49,7 @@ describe('enqueueLimitHitEmail', () => {
     });
 
     expect(mockAdd).toHaveBeenCalledOnce();
-    const [, jobData, opts] = mockAdd.mock.calls[0];
+    const [, jobData, opts] = mockAdd.mock.calls[0]!;
     expect(jobData.emailType).toBe('limit_hit');
     expect(jobData.teamId).toBe('team-1');
     expect(jobData.payload).toMatchObject({ limitType: 'competitor', currentCount: 1, planLimit: 1 });
@@ -97,7 +97,7 @@ describe('enqueueLimitHitEmail', () => {
       planTier: 'starter',
     });
 
-    const [key, , , , mode] = mockSet.mock.calls[0];
+    const [key, , , , mode] = mockSet.mock.calls[0]!;
     expect(key).toBe('lifecycle:dedup:limit:hit:team-abc');
     expect(mode).toBe('NX');
   });
@@ -113,7 +113,7 @@ describe('enqueueLimitHitEmail', () => {
       planTier: 'free',
     });
 
-    const [, , ttlMode, ttlValue] = mockSet.mock.calls[0];
+    const [, , ttlMode, ttlValue] = mockSet.mock.calls[0]!;
     expect(ttlMode).toBe('EX');
     expect(ttlValue).toBe(7 * 24 * 60 * 60);
   });
