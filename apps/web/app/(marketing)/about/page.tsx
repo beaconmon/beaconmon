@@ -5,9 +5,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Beaconmon | Store and Competitor Monitoring for eCommerce',
+  title: 'About Beaconmon | Shopify Competitor Intelligence and Uptime Monitoring',
   description:
-    'Beaconmon is an ecommerce monitoring platform built for Shopify and WooCommerce store owners who need to know about outages, competitor price drops, and content changes before their customers do.',
+    'Beaconmon is Shopify-first competitor intelligence and uptime monitoring. Built to help ecommerce store owners track competitor prices, promotions, and content changes without enterprise tooling.',
   alternates: { canonical: 'https://beaconmon.com/about' },
 };
 
@@ -89,11 +89,37 @@ export default function AboutPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-5">About</span>
           <h1 className="text-[clamp(40px,5.5vw,76px)] leading-[1.02] tracking-[-0.04em] font-extrabold mb-7 max-w-[820px]">
-            Built by people who got paged at 2am for sites that were already up.
+            Built for Shopify merchants who track competitors manually and get paged for outages that already cleared.
           </h1>
           <p className="text-[18px] leading-[1.6] text-brand-dim max-w-[600px]">
-            Beaconmon exists because the tools we used were either too noisy, too expensive, or too slow. We wanted something that just worked and sent alerts only when they meant something.
+            Beaconmon started as a tool to solve two problems at once: knowing when a competitor dropped prices overnight, and getting paged for outages that had already resolved. We built what we wished existed.
           </p>
+        </div>
+      </section>
+
+      {/* Why Shopify-first */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal mb-10">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold leading-[1.15]">Why Shopify-first?</h2>
+          </div>
+          <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5">
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <div className="w-2 h-2 rounded-full bg-brand-green mb-6" />
+              <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-3 leading-[1.2]">Standardized by design.</h3>
+              <p className="text-brand-dim text-[14px] leading-[1.65]">Shopify stores share a predictable data structure. The /products.json feed, product page patterns, and checkout flow are consistent across every merchant. That lets us ship preset competitor monitors that work without configuration.</p>
+            </div>
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <div className="w-2 h-2 rounded-full bg-brand-green mb-6" />
+              <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-3 leading-[1.2]">Competitor detection is built in.</h3>
+              <p className="text-brand-dim text-[14px] leading-[1.65]">When you paste a competitor URL, Beaconmon detects Shopify automatically and offers the right monitoring preset. Shopify stores get product feed tracking on top of uptime and content change checks.</p>
+            </div>
+            <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <div className="w-2 h-2 rounded-full bg-brand-green mb-6" />
+              <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-3 leading-[1.2]">WooCommerce is fully supported.</h3>
+              <p className="text-brand-dim text-[14px] leading-[1.65]">WooCommerce stores work with every Beaconmon feature. Shopify-first means we ship Shopify-specific capabilities sooner, not that WooCommerce is treated as an afterthought.</p>
+            </div>
+          </div>
         </div>
       </section>
 

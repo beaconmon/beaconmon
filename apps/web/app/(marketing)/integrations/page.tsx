@@ -6,8 +6,9 @@ import { breadcrumbSchema } from '@/lib/breadcrumb';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Alert Integrations: Email, Slack & Webhooks | Beaconmon',
-  description: 'Beaconmon sends downtime alerts via email, Slack, and webhooks. Route alerts to the tools your team already uses, or build your own automation on top of the JSON payload.',
+  title: 'Integrations: Shopify, Alerts & Webhooks | Beaconmon',
+  description:
+    'Beaconmon connects to Shopify product feeds for competitor price and inventory tracking, and sends alerts via email, Slack, and webhooks.',
   alternates: { canonical: 'https://beaconmon.com/integrations' },
 };
 
@@ -17,33 +18,59 @@ const FAQ_SCHEMA = {
   mainEntity: [
     {
       '@type': 'Question',
+      name: 'Does Beaconmon have a Shopify App Store app?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Not yet. Beaconmon connects directly to public Shopify store URLs. There is nothing to install in your Shopify admin panel.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What Shopify data can Beaconmon track?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We monitor the public /products.json feed, which includes product titles, variants, prices, and availability. We also monitor any page on a Shopify store for content changes, including homepages, collection pages, and promotional banners.',
+      },
+    },
+    {
+      '@type': 'Question',
       name: 'Can I send alerts to multiple channels at the same time?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Yes. You can add as many alert channels as your plan allows and each monitor can notify any combination of them.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. You can add as many alert channels as your plan allows and each monitor can notify any combination of them.',
+      },
     },
     {
       '@type': 'Question',
       name: 'What events trigger an alert?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks) and again when it recovers to UP. SSL and domain expiry warnings fire at 30, 14, and 7 days before expiry.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks) and again when it recovers to UP. Content change monitors fire when a tracked HTML element changes. SSL and domain expiry warnings fire at 30, 14, and 7 days before expiry.',
+      },
     },
     {
       '@type': 'Question',
       name: 'How do I connect Beaconmon to Slack?',
-      acceptedAnswer: { '@type': 'Answer', text: 'In the dashboard, go to Alert Channels, Add Channel, then Slack. Authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'In the dashboard, go to Alert Channels, Add Channel, then Slack. Authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste.',
+      },
     },
     {
       '@type': 'Question',
       name: 'What does the webhook payload look like?',
-      acceptedAnswer: { '@type': 'Answer', text: 'The POST body is a JSON object with event, monitor_id, url, status_code, confirmed_locations, incident_id, started_at, and optionally duration_ms on recovery. HTTPS only.' },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can I use webhooks to connect to PagerDuty, Discord, or Jira?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Point the channel at a PagerDuty Events API URL, a Discord channel webhook URL, or your own function to open a Jira ticket.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The POST body is a JSON object with event, monitor_id, url, status_code, confirmed_locations, incident_id, started_at, and optionally duration_ms on recovery. HTTPS only.',
+      },
     },
     {
       '@type': 'Question',
       name: 'Is there a retry policy if my webhook endpoint is down?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff.',
+      },
     },
   ],
 };
@@ -51,14 +78,37 @@ const FAQ_SCHEMA = {
 const INTEGRATIONS_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Beaconmon Alert Integrations',
-  description: 'Beaconmon sends alerts via email, Slack, and webhooks. Connect your monitoring to the tools you already use.',
+  name: 'Beaconmon Integrations',
+  description:
+    'Beaconmon connects to Shopify product feeds for competitor tracking and sends alerts via email, Slack, and webhooks.',
   url: 'https://beaconmon.com/integrations',
-  numberOfItems: 3,
+  numberOfItems: 4,
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Email', description: 'Instant alert emails the moment a monitor goes down or recovers.' },
-    { '@type': 'ListItem', position: 2, name: 'Slack', description: 'Beaconmon posts to any Slack channel when a monitor changes state.' },
-    { '@type': 'ListItem', position: 3, name: 'Webhooks', description: 'Send a JSON payload to any URL when a monitor event fires.' },
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Shopify product feed',
+      description:
+        'Monitor any public Shopify store product catalog for price changes, new product launches, and inventory updates.',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Email',
+      description: 'Instant alert emails the moment a monitor goes down or recovers.',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Slack',
+      description: 'Beaconmon posts to any Slack channel when a monitor changes state.',
+    },
+    {
+      '@type': 'ListItem',
+      position: 4,
+      name: 'Webhooks',
+      description: 'Send a JSON payload to any URL when a monitor event fires.',
+    },
   ],
 };
 
@@ -78,9 +128,9 @@ interface IntegrationPreview {
 interface Integration {
   name: string;
   description: string;
-  available: boolean;
   plan: string;
   preview: IntegrationPreview;
+  disclosure?: string;
 }
 
 function getLineClassName(line: PreviewLine): string {
@@ -89,11 +139,80 @@ function getLineClassName(line: PreviewLine): string {
   return 'text-brand-dim';
 }
 
-const INTEGRATIONS: Integration[] = [
+function IntegrationCard({ integration }: { integration: Integration }) {
+  const { name, description, plan, preview, disclosure } = integration;
+  return (
+    <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
+      <div className="grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1">
+        <div className="p-10 max-[880px]:p-8 border-r border-brand-line-soft max-[880px]:border-r-0 max-[880px]:border-b">
+          <div className="inline-block text-[11px] font-semibold px-2 py-[3px] rounded bg-[rgba(0,229,122,0.1)] text-brand-green-ink border border-[rgba(0,229,122,0.2)] mb-5">
+            {plan}
+          </div>
+          <h3 className="text-[26px] font-bold tracking-[-0.025em] mb-4">{name}</h3>
+          <p className="text-brand-dim text-[15px] leading-[1.65]">{description}</p>
+          {disclosure && (
+            <div className="mt-5 px-4 py-3 rounded-lg bg-[rgba(255,200,0,0.05)] border border-[rgba(255,200,0,0.18)] text-[13px] text-brand-dim leading-[1.6]">
+              <span className="font-semibold text-brand-text">Note: </span>
+              {disclosure}
+            </div>
+          )}
+        </div>
+        <div className="p-8 max-[880px]:p-6 flex items-center">
+          <div className="w-full bg-brand-bg2 border border-brand-line rounded-[10px] overflow-hidden text-[12px] font-mono">
+            {preview.subject && (
+              <div className="px-4 py-3 border-b border-brand-line text-brand-muted text-[11px]">
+                {preview.subject}
+              </div>
+            )}
+            <div className="p-4 space-y-[6px]">
+              {preview.lines.map((line, i) => (
+                <div key={i} className="flex gap-3">
+                  {line.label && (
+                    <span className="text-brand-muted shrink-0 w-[120px]">{line.label}:</span>
+                  )}
+                  <span className={getLineClassName(line)}>{line.value}</span>
+                </div>
+              ))}
+            </div>
+            {preview.footer && (
+              <div className="px-4 py-3 border-t border-brand-line text-brand-green-ink text-[11px]">
+                {preview.footer}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const STORE_CONNECTIONS: Integration[] = [
+  {
+    name: 'Shopify product feed',
+    description:
+      'Monitor any public Shopify store\'s product catalog for price changes, new product launches, inventory updates, and promotional copy changes. Beaconmon polls the /products.json feed automatically. No API keys or Shopify credentials needed.',
+    plan: 'All plans',
+    disclosure:
+      'Beaconmon is not yet available in the Shopify App Store. You connect by entering a store URL directly. Nothing installs in your Shopify admin panel.',
+    preview: {
+      subject: 'competitor-brand.myshopify.com',
+      lines: [
+        { label: 'Event', value: 'Price change detected', bold: true },
+        { label: 'Product', value: '"Summer Dress - Blue / M"' },
+        { label: 'Before', value: '$45.00' },
+        { label: 'After', value: '$38.00 (-15%)', red: true },
+        { label: 'Detected', value: '2026-06-07 09:12 UTC' },
+      ],
+      footer: 'View change → Set alert threshold →',
+    },
+  },
+];
+
+const ALERT_CHANNELS: Integration[] = [
   {
     name: 'Email',
-    description: 'Instant alert emails the moment a monitor goes down or recovers. Formatted to be clear at a glance, with no digging through paragraphs to understand what happened.',
-    available: true,
+    description:
+      'Instant alert emails the moment a monitor goes down or recovers. Formatted to be clear at a glance, with no digging through paragraphs to understand what happened.',
     plan: 'All plans',
     preview: {
       subject: '🔴 [DOWN] acme-storefront.com',
@@ -109,8 +228,8 @@ const INTEGRATIONS: Integration[] = [
   },
   {
     name: 'Slack',
-    description: 'Beaconmon posts to any Slack channel when a monitor changes state. Your team sees it together. No more "did you get the email?" conversations.',
-    available: true,
+    description:
+      'Beaconmon posts to any Slack channel when a monitor changes state. Your team sees it together. No more "did you get the email?" conversations.',
     plan: 'Pro & Business',
     preview: {
       subject: null,
@@ -125,8 +244,8 @@ const INTEGRATIONS: Integration[] = [
   },
   {
     name: 'Webhooks',
-    description: 'Send a JSON payload to any URL when a monitor event fires. Build custom automations: auto-create a Jira ticket, post to Discord, trigger a PagerDuty alert, or anything else your stack needs.',
-    available: true,
+    description:
+      'Send a JSON payload to any URL when a monitor event fires. Build custom automations: auto-create a Jira ticket, post to Discord, trigger a PagerDuty alert, or anything else your stack needs.',
     plan: 'Pro & Business',
     preview: {
       subject: 'POST https://your-endpoint.com/webhook',
@@ -165,60 +284,41 @@ export default function IntegrationsPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Integrations</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">
+            Integrations
+          </span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            Get alerted wherever your team works.
+            Connect to Shopify stores and get alerted where your team works.
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
-            Email, Slack, and webhooks, so you can plug Beaconmon into the tools you already use, or build your own automation on top.
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mx-auto">
+            Beaconmon reads public Shopify product feeds for competitor tracking, and routes alerts to email, Slack, or any webhook endpoint you choose.
           </p>
         </div>
       </section>
 
-      {/* Integration cards */}
+      {/* Store connections */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <h2 className="text-[clamp(20px,2.4vw,28px)] font-bold tracking-[-0.02em] mb-8 text-brand-green-ink">
+            Store connections
+          </h2>
           <div className="space-y-6">
-            {INTEGRATIONS.map(({ name, description, plan, preview }) => (
-              <div key={name} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
-                <div className="grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1">
-                  {/* Left */}
-                  <div className="p-10 max-[880px]:p-8 border-r border-brand-line-soft max-[880px]:border-r-0 max-[880px]:border-b">
-                    <div className="inline-block text-[11px] font-semibold px-2 py-[3px] rounded bg-[rgba(0,229,122,0.1)] text-brand-green-ink border border-[rgba(0,229,122,0.2)] mb-5">
-                      {plan}
-                    </div>
-                    <h2 className="text-[26px] font-bold tracking-[-0.025em] mb-4">{name}</h2>
-                    <p className="text-brand-dim text-[15px] leading-[1.65]">{description}</p>
-                  </div>
-                  {/* Right — preview */}
-                  <div className="p-8 max-[880px]:p-6 flex items-center">
-                    <div className="w-full bg-brand-bg2 border border-brand-line rounded-[10px] overflow-hidden text-[12px] font-mono">
-                      {preview.subject && (
-                        <div className="px-4 py-3 border-b border-brand-line text-brand-muted text-[11px]">
-                          {preview.subject}
-                        </div>
-                      )}
-                      <div className="p-4 space-y-[6px]">
-                        {preview.lines.map((line, i) => (
-                          <div key={i} className="flex gap-3">
-                            {line.label && (
-                              <span className="text-brand-muted shrink-0 w-[120px]">{line.label}:</span>
-                            )}
-                            <span className={getLineClassName(line)}>
-                              {line.value}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                      {preview.footer && (
-                        <div className="px-4 py-3 border-t border-brand-line text-brand-green-ink text-[11px]">
-                          {preview.footer}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {STORE_CONNECTIONS.map((integration) => (
+              <IntegrationCard key={integration.name} integration={integration} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Alert channels */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <h2 className="text-[clamp(20px,2.4vw,28px)] font-bold tracking-[-0.02em] mb-8 text-brand-green-ink">
+            Alert channels
+          </h2>
+          <div className="space-y-6">
+            {ALERT_CHANNELS.map((integration) => (
+              <IntegrationCard key={integration.name} integration={integration} />
             ))}
           </div>
         </div>
@@ -228,33 +328,39 @@ export default function IntegrationsPage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-10">
-            <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">Alert integration FAQ</h2>
+            <h2 className="text-[clamp(24px,3vw,36px)] tracking-[-0.03em] font-extrabold mb-3">
+              Integration FAQ
+            </h2>
           </div>
           <div className="space-y-8">
             {[
+              {
+                q: 'Does Beaconmon have a Shopify App Store app?',
+                a: 'Not yet. Beaconmon connects directly to public Shopify store URLs. There is nothing to install in your Shopify admin panel. You enter a competitor or your own store URL in the dashboard and monitoring starts immediately.',
+              },
+              {
+                q: 'What Shopify data can Beaconmon track?',
+                a: 'We monitor the public /products.json feed, which includes product titles, variants, prices, and availability for any public Shopify store. We also watch any page on a Shopify store for content changes, including homepages, collection pages, and promotional banners. Monitoring happens at the HTML source level.',
+              },
               {
                 q: 'Can I send alerts to multiple channels at the same time?',
                 a: 'Yes. You can add as many alert channels as your plan allows (Pro: up to 5, Business: unlimited) and each monitor can notify any combination of them. Use email for your own inbox, Slack for your team, and a webhook for your ticketing system, all from the same monitor.',
               },
               {
                 q: 'What events trigger an alert?',
-                a: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks from multiple locations) and again when it recovers to UP. SSL and domain expiry warnings fire on a tiered schedule at 30, 14, and 7 days before expiry. You can choose to receive only DOWN alerts, only recovery alerts, or both.',
+                a: 'Beaconmon fires an alert when a monitor transitions to DOWN (after 2 consecutive failed checks from multiple locations) and again when it recovers to UP. Content change monitors fire when a tracked HTML element changes. SSL and domain expiry warnings fire at 30, 14, and 7 days before expiry.',
               },
               {
                 q: 'How do I connect Beaconmon to Slack?',
-                a: 'In the dashboard, go to Alert Channels → Add Channel → Slack. You\'ll be prompted to authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste. It\'s a single click.',
+                a: "In the dashboard, go to Alert Channels, Add Channel, then Slack. You'll be prompted to authorise via Slack OAuth and pick a channel. No webhook URL to copy-paste.",
               },
               {
                 q: 'What does the webhook payload look like?',
                 a: 'The POST body is a JSON object with event (monitor.down or monitor.up), monitor_id, url, status_code, confirmed_locations (array of region slugs), incident_id, started_at, and optionally duration_ms on recovery. HTTPS only; Beaconmon does not follow redirects for security reasons.',
               },
               {
-                q: 'Can I use webhooks to connect to PagerDuty, Discord, or Jira?',
-                a: 'Yes. Webhooks are designed for exactly this. Point the channel at a PagerDuty Events API URL to auto-create incidents, a Discord channel webhook URL for team notifications, or your own serverless function to open a Jira ticket. Any service that accepts an inbound HTTP POST will work.',
-              },
-              {
                 q: 'Is there a retry policy if my webhook endpoint is down?',
-                a: 'Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff. If all retries fail, the failure is logged and visible in the channel\'s delivery history so you can investigate.',
+                a: "Yes. Beaconmon retries failed webhook deliveries up to 5 times with exponential backoff. If all retries fail, the failure is logged and visible in the channel's delivery history so you can investigate.",
               },
             ].map(({ q, a }) => (
               <div key={q} className="reveal border-b border-brand-line-soft pb-8 last:border-b-0 last:pb-0">
@@ -283,9 +389,11 @@ export default function IntegrationsPage() {
         />
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center relative">
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
-            Ready to get alerted in the right place?
+            Ready to track competitors and get alerted where it matters?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Set up monitoring in 5 minutes. Free forever for 10 monitors.</p>
+          <p className="text-brand-dim text-[17px] mb-8">
+            Set up Shopify competitor monitoring in 5 minutes. Free forever for 1 competitor.
+          </p>
           <CtaForm className="mx-auto mb-5" />
         </div>
       </section>

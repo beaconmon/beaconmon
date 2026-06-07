@@ -8,8 +8,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Store Monitoring + Competitor Tracking | Beaconmon',
-  description: 'Monitor your Shopify store uptime, checkout, and competitor pricing in one place. 30-second checks, Intelligence Digest, and instant Slack alerts.',
+  title: 'Beaconmon for Shopify Stores | Checkout Monitoring and Competitor Tracking',
+  description:
+    'Catch checkout failures in under a minute. Know when a competitor drops a price. Beaconmon monitors your Shopify store and your competitors so you can focus on running the business.',
   alternates: { canonical: 'https://beaconmon.com/for/shopify' },
 };
 
@@ -23,20 +24,20 @@ const TEMPLATE_MONITORS = [
 
 const FEATURES = [
   {
-    heading: '30-second checkout checks',
-    body: 'Beaconmon checks your homepage, product pages, cart, and checkout every 30 seconds on the Scale plan. A broken checkout is flagged in under a minute.',
+    heading: 'Checkout failures caught in under a minute',
+    body: 'Your checkout is the most important page on your store. Beaconmon checks it every 30 seconds on the Scale plan and fires a Slack alert within 60 seconds of a confirmed failure. You find out before the customer complaint arrives.',
   },
   {
-    heading: 'Keyword verification',
-    body: 'A 200 OK is not enough. Keyword monitoring checks that "Add to Cart" is on your product page and the checkout form is on your cart page. Catch broken deploys before customers do.',
+    heading: 'Broken deploys caught before customers notice',
+    body: 'A 200 OK from Shopify\'s servers does not mean your cart or checkout is working. Keyword monitoring checks that "Add to Cart" is present on your product page and "Complete order" is on your checkout. Catch a broken theme deploy in seconds, not hours.',
   },
   {
-    heading: 'Competitor price and content tracking',
-    body: 'Add competitor product and pricing pages as content monitors. Get alerted the moment a competitor changes their price, runs a sale, or updates their homepage.',
+    heading: 'Know when a competitor changes their price',
+    body: 'Add competitor product and pricing pages as content monitors. Get a Slack alert the moment a competitor drops a price, launches a promotion, or updates their homepage. React before your customers notice.',
   },
   {
-    heading: 'Intelligence Digest',
-    body: 'A daily or weekly email and Slack digest summarizing every change detected on your competitors\' sites and smart alerts from your own store.',
+    heading: 'One digest instead of a dashboard to babysit',
+    body: 'The Intelligence Digest emails you every morning or week with a summary of every competitor change and every anomaly on your own store. One skim with coffee and you are caught up.',
   },
 ];
 
@@ -61,13 +62,13 @@ export default function ForShopifyPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For Shopify</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For Shopify Store Owners</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Shopify Store Monitoring That Goes Beyond a Simple Ping<br />
-            <span className="text-brand-green-ink">Know when checkout breaks, and when competitors move.</span>
+            Your Shopify Store Is Live Around the Clock. You&apos;re Not.<br />
+            <span className="text-brand-green-ink">Catch checkout failures before a customer does.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
-            30-second uptime checks, keyword verification on your cart and checkout, competitor content tracking, and a weekly Intelligence Digest. Built for Shopify stores that cannot afford to lose a sale.
+            Beaconmon watches your checkout and product pages every 30 seconds, and alerts you the moment a competitor changes their price or launches a sale.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -76,12 +77,31 @@ export default function ForShopifyPage() {
         </div>
       </section>
 
+      {/* Two jobs */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-10">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Two things Shopify store owners need to know</h2>
+          </div>
+          <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 max-w-[860px] mx-auto">
+            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">Is your checkout working right now?</h3>
+              <p className="text-brand-dim text-[14px] leading-[1.65]">Beaconmon checks your homepage, cart, and checkout every 30 seconds and fires an alert within 60 seconds of a confirmed failure. Not when a customer emails you.</p>
+            </div>
+            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">Did a competitor just move?</h3>
+              <p className="text-brand-dim text-[14px] leading-[1.65]">Beaconmon watches competitor product and pricing pages and alerts you the moment something changes: a price drop, a new promo, or a homepage update. You see it before your customers do.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Intelligence mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Your store and competitors, at a glance</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Every change on a competitor site, every smart alert on your own store, summarized in one feed.</p>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Every change on a competitor site, every alert on your own store, in one feed.</p>
           </div>
           <div className="reveal">
             <IntelligenceMockup
@@ -103,8 +123,8 @@ export default function ForShopifyPage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-10">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Start with a proven Shopify monitor template</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">These are the five monitors most Shopify stores set up first.</p>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Five monitors most Shopify stores set up first</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Your checkout funnel and your two most important competitors, covered from day one.</p>
           </div>
           <div className="reveal grid grid-cols-1 gap-3 max-w-[700px] mx-auto">
             {TEMPLATE_MONITORS.map((monitor) => (
@@ -135,8 +155,8 @@ export default function ForShopifyPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Built for Shopify stores</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Everything you need to protect your store and stay ahead of competitors.</p>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">What Beaconmon does for your Shopify store</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Protection from the two things that actually cost you money: downtime and competitor moves you missed.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
@@ -154,7 +174,7 @@ export default function ForShopifyPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/for/ecommerce" className="text-brand-dim hover:text-brand-text transition-colors">E-commerce monitoring</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence (deep dive)</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
             <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
           </div>

@@ -13,14 +13,13 @@ const PRODUCT_LINKS: [string, string][] = [
 ];
 
 const FOR_LINKS: [string, string][] = [
-  ['/for/ecommerce', 'Ecommerce'],
   ['/for/shopify', 'Shopify'],
   ['/for/woocommerce', 'WooCommerce'],
   ['/for/dtc-brands', 'DTC Brands'],
-  ['/for/solo-founders', 'Solo Founders'],
 ];
 
 const COMPARE_LINKS: [string, string][] = [
+  ['/vs', 'All comparisons'],
   ['/vs/uptimerobot', 'vs UptimeRobot'],
   ['/vs/pingdom', 'vs Pingdom'],
   ['/vs/better-uptime', 'vs Better Uptime'],

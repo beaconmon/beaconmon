@@ -7,13 +7,31 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Pingdom for Shopify Stores (2026): Honest Comparison',
+  title: 'Switch from Pingdom: Competitor Intelligence + Uptime for Shopify (2026)',
   description:
-    "Pingdom vs Beaconmon: where Pingdom wins (RUM, transaction monitoring, 70+ locations) and where it falls short for ecommerce stores. No free plan, no competitor tracking. Honest comparison.",
+    'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, no competitor tracking, no Intelligence Digest. See what you are missing. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
 };
 
 const TABLE_ROWS = [
+  {
+    feature: 'Competitor monitoring',
+    beaconmon: '✓ Included',
+    competitor: 'No',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Content change monitoring',
+    beaconmon: '✓ Included',
+    competitor: 'No',
+    beaconmonGood: true,
+  },
+  {
+    feature: 'Intelligence Digest',
+    beaconmon: '✓ Starter+',
+    competitor: 'No',
+    beaconmonGood: true,
+  },
   {
     feature: 'Free plan',
     beaconmon: '10 monitors',
@@ -37,24 +55,6 @@ const TABLE_ROWS = [
     beaconmon: '5 regions',
     competitor: '70+ locations',
     beaconmonGood: false,
-  },
-  {
-    feature: 'Competitor monitoring',
-    beaconmon: '✓ Included',
-    competitor: 'No',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Content change monitoring',
-    beaconmon: '✓ Included',
-    competitor: 'No',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Intelligence Digest',
-    beaconmon: '✓ Starter+',
-    competitor: 'No',
-    beaconmonGood: true,
   },
   {
     feature: 'SSL + domain expiry',
@@ -100,7 +100,7 @@ const SWITCH_REASONS = [
   'Pingdom cannot track competitor prices, product listing changes, or promotional copy. Beaconmon checks those on every monitoring cycle.',
   'Domain expiry tracking is not in Pingdom. Beaconmon alerts you at 30, 14, and 7 days before a domain expires.',
   'Status pages in Pingdom cost extra. In Beaconmon they are included from the free plan, with custom domain support on paid tiers.',
-  'The weekly Intelligence Digest gives you a plain-language summary of every change detected across your monitored sites, sent to email or Slack.',
+  'The daily Intelligence Digest gives you a plain-language summary of every change detected across your monitored sites, sent to email or Slack.',
 ];
 
 const FAQ_ITEMS = [
@@ -185,11 +185,11 @@ export default function VsPingdomPage() {
           </Link>
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
-            Beaconmon vs Pingdom<br />
-            <span className="text-brand-green-ink">for Shopify stores.</span>
+            Switch from Pingdom,<br />
+            <span className="text-brand-green-ink">get the daily Shopify brief.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Pingdom is a strong enterprise monitoring tool: real user monitoring, scripted transaction checks, and 70-plus global locations. For a Shopify or WooCommerce store owner paying out of pocket, it has no free plan, no competitor tracking, and status pages cost extra. This comparison covers both sides honestly.
+            Pingdom is a strong enterprise tool: real user monitoring, scripted transaction checks, 70-plus global locations. For a Shopify or WooCommerce store owner, it has no competitor intelligence, no content change detection, and status pages cost extra. The Intelligence Digest replaces three tools worth of manual competitor checking.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: May 2026</p>
         </div>
@@ -201,7 +201,7 @@ export default function VsPingdomPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Pingdom is built for DevOps teams that need real user monitoring and scripted transaction checks. If you are a Shopify store owner who wants competitor price tracking, content change detection, and a weekly digest of what changed across your monitored sites, Beaconmon is purpose-built for that. Neither is the right tool for every job.
+              Pingdom is built for DevOps teams that need real user monitoring and scripted transaction checks. If you are a Shopify store owner who wants competitor price tracking, content change detection, and a daily digest of what changed across your monitored sites, Beaconmon is purpose-built for that. Neither is the right tool for every job.
             </p>
           </div>
         </div>

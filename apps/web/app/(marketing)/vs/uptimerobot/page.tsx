@@ -7,19 +7,13 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs UptimeRobot for Shopify Stores (2026): Honest Comparison',
+  title: 'Switch from UptimeRobot: Competitor Intelligence + Uptime for Shopify (2026)',
   description:
-    'UptimeRobot vs Beaconmon: competitor monitoring, content change detection, Intelligence Digest, and pricing compared side-by-side for ecommerce stores. Try free, no card needed.',
+    'UptimeRobot vs Beaconmon: honest comparison for ecommerce stores. UptimeRobot has no competitor monitoring, no content tracking, no Intelligence Digest. See what you are missing. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/uptimerobot' },
 };
 
 const TABLE_ROWS = [
-  {
-    feature: 'Free plan',
-    beaconmon: '10 monitors',
-    competitor: '50 monitors',
-    beaconmonGood: false,
-  },
   {
     feature: 'Competitor monitoring',
     beaconmon: '✓ Included',
@@ -51,6 +45,18 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
+    feature: 'Free plan',
+    beaconmon: '10 monitors',
+    competitor: '50 monitors',
+    beaconmonGood: false,
+  },
+  {
+    feature: 'Check frequency (paid)',
+    beaconmon: '30 seconds',
+    competitor: '1 minute',
+    beaconmonGood: true,
+  },
+  {
     feature: 'Multi-location checks',
     beaconmon: '5 regions',
     competitor: '1 location (free), multi (Pro+)',
@@ -66,12 +72,6 @@ const TABLE_ROWS = [
     feature: 'Status pages (custom domain)',
     beaconmon: '✓ Included',
     competitor: 'Paid add-on',
-    beaconmonGood: true,
-  },
-  {
-    feature: 'Check frequency (paid)',
-    beaconmon: '30 seconds',
-    competitor: '1 minute',
     beaconmonGood: true,
   },
   {
@@ -99,7 +99,7 @@ const STAY_REASONS = [
 
 const SWITCH_REASONS = [
   'You want to see when a competitor drops prices, updates product listings, or launches a promotion, without checking manually.',
-  'You want a weekly Intelligence Digest in Slack summarizing every change detected on competitor sites in plain language.',
+  'You want a daily Intelligence Digest in Slack summarizing every change detected on competitor sites in plain language.',
   'You need SSL and domain expiry warnings sent 30, 14, and 7 days before expiry so a forgotten renewal never kills your checkout.',
   'You want 30-second check intervals and multi-region confirmation to eliminate false positives during high-traffic campaigns.',
   'You want AI-summarized content diffs that tell you what changed on a page, not just that something changed.',
@@ -120,7 +120,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon more expensive than UptimeRobot Pro?',
-    a: 'For basic uptime checks, yes. UptimeRobot Pro is around $7 per month. Beaconmon Starter is $29 per month. If you are tracking competitor prices, catching SSL expiry before checkout breaks, and getting weekly change digests, the difference pays for itself quickly. If you are not doing any of that, UptimeRobot Pro is the better value.',
+    a: 'For basic uptime checks, yes. UptimeRobot Pro is around $7 per month. Beaconmon Starter is $29 per month. If you are tracking competitor prices, catching SSL expiry before checkout breaks, and getting daily change digests, the difference pays for itself quickly. If you are not doing any of that, UptimeRobot Pro is the better value.',
   },
 ];
 
@@ -187,11 +187,11 @@ export default function VsUptimeRobotPage() {
           </Link>
           <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Comparison</span>
           <h1 className="text-[clamp(36px,4.5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px]">
-            Beaconmon vs UptimeRobot<br />
-            <span className="text-brand-green-ink">for Shopify stores.</span>
+            Switch from UptimeRobot,<br />
+            <span className="text-brand-green-ink">get the daily Shopify brief.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            UptimeRobot&apos;s free plan (50 monitors, no card, no expiry) is the best free uptime tier available. If you run a Shopify or WooCommerce store and want to track competitor prices, receive a weekly Intelligence Digest, or get domain expiry warnings before your checkout breaks, that is where the two tools stop overlapping.
+            UptimeRobot&apos;s free tier is hard to beat for basic uptime pings: 50 monitors, no card, no expiry. What it cannot do is tell you when a competitor dropped prices, updated their product listings, or ran a flash sale last Tuesday. That is what the Intelligence Digest is for.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: May 2026</p>
         </div>

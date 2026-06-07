@@ -4,31 +4,32 @@ import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
 import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
-import { Bot, Activity, Clock, ShieldCheck } from 'lucide-react';
+import { Bot, Activity, Clock, ShieldCheck, Eye, TrendingDown, Bell, Rss } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'How Beaconmon Compares: Ecommerce Uptime Monitoring vs Alternatives',
-  description: 'Honest, side-by-side comparisons of Beaconmon vs UptimeRobot, Pingdom, Better Uptime, and StatusCake. Built for Shopify and WooCommerce stores, not DevOps teams.',
+  title: 'Beaconmon vs Alternatives: Competitor Intelligence for Shopify Stores',
+  description:
+    'Honest comparisons for ecommerce store owners. Beaconmon vs Visualping, Prisync, UptimeRobot, Pingdom, and more. Competitor intelligence and uptime monitoring built for Shopify stores.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
 };
 
 const FAQ_ITEMS = [
   {
+    q: 'What makes Beaconmon different from uptime tools like UptimeRobot or Pingdom?',
+    a: "Uptime tools tell you when your site goes down. Beaconmon does that too, but it also tracks competitor prices, product listings, and promotional copy, then delivers a daily Intelligence Digest summarizing every change. UptimeRobot, Pingdom, Better Uptime, and StatusCake do not offer any of that.",
+  },
+  {
     q: 'Is Beaconmon cheaper than the alternatives?',
-    a: 'On a per-ecommerce-feature basis, yes. UptimeRobot\'s paid plan starts at $7/mo but has no competitor monitoring or content tracking. Pingdom has no free plan and starts at $15/mo with no ecommerce features. Better Uptime starts at $25/mo. Beaconmon Starter is $29/mo with competitor monitoring, content change detection, and Intelligence Digest included.',
+    a: "On a per-ecommerce-feature basis, yes. UptimeRobot's paid plan starts at $7/mo but has no competitor monitoring or content tracking. Pingdom has no free plan and starts at $15/mo with no ecommerce features. Better Uptime starts at $25/mo. Beaconmon Starter is $29/mo with competitor monitoring, content change detection, and Intelligence Digest included.",
   },
   {
     q: 'Which tool should I choose if I just need basic ping checks?',
-    a: 'If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot\'s 50-monitor free tier is hard to beat. Beaconmon\'s free tier (10 monitors, 1 competitor monitor) is better suited to ecommerce stores that will outgrow basic pings and want full competitor intelligence as they grow.',
+    a: "If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot's 50-monitor free tier is hard to beat. Beaconmon's free tier (10 monitors, 1 competitor monitor) is better suited to ecommerce stores that will outgrow basic pings and want full competitor intelligence as they grow.",
   },
   {
     q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
     a: 'Not yet. Better Uptime and PagerDuty are strong choices if you run on-call rotations with escalation policies. Beaconmon is designed for ecommerce store owners and small agencies where a Slack alert to the team is sufficient.',
-  },
-  {
-    q: 'Can I migrate my monitors from UptimeRobot or Pingdom?',
-    a: 'There\'s no one-click importer, but setup is fast. Each monitor takes about 30 seconds to configure. Most users are fully migrated in under 20 minutes.',
   },
   {
     q: 'What makes content change monitoring unique to Beaconmon?',
@@ -36,7 +37,78 @@ const FAQ_ITEMS = [
   },
 ];
 
-const COMPETITORS = [
+type IntelCard = {
+  name: string;
+  slug: string;
+  tagline: string;
+  verdict: string;
+  comingSoon: true;
+  icon: React.ReactNode;
+};
+
+type UptimeCard = {
+  name: string;
+  slug: string;
+  tagline: string;
+  verdict: string;
+  comingSoon?: false;
+  icon: React.ReactNode;
+};
+
+type CompetitorCard = IntelCard | UptimeCard;
+
+const INTEL_COMPETITORS: CompetitorCard[] = [
+  {
+    name: 'Visualping',
+    slug: 'visualping',
+    tagline: 'Visual diff tool with no ecommerce focus.',
+    verdict: 'Visualping detects visual page changes but has no competitor intelligence digest, no Shopify context, and no uptime monitoring.',
+    comingSoon: true,
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
+        <Eye size={24} color="#8B5CF6" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'Prisync',
+    slug: 'prisync',
+    tagline: 'Price tracking for enterprise ecommerce teams.',
+    verdict: 'Prisync is a dedicated price tracking tool with no uptime monitoring, no content change detection outside of pricing, and enterprise pricing.',
+    comingSoon: true,
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 0.12)' }}>
+        <TrendingDown size={24} color="#EF4444" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'Distill',
+    slug: 'distill',
+    tagline: 'Browser-based page watcher, no digest or alerts.',
+    verdict: 'Distill is a browser extension for personal page watching. No team features, no Slack digest, no uptime monitoring, and no Shopify-specific context.',
+    comingSoon: true,
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.12)' }}>
+        <Bell size={24} color="#F59E0B" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'Hexowatch',
+    slug: 'hexowatch',
+    tagline: 'General-purpose page monitoring without the intel layer.',
+    verdict: 'Hexowatch monitors pages for changes but lacks a curated intelligence digest, Shopify-specific features, and competitor-first workflows.',
+    comingSoon: true,
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(20, 184, 166, 0.12)' }}>
+        <Rss size={24} color="#14B8A6" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+];
+
+const UPTIME_COMPETITORS: CompetitorCard[] = [
   {
     name: 'UptimeRobot',
     slug: 'uptimerobot',
@@ -115,6 +187,45 @@ const faqSchema = {
   })),
 };
 
+function CompetitorCard({ card }: { card: CompetitorCard }) {
+  if (card.comingSoon) {
+    return (
+      <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 opacity-60">
+        <div className="flex items-start justify-between mb-5">
+          {card.icon}
+          <span className="text-brand-muted text-[11px] font-semibold tracking-[0.08em] uppercase border border-brand-line-soft rounded-full px-2.5 py-1">
+            Coming soon
+          </span>
+        </div>
+        <h3 className="text-[20px] font-bold tracking-[-0.02em] mb-2">
+          Beaconmon vs {card.name}
+        </h3>
+        <p className="text-brand-green-ink text-[13px] font-semibold mb-3">{card.tagline}</p>
+        <p className="text-brand-dim text-[14px] leading-[1.6]">{card.verdict}</p>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={`/vs/${card.slug}`}
+      className="reveal group bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-[rgba(0,229,122,0.3)] transition-colors"
+    >
+      <div className="flex items-start justify-between mb-5">
+        {card.icon}
+        <span className="text-brand-green-ink text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+          Compare →
+        </span>
+      </div>
+      <h3 className="text-[20px] font-bold tracking-[-0.02em] mb-2">
+        Beaconmon vs {card.name}
+      </h3>
+      <p className="text-brand-green-ink text-[13px] font-semibold mb-3">{card.tagline}</p>
+      <p className="text-brand-dim text-[14px] leading-[1.6]">{card.verdict}</p>
+    </Link>
+  );
+}
+
 export default function VsHubPage() {
   return (
     <>
@@ -139,40 +250,35 @@ export default function VsHubPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Compare</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
-            How Beaconmon compares for ecommerce stores.
+            Competitor intelligence and uptime,<br />
+            <span className="text-brand-green-ink">compared honestly.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
-            We&apos;re built for Shopify and WooCommerce stores, not DevOps teams. Honest, opinionated comparisons.
+            Built for Shopify and WooCommerce stores, not DevOps teams. Opinionated comparisons against the tools your store is already considering.
           </p>
         </div>
       </section>
 
-      {/* Competitor cards */}
+      {/* Competitor intelligence comparisons */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Pick a comparison</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Each page goes deep on features, pricing, and who each tool is actually built for.</p>
+          <div className="reveal mb-8">
+            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-2">Competitor intelligence tools</p>
+            <p className="text-brand-dim text-[15px] max-w-[500px]">Page change monitoring, price tracking, and visual diff tools that Shopify stores compare against Beaconmon.</p>
+          </div>
+          <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 mb-16">
+            {INTEL_COMPETITORS.map((card) => (
+              <CompetitorCard key={card.slug} card={card} />
+            ))}
+          </div>
+
+          <div className="reveal mb-8">
+            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-muted mb-2">Uptime monitoring tools</p>
+            <p className="text-brand-dim text-[15px] max-w-[500px]">Traditional uptime monitoring tools that stores often start with before discovering Beaconmon.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
-            {COMPETITORS.map(({ name, slug, tagline, verdict, icon }) => (
-              <Link
-                key={slug}
-                href={`/vs/${slug}`}
-                className="reveal group bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8 hover:border-[rgba(0,229,122,0.3)] transition-colors"
-              >
-                <div className="flex items-start justify-between mb-5">
-                  {icon}
-                  <span className="text-brand-green-ink text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                    Compare →
-                  </span>
-                </div>
-                <h3 className="text-[20px] font-bold tracking-[-0.02em] mb-2">
-                  Beaconmon vs {name}
-                </h3>
-                <p className="text-brand-green-ink text-[13px] font-semibold mb-3">{tagline}</p>
-                <p className="text-brand-dim text-[14px] leading-[1.6]">{verdict}</p>
-              </Link>
+            {UPTIME_COMPETITORS.map((card) => (
+              <CompetitorCard key={card.slug} card={card} />
             ))}
           </div>
         </div>
