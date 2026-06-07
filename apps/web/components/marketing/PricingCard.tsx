@@ -7,6 +7,7 @@ export type PricingTier = {
   priceSuffix?: string;
   tagline: string;
   features: string[];
+  alsoIncludes?: string;
   ctaLabel: string;
   ctaHref: string;
   highlighted?: boolean;
@@ -20,6 +21,7 @@ export default function PricingCard({
   priceSuffix,
   tagline,
   features,
+  alsoIncludes,
   ctaLabel,
   ctaHref,
   highlighted,
@@ -50,7 +52,7 @@ export default function PricingCard({
         <p className="text-brand-muted text-[12px] mb-1">{priceSuffix}</p>
       )}
       <p className="text-brand-dim text-[14px] mb-7 leading-[1.4] min-h-[40px]">{tagline}</p>
-      <ul className="space-y-0 mb-7 flex-1" aria-label="Plan features">
+      <ul className={`space-y-0 flex-1 ${alsoIncludes ? 'mb-3' : 'mb-7'}`} aria-label="Plan features">
         {features.map((f, i) => (
           <li key={f} className="flex items-start gap-[10px] py-2 text-[14px] text-brand-dim border-t border-brand-line-soft first:border-t-0">
             <CheckIcon />
@@ -58,6 +60,11 @@ export default function PricingCard({
           </li>
         ))}
       </ul>
+      {alsoIncludes && (
+        <p className="text-brand-muted text-[12px] leading-[1.5] mb-7 pt-3 border-t border-brand-line-soft">
+          Also includes: {alsoIncludes}
+        </p>
+      )}
       <Link
         href={ctaHref}
         aria-label={`Select ${tier} plan`}

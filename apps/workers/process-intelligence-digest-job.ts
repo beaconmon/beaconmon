@@ -187,8 +187,8 @@ export async function processIntelligenceDigestJob(
   const prefs = digestPrefsSchema.parse(team.digestPrefs ?? {});
   const effectivePlan = getEffectivePlan(team);
 
-  if (effectivePlan === 'free') {
-    logger.info({ service, teamId }, 'Digest: team on free plan, skipping');
+  if (effectivePlan === 'free' && frequency === 'daily') {
+    logger.info({ service, teamId }, 'Digest: free plan cannot receive daily digest, skipping');
     return;
   }
 

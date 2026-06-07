@@ -19,6 +19,7 @@ agent
 agents
 agg
 ago
+aha
 alert
 alerts
 aliases
@@ -32,6 +33,7 @@ annual
 anomalies
 anomaly
 anthropic
+any
 aof
 apex
 api
@@ -74,6 +76,7 @@ boundary
 bounded
 box
 boxes
+branch
 brand
 branding
 brands
@@ -90,6 +93,7 @@ built
 bulk
 bull
 bullmq
+bump
 bundle
 burn
 business
@@ -106,6 +110,7 @@ can
 candidate
 candidates
 capabilities
+caps
 caption
 capture
 card
@@ -184,6 +189,7 @@ copy
 core
 cost
 count
+countdown
 create
 created
 creates
@@ -194,6 +200,7 @@ css
 csv
 cta
 ctas
+ctx
 custom
 cutoff
 cyan
@@ -242,6 +249,7 @@ discord
 discover
 discovery
 dismiss
+dismissed
 dispatch
 display
 divider
@@ -269,6 +277,7 @@ editorial
 effective
 eligible
 email
+emails
 embedded
 emit
 empty
@@ -277,6 +286,7 @@ encode
 encoder
 end
 endpoint
+enforce
 enforcement
 engines
 enqueue
@@ -306,6 +316,7 @@ extends
 extract
 factory
 fail
+failed
 failure
 failures
 fan
@@ -337,6 +348,7 @@ format
 found
 founders
 frame
+free
 freelancers
 freemius
 frequency
@@ -369,6 +381,7 @@ handle
 handler
 handlers
 handoff
+has
 hash
 hasher
 head
@@ -381,9 +394,11 @@ helps
 hero
 hide
 high
+highlight
 hint
 hints
 history
+hit
 hog
 homepage
 hook
@@ -445,6 +460,7 @@ job
 json
 jsx
 key
+keys
 keyword
 keywords
 kind
@@ -454,6 +470,7 @@ known
 label
 labels
 landing
+last
 layer
 layered
 layout
@@ -574,7 +591,6 @@ overall
 overlay
 override
 overrides
-overview
 own
 ownership
 package
@@ -590,6 +606,7 @@ parse
 parser
 partition
 partitioned
+pass
 password
 past
 patch
@@ -597,6 +614,8 @@ path
 paths
 pattern
 patterns
+pause
+paused
 payload
 payment
 pdf
@@ -605,6 +624,7 @@ per
 performance
 period
 permissions
+persist
 persistent
 personal
 philosophy
@@ -659,6 +679,7 @@ product
 production
 products
 project
+promo
 prompt
 property
 propose
@@ -698,6 +719,7 @@ recipients
 record
 recovery
 redis
+reengagement
 refund
 regex
 region
@@ -705,6 +727,7 @@ regions
 register
 registrable
 registrar
+registry
 relative
 reliability
 reminder
@@ -728,6 +751,7 @@ resolver
 resolvers
 response
 responses
+restore
 result
 results
 retention
@@ -738,6 +762,7 @@ revoke
 robot
 robots
 role
+room
 root
 rounded
 route
@@ -772,6 +797,7 @@ sections
 security
 seed
 seek
+seen
 segment
 select
 selector
@@ -835,14 +861,18 @@ split
 ssl
 ssrf
 stack
+staleness
 start
 stat
 state
 stats
 status
+statuses
 stay
 step
 steps
+stock
+storage
 store
 str
 strength
@@ -869,6 +899,7 @@ summarize
 summary
 svg
 swapped
+sweeper
 switch
 switcher
 tab
@@ -893,6 +924,7 @@ templates
 tenant
 terms
 test
+testimonials
 text
 textarea
 that
@@ -909,7 +941,9 @@ timeline
 timeout
 times
 timestamp
+tip
 title
+today
 toggle
 token
 tone
@@ -937,15 +971,18 @@ unchecked
 undici
 unique
 unknown
+unsubscribed
 update
 upgrade
 upsert
 uptime
+urgency
 url
 urls
 usage
 use
 user
+utc
 utf
 utils
 valid
@@ -976,6 +1013,7 @@ webhook
 website
 week
 weight
+welcome
 west
 what
 where
