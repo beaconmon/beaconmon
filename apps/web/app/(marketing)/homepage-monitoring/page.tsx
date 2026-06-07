@@ -208,7 +208,7 @@ export default function HomepageMonitoringPage() {
                 A competitor launches a 25% off sale at 8am. Without monitoring, your team finds out at 3pm when a customer emails asking why your prices are higher. By then, you have lost most of a business day.
               </p>
               <p>
-                With Beaconmon watching their homepage, your Slack channel gets an alert at 8:07am with a summary: "Hero changed to announce 25% off site-wide through Sunday." Your team can decide within the hour whether to match, respond differently, or hold position.
+                With Beaconmon watching their homepage, your Slack channel gets an alert at 8:07am with a summary: &quot;Hero changed to announce 25% off site-wide through Sunday.&quot; Your team can decide within the hour whether to match, respond differently, or hold position.
               </p>
               <p>
                 That seven-minute window versus a seven-hour lag is the difference between a reactive posture and a competitive one.

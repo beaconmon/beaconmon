@@ -61,13 +61,12 @@ export const intelligenceDigestTask: SchedulerTask = {
 
       for (const team of teams) {
         const effectivePlan = getEffectivePlan(team);
-        if (effectivePlan === 'free') continue;
 
         const prefs = digestPrefsSchema.safeParse(team.digestPrefs ?? {});
         if (!prefs.success || !prefs.data.frequency) continue;
         const freq = prefs.data.frequency;
 
-        if (runDaily && effectivePlan !== 'starter' && (freq === 'daily' || freq === 'both')) {
+        if (runDaily && effectivePlan !== 'free' && effectivePlan !== 'starter' && (freq === 'daily' || freq === 'both')) {
           const windowStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
           const jobId = `digest:daily:${team.id}:${todayKey}`;
           await intelligenceDigestQueue.add(

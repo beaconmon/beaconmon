@@ -32,7 +32,7 @@ const FEATURES_SCHEMA = [
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Daily Intelligence Brief', description: 'One email with everything that changed across your competitor watchlist.', url: 'https://beaconmon.com/features/intelligence#daily-brief' },
       { '@type': 'ListItem', position: 2, name: 'AI Diff Summaries', description: 'Plain-English summaries of what actually changed: "Price dropped from $89 to $74."', url: 'https://beaconmon.com/features/intelligence#ai-diffs' },
-      { '@type': 'ListItem', position: 3, name: 'Competitor Watchlist', description: 'Add a domain, get suggested pages to monitor, add them all in one click.', url: 'https://beaconmon.com/features/intelligence#watchlist' },
+      { '@type': 'ListItem', position: 3, name: 'Competitor Watchlist', description: 'Add a domain, get suggested pages to monitor, add them all in one click.', url: 'https://beaconmon.com/features#competitor-intelligence' },
       { '@type': 'ListItem', position: 4, name: 'Smart Alerts', description: 'Statistical anomaly detection that fires only when something is genuinely wrong.', url: 'https://beaconmon.com/features#smart-alerts' },
       { '@type': 'ListItem', position: 5, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.', url: 'https://beaconmon.com/features#http-monitoring' },
       { '@type': 'ListItem', position: 6, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.', url: 'https://beaconmon.com/features#ssl-monitoring' },

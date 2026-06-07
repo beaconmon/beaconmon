@@ -100,7 +100,7 @@ export default function CompetitorPriceTrackingPage() {
             Competitor Price Tracking That Reads the Shopify Product Feed
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Every public Shopify store publishes its full product catalog, including prices. Beaconmon monitors that feed so you catch every price change across a competitor's entire catalog in one monitor, not one page at a time.
+            Every public Shopify store publishes its full product catalog, including prices. Beaconmon monitors that feed so you catch every price change across a competitor&apos;s entire catalog in one monitor, not one page at a time.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
