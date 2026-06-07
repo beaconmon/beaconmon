@@ -24,12 +24,20 @@ export const lifecycleEmailsTask: SchedulerTask = {
           id: true,
           plan: true,
           trialEndsAt: true,
+          onboardingCompletedAt: true,
           createdAt: true,
           subscription: { select: { status: true } },
           members: {
             where: { role: 'owner' },
             select: { user: { select: { email: true } } },
             take: 1,
+          },
+          competitors: {
+            where: { deletedAt: null, isActive: true },
+            select: { domain: true },
+          },
+          _count: {
+            select: { competitors: { where: { deletedAt: null, isActive: true } } },
           },
         },
       });
@@ -56,9 +64,12 @@ export const lifecycleEmailsTask: SchedulerTask = {
           id: team.id,
           plan: team.plan,
           trialEndsAt: team.trialEndsAt,
+          onboardingCompletedAt: team.onboardingCompletedAt,
           createdAt: team.createdAt,
           subscription: team.subscription,
           ownerEmail,
+          competitorDomains: team.competitors.map((c) => c.domain),
+          competitorCount: team._count.competitors,
         };
 
         for (const config of lifecycleEmailRegistry.values()) {
@@ -73,7 +84,17 @@ export const lifecycleEmailsTask: SchedulerTask = {
           const alreadySent = await connection.get(`lifecycle:dedup:${dedupKey}`);
           if (alreadySent) continue;
 
-          const payload = config.payload(teamData);
+          let payload: Record<string, unknown>;
+          try {
+            payload = await config.payload(teamData);
+          } catch (payloadErr) {
+            logger.error(
+              { service: 'scheduler', teamId: team.id, emailType: config.type, err: payloadErr },
+              'Failed to generate lifecycle email payload, skipping'
+            );
+            Sentry.captureException(payloadErr);
+            continue;
+          }
 
           try {
             await lifecycleEmailQueue.add(

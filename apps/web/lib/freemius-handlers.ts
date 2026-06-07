@@ -1,10 +1,11 @@
 import crypto from 'node:crypto';
-import { alertChannelRepository } from '@beaconmon/db';
+import { prisma, alertChannelRepository } from '@beaconmon/db';
 import { logger } from '@/lib/logger';
 
 function hashEmail(email: string): string {
   return crypto.createHash('sha256').update(email).digest('hex').slice(0, 8);
 }
+import { PLAN_LIMITS } from '@beaconmon/types';
 import {
   planFromFreemiusPlanId,
   billingPeriodFromFreemiusCycle,
@@ -95,6 +96,50 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
         { service: 'web', teamId, plan, billingPeriod },
         'Subscription created'
       );
+
+      // Auto-restore monitors paused due to trial-end within the 30-day recovery window,
+      // capped to the limits of the new subscription plan.
+      const restoreCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const limits = PLAN_LIMITS[plan];
+
+      const pausedMonitors = await prisma.monitor.findMany({
+        where: { teamId, pausedReason: 'trial_end', pausedAt: { gte: restoreCutoff } },
+        select: { id: true, isCompetitor: true },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      if (pausedMonitors.length > 0) {
+        const [activeRegularCount, activeCompetitorCount] = await Promise.all([
+          prisma.monitor.count({ where: { teamId, isCompetitor: false, isActive: true, deletedAt: null } }),
+          prisma.monitor.count({ where: { teamId, isCompetitor: true, isActive: true, deletedAt: null } }),
+        ]);
+
+        const regularPaused = pausedMonitors.filter((m) => !m.isCompetitor);
+        const competitorPaused = pausedMonitors.filter((m) => m.isCompetitor);
+
+        const regularSlots = limits.monitors === -1
+          ? regularPaused.length
+          : Math.max(0, limits.monitors - activeRegularCount);
+        const competitorSlots = limits.competitorMonitors === -1
+          ? competitorPaused.length
+          : Math.max(0, limits.competitorMonitors - activeCompetitorCount);
+
+        const toRestoreIds = [
+          ...regularPaused.slice(0, regularSlots),
+          ...competitorPaused.slice(0, competitorSlots),
+        ].map((m) => m.id);
+
+        if (toRestoreIds.length > 0) {
+          const restored = await prisma.monitor.updateMany({
+            where: { id: { in: toRestoreIds } },
+            data: { isActive: true, pausedReason: null, pausedAt: null, nextCheckAt: new Date() },
+          });
+          logger.info(
+            { service: 'web', teamId, restoredCount: restored.count },
+            'Auto-restored trial-end paused monitors after subscription created'
+          );
+        }
+      }
 
       try {
         getPostHogClient().capture({

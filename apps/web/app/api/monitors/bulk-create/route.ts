@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { prisma } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
@@ -7,6 +8,8 @@ import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/error
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
+import { getLifecycleEmailQueue } from '@/lib/queue';
+import { enqueueLimitHitEmail } from '@/lib/lifecycle/limit-hit';
 
 const bulkCreateSchema = z.object({
   monitors: z.array(createMonitorSchema).min(1).max(50),
@@ -42,6 +45,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (limits.monitors !== -1) {
     const existing = await monitorRepository.countByTeam(teamId);
     if (existing + inputs.length > limits.monitors) {
+      void enqueueLimitHitEmail({ teamId, limitType: 'monitor', currentCount: existing, planLimit: limits.monitors, planTier: plan });
       throw new PlanLimitError(
         `Your plan allows ${limits.monitors} monitors — you have ${existing} and tried to add ${inputs.length}.`
       );
@@ -79,6 +83,49 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     }
   } catch {
     // PostHog not configured locally — non-fatal
+  }
+
+  // Mark onboarding complete and enqueue welcome email (idempotent via updateMany + job dedup)
+  try {
+    const { count } = await prisma.team.updateMany({
+      where: { id: teamId, onboardingCompletedAt: null },
+      data: { onboardingCompletedAt: new Date() },
+    });
+
+    if (count > 0) {
+      const teamWithOwner = await prisma.team.findUnique({
+        where: { id: teamId },
+        select: {
+          members: {
+            where: { role: 'owner' },
+            select: { user: { select: { email: true } } },
+            take: 1,
+          },
+        },
+      });
+
+      const ownerEmail = teamWithOwner?.members[0]?.user.email;
+      if (ownerEmail) {
+        const competitorDomains = inputs
+          .filter((m) => m.isCompetitor)
+          .map((m) => {
+            try {
+              return new URL(m.url).hostname;
+            } catch {
+              return m.url;
+            }
+          });
+
+        const dedupKey = `welcome:${teamId}`;
+        await getLifecycleEmailQueue().add(
+          `lifecycle:welcome:${teamId}`,
+          { teamId, emailType: 'welcome', payload: { competitorDomains }, dedupKey, ownerEmail },
+          { jobId: `lc_${dedupKey}` }
+        );
+      }
+    }
+  } catch (err) {
+    logger.warn({ service: 'web', teamId, err }, 'Welcome email enqueue failed — scheduler will retry');
   }
 
   return Response.json({ created }, { status: 201 });

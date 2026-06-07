@@ -6,6 +6,7 @@ import { Brain, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { QueryState } from '@/components/dashboard/query-state';
 import { AddCompetitorWizard } from '@/components/competitors/add-competitor-wizard';
+import { RestoreBanner } from '@/components/competitors/restore-banner';
 import { useCompetitors } from '@/lib/hooks/use-competitors';
 import { useSession } from '@/lib/hooks/use-session';
 
@@ -23,6 +24,8 @@ export default function CompetitorsPage() {
 
   return (
     <div className="space-y-5">
+      <RestoreBanner />
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-brand-text">Competitors</h1>

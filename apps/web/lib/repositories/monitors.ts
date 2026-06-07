@@ -8,6 +8,9 @@ export interface MonitorRow {
   url: string;
   type: string;
   isActive: boolean;
+  isCompetitor: boolean;
+  pausedReason: string | null;
+  pausedAt: Date | null;
   currentStatus: string;
   intervalSeconds: number;
   timeoutMs: number;
@@ -53,6 +56,9 @@ export const monitorRepository: {
         url: true,
         type: true,
         isActive: true,
+        isCompetitor: true,
+        pausedReason: true,
+        pausedAt: true,
         currentStatus: true,
         intervalSeconds: true,
         timeoutMs: true,
@@ -81,6 +87,9 @@ export const monitorRepository: {
         url: true,
         type: true,
         isActive: true,
+        isCompetitor: true,
+        pausedReason: true,
+        pausedAt: true,
         currentStatus: true,
         intervalSeconds: true,
         timeoutMs: true,
@@ -111,6 +120,7 @@ export const monitorRepository: {
         name: data.name,
         url: data.url,
         type: data.type,
+        isCompetitor: data.isCompetitor ?? false,
         intervalSeconds: data.intervalSeconds,
         timeoutMs: data.timeoutMs ?? 30000,
         responseTimeThresholdMs: data.responseTimeThresholdMs ?? null,
@@ -127,6 +137,9 @@ export const monitorRepository: {
         url: true,
         type: true,
         isActive: true,
+        isCompetitor: true,
+        pausedReason: true,
+        pausedAt: true,
         currentStatus: true,
         intervalSeconds: true,
         timeoutMs: true,
@@ -160,6 +173,7 @@ export const monitorRepository: {
             name: data.name,
             url: data.url,
             type: data.type,
+            isCompetitor: data.isCompetitor ?? false,
             intervalSeconds: data.intervalSeconds,
             timeoutMs: data.timeoutMs ?? 30000,
             responseTimeThresholdMs: data.responseTimeThresholdMs ?? null,
@@ -175,6 +189,9 @@ export const monitorRepository: {
             url: true,
             type: true,
             isActive: true,
+            isCompetitor: true,
+            pausedReason: true,
+            pausedAt: true,
             currentStatus: true,
             intervalSeconds: true,
             timeoutMs: true,
