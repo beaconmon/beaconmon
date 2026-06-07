@@ -29,7 +29,7 @@ const CORE_MONITORING: MatrixRow[] = [
 const INTELLIGENCE: MatrixRow[] = [
   { feature: 'Competitor monitors',   free: '1',           starter: '5',         growth: '25',               scale: 'Unlimited' },
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
-  { feature: 'Intelligence Digest',   free: '—',           starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
+  { feature: 'Intelligence Digest',   free: 'Weekly',      starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
   { feature: 'AI content-diff',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
@@ -45,6 +45,26 @@ const TEAM_AND_ALERTS: MatrixRow[] = [
 ];
 
 const BILLING_FAQ = [
+  {
+    id: 'after-trial',
+    q: 'What happens after my trial?',
+    a: 'When your 14-day trial ends, your account moves to Free Lite automatically. You keep 1 competitor monitor, uptime checks for up to 10 monitors, and weekly intelligence digests. No charge is made unless you choose to upgrade.',
+  },
+  {
+    id: 'what-is-competitor',
+    q: 'What counts as a competitor?',
+    a: 'A competitor is any brand whose website you want to monitor for price and content changes. You add competitors by domain (e.g., rivalshop.com). Each domain counts as one competitor toward your plan limit.',
+  },
+  {
+    id: 'non-shopify',
+    q: 'Does this work for non-Shopify stores?',
+    a: 'Yes. Beaconmon works with any publicly accessible website. Smart Setup has first-class detection for Shopify and WooCommerce stores, but competitor tracking and uptime monitoring work for any URL, including marketplaces, direct-to-consumer brands, and manufacturer sites.',
+  },
+  {
+    id: 'html-only',
+    q: 'Why is content monitoring HTML-only?',
+    a: 'Content change detection works by fetching the HTML of a page and comparing text content against the previous snapshot. This covers the vast majority of pricing and promo copy changes. Full JavaScript rendering would require a headless browser for every check, which is not feasible at the check frequencies and scale we support.',
+  },
   {
     id: 'competitor-monitor',
     q: 'What counts as a "competitor monitor"?',
@@ -215,7 +235,7 @@ export default function PricingPage() {
             Start free. Pay when intelligence pays you back.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Every plan includes uptime, SSL and domain checks. Free includes 1 competitor monitor. Full competitor monitoring and AI summaries unlock on Starter and above.
+            Every plan includes uptime, SSL checks, and a weekly intelligence digest. Free Lite includes 1 competitor monitor. Daily digests and AI-powered insights unlock on Growth and above.
           </p>
         </div>
       </section>
@@ -249,9 +269,9 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                <MatrixSection label="Core monitoring" rows={CORE_MONITORING} />
-                <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
                 <MatrixSection label="Intelligence" rows={INTELLIGENCE} />
+                <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
+                <MatrixSection label="Core monitoring" rows={CORE_MONITORING} />
                 <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
                 <MatrixSection label="Team & alerts" rows={TEAM_AND_ALERTS} />
               </tbody>

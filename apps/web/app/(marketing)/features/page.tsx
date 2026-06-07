@@ -6,9 +6,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Uptime Monitoring Features: HTTP, SSL, Domain, Content | Beaconmon',
+  title: 'Shopify Competitor Intelligence Features: Daily Brief, AI Diff, Smart Alerts | Beaconmon',
   description:
-    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection. Multi-location checks and Reliability Targets, free for 10 monitors.',
+    'Track competitor prices and page changes with daily AI-powered digests. Plus HTTP uptime, SSL, domain expiry, and content monitoring built for Shopify and WooCommerce stores.',
   alternates: { canonical: 'https://beaconmon.com/features' },
 };
 
@@ -22,21 +22,25 @@ const FEATURES_SCHEMA = [
     ],
   },
   {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  name: 'Beaconmon Monitor Types',
-  description:
-    'Six website monitoring types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port, keyword, and content change detection.',
-  url: 'https://beaconmon.com/features',
-  numberOfItems: 6,
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.', url: 'https://beaconmon.com/features#http-monitoring' },
-    { '@type': 'ListItem', position: 2, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.', url: 'https://beaconmon.com/features#ssl-monitoring' },
-    { '@type': 'ListItem', position: 3, name: 'Domain Expiry Tracking', description: 'The worst outage is one you could have prevented.', url: 'https://beaconmon.com/features#domain-monitoring' },
-    { '@type': 'ListItem', position: 4, name: 'TCP Port Monitoring', description: 'Monitor any service that speaks TCP.', url: 'https://beaconmon.com/features#tcp-monitoring' },
-    { '@type': 'ListItem', position: 5, name: 'Keyword Monitoring', description: 'Verify your pages say exactly what they should.', url: 'https://beaconmon.com/features#keyword-monitoring' },
-    { '@type': 'ListItem', position: 6, name: 'Content Change Monitoring', description: 'Know the instant a page changes.', url: 'https://beaconmon.com/features#content-monitoring' },
-  ],
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Beaconmon Features',
+    description:
+      'Competitor intelligence and uptime monitoring for ecommerce: daily brief, AI diff summaries, smart alerts, HTTP, SSL, domain, and content monitoring.',
+    url: 'https://beaconmon.com/features',
+    numberOfItems: 10,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Daily Intelligence Brief', description: 'One email with everything that changed across your competitor watchlist.', url: 'https://beaconmon.com/features/intelligence#daily-brief' },
+      { '@type': 'ListItem', position: 2, name: 'AI Diff Summaries', description: 'Plain-English summaries of what actually changed: "Price dropped from $89 to $74."', url: 'https://beaconmon.com/features/intelligence#ai-diffs' },
+      { '@type': 'ListItem', position: 3, name: 'Competitor Watchlist', description: 'Add a domain, get suggested pages to monitor, add them all in one click.', url: 'https://beaconmon.com/features/intelligence#watchlist' },
+      { '@type': 'ListItem', position: 4, name: 'Smart Alerts', description: 'Statistical anomaly detection that fires only when something is genuinely wrong.', url: 'https://beaconmon.com/features#smart-alerts' },
+      { '@type': 'ListItem', position: 5, name: 'HTTP Monitoring', description: 'Know the moment your site or API stops responding.', url: 'https://beaconmon.com/features#http-monitoring' },
+      { '@type': 'ListItem', position: 6, name: 'SSL Certificate Monitoring', description: 'Never let an expired cert take you by surprise.', url: 'https://beaconmon.com/features#ssl-monitoring' },
+      { '@type': 'ListItem', position: 7, name: 'Domain Expiry Tracking', description: 'The worst outage is one you could have prevented.', url: 'https://beaconmon.com/features#domain-monitoring' },
+      { '@type': 'ListItem', position: 8, name: 'TCP Port Monitoring', description: 'Monitor any service that speaks TCP.', url: 'https://beaconmon.com/features#tcp-monitoring' },
+      { '@type': 'ListItem', position: 9, name: 'Keyword Monitoring', description: 'Verify your pages say exactly what they should.', url: 'https://beaconmon.com/features#keyword-monitoring' },
+      { '@type': 'ListItem', position: 10, name: 'Content Change Monitoring', description: 'Know the instant a page changes.', url: 'https://beaconmon.com/features#content-monitoring' },
+    ],
   },
 ];
 
@@ -125,6 +129,39 @@ const MONITOR_TYPES = [
   },
 ];
 
+const INTEL_CARDS = [
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+        <polyline points="22,6 12,13 2,6" />
+      </svg>
+    ),
+    name: 'Daily Intelligence Brief',
+    body: 'Instead of a flood of individual alerts, get a single digest delivered every morning. Price changes, content updates, and stock status all in one place, with AI summaries explaining what each change means.',
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+    name: 'AI Diff Summaries',
+    body: 'Raw HTML diffs are hard to read. Beaconmon translates them into plain English: "Price dropped from $89 to $74" or "Free shipping threshold raised to $75." Available on Growth and Scale plans.',
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+        <line x1="3" y1="9" x2="21" y2="9" />
+        <line x1="9" y1="21" x2="9" y2="9" />
+      </svg>
+    ),
+    name: 'Competitor Watchlist',
+    body: 'Add a competitor domain and Beaconmon suggests the high-value pages to watch: pricing, product pages, checkout, shipping policy. One click to add them all and start monitoring immediately.',
+  },
+];
+
 export default function FeaturesPage() {
   return (
     <>
@@ -148,14 +185,119 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            All the website monitoring tools you need.
-            <span className="text-brand-green-ink"> Know what&apos;s broken before anyone else does.</span>
+            Competitor intelligence and uptime monitoring,
+            <span className="text-brand-green-ink"> built for Shopify stores.</span>
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto">
-            Six monitor types. Multi-location checks. Incident management. Public status pages. Reliability Targets. All in one tool, built for ecommerce stores and agencies.
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mx-auto">
+            Track what rivals change overnight. Know when your own store breaks. Get a daily brief on both.
           </p>
         </div>
       </section>
+
+      {/* Competitor Intelligence */}
+      <section id="competitor-intelligence" className="py-[100px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-14">
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Intelligence</span>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Know what your rivals changed overnight.</h2>
+            <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Track competitor prices, promotions, and page content. Get a daily brief with AI summaries of everything that moved.</p>
+          </div>
+
+          <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-5 mb-10">
+            {INTEL_CARDS.map(({ icon, name, body }) => (
+              <div key={name} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-7">
+                <div className="w-10 h-10 rounded-[10px] bg-[rgba(0,229,122,0.1)] border border-[rgba(0,229,122,0.2)] inline-flex items-center justify-center text-brand-green-ink mb-5">
+                  {icon}
+                </div>
+                <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">{name}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden max-w-[760px] mx-auto mb-8">
+            <div className="px-5 py-4 border-b border-brand-line-soft flex items-center justify-between">
+              <span className="text-[13px] font-semibold">Intelligence Digest</span>
+              <span className="text-[11px] text-brand-muted">Today, 7:00 AM</span>
+            </div>
+            <div className="px-5 py-4 space-y-4">
+              {[
+                { competitor: 'rivalshop.com', page: '/pricing', summary: 'Pro plan dropped from $89/mo to $69/mo. A 22% reduction.', type: 'price' },
+                { competitor: 'acmegear.co', page: '/shipping', summary: 'Free shipping threshold raised from $50 to $75.', type: 'policy' },
+                { competitor: 'shopwave.io', page: '/products/pro-kit', summary: 'Pro Kit back in stock. Was marked sold out for 12 days.', type: 'stock' },
+              ].map(({ competitor, page, summary, type }) => (
+                <div key={competitor} className="flex gap-3 text-[13px]">
+                  <div className={`mt-[3px] w-2 h-2 rounded-full shrink-0 ${type === 'price' ? 'bg-brand-red' : type === 'policy' ? 'bg-yellow-400' : 'bg-brand-green'}`} />
+                  <div>
+                    <div className="text-brand-muted font-mono text-[11px] mb-[2px]">{competitor}{page}</div>
+                    <div className="text-brand-dim leading-[1.5]">{summary}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-center">
+            <Link href="/features/intelligence" className="text-brand-green-ink hover:underline text-[15px] font-semibold">
+              Full breakdown: how competitor intelligence works →
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* Smart Alerts */}
+      <section id="smart-alerts" className="py-[100px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
+            <div>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Smart Alerts</span>
+              <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
+                Alerts that know when something is actually wrong.
+              </h2>
+              <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
+                Not every spike is an outage. Beaconmon uses statistical anomaly detection to separate genuine slowdowns from background noise. You get alerted when response times deviate meaningfully from the historical baseline, not when a single check runs slow.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Z-score anomaly detection on HTTP and keyword monitors',
+                  'Fires through existing alert channels (email, Slack, webhook)',
+                  'Tunable sensitivity per monitor',
+                  'Available on Growth and Scale plans',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
+                    <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 space-y-4">
+              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-1">Anomaly detected</div>
+              {[
+                { label: 'Checkout API', baseline: '210ms', current: '1,420ms', severity: 'high' },
+                { label: 'Product page', baseline: '340ms', current: '480ms', severity: 'low' },
+                { label: 'Marketing site', baseline: '180ms', current: '195ms', severity: 'none' },
+              ].map(({ label, baseline, current, severity }) => (
+                <div key={label} className="flex items-center gap-4 py-3 border-b border-brand-line-soft last:border-b-0 text-[13px]">
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${severity === 'high' ? 'bg-brand-red' : severity === 'low' ? 'bg-yellow-400' : 'bg-brand-green'}`} />
+                  <span className="flex-1 text-brand-dim">{label}</span>
+                  <span className="font-mono text-brand-muted">avg {baseline}</span>
+                  <span className={`font-mono font-semibold ${severity === 'high' ? 'text-brand-red' : severity === 'low' ? 'text-yellow-400' : 'text-brand-green'}`}>{current}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Also included divider */}
+      <div className="border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 py-12 text-center">
+          <span className="inline-block text-[11px] font-semibold tracking-[0.14em] uppercase text-brand-muted mb-3">Also included on every paid plan</span>
+          <h2 className="text-[clamp(24px,3vw,38px)] font-extrabold tracking-[-0.03em] leading-[1.1] mb-4">Website reliability monitoring</h2>
+          <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Full uptime monitoring for your own store. Know the moment your checkout page, API, or SSL certificate has a problem.</p>
+        </div>
+      </div>
 
       {/* Monitor types grid */}
       <section id="monitors" className="py-[80px] border-t border-brand-line-soft">
@@ -290,7 +432,7 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* SLO */}
+      {/* Reliability Targets */}
       <section id="reliability-targets" className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
@@ -343,51 +485,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Smart Alerts */}
-      <section id="smart-alerts" className="py-[100px] border-t border-brand-line-soft">
-        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
-            <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Smart Alerts</span>
-              <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Alerts that know when something is actually wrong.
-              </h2>
-              <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                Not every spike is an outage. Beaconmon uses statistical anomaly detection to separate genuine slowdowns from background noise. You get alerted when response times deviate meaningfully from the historical baseline, not when a single check runs slow.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  'Z-score anomaly detection on HTTP and keyword monitors',
-                  'Fires through existing alert channels (email, Slack, webhook)',
-                  'Tunable sensitivity per monitor',
-                  'Available on Growth and Scale plans',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
-                    <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 space-y-4">
-              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-1">Anomaly detected</div>
-              {[
-                { label: 'Checkout API', baseline: '210ms', current: '1,420ms', severity: 'high' },
-                { label: 'Product page', baseline: '340ms', current: '480ms', severity: 'low' },
-                { label: 'Marketing site', baseline: '180ms', current: '195ms', severity: 'none' },
-              ].map(({ label, baseline, current, severity }) => (
-                <div key={label} className="flex items-center gap-4 py-3 border-b border-brand-line-soft last:border-b-0 text-[13px]">
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${severity === 'high' ? 'bg-brand-red' : severity === 'low' ? 'bg-yellow-400' : 'bg-brand-green'}`} />
-                  <span className="flex-1 text-brand-dim">{label}</span>
-                  <span className="font-mono text-brand-muted">avg {baseline}</span>
-                  <span className={`font-mono font-semibold ${severity === 'high' ? 'text-brand-red' : severity === 'low' ? 'text-yellow-400' : 'text-brand-green'}`}>{current}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-[120px] border-t border-brand-line-soft relative overflow-hidden">
         <div
@@ -407,7 +504,7 @@ export default function FeaturesPage() {
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
             Ready to set up your first monitor?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 10 monitors. 14-day Growth trial starts the moment you sign up, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Free forever for 1 competitor monitor. 14-day Growth trial starts the moment you sign up, no card required.</p>
           <CtaForm className="mx-auto mb-5" />
           <Link href="/pricing" className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
             See pricing →

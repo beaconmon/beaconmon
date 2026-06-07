@@ -114,9 +114,25 @@ function SignUpForm() {
 
         <div>
           <h1 className="text-xl font-bold text-brand-text">Create your account</h1>
-          <p className="mt-1 text-sm text-brand-dim">
-            {planParam === 'scale' || planParam === 'business' ? '14-day Scale trial · no card required' : planParam === 'growth' ? '14-day Growth trial · no card required' : planParam === 'starter' ? '14-day Starter trial · no card required' : '14-day Growth trial · no card required'}
-          </p>
+          {planParam === 'free' ? (
+            <p className="mt-1 text-sm text-brand-dim">
+              Free Lite, 1 competitor monitor.{' '}
+              <Link href="/sign-up?plan=growth" className="underline underline-offset-2 hover:text-brand-green-ink transition-colors">
+                Start a 14-day Growth trial instead
+              </Link>
+            </p>
+          ) : (
+            <p className="mt-1 text-sm text-brand-dim">
+              {planParam === 'scale' || planParam === 'business'
+                ? '14-day Scale trial, no card required.'
+                : planParam === 'starter'
+                  ? '14-day Starter trial, no card required.'
+                  : '14-day Growth trial, no card required.'}{' '}
+              <Link href="/sign-up?plan=free" className="underline underline-offset-2 hover:text-brand-green-ink transition-colors">
+                Skip trial, start on Free Lite
+              </Link>
+            </p>
+          )}
         </div>
 
         <SocialButtons onGoogle={() => handleSocial('google')} onGitHub={() => handleSocial('github')} loading={loading} />

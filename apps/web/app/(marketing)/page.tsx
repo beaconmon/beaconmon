@@ -11,9 +11,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Store and Competitor Monitoring | Beaconmon',
+  title: 'Shopify Competitor Intelligence | Beaconmon',
   description:
-    'Monitor your store and competitors automatically. Know about outages, pricing changes, SEO edits, SSL expiry, and competitor updates before they hurt sales.',
+    'Beaconmon monitors your Shopify competitors and delivers a daily brief of every price drop, new launch, and content change. Set up in five minutes. Free to start.',
   alternates: { canonical: 'https://beaconmon.com' },
   openGraph: { url: 'https://beaconmon.com' },
 };
@@ -23,11 +23,11 @@ const SOFTWARE_SCHEMA = {
   '@type': 'SoftwareApplication',
   name: 'Beaconmon',
   applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'Uptime Monitoring, Competitor Intelligence',
+  applicationSubCategory: 'Shopify Competitor Intelligence',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com',
   description:
-    'Store monitoring and competitor intelligence service. Monitors your store for downtime, checkout failures, SSL expiry, and domain expiry. Tracks competitor pricing and page updates. Alerts via email, Slack, or webhook.',
+    'Shopify competitor intelligence and store monitoring. Tracks competitor pricing, product launches, and content changes. Delivers a daily brief with every competitor move. Includes uptime monitoring, SSL expiry, and domain expiry alerts.',
   offers: [
     {
       '@type': 'Offer',
@@ -85,17 +85,17 @@ const HERO_EVENTS = [
     timeAgo: '14m ago',
   },
   {
-    type: 'alert' as const,
-    icon: '!',
-    label: 'Checkout alert',
-    detail: 'yourstore.com/checkout returned 502. 1 check failed.',
-    timeAgo: '31m ago',
+    type: 'competitor' as const,
+    icon: '○',
+    label: 'Vuori: stockout',
+    detail: 'Performance Jogger in Cloud White (S, M) now out of stock',
+    timeAgo: '38m ago',
   },
   {
-    type: 'store' as const,
-    icon: '✓',
-    label: 'Deploy detected',
-    detail: 'yourstore.com homepage content changed after deploy',
+    type: 'competitor' as const,
+    icon: '★',
+    label: 'Allbirds: new launch',
+    detail: 'New SKU added: Tree Glider, 3 colorways, $110',
     timeAgo: '1h ago',
   },
 ];
@@ -130,32 +130,38 @@ export default function LandingPage() {
                 href="/features"
                 className="inline-flex items-center gap-2 text-[12px] font-semibold text-brand-green-ink border border-[var(--brand-green-border-25)] bg-[var(--brand-green-glow-06)] rounded-full px-3 py-1 mb-5 hover:bg-[var(--brand-green-glow-10)] transition-colors"
               >
-                Now for ecommerce · competitor monitoring is live →
+                New: Shopify product feed integration →
               </Link>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
-                Know what your competitors changed{' '}
-                <span className="text-brand-green-ink">before your team opens Slack.</span>
+                Your daily Shopify competitor brief,{' '}
+                <span className="text-brand-green-ink">written automatically.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon is an ecommerce monitoring platform that combines uptime monitoring with automated competitor intelligence, tracking pricing changes, content updates, and page edits across your store and every competitor you follow. Find out before your customers do. Or before your customers go to them.
+                Beaconmon tracks pricing changes, product launches, and content updates across every competitor you follow. One digest. Every morning at 8am.
               </p>
 
               <CtaForm />
+              <Link
+                href="/features"
+                className="mt-3 inline-flex items-center gap-1 text-[14px] text-brand-dim hover:text-brand-text transition-colors"
+              >
+                See how it works →
+              </Link>
               <p className="mt-[14px] text-[13px] text-brand-muted">
                 14-day Growth trial included. No credit card required.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-x-6 gap-y-[10px] text-[13px] text-brand-dim">
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Shopify &amp; WooCommerce native</span>
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Detects pricing + content changes</span>
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Daily intelligence digest</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> Monitors price, launches + content changes</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> Daily brief at 8am, no dashboard required</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> Shopify-native, 5-minute setup</span>
               </div>
             </div>
 
             {/* Right — intelligence mockup */}
             <IntelligenceMockup
               storeLabel="yourstore.myshopify.com"
-              stats={{ competitorMoves: 7, storeChanges: 2, storeChangesLabel: 'store events', smartAlerts: 1, smartAlertsLabel: 'smart alerts' }}
+              stats={{ competitorMoves: 7, storeChanges: 4, storeChangesLabel: 'price drops', smartAlerts: 3, smartAlertsLabel: 'new launches' }}
               events={HERO_EVENTS}
               slackNotification={{
                 title: 'Beaconmon',
@@ -172,7 +178,7 @@ export default function LandingPage() {
       <section className="border-t border-b border-brand-line-soft bg-brand-bg-section py-11">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <p className="text-center text-[12px] tracking-[0.08em] uppercase text-brand-muted mb-6">
-            Built for stores on
+            Trusted by merchants on
           </p>
           <div className="flex justify-between items-center gap-8 flex-wrap">
             <Link href="/for/shopify" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</Link>
@@ -194,7 +200,7 @@ export default function LandingPage() {
               <p className="text-brand-muted text-[16px] font-normal mt-3 tracking-normal">Sound familiar?</p>
             </div>
             <p className="text-brand-dim text-[15px] max-w-[560px] mx-auto mb-7 leading-[1.6]">
-              Generic uptime tools tell you when your store is on fire. They don&apos;t tell you when your competitor changed their hero, slashed a price, or quietly launched a new collection. Beaconmon does both, in one feed.
+              Generic uptime tools tell you when your site is down. They don&apos;t write your competitor brief. Beaconmon snapshots competitor pages every hour, classifies every change, and compiles your morning briefing automatically.
             </p>
             <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
@@ -222,7 +228,7 @@ export default function LandingPage() {
                   </svg>
                 ),
                 heading: 'Paste your Shopify or WooCommerce URL.',
-                body: 'We auto-detect product pages, cart, and checkout, and propose a sensible monitor bundle. Confirm and you\'re live in under a minute.',
+                body: "We auto-detect product pages, cart, and checkout, and propose a sensible monitor bundle. Confirm and you're live in under a minute.",
               },
               {
                 num: '02. Add competitors to watch',
@@ -262,109 +268,49 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ====== BENTO ====== */}
+      {/* ====== DETECT, CLASSIFY, BRIEF ====== */}
       <section className="py-[100px]" id="features">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">How Beaconmon works</span>
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
-              Two products. One pane.
+              Detect. Classify. Brief.
             </h2>
-            <p className="text-brand-dim text-[17px] max-w-[600px] mx-auto">Everything you&apos;d expect from a serious uptime tool, plus the competitor side most teams quietly cobble together with bookmarks and screenshots.</p>
+            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">Three stages, one morning email, no manual checking.</p>
           </div>
-
-          <div className="grid grid-cols-6 max-[880px]:grid-cols-1 gap-4" style={{ gridAutoRows: 'minmax(240px,auto)' }}>
-            {/* Large 1 — competitor intelligence */}
-            <div className="reveal col-span-4 max-[880px]:col-span-1 row-span-2 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
-              <div className="p-7 pb-4">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-amber-500 mb-[10px]">Competitor intelligence</span>
-                <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">See what your competitors changed. Before your customers point it out.</h3>
-                <p className="text-brand-dim text-[14px] leading-[1.55]">Track competitor price pages and product listings. Get alerted the moment they update pricing, run a promotion, or rewrite their hero.</p>
-                <Link href="/competitor-price-tracking" className="inline-block mt-3 text-[13px] font-medium text-brand-green-ink hover:underline">How competitor price tracking works →</Link>
-              </div>
-              <div className="mt-auto p-2 pt-0 flex items-end flex-1">
-                <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] mx-[10px] mb-[10px] w-full overflow-hidden">
-                  <div className="px-4 py-3 border-b border-brand-line-soft flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-brand-text">allbirds.com/products/tree-runners</span>
-                    <span className="text-[10px] font-semibold text-amber-500 bg-amber-400/10 px-2 py-[2px] rounded border border-amber-400/20">Price change</span>
-                  </div>
-                  <div className="px-4 py-3 font-mono text-[12px] space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 text-red-400 shrink-0">-</span>
-                      <span className="line-through text-red-400/70">$98.00</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 text-green-400 shrink-0">+</span>
-                      <span className="text-green-400">$79.00</span>
-                    </div>
-                  </div>
-                  <div className="px-4 py-2 border-t border-brand-line-soft bg-[var(--brand-green-glow-02)]">
-                    <p className="text-[11px] text-brand-muted">AI summary: Sale pricing applied to all colorways. 19% reduction, likely flash sale.</p>
-                  </div>
+          <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-4">
+            {[
+              {
+                step: '01',
+                label: 'Detect',
+                labelColor: 'text-amber-500',
+                heading: 'We crawl your competitors while you sleep.',
+                body: 'Add competitor URLs and Beaconmon snapshots their product pages, price pages, and hero sections every hour. Any change is captured and timestamped.',
+              },
+              {
+                step: '02',
+                label: 'Classify',
+                labelColor: 'text-brand-green-ink',
+                heading: 'Every change is labeled, not just logged.',
+                body: 'Price drop, new product launch, stockout, copy change, SEO edit. Each event is classified so your brief is scannable, not a dump of raw diffs.',
+              },
+              {
+                step: '03',
+                label: 'Brief',
+                labelColor: 'text-blue-400',
+                heading: 'Your morning brief, at 8am sharp.',
+                body: 'One email or Slack message with every competitor move and store event, ranked by what matters to a Shopify merchant. No dashboard required.',
+              },
+            ].map(({ step, label, labelColor, heading, body }) => (
+              <div key={step} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px] flex flex-col">
+                <div className="flex items-center justify-between mb-8">
+                  <span className={`text-[11px] font-semibold tracking-[0.08em] uppercase ${labelColor}`}>{label}</span>
+                  <span className="font-mono text-[13px] text-brand-muted">{step}</span>
                 </div>
+                <h3 className="text-[20px] font-bold tracking-[-0.015em] mb-[10px]">{heading}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.6]">{body}</p>
               </div>
-            </div>
-
-            {/* Small — uptime */}
-            <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
-              <div className="p-7 pb-5">
-                <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">30-second checks from multiple regions.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">One blip doesn&apos;t trigger an alert. We confirm from two locations to eliminate false alarms.</p>
-              </div>
-            </div>
-
-            {/* Small — content change */}
-            <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
-              <div className="p-7 pb-5">
-                <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Monitor any page for content changes.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">Pricing, availability, terms, or any text you care about. See exactly what changed and when.</p>
-              </div>
-            </div>
-
-            {/* Large 2 — daily digest */}
-            <div className="reveal col-span-4 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden flex flex-col">
-              <div className="p-7 pb-4">
-                <span className="block text-[11px] font-semibold tracking-[0.08em] uppercase text-brand-green-ink mb-[10px]">Daily digest</span>
-                <h3 className="text-[22px] font-bold tracking-[-0.02em] mb-[10px] leading-[1.2]">Your morning briefing. One email. Everything that mattered.</h3>
-                <p className="text-brand-dim text-[14px] leading-[1.55]">Every morning at 8am: outages, content edits, pricing changes, SEO moves, across your store and every competitor you track.</p>
-              </div>
-              <div className="mt-auto px-[18px] pb-[14px]">
-                <div className="bg-brand-bg2 border border-brand-line-soft rounded-[10px] overflow-hidden">
-                  <div className="px-4 py-[10px] bg-[var(--brand-green-glow-04)] border-b border-brand-line-soft flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-[rgba(255,255,255,0.12)]" />
-                    <span className="text-[11px] text-brand-muted font-medium">Intelligence Digest · Mon May 20</span>
-                  </div>
-                  <div className="px-4 py-3 space-y-[6px]">
-                    {[
-                      { dot: 'bg-amber-400', text: '3 competitor moves: Allbirds price drop, Rothys hero change, HOKA new collection' },
-                      { dot: 'bg-green-400', text: 'All 12 store monitors up · 99.97% uptime this week' },
-                      { dot: 'bg-yellow-400', text: '1 smart alert · Response time spike on /checkout at 3:14am' },
-                    ].map(({ dot, text }, i) => (
-                      <div key={i} className="flex items-start gap-2 text-[11px] text-brand-dim">
-                        <span className={`shrink-0 mt-[5px] w-[6px] h-[6px] rounded-full ${dot}`} />
-                        {text}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Small — status pages */}
-            <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
-              <div className="p-7 pb-5">
-                <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Status pages your customers will actually trust.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">At your own domain. Looks professional. Takes 2 minutes to set up.</p>
-              </div>
-            </div>
-
-            {/* Small — reliability targets */}
-            <div className="reveal col-span-2 max-[880px]:col-span-1 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
-              <div className="p-7 pb-5">
-                <h3 className="text-[17px] font-bold tracking-[-0.02em] mb-2">Set SLOs and burn-rate alerts per monitor.</h3>
-                <p className="text-brand-dim text-[13px] leading-[1.55]">Know the moment you&apos;re burning through your reliability budget, not after the month ends.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -376,8 +322,8 @@ export default function LandingPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Same uptime promise. Competitor intelligence on top.</h2>
-            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">A quick side-by-side with the incumbents.</p>
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Built for ecommerce. Not generic website watching.</h2>
+            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">A quick side-by-side with the alternatives.</p>
           </div>
           <div className="reveal max-w-[920px] mx-auto overflow-x-auto border border-brand-line rounded-[14px] bg-brand-bg1">
             <table className="w-full border-collapse min-w-[620px]">
@@ -388,7 +334,7 @@ export default function LandingPage() {
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
                     <Link href="/vs/visualping" className="hover:text-brand-dim transition-colors">Visualping</Link>
                   </th>
-                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Manual tabs</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Prisync</th>
                 </tr>
               </thead>
               <tbody>
@@ -397,50 +343,56 @@ export default function LandingPage() {
                     feat: 'Uptime monitoring (30s)',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
-                    mt: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
                   },
                   {
-                    feat: 'Competitor monitoring',
+                    feat: 'Competitor price tracking',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted text-[12px]">Pages only</span>,
-                    mt: <span className="text-brand-muted text-[12px]">Manual</span>,
+                    ps: <span className="text-brand-green-ink font-semibold">✓</span>,
                   },
                   {
-                    feat: 'Content change detection',
-                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    feat: 'JS-rendered pages',
+                    bm: <span className="text-red-400 font-semibold">✗</span>,
                     vp: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    mt: <span className="text-brand-muted text-[12px]">Manual</span>,
-                  },
-                  {
-                    feat: 'Pricing change alerts',
-                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    vp: <span className="text-brand-muted">—</span>,
-                    mt: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Daily intelligence digest',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
-                    mt: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
+                  },
+                  {
+                    feat: 'Event classification',
+                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted text-[12px]">Pricing only</span>,
+                  },
+                  {
+                    feat: 'Shopify-native setup',
+                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Status pages included',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
-                    mt: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Starts at',
                     bm: <span className="font-mono">$0</span>,
                     vp: <span className="font-mono">$0</span>,
-                    mt: <span className="text-brand-muted text-[12px]">Your time</span>,
+                    ps: <span className="font-mono">$99/mo</span>,
                   },
-                ].map(({ feat, bm, vp, mt }, i, arr) => (
+                ].map(({ feat, bm, vp, ps }, i, arr) => (
                   <tr key={feat}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feat}</td>
                     <td className={`p-4 text-[14px] bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)] ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{bm}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{vp}</td>
-                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{mt}</td>
+                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{ps}</td>
                   </tr>
                 ))}
               </tbody>
@@ -458,7 +410,7 @@ export default function LandingPage() {
           </div>
           <PricingToggle />
           <p className="text-center mt-8 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
-            All plans include SSL monitoring, domain expiry alerts, and public status pages. Annual billing saves 20%. No contracts. Cancel anytime.
+            Shopify catalog tracking on your competitors, plus uptime monitoring, daily briefings, and status pages. Annual billing saves 20%. No contracts. Cancel anytime.
           </p>
         </div>
       </section>

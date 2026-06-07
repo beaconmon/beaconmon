@@ -8,100 +8,54 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Competitor Price Tracking for Ecommerce | Beaconmon',
-  description: 'Track competitor prices with CSS selector targeting, change history, AI noise filtering, and daily digest. No code required.',
+  title: 'Competitor Price Tracking for Shopify Stores | Beaconmon',
+  description:
+    'Track competitor prices from the Shopify product feed or via CSS selector targeting on any pricing page. Instant Slack alerts when a price drops. No code required.',
   alternates: { canonical: 'https://beaconmon.com/competitor-price-tracking' },
-};
-
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'How accurate is CSS selector-based price tracking?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "If the competitor's site is server-rendered, CSS selector targeting is highly accurate. Beaconmon extracts just the text inside the targeted element, so a price change from $49 to $39 shows up as a clear diff.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: "What if the competitor's site is JavaScript-rendered?",
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Beaconmon uses HTML-only parsing. Most ecommerce pricing pages are server-rendered by default. If a page requires JavaScript to display prices, CSS selector targeting will not work for that specific element.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How far back can I see price history?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Free: 7 days. Starter: 30 days. Growth: 90 days. Scale: 365 days.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can I track prices on Amazon or other marketplaces?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Beaconmon monitors any public URL with a stable HTML structure. Marketplace pages often have dynamic content or bot detection, so results vary. It works best on direct competitor brand sites.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How many competitor pages can I track?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Starter: 5 competitor monitors. Growth: 25. Scale: unlimited.',
-      },
-    },
-  ],
 };
 
 const FEATURES = [
   {
-    heading: 'CSS selector targeting',
-    body: 'Point Beaconmon at any element on a competitor page. Track just the price, the shipping cost, or the full pricing table. You control the precision of the alert.',
+    heading: 'Shopify product feed price tracking',
+    body: 'Every public Shopify store exposes its catalog at /products.json, including prices and variants. Monitor a competitor domain once and Beaconmon tracks price changes across their entire catalog without adding each product page individually.',
   },
   {
-    heading: 'Per-page change history',
+    heading: 'CSS selector targeting for any platform',
+    body: 'For WooCommerce, DTC sites, or individual Shopify product pages, target the exact price element with a CSS selector. A change from $79 to $59 shows up as a clean diff.',
+  },
+  {
+    heading: 'Per-page price change history',
     body: 'Every change is logged with a before-and-after diff. Go back through 30, 90, or 365 days of price history depending on your plan.',
   },
   {
     heading: 'AI noise filtering',
     body: 'Growth plan and above: Beaconmon classifies changes as significant or cosmetic. A price change triggers an alert. A footer link update does not.',
   },
-  {
-    heading: 'Daily and weekly digest',
-    body: 'Instead of an alert for every small change, opt in to a daily or weekly Intelligence Digest that consolidates all competitor activity into one clean summary.',
-  },
 ];
 
 const HOW_IT_WORKS = [
-  'Add a competitor pricing page URL to Beaconmon as a content monitor',
-  'Enter the CSS selector for the price element, or leave it blank to track the full page',
-  'Beaconmon checks at your chosen interval and records every change',
+  "Paste a competitor's Shopify store domain and Beaconmon finds the public product feed automatically",
+  'For non-Shopify competitors, add the pricing page URL and enter the CSS selector for the price element',
+  'Beaconmon checks at your chosen interval and records every change with a timestamped diff',
   'Review the diff history in the dashboard, or get alerts in Slack and email',
 ];
 
 const FAQS = [
+  {
+    q: 'How does Shopify product feed price tracking work?',
+    a: 'Every public Shopify store exposes a JSON product catalog at store.myshopify.com/products.json, which includes current prices and variants. Beaconmon monitors this endpoint so any price change across the full catalog triggers a diff, without needing to add each product page individually.',
+  },
   {
     q: 'How accurate is CSS selector-based price tracking?',
     a: "If the competitor's site is server-rendered, CSS selector targeting is highly accurate. Beaconmon extracts just the text inside the targeted element, so a price change from $49 to $39 shows up as a clear diff.",
   },
   {
     q: "What if the competitor's site is JavaScript-rendered?",
-    a: 'Beaconmon uses HTML-only parsing. Most ecommerce pricing pages are server-rendered by default. If a page requires JavaScript to display prices, CSS selector targeting will not work for that specific element.',
+    a: "Beaconmon uses HTML-only parsing. Most ecommerce pricing pages are server-rendered by default, including Shopify and WooCommerce. If a page requires JavaScript to display prices, CSS selector targeting will not work for that specific element, but full-page monitoring of the Shopify product feed will still capture price changes.",
   },
   {
     q: 'How far back can I see price history?',
     a: 'Free: 7 days. Starter: 30 days. Growth: 90 days. Scale: 365 days.',
-  },
-  {
-    q: 'Can I track prices on Amazon or other marketplaces?',
-    a: 'Beaconmon monitors any public URL with a stable HTML structure. Marketplace pages often have dynamic content or bot detection, so results vary. It works best on direct competitor brand sites.',
   },
   {
     q: 'How many competitor pages can I track?',
@@ -109,13 +63,20 @@ const FAQS = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
 export default function CompetitorPriceTrackingPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={faqSchema} />
       <JsonLd data={breadcrumbSchema({ name: 'Competitor Price Tracking', path: '/competitor-price-tracking' })} />
       <NavBar />
 
@@ -136,10 +97,10 @@ export default function CompetitorPriceTrackingPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Price Intelligence</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Competitor Price Tracking for Ecommerce Stores
+            Competitor Price Tracking That Reads the Shopify Product Feed
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
-            Target a CSS selector on any competitor pricing page. Get alerted the instant the price changes, or review the full change history in a weekly digest.
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
+            Every public Shopify store publishes its full product catalog, including prices. Beaconmon monitors that feed so you catch every price change across a competitor's entire catalog in one monitor, not one page at a time.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -211,11 +172,11 @@ export default function CompetitorPriceTrackingPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
             <Link href="/pricing-change-alerts" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">Shopify monitoring</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
-            <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
           </div>
         </div>
       </section>
