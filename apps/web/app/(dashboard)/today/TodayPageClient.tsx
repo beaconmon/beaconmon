@@ -13,19 +13,17 @@ import { useSession } from '@/lib/hooks/use-session';
 import { useReliability } from '@/lib/hooks/use-reliability';
 
 export function TodayPageClient() {
-  const { data: monitors = [] } = useMonitors();
-  const { data: summaries = {} } = useMonitorSummaries();
+  const { data: monitors, isLoading: monitorsLoading } = useMonitors();
+  const { data: summaries } = useMonitorSummaries();
   const {
     events: feedEvents,
     last24hCompetitorEventCount,
     activeCompetitorCount,
+    isLoading: feedLoading,
   } = useIntelligenceFeed({ range: '7d' });
   const { data: session } = useSession();
   const { data: reliability } = useReliability();
   const { previousLastSeenAt, isReady: lastSeenReady } = useIntelligenceLastSeen();
-
-  const plan = session?.plan ?? 'free';
-  const primaryMonitor = monitors.find((m) => m.currentStatus === 'down') ?? monitors[0];
 
   const newSinceLastVisit = useMemo(() => {
     if (!lastSeenReady || previousLastSeenAt === null) return 0;
@@ -34,10 +32,17 @@ export function TodayPageClient() {
     ).length;
   }, [feedEvents, previousLastSeenAt, lastSeenReady]);
 
+  if (monitorsLoading || feedLoading) return null;
+
+  const resolvedMonitors = monitors ?? [];
+  const resolvedSummaries = summaries ?? {};
+  const plan = session?.plan ?? 'free';
+  const primaryMonitor = resolvedMonitors.find((m) => m.currentStatus === 'down') ?? resolvedMonitors[0];
+
   return (
     <div className="space-y-5">
       <TodayHero
-        monitors={monitors}
+        monitors={resolvedMonitors}
         feedEvents={feedEvents}
         activeCompetitorCount={activeCompetitorCount}
         reliabilityRate={reliability?.successRate}
@@ -53,7 +58,7 @@ export function TodayPageClient() {
         />
 
         <div className="space-y-4">
-          <MonitorsRailCard monitors={monitors} summaries={summaries} />
+          <MonitorsRailCard monitors={resolvedMonitors} summaries={resolvedSummaries} />
           <ReliabilityPanel primaryMonitor={primaryMonitor} plan={plan} />
           <RecentAlertsPanel />
         </div>

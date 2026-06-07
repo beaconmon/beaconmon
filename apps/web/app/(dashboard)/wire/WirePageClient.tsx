@@ -27,6 +27,9 @@ import type { PlanTier } from '@beaconmon/types';
 const VALID_TABS = ['feed', 'competitors'] as const;
 type Tab = (typeof VALID_TABS)[number];
 
+const VALID_RANGES = ['7d', '30d', '90d'] as const;
+type Range = (typeof VALID_RANGES)[number];
+
 const PLATFORM_LABEL: Record<string, string> = {
   shopify: 'Shopify',
   woocommerce: 'WooCommerce',
@@ -99,7 +102,10 @@ function FeedTab({ plan }: { plan: PlanTier }) {
   const searchParams = useSearchParams();
   const monitorId = searchParams.get('monitorId') ?? undefined;
   const type = searchParams.get('type') ?? undefined;
-  const range = (searchParams.get('range') as '7d' | '30d' | '90d' | null) ?? '30d';
+  const rawRange = searchParams.get('range');
+  const range: Range = (VALID_RANGES as readonly string[]).includes(rawRange ?? '')
+    ? (rawRange as Range)
+    : '30d';
 
   const [showCompetitorSheet, setShowCompetitorSheet] = useState(false);
 

@@ -6,6 +6,8 @@ import type { FreemiusWebhookEvent } from './freemius';
 vi.mock('@beaconmon/db', () => ({
   prisma: {
     monitor: {
+      findMany: vi.fn().mockResolvedValue([]),
+      count: vi.fn().mockResolvedValue(0),
       updateMany: vi.fn().mockResolvedValue({ count: 0 }),
     },
   },
