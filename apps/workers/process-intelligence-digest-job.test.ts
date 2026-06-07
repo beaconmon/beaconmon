@@ -4,7 +4,38 @@ vi.mock('@beaconmon/db', () => ({ prisma: {}, digestRepository: {} }));
 vi.mock('./lib/env.js', () => ({ env: { APP_URL: 'https://beaconmon.com', RESEND_API_KEY: undefined, ALERT_DRY_RUN: true } }));
 vi.mock('./lib/logger.js', () => ({ logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } }));
 
-import { significanceWeight } from './process-intelligence-digest-job.js';
+import { significanceWeight, hasAnySignal } from './process-intelligence-digest-job.js';
+
+describe('hasAnySignal', () => {
+  it('returns false when all buckets are empty or absent', () => {
+    expect(hasAnySignal({})).toBe(false);
+    expect(hasAnySignal({ incidents: [], competitors: [], smartAlerts: [], expiry: [], ownContent: [] })).toBe(false);
+  });
+
+  it('returns true when incidents has items', () => {
+    expect(hasAnySignal({ incidents: [{}] })).toBe(true);
+  });
+
+  it('returns true when competitors has items', () => {
+    expect(hasAnySignal({ competitors: [{}] })).toBe(true);
+  });
+
+  it('returns true when ownContent has items', () => {
+    expect(hasAnySignal({ ownContent: [{}] })).toBe(true);
+  });
+
+  it('returns true when smartAlerts has items', () => {
+    expect(hasAnySignal({ smartAlerts: [{}] })).toBe(true);
+  });
+
+  it('returns true when expiry has items', () => {
+    expect(hasAnySignal({ expiry: [{}] })).toBe(true);
+  });
+
+  it('returns true when only one non-empty bucket among many empty ones', () => {
+    expect(hasAnySignal({ incidents: [], competitors: [{}], smartAlerts: [] })).toBe(true);
+  });
+});
 
 describe('significanceWeight', () => {
   it('high → 0', () => {

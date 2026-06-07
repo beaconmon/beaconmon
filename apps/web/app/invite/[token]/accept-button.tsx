@@ -29,7 +29,7 @@ export function AcceptButton({ token, userId, teamName }: Props) {
         setError((json as { error?: string }).error ?? 'Something went wrong');
         return;
       }
-      router.push('/overview');
+      router.push('/today');
     } finally {
       setLoading(false);
     }

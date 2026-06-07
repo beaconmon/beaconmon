@@ -72,7 +72,7 @@ function SignUpForm() {
         }
       }
       analytics.userSignedUp({ plan: planParam, method: 'email' });
-      router.push('/overview');
+      router.push('/today');
     }
   }
 
@@ -80,7 +80,7 @@ function SignUpForm() {
     analytics.signUpSocialAttempted({ provider });
     setLoading(true);
     try {
-      await authClient.signIn.social({ provider, callbackURL: '/overview' });
+      await authClient.signIn.social({ provider, callbackURL: '/today' });
     } catch {
       setLoading(false);
       analytics.signUpSocialFailed({ provider });
@@ -93,7 +93,7 @@ function SignUpForm() {
       return;
     }
     setLoading(true);
-    const res = await authClient.signIn.magicLink({ email, callbackURL: '/overview' });
+    const res = await authClient.signIn.magicLink({ email, callbackURL: '/today' });
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? 'Could not send magic link.');

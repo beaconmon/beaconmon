@@ -54,7 +54,7 @@ export function Day7Reengagement({
               </Text>
 
               <Section style={ctaSection}>
-                <Link href={`${appUrl}/competitors/add`} style={ctaButton}>
+                <Link href={`${appUrl}/wire?tab=competitors`} style={ctaButton}>
                   Add your first competitor
                 </Link>
               </Section>
@@ -84,7 +84,7 @@ export function Day7Reengagement({
               </Text>
 
               <Section style={ctaSection}>
-                <Link href={`${appUrl}/intelligence`} style={ctaButton}>
+                <Link href={`${appUrl}/wire`} style={ctaButton}>
                   View this week's activity
                 </Link>
               </Section>

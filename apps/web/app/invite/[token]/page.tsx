@@ -58,7 +58,7 @@ export default async function InvitePage({ params }: Props) {
           This invitation has already been used.
         </p>
         <Link
-          href="/overview"
+          href="/today"
           className="inline-flex items-center rounded-md bg-brand-green px-4 py-2 text-sm font-semibold text-brand-bg hover:bg-brand-green/90"
         >
           Go to dashboard

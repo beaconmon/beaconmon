@@ -91,7 +91,7 @@ export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
       <div className="flex items-center justify-between gap-4 border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-sm text-blue-800">
         <span>
           You&apos;re on a Growth trial. Explore{' '}
-          <Link href="/intelligence" className="font-medium underline hover:no-underline">
+          <Link href="/wire" className="font-medium underline hover:no-underline">
             competitor intelligence
           </Link>{' '}
           and AI-powered insights while your trial is active.

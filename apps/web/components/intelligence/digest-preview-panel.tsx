@@ -63,7 +63,7 @@ export function DigestPreviewPanel() {
         )}
 
         <Link
-          href="/intelligence/settings"
+          href="/wire/settings"
           className="block pt-1 text-xs text-brand-green-ink hover:underline"
         >
           Manage digest settings →

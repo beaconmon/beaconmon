@@ -645,7 +645,7 @@ export default function CompetitorDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="space-y-5">
       <Link
-        href="/competitors"
+        href="/wire?tab=competitors"
         className="inline-flex items-center gap-1.5 text-xs text-brand-muted transition-colors hover:text-brand-dim"
       >
         <ArrowLeft className="h-3 w-3" />

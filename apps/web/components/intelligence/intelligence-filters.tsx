@@ -32,14 +32,14 @@ export function IntelligenceFilters({ events }: IntelligenceFiltersProps) {
       next.set('type', type);
     }
     next.delete('before');
-    router.replace(`/intelligence?${next.toString()}`);
+    router.replace(`/wire?${next.toString()}`);
   }
 
   function setRange(range: string) {
     const next = new URLSearchParams(params.toString());
     next.set('range', range);
     next.delete('before');
-    router.replace(`/intelligence?${next.toString()}`);
+    router.replace(`/wire?${next.toString()}`);
   }
 
   const counts: Record<string, number> = {

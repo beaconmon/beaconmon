@@ -68,7 +68,7 @@ export function Day8Detection({
     headingText = 'Your competitors have been busy';
     bodyText = `In the past 7 days, Beaconmon detected ${n} competitor signal${n === 1 ? '' : 's'} for your team.`;
     ctaLabel = 'View all intelligence';
-    ctaHref = `${appUrl}/intelligence`;
+    ctaHref = `${appUrl}/wire`;
   } else if (hasIncidents) {
     const n = incidents;
     preview = `Beaconmon caught ${n} incident${n === 1 ? '' : 's'} while monitoring your sites`;
@@ -82,7 +82,7 @@ export function Day8Detection({
     bodyText =
       'No competitor changes or downtime incidents in the past 7 days. Things look healthy. If you want more signal, try adding a competitor to track.';
     ctaLabel = 'Track a competitor';
-    ctaHref = `${appUrl}/competitors`;
+    ctaHref = `${appUrl}/wire?tab=competitors`;
   }
 
   return (
