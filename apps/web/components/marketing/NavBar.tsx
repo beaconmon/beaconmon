@@ -17,8 +17,6 @@ const SOLUTIONS_LINKS = [
   { href: '/for/shopify', label: 'For Shopify', desc: 'Monitor your Shopify store and track competitors' },
   { href: '/for/woocommerce', label: 'For WooCommerce', desc: 'WooCommerce uptime and change detection' },
   { href: '/for/dtc-brands', label: 'For DTC Brands', desc: 'Stay ahead of direct-to-consumer competitors' },
-  { href: '/for/ecommerce', label: 'For eCommerce', desc: 'Built for online store operators' },
-  { href: '/for/solo-founders', label: 'For Solo Founders', desc: 'Lightweight monitoring that scales with you' },
 ];
 
 type NavItem = { href: string; label: string; desc: string };

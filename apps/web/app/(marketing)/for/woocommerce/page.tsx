@@ -8,8 +8,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'WooCommerce Store Monitoring + Competitor Tracking | Beaconmon',
-  description: 'Monitor your WooCommerce store uptime, checkout, and competitor pricing in one place. 30-second checks, Intelligence Digest, and instant Slack alerts.',
+  title: 'Beaconmon for WooCommerce Stores | Uptime and Competitor Monitoring',
+  description:
+    'Monitor your WooCommerce shop, cart, and checkout without installing a plugin. Catch failures in under a minute, track competitor prices page by page, and get a daily Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/for/woocommerce' },
 };
 
@@ -23,20 +24,20 @@ const TEMPLATE_MONITORS = [
 
 const FEATURES = [
   {
-    heading: '30-second shop monitoring',
-    body: 'Checks your homepage, /shop, cart, and checkout every 30 seconds on the Scale plan. A failed checkout gets flagged in under a minute, not after a customer reports it.',
+    heading: 'Checkout failures caught in under a minute',
+    body: 'Beaconmon checks your shop, cart, and checkout every 30 seconds on the Scale plan and fires a Slack alert within 60 seconds of a confirmed failure. You find out before a customer does, and before they email you.',
   },
   {
-    heading: 'wp-admin health monitoring',
-    body: 'Monitor your WooCommerce admin endpoint to catch plugin conflicts, failed updates, and server errors before they affect your storefront.',
+    heading: 'WordPress and plugin health monitoring',
+    body: 'Monitor your WooCommerce admin endpoint to catch plugin conflicts, failed updates, and server errors before they reach your storefront. A broken plugin that takes the checkout with it shows up in under a minute.',
   },
   {
-    heading: 'Competitor price and content tracking',
-    body: 'Add competitor product and pricing pages as content monitors. Get alerted the moment a competitor changes their price, launches a sale, or updates their homepage.',
+    heading: 'Competitor price tracking, page by page',
+    body: 'Add competitor product and pricing pages as content monitors using a CSS selector to target the exact price element. Beaconmon alerts you the moment a competitor changes their price or runs a sale. Note: WooCommerce stores do not have a public product feed the way Shopify does. You choose which competitor pages to watch; Beaconmon watches them on your chosen interval.',
   },
   {
     heading: 'Intelligence Digest',
-    body: 'A daily or weekly email and Slack digest summarizing every change detected on your competitors\' sites and any checkout anomalies from your own store.',
+    body: 'A daily or weekly email and Slack summary of every change detected on competitor sites and every checkout anomaly from your own store. One skim with coffee and you are up to speed.',
   },
 ];
 
@@ -61,13 +62,13 @@ export default function ForWooCommercePage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For WooCommerce</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For WooCommerce Store Owners</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            WooCommerce Store Monitoring That Catches Problems Before Customers Do<br />
-            <span className="text-brand-green-ink">Checkout monitoring, competitor tracking, and weekly Intelligence Digest.</span>
+            WooCommerce Store Monitoring Without Another Plugin<br />
+            <span className="text-brand-green-ink">Know when checkout breaks. Know when competitors move.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
-            30-second checks on your shop, cart, and checkout. Keyword monitoring for critical pages. Competitor content tracking. A weekly digest of every change on competitor sites.
+            Beaconmon monitors your shop, cart, and checkout every 30 seconds and tracks competitor pricing pages with CSS selector targeting. No WordPress plugin required.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -81,7 +82,7 @@ export default function ForWooCommercePage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Your store and competitors, at a glance</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Every change on a competitor site, every smart alert on your own store, summarized in one feed.</p>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Every change on a competitor site, every alert on your own store, in one feed.</p>
           </div>
           <div className="reveal">
             <IntelligenceMockup
@@ -103,8 +104,8 @@ export default function ForWooCommercePage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-10">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Start with a proven WooCommerce monitor template</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">These are the five monitors most WooCommerce stores set up first.</p>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Five monitors most WooCommerce stores set up first</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Your checkout funnel, your WordPress health, and your top competitor, covered from day one.</p>
           </div>
           <div className="reveal grid grid-cols-1 gap-3 max-w-[700px] mx-auto">
             {TEMPLATE_MONITORS.map((monitor) => (
@@ -135,8 +136,8 @@ export default function ForWooCommercePage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Built for WooCommerce stores</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Everything you need to protect your store and stay ahead of competitors.</p>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">What Beaconmon does for your WooCommerce store</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Uptime protection and competitive awareness without adding another plugin to your stack.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
@@ -154,7 +155,7 @@ export default function ForWooCommercePage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/for/ecommerce" className="text-brand-dim hover:text-brand-text transition-colors">E-commerce monitoring</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
             <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
           </div>

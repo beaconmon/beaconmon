@@ -22,6 +22,30 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
+  async redirects() {
+    return [
+      {
+        source: '/pricing-change-alerts',
+        destination: '/competitor-price-tracking',
+        permanent: true,
+      },
+      {
+        source: '/ecommerce-website-monitoring',
+        destination: '/ecommerce-competitor-intelligence',
+        permanent: true,
+      },
+      {
+        source: '/for/ecommerce',
+        destination: '/ecommerce-competitor-intelligence',
+        permanent: true,
+      },
+      {
+        source: '/for/solo-founders',
+        destination: '/pricing',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {

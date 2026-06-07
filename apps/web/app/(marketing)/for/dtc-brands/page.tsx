@@ -8,8 +8,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Website Monitoring for DTC Brands | Beaconmon',
-  description: 'Website monitoring for DTC brands where checkout conversion is everything. 30-second checkout checks, competitor pricing alerts, and a daily Intelligence Digest.',
+  title: 'Beaconmon for DTC Brands | Checkout and Competitor Monitoring',
+  description:
+    'Monitor your checkout and ad landing pages every 30 seconds. Get a daily digest of every competitor price change and promo update. Built for DTC brands running paid traffic.',
   alternates: { canonical: 'https://beaconmon.com/for/dtc-brands' },
 };
 
@@ -24,8 +25,12 @@ const TEMPLATE_MONITORS = [
 
 const FEATURES = [
   {
-    heading: '30-second checkout checks',
-    body: 'On the Scale plan, your checkout is checked every 30 seconds. A broken checkout that lasts ten minutes costs more than a year of monitoring. Beaconmon flags it in under a minute.',
+    heading: 'Checkout failures caught in under a minute',
+    body: 'On the Scale plan, your checkout is checked every 30 seconds. A broken checkout that lasts ten minutes costs real money. Beaconmon catches it in under a minute, before the customer complaint arrives.',
+  },
+  {
+    heading: 'Ad landing pages watched around the clock',
+    body: 'You spend money sending paid traffic to landing pages. Beaconmon checks them every minute on the Growth plan so a 404 or broken form does not quietly drain your ad budget for hours while you are heads-down on something else.',
   },
   {
     heading: 'Competitor price change alerts',
@@ -34,10 +39,6 @@ const FEATURES = [
   {
     heading: 'Intelligence Digest, daily',
     body: 'One email and Slack post a day with every competitor move, every site change, and every smart alert from the last 24 hours. Skim it with coffee. Skip the dashboard.',
-  },
-  {
-    heading: 'Reliability targets for revenue-critical pages',
-    body: 'Set explicit uptime and response time targets on your checkout and product pages. Burn-rate alerts fire when you start eating into your error budget, not after the damage is done.',
   },
 ];
 
@@ -64,11 +65,11 @@ export default function ForDtcBrandsPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">For DTC Brands</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Monitoring for DTC Brands Where Every Checkout Counts<br />
-            <span className="text-brand-green-ink">Protect revenue. Track competitor moves. Get a daily digest.</span>
+            Your Ads Are Running. Is Your Landing Page?<br />
+            <span className="text-brand-green-ink">Catch failures fast. Know when competitors move.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px] mb-8">
-            Beaconmon watches your checkout, product pages, and ad landing pages every 30 seconds, and tracks every competitor pricing change. One platform for both sides of your growth.
+            Beaconmon checks your checkout and ad landing pages every 30 seconds, and alerts you the moment a competitor drops a price or launches a sale. One platform for both sides of your growth.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -82,7 +83,7 @@ export default function ForDtcBrandsPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Your store and your competitors, in one feed</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">A daily summary that tells you what changed and what to do about it.</p>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">A daily summary that tells you what changed overnight and what to do about it.</p>
           </div>
           <div className="reveal">
             <IntelligenceMockup
@@ -105,7 +106,7 @@ export default function ForDtcBrandsPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-10">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">A DTC monitoring template</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Six monitors covering revenue-critical pages and your two biggest competitors.</p>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Your store, your ad landing pages, and your two biggest competitors, covered from day one.</p>
           </div>
           <div className="reveal grid grid-cols-1 gap-3 max-w-[700px] mx-auto">
             {TEMPLATE_MONITORS.map((monitor) => (
@@ -156,7 +157,7 @@ export default function ForDtcBrandsPage() {
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">For Shopify stores</Link>
-            <Link href="/pricing-change-alerts" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
+            <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
           </div>
         </div>

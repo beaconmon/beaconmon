@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Security | Beaconmon',
-  description: 'How Beaconmon handles your data: infrastructure, encryption, access controls, GDPR, and responsible disclosure.',
+  description: 'How Beaconmon handles your store and competitor data: infrastructure, HTML-only crawling, encryption, access controls, and GDPR.',
   alternates: { canonical: 'https://beaconmon.com/security' },
 };
 
@@ -31,6 +31,20 @@ const SECTIONS = [
       {
         title: 'Cache: Redis (self-hosted)',
         body: 'Redis is self-hosted in the same stack as the application, used for job queues and status page caching. It is not exposed to the internet. AOF persistence is enabled. Redis is configured with noeviction policy. Queue jobs are never silently dropped under memory pressure.',
+      },
+    ],
+  },
+  {
+    id: 'crawling',
+    heading: 'Crawling and data collection',
+    items: [
+      {
+        title: 'HTML-only (no headless browsers)',
+        body: 'Beaconmon fetches and parses raw HTML to detect content changes on competitor stores and monitored sites. We do not run JavaScript or use headless browsers. This keeps infrastructure predictable on a single-server deployment and means checks complete in under a second. Most Shopify product prices, inventory status, and promotional copy are present in the HTML source. If a page renders content exclusively via client-side JavaScript, we monitor the source HTML rather than the rendered output.',
+      },
+      {
+        title: 'What we collect per check',
+        body: 'For uptime checks, we record the HTTP status code, response time, and up to 512 bytes of the response body on failure. For content monitors, we store one snapshot of the changed HTML element per event, retained for 90 days. We do not record full page snapshots or screenshots. Nothing collected from competitor stores is shared with other Beaconmon customers.',
       },
     ],
   },
@@ -84,7 +98,7 @@ const SECTIONS = [
       },
       {
         title: 'What we store',
-        body: 'We store your email address, team name, monitor configurations, check results, incidents, and alert channel configs. We do not store the content of the sites you monitor beyond what is needed for content change detection (one snapshot per change event).',
+        body: 'We store your email address, team name, monitor configurations, check results, incidents, and alert channel configs. We do not store the content of competitor stores or sites you monitor beyond what is needed for content change detection (one snapshot per change event, retained for 90 days).',
       },
       {
         title: 'Data retention',
@@ -121,10 +135,10 @@ export default function SecurityPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Security</span>
           <h1 className="text-[clamp(40px,5vw,60px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[700px]">
-            How we handle your data.
+            How we handle your store and competitor data.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px]">
-            A plain-English overview of the infrastructure, encryption, and practices behind Beaconmon. No marketing fluff. Just what we actually do.
+            A plain-English overview of the infrastructure, crawling approach, encryption, and practices behind Beaconmon. No marketing fluff. Just what we actually do.
           </p>
         </div>
       </section>
