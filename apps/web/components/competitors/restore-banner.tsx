@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, X } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useSession } from '@/lib/hooks/use-session';
 import { apiFetch } from '@/lib/api-fetch';
@@ -37,6 +38,7 @@ function hasRoomForFreeRestore(
 export function RestoreBanner() {
   const { data: monitors } = useMonitors();
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
   const [dismissed, setDismissed] = useState(false);
   const [restoringId, setRestoringId] = useState<string | null>(null);
 
@@ -67,6 +69,8 @@ export function RestoreBanner() {
       if (!res.ok) {
         const err = await res.json().catch(() => ({})) as { error?: string };
         alert(err.error ?? 'Failed to restore monitor');
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['monitors'] });
       }
     } finally {
       setRestoringId(null);

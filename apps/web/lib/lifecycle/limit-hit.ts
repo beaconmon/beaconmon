@@ -19,10 +19,6 @@ export async function enqueueLimitHitEmail(opts: {
     const dedupKey = `limit:hit:${teamId}`;
     const redisKey = `${DEDUP_KEY_PREFIX}${teamId}`;
 
-    // Atomic SET NX: only proceed if no email has been sent within the dedup window.
-    const acquired = await redis.set(redisKey, '1', 'EX', DEDUP_TTL_SECONDS, 'NX');
-    if (!acquired) return;
-
     const member = await prisma.teamMember.findFirst({
       where: { teamId, role: 'owner' },
       select: { user: { select: { email: true } } },
@@ -30,18 +26,27 @@ export async function enqueueLimitHitEmail(opts: {
     const ownerEmail = member?.user.email;
     if (!ownerEmail) return;
 
+    // Atomic SET NX: only proceed if no email has been sent within the dedup window.
+    const acquired = await redis.set(redisKey, '1', 'EX', DEDUP_TTL_SECONDS, 'NX');
+    if (!acquired) return;
+
     const queue = getLifecycleEmailQueue();
-    await queue.add(
-      `lifecycle:limit_hit:${teamId}`,
-      {
-        teamId,
-        emailType: 'limit_hit',
-        payload: { limitType, currentCount, planLimit, planTier },
-        dedupKey,
-        ownerEmail,
-      },
-      { jobId: `lc_${dedupKey}` }
-    );
+    try {
+      await queue.add(
+        `lifecycle:limit_hit:${teamId}`,
+        {
+          teamId,
+          emailType: 'limit_hit',
+          payload: { limitType, currentCount, planLimit, planTier },
+          dedupKey,
+          ownerEmail,
+        },
+        { jobId: `lc_${dedupKey}` }
+      );
+    } catch (enqueueErr) {
+      await redis.del(redisKey);
+      throw enqueueErr;
+    }
   } catch (err) {
     logger.warn({ service: 'web', teamId, err }, 'Failed to enqueue limit-hit lifecycle email, continuing');
   }

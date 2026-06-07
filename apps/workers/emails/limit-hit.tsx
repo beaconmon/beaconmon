@@ -26,7 +26,9 @@ export function LimitHit({ limitType, currentCount, planLimit, planTier, appUrl,
   const plural = `${label}s`;
   const planName = planTier.charAt(0).toUpperCase() + planTier.slice(1);
   const limitLabel = planLimit === 1 ? label : plural;
-  const preview = `You've reached your ${label} limit. Upgrade to Growth to add more.`;
+  const isGrowth = planTier.toLowerCase() === 'growth';
+  const upgradeTarget = isGrowth ? 'Scale' : 'Growth';
+  const preview = `You've reached your ${label} limit. Upgrade to ${upgradeTarget} to add more.`;
 
   return (
     <Html>
@@ -41,26 +43,45 @@ export function LimitHit({ limitType, currentCount, planLimit, planTier, appUrl,
             You already have {currentCount}.
           </Text>
 
-          <Text style={paragraph}>
-            Upgrade to Growth to monitor up to 25 competitors and 100 websites, or to Scale for
-            unlimited monitoring.
-          </Text>
+          {isGrowth ? (
+            <Text style={paragraph}>
+              Upgrade to Scale for unlimited competitor and uptime monitoring, 5-minute check
+              intervals, and 1-year history.
+            </Text>
+          ) : (
+            <Text style={paragraph}>
+              Upgrade to Growth to monitor up to 25 competitors and 100 websites, or to Scale for
+              unlimited monitoring.
+            </Text>
+          )}
 
           <Section style={ctaSection}>
             <Link href={`${appUrl}/settings/billing`} style={ctaButton}>
-              Upgrade to Growth
+              Upgrade to {upgradeTarget}
             </Link>
           </Section>
 
           <Hr style={hr} />
 
           <Section style={planList}>
-            <Text style={planHeading}>Growth plan highlights</Text>
-            <Text style={planItem}>25 competitor monitors</Text>
-            <Text style={planItem}>100 uptime monitors, 1-minute intervals</Text>
-            <Text style={planItem}>5 monitoring locations</Text>
-            <Text style={planItem}>90-day history</Text>
-            <Text style={planItem}>Unlimited alert channels</Text>
+            {isGrowth ? (
+              <>
+                <Text style={planHeading}>Scale plan highlights</Text>
+                <Text style={planItem}>Unlimited competitor monitors</Text>
+                <Text style={planItem}>Unlimited uptime monitors</Text>
+                <Text style={planItem}>1-year history</Text>
+                <Text style={planItem}>Priority support</Text>
+              </>
+            ) : (
+              <>
+                <Text style={planHeading}>Growth plan highlights</Text>
+                <Text style={planItem}>25 competitor monitors</Text>
+                <Text style={planItem}>100 uptime monitors, 1-minute intervals</Text>
+                <Text style={planItem}>5 monitoring locations</Text>
+                <Text style={planItem}>90-day history</Text>
+                <Text style={planItem}>Unlimited alert channels</Text>
+              </>
+            )}
           </Section>
 
           <Hr style={hr} />

@@ -32,6 +32,10 @@ export const lifecycleEmailsTask: SchedulerTask = {
             select: { user: { select: { email: true } } },
             take: 1,
           },
+          competitors: {
+            where: { deletedAt: null, isActive: true },
+            select: { domain: true },
+          },
           _count: {
             select: { competitors: { where: { deletedAt: null, isActive: true } } },
           },
@@ -64,6 +68,7 @@ export const lifecycleEmailsTask: SchedulerTask = {
           createdAt: team.createdAt,
           subscription: team.subscription,
           ownerEmail,
+          competitorDomains: team.competitors.map((c) => c.domain),
           competitorCount: team._count.competitors,
         };
 
@@ -79,7 +84,17 @@ export const lifecycleEmailsTask: SchedulerTask = {
           const alreadySent = await connection.get(`lifecycle:dedup:${dedupKey}`);
           if (alreadySent) continue;
 
-          const payload = await config.payload(teamData);
+          let payload: Record<string, unknown>;
+          try {
+            payload = await config.payload(teamData);
+          } catch (payloadErr) {
+            logger.error(
+              { service: 'scheduler', teamId: team.id, emailType: config.type, err: payloadErr },
+              'Failed to generate lifecycle email payload, skipping'
+            );
+            Sentry.captureException(payloadErr);
+            continue;
+          }
 
           try {
             await lifecycleEmailQueue.add(

@@ -13,7 +13,8 @@ const GRACE_PERIOD_MS = 2 * 60 * 60 * 1000;
 const STALE_PAUSE_MS = 30 * 24 * 60 * 60 * 1000;
 
 // Subscription statuses that mean the team has a real billing relationship.
-const ACTIVE_BILLING_STATUSES = new Set(['active', 'trialing', 'past_due', 'incomplete']);
+// 'incomplete' is intentionally excluded: it means payment is pending/unfinished, not active.
+const ACTIVE_BILLING_STATUSES = new Set(['active', 'trialing', 'past_due']);
 
 export const trialEndEnforceTask: SchedulerTask = {
   name: 'trial-end-enforce',

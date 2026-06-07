@@ -47,29 +47,31 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
 
   const limits = PLAN_LIMITS[plan];
 
-  if (monitor.isCompetitor) {
-    const activeCompetitorCount = await prisma.monitor.count({
-      where: { teamId, isCompetitor: true, isActive: true, deletedAt: null },
-    });
-    if (limits.competitorMonitors !== -1 && activeCompetitorCount >= limits.competitorMonitors) {
-      throw new PlanLimitError(
-        `Your plan allows ${limits.competitorMonitors} competitor monitor${limits.competitorMonitors !== 1 ? 's' : ''}. Upgrade to restore more.`
-      );
+  await prisma.$transaction(async (tx) => {
+    if (monitor.isCompetitor) {
+      const activeCompetitorCount = await tx.monitor.count({
+        where: { teamId, isCompetitor: true, isActive: true, deletedAt: null },
+      });
+      if (limits.competitorMonitors !== -1 && activeCompetitorCount >= limits.competitorMonitors) {
+        throw new PlanLimitError(
+          `Your plan allows ${limits.competitorMonitors} competitor monitor${limits.competitorMonitors !== 1 ? 's' : ''}. Upgrade to restore more.`
+        );
+      }
+    } else {
+      const activeCount = await tx.monitor.count({
+        where: { teamId, isCompetitor: false, isActive: true, deletedAt: null },
+      });
+      if (limits.monitors !== -1 && activeCount >= limits.monitors) {
+        throw new PlanLimitError(
+          `Your plan allows ${limits.monitors} monitors. Upgrade to restore more.`
+        );
+      }
     }
-  } else {
-    const activeCount = await prisma.monitor.count({
-      where: { teamId, isCompetitor: false, isActive: true, deletedAt: null },
-    });
-    if (limits.monitors !== -1 && activeCount >= limits.monitors) {
-      throw new PlanLimitError(
-        `Your plan allows ${limits.monitors} monitors. Upgrade to restore more.`
-      );
-    }
-  }
 
-  await prisma.monitor.update({
-    where: { id: monitorId },
-    data: { isActive: true, pausedReason: null, pausedAt: null, nextCheckAt: new Date() },
+    await tx.monitor.update({
+      where: { id: monitorId },
+      data: { isActive: true, pausedReason: null, pausedAt: null, nextCheckAt: new Date() },
+    });
   });
 
   logger.info({ service: 'web', teamId, monitorId }, 'Monitor manually restored after trial-end pause');
