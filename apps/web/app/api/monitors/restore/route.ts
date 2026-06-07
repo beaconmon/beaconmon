@@ -48,6 +48,10 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   const limits = PLAN_LIMITS[plan];
 
   await prisma.$transaction(async (tx) => {
+    // Advisory lock serializes concurrent restore attempts for the same team,
+    // preventing TOCTOU races where two requests both pass the limit check.
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${teamId})::bigint)`;
+
     if (monitor.isCompetitor) {
       const activeCompetitorCount = await tx.monitor.count({
         where: { teamId, isCompetitor: true, isActive: true, deletedAt: null },
