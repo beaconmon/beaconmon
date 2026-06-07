@@ -69,7 +69,7 @@ export function TeamSwitcher() {
     // router.refresh() would re-render the current page (e.g. /monitors/[id])
     // which belongs to the old team and would 403 under the new team context.
     await queryClient.invalidateQueries();
-    router.push('/overview');
+    router.push('/today');
   }
 
   return (

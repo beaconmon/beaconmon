@@ -44,9 +44,9 @@ import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
 const NAV_ITEMS = [
-  { href: '/overview',               label: 'Overview',           icon: LayoutGrid },
+  { href: '/today',                  label: 'Today',              icon: LayoutGrid },
   { href: '/monitors',               label: 'Monitors',           icon: Activity },
-  { href: '/intelligence',           label: 'Intelligence',       icon: Brain,   badge: 'NEW' },
+  { href: '/wire',                   label: 'Wire',               icon: Brain,   badge: 'NEW' },
   { href: '/incidents',              label: 'Incidents',          icon: AlertTriangle },
   { href: '/maintenance-windows',    label: 'Maintenance',        icon: Wrench },
   { href: '/status-pages',           label: 'Status Pages',       icon: Globe },

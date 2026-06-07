@@ -2,9 +2,9 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
-import { OverviewPageClient } from './OverviewPageClient';
+import { TodayPageClient } from './TodayPageClient';
 
-export default async function OverviewPage() {
+export default async function TodayPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   const teamId = session?.user?.teamId;
@@ -17,5 +17,5 @@ export default async function OverviewPage() {
     redirect('/onboarding');
   }
 
-  return <OverviewPageClient />;
+  return <TodayPageClient />;
 }

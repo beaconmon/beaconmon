@@ -80,8 +80,8 @@ export function Day2Aha({
     preview = `${n} competitor signal${n === 1 ? '' : 's'} detected in your first 48 hours`;
     headingText = "Here's what we've already detected";
     bodyText = `In your first 48 hours, Beaconmon caught ${n} competitor signal${n === 1 ? '' : 's'}. Your intelligence feed is live.`;
-    ctaLabel = 'View competitor intelligence';
-    ctaHref = `${appUrl}/intelligence`;
+    ctaLabel = 'View the Wire';
+    ctaHref = `${appUrl}/wire`;
   } else if (branch === 'uptime') {
     const n = incidents;
     preview = `Beaconmon caught ${n} downtime incident${n === 1 ? '' : 's'} in your first 48 hours`;
@@ -95,7 +95,7 @@ export function Day2Aha({
     bodyText =
       'No competitor changes or downtime incidents in the past 48 hours. That is a good sign, but the real value shows up when competitors move. Want more coverage? Add another competitor to track.';
     ctaLabel = 'Add a competitor';
-    ctaHref = `${appUrl}/competitors`;
+    ctaHref = `${appUrl}/wire?tab=competitors`;
   }
 
   return (

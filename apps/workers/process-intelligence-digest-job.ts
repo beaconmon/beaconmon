@@ -25,6 +25,22 @@ export function significanceWeight(significance: string | null): number {
   return 1; // 'medium' or null
 }
 
+export function hasAnySignal(sections: {
+  incidents?: unknown[];
+  ownContent?: unknown[];
+  competitors?: unknown[];
+  smartAlerts?: unknown[];
+  expiry?: unknown[];
+}): boolean {
+  return (
+    (sections.incidents?.length ?? 0) > 0 ||
+    (sections.ownContent?.length ?? 0) > 0 ||
+    (sections.competitors?.length ?? 0) > 0 ||
+    (sections.smartAlerts?.length ?? 0) > 0 ||
+    (sections.expiry?.length ?? 0) > 0
+  );
+}
+
 function formatEventSummary(type: string, payload: Record<string, unknown>): string {
   switch (type) {
     case 'price_changed':
@@ -273,8 +289,8 @@ export async function processIntelligenceDigestJob(
     (sections.smartAlerts?.length ?? 0) +
     (sections.expiry?.length ?? 0);
 
-  if (totalEvents === 0) {
-    logger.info({ service, teamId, frequency }, 'Digest: no events in window, skipping');
+  if (frequency === 'daily' && !hasAnySignal(sections)) {
+    logger.info({ service, teamId, frequency }, 'Digest: daily digest skipped, no signal in window');
     return;
   }
 

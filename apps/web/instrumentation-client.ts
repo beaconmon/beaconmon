@@ -5,8 +5,8 @@ import posthog from 'posthog-js';
 // Marketing pages are high-traffic and error-free by nature; initializing Sentry there
 // adds ~80KB parse cost and INP risk for no meaningful signal.
 const APP_ROUTE_PREFIXES = [
-  '/overview', '/monitors', '/incidents', '/alert-channels', '/escalation-policies',
-  '/maintenance-windows', '/status-pages', '/reports', '/settings', '/intelligence',
+  '/today', '/monitors', '/incidents', '/alert-channels', '/escalation-policies',
+  '/maintenance-windows', '/status-pages', '/reports', '/settings', '/wire',
   '/onboarding', '/invite',
 ];
 const isAppRoute = APP_ROUTE_PREFIXES.some((p) => window.location.pathname.startsWith(p));

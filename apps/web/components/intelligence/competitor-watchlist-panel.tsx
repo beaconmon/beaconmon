@@ -68,7 +68,7 @@ export function CompetitorWatchlistPanel({
             {withCounts.map((c, i) => (
               <Link
                 key={c.id}
-                href={`/competitors/${c.id}`}
+                href={`/wire/competitors/${c.id}`}
                 className={`flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-brand-bg3/40 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
               >
                 <div

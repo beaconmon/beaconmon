@@ -7,6 +7,7 @@ import type { IntelligenceEvent } from '@/lib/hooks/use-intelligence-feed';
 interface IntelligenceEventCardProps {
   event: IntelligenceEvent;
   isCompetitor?: boolean;
+  previousLastSeenAt?: Date | null;
 }
 
 function formatTimestamp(ts: string | Date): string {
@@ -63,9 +64,15 @@ function EventIcon({ event }: { event: IntelligenceEvent }) {
   return <FileText className="h-4 w-4 text-brand-dim" />;
 }
 
-export function IntelligenceEventCard({ event, isCompetitor = true }: IntelligenceEventCardProps) {
+export function IntelligenceEventCard({
+  event,
+  isCompetitor = true,
+  previousLastSeenAt = null,
+}: IntelligenceEventCardProps) {
   const isExpiry = event.type === 'expiry_alert';
   const isCompetitorEvent = event.type === 'competitor_event';
+  const isNew =
+    previousLastSeenAt !== null && new Date(event.timestamp) > previousLastSeenAt;
 
   const sourceKicker = isExpiry
     ? null
@@ -116,7 +123,20 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
             {sourceKicker.label}
           </p>
         )}
-        <p className="truncate text-sm font-medium italic text-brand-text">{event.monitorName}</p>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <p className="truncate text-sm font-medium italic text-brand-text">{event.monitorName}</p>
+          {isNew && (
+            <span
+              className="shrink-0 rounded-full px-1.5 py-0 font-mono text-[8px] font-bold uppercase tracking-wider"
+              style={{
+                background: 'rgba(0,229,122,0.12)',
+                color: 'var(--brand-green-ink)',
+              }}
+            >
+              New
+            </span>
+          )}
+        </div>
         <p className="truncate font-mono text-xs text-brand-muted">{event.monitorUrl}</p>
         {isCompetitorEvent && (
           <p className="mt-1 text-sm text-brand-dim">
@@ -135,7 +155,7 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
         <div className="flex items-center gap-3 pt-0.5">
           {isCompetitorEvent ? (
             <Link
-              href={`/competitors/${event.monitorId}?tab=events`}
+              href={`/wire/competitors/${event.monitorId}?tab=events`}
               className="text-xs text-brand-green-ink hover:underline"
             >
               View event
@@ -144,7 +164,7 @@ export function IntelligenceEventCard({ event, isCompetitor = true }: Intelligen
             <Link
               href={
                 isCompetitor
-                  ? `/competitors/${event.monitorId}?tab=pages`
+                  ? `/wire/competitors/${event.monitorId}?tab=pages`
                   : `/monitors/${event.monitorId}?tab=snapshots`
               }
               className="text-xs text-brand-green-ink hover:underline"

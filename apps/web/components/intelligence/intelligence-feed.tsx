@@ -10,6 +10,7 @@ interface IntelligenceFeedProps {
   isLoading: boolean;
   onLoadMore: () => void;
   monitorIsCompetitorMap?: Map<string, boolean>;
+  previousLastSeenAt?: Date | null;
 }
 
 export function IntelligenceFeed({
@@ -18,6 +19,7 @@ export function IntelligenceFeed({
   isLoading,
   onLoadMore,
   monitorIsCompetitorMap,
+  previousLastSeenAt = null,
 }: IntelligenceFeedProps) {
   return (
     <div className="space-y-4">
@@ -27,6 +29,7 @@ export function IntelligenceFeed({
             key={event.id}
             event={event}
             isCompetitor={monitorIsCompetitorMap ? (monitorIsCompetitorMap.get(event.monitorId) ?? true) : true}
+            previousLastSeenAt={previousLastSeenAt}
           />
         ))}
       </div>

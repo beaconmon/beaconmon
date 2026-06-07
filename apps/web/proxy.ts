@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth';
 const RedisUrl = z.string().url().parse(process.env['REDIS_URL']);
 const redis = new Redis(RedisUrl);
 
-const PROTECTED_PATHS = ['/overview', '/onboarding', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/intelligence', '/settings'];
+const PROTECTED_PATHS = ['/today', '/onboarding', '/monitors', '/incidents', '/status-pages', '/alert-channels', '/wire', '/settings'];
 const AUTH_PATHS = ['/sign-in', '/sign-up', '/verify', '/forgot-password', '/reset-password'];
 
 /**
@@ -146,7 +146,7 @@ export default async function proxy(req: NextRequest) {
       }
 
       if (isAuthPage && isAuthenticated) {
-        const res = NextResponse.redirect(new URL('/overview', req.url));
+        const res = NextResponse.redirect(new URL('/today', req.url));
         setCsrfCookieIfMissing(res, cookieToken);
         return res;
       }
