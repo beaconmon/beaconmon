@@ -5,6 +5,7 @@ import { PLAN_LIMITS } from '@beaconmon/types';
 import { logger } from '@/lib/logger';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
+import { enqueueLimitHitEmail } from '@/lib/lifecycle/limit-hit';
 
 export const GET = withAuth(async (req, { teamId }) => {
   const tag = new URL(req.url).searchParams.get('tag');
@@ -44,6 +45,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (limits.monitors !== -1) {
     const count = await monitorRepository.countByTeam(teamId);
     if (count >= limits.monitors) {
+      void enqueueLimitHitEmail({ teamId, limitType: 'monitor', currentCount: count, planLimit: limits.monitors, planTier: plan });
       throw new PlanLimitError(`Your plan allows a maximum of ${limits.monitors} monitors`);
     }
   }

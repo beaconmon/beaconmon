@@ -8,6 +8,7 @@ import { sloBurnTask } from './slo-burn.js';
 import { intelligenceDigestTask } from './intelligence-digest.js';
 import { monitoringRunPruneTask } from './monitoring-run-prune.js';
 import { lifecycleEmailsTask } from './lifecycle-emails.js';
+import { trialEndEnforceTask } from './trial-end-enforce.js';
 import type { SchedulerTask } from './types.js';
 
 export const tasks: SchedulerTask[] = [
@@ -21,4 +22,5 @@ export const tasks: SchedulerTask[] = [
   intelligenceDigestTask,
   monitoringRunPruneTask,
   lifecycleEmailsTask,
+  trialEndEnforceTask,
 ];

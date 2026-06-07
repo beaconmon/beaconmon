@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { alertChannelRepository } from '@beaconmon/db';
+import { prisma, alertChannelRepository } from '@beaconmon/db';
 import { logger } from '@/lib/logger';
 
 function hashEmail(email: string): string {
@@ -95,6 +95,23 @@ export async function handleFreemiusEvent(event: FreemiusWebhookEvent): Promise<
         { service: 'web', teamId, plan, billingPeriod },
         'Subscription created'
       );
+
+      // Auto-restore monitors paused due to trial-end within the 30-day recovery window.
+      const restoreCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const restored = await prisma.monitor.updateMany({
+        where: {
+          teamId,
+          pausedReason: 'trial_end',
+          pausedAt: { gte: restoreCutoff },
+        },
+        data: { isActive: true, pausedReason: null, pausedAt: null, nextCheckAt: new Date() },
+      });
+      if (restored.count > 0) {
+        logger.info(
+          { service: 'web', teamId, restoredCount: restored.count },
+          'Auto-restored trial-end paused monitors after subscription created'
+        );
+      }
 
       try {
         getPostHogClient().capture({

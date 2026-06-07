@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import { createReportQueue, createEscalationQueue, createContentNotifyQueue, createShopifyFeedQueue } from '@beaconmon/queue';
+import { createReportQueue, createEscalationQueue, createContentNotifyQueue, createShopifyFeedQueue, createLifecycleEmailQueue } from '@beaconmon/queue';
 
 // Reuse connection across requests in the same worker/serverless context
 let redis: Redis | null = null;
@@ -27,6 +27,10 @@ export function getContentNotifyQueue() {
 
 export function getShopifyFeedQueue() {
   return createShopifyFeedQueue(getRedis());
+}
+
+export function getLifecycleEmailQueue() {
+  return createLifecycleEmailQueue(getRedis());
 }
 
 export function getQueueRedis() {

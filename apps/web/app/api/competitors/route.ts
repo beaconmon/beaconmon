@@ -5,6 +5,7 @@ import { competitorRepository } from '@/lib/repositories/competitors';
 import { ForbiddenError, PlanLimitError, ValidationError } from '@/lib/api/errors';
 import { getShopifyFeedQueue, getQueueRedis } from '@/lib/queue';
 import { logger } from '@/lib/logger';
+import { enqueueLimitHitEmail } from '@/lib/lifecycle/limit-hit';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const competitors = await competitorRepository.findAll(teamId);
@@ -24,6 +25,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (limit !== -1) {
     const count = await competitorRepository.countActive(teamId);
     if (count >= limit) {
+      void enqueueLimitHitEmail({ teamId, limitType: 'competitor', currentCount: count, planLimit: limit, planTier: plan });
       throw new PlanLimitError(`Your plan allows a maximum of ${limit} competitors`);
     }
   }

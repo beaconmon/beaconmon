@@ -4,6 +4,11 @@ import type { FreemiusWebhookEvent } from './freemius';
 // ─── Mock dependencies ────────────────────────────────────────────────────────
 
 vi.mock('@beaconmon/db', () => ({
+  prisma: {
+    monitor: {
+      updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+    },
+  },
   alertChannelRepository: {
     disableSurplusForPlan: vi.fn().mockResolvedValue([]),
   },
