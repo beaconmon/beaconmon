@@ -80,6 +80,10 @@ export function formatEventSummary(type: string, payload: Record<string, unknown
       return `Out of stock: ${payload.productHandle ?? 'product'}`;
     case 'back_in_stock':
       return `Back in stock: ${payload.productHandle ?? 'product'}`;
+    case 'sale_started':
+      return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
+    case 'sale_ended':
+      return `Sale ended (was $${payload.wasCompareAtPrice})`;
     case 'site_changed':
     case 'promo_detected':
       return (payload.diffSummary as string | undefined) ?? 'Content changed';

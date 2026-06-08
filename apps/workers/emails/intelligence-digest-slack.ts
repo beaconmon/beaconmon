@@ -13,6 +13,36 @@ type DigestSections = {
   expiry?: DigestExpiryItem[];
 };
 
+const SLACK_MRKDWN_LIMIT = 3000;
+
+function escapeSlackMrkdwn(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function splitIntoMrkdwnBlocks(header: string, itemLines: string[]): object[] {
+  const blocks: object[] = [];
+  let currentText = header;
+
+  for (const line of itemLines) {
+    const candidate = currentText + '\n' + line;
+    if (candidate.length > SLACK_MRKDWN_LIMIT) {
+      blocks.push({ type: 'section', text: { type: 'mrkdwn', text: currentText } });
+      currentText = header + ' (continued)\n' + line;
+    } else {
+      currentText = candidate;
+    }
+  }
+
+  if (currentText) {
+    blocks.push({ type: 'section', text: { type: 'mrkdwn', text: currentText } });
+  }
+
+  return blocks;
+}
+
 export function buildSlackPayload(
   frequency: 'daily' | 'weekly',
   windowStart: Date,
@@ -36,67 +66,59 @@ export function buildSlackPayload(
   ];
 
   if (sections.incidents && sections.incidents.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Incidents (${sections.incidents.length})*\n` +
-          sections.incidents
-            .map(
-              (inc) =>
-                `• *${inc.monitorName}* — started ${inc.startedAt.toUTCString()}${inc.resolvedAt ? `, resolved ${inc.resolvedAt.toUTCString()}` : ' (ongoing)'}`
-            )
-            .join('\n'),
-      },
-    });
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `*Incidents (${sections.incidents.length})*`,
+        sections.incidents.map(
+          (inc) =>
+            `• *${escapeSlackMrkdwn(inc.monitorName)}* — started ${inc.startedAt.toUTCString()}${inc.resolvedAt ? `, resolved ${inc.resolvedAt.toUTCString()}` : ' (ongoing)'}`
+        )
+      )
+    );
   }
 
   if (sections.smartAlerts && sections.smartAlerts.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Smart Alerts (${sections.smartAlerts.length})*\n` +
-          sections.smartAlerts
-            .map((a) => `• *${a.monitorName}* — ${a.responseTimeMs}ms response time`)
-            .join('\n'),
-      },
-    });
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `*Smart Alerts (${sections.smartAlerts.length})*`,
+        sections.smartAlerts.map(
+          (a) => `• *${escapeSlackMrkdwn(a.monitorName)}* — ${a.responseTimeMs}ms response time`
+        )
+      )
+    );
   }
 
   if (sections.expiry && sections.expiry.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*SSL and Domain Expiry (${sections.expiry.length})*\n` +
-          sections.expiry
-            .map((e) => `• *${e.monitorName}* — ${e.type.toUpperCase()} expires in ${e.daysRemaining} days`)
-            .join('\n'),
-      },
-    });
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `*SSL and Domain Expiry (${sections.expiry.length})*`,
+        sections.expiry.map(
+          (e) => `• *${escapeSlackMrkdwn(e.monitorName)}* — ${e.type.toUpperCase()} expires in ${e.daysRemaining} days`
+        )
+      )
+    );
   }
 
   if (sections.competitors && sections.competitors.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Competitor Changes (${sections.competitors.length})*\n` +
-          sections.competitors.map((c) => `• *${c.monitorName}* — ${c.diffSummary ?? 'content changed'}`).join('\n'),
-      },
-    });
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `*Competitor Changes (${sections.competitors.length})*`,
+        sections.competitors.map(
+          (c) => `• *${escapeSlackMrkdwn(c.monitorName)}* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+        )
+      )
+    );
   }
 
   if (sections.ownContent && sections.ownContent.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Own Content Changes (${sections.ownContent.length})*\n` +
-          sections.ownContent.map((c) => `• *${c.monitorName}* — ${c.diffSummary ?? 'content changed'}`).join('\n'),
-      },
-    });
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `*Own Content Changes (${sections.ownContent.length})*`,
+        sections.ownContent.map(
+          (c) => `• *${escapeSlackMrkdwn(c.monitorName)}* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+        )
+      )
+    );
   }
 
   blocks.push({

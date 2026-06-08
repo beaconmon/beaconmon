@@ -328,10 +328,12 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
             },
             { jobId: `lc_${dedupKey}` }
           )
+          .then(() => {
+            logger.info({ service, competitorPageId, teamId }, 'First competitor change lifecycle email enqueued');
+          })
           .catch((err) => {
             logger.warn({ service, competitorPageId, err }, 'Failed to enqueue first-competitor-change lifecycle email');
           });
-        logger.info({ service, competitorPageId, teamId }, 'First competitor change lifecycle email enqueued');
       }
     }
   }
