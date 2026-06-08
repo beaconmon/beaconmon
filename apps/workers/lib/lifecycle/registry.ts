@@ -42,6 +42,20 @@ function utcDayStart(now: Date, offsetDays: number): Date {
 // Statuses that represent a real billing relationship — suppress trial reminders
 const ACTIVE_BILLING_STATUSES = new Set(['active', 'trialing', 'past_due']);
 
+async function buildTrialProofPayload(team: TeamForLifecycle, daysLeft: number): Promise<Record<string, unknown>> {
+  const windowStart = team.createdAt;
+  const windowEnd = new Date();
+  const [events, incidents] = await Promise.all([
+    digestRepository.findCompetitorEventsForDigest(team.id, windowStart, windowEnd),
+    digestRepository.findIncidentsInWindow(team.id, windowStart, windowEnd),
+  ]);
+  return {
+    daysLeft,
+    competitorEventCount: events.length,
+    incidentCount: incidents.length,
+  };
+}
+
 const trial7d: LifecycleEmailTriggerConfig = {
   type: 'trial_reminder_7d',
   category: 'lifecycle',
@@ -53,12 +67,15 @@ const trial7d: LifecycleEmailTriggerConfig = {
       trialEnds >= utcDayStart(now, 7).getTime() && trialEnds < utcDayStart(now, 8).getTime()
     );
   },
-  payload(_team) {
-    return { daysLeft: 7 };
+  payload(team) {
+    return buildTrialProofPayload(team, 7);
   },
   template: TrialReminder,
-  subject() {
-    return '7 days left in your Beaconmon trial';
+  subject(payload) {
+    const n = payload['competitorEventCount'] as number | undefined;
+    return n && n > 0
+      ? `7 days left — Beaconmon caught ${n} change${n === 1 ? '' : 's'} for you`
+      : '7 days left in your Beaconmon trial';
   },
   dedupKey(team) {
     return `trial:reminder:7d:${team.id}`;
@@ -76,8 +93,8 @@ const trial1d: LifecycleEmailTriggerConfig = {
       trialEnds >= utcDayStart(now, 1).getTime() && trialEnds < utcDayStart(now, 2).getTime()
     );
   },
-  payload(_team) {
-    return { daysLeft: 1 };
+  payload(team) {
+    return buildTrialProofPayload(team, 1);
   },
   template: TrialReminder,
   subject() {

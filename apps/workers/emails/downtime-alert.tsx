@@ -1,22 +1,26 @@
 import * as React from 'react';
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from '@react-email/components';
+  EmailLayout,
+  AlertBanner,
+  H1,
+  Para,
+  Strong,
+  DetailBox,
+  EBtn,
+  BtnRow,
+  EmailFooter,
+  EP,
+  formatBriefDateTimeUTC,
+} from '@beaconmon/emails';
 
 export interface DowntimeAlertProps {
   monitorName: string;
   monitorUrl: string;
   incidentStartedAt: Date;
   incidentId: string;
+  incidentUrl?: string;
+  acknowledgeUrl?: string;
+  unsubscribeUrl?: string;
 }
 
 export function DowntimeAlert({
@@ -24,130 +28,58 @@ export function DowntimeAlert({
   monitorUrl,
   incidentStartedAt,
   incidentId,
+  incidentUrl,
+  acknowledgeUrl,
+  unsubscribeUrl,
 }: DowntimeAlertProps) {
-  const formattedTime = incidentStartedAt.toUTCString();
+  const preview = `${monitorName} is down — incident detected at ${formatBriefDateTimeUTC(incidentStartedAt)}.`;
 
   return (
-    <Html>
-      <Head />
-      <Preview>{monitorName} is down — incident detected</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Section style={statusBanner}>
-            <Text style={statusDot}>●</Text>
-            <Text style={statusText}>Monitor is Down</Text>
-          </Section>
+    <EmailLayout preview={preview} context="Uptime Alert">
+      <AlertBanner
+        sev="critical"
+        label="Monitor is down"
+        tag={{ kind: 'down', text: 'Down' }}
+      />
 
-          <Heading style={heading}>Downtime Alert</Heading>
+      <H1>{monitorName} is not responding</H1>
 
-          <Text style={paragraph}>
-            <strong>{monitorName}</strong> is not responding.
-          </Text>
+      <Para>
+        Beaconmon could not reach <Strong>{monitorName}</Strong> on its last checks. Customers may
+        be unable to reach this URL right now.
+      </Para>
 
-          <Section style={detailsBox}>
-            <Text style={detailRow}>
-              <strong>Monitor:</strong> {monitorName}
-            </Text>
-            <Text style={detailRow}>
-              <strong>URL:</strong>{' '}
-              <Link href={monitorUrl} style={link}>
-                {monitorUrl}
-              </Link>
-            </Text>
-            <Text style={detailRow}>
-              <strong>Detected at:</strong> {formattedTime}
-            </Text>
-            <Text style={detailRow}>
-              <strong>Incident ID:</strong> {incidentId}
-            </Text>
-          </Section>
+      <DetailBox
+        rows={[
+          { k: 'Monitor', v: monitorName, mono: false },
+          { k: 'URL', v: monitorUrl, break: true },
+          { k: 'Status', v: 'Unreachable', color: EP.critInk },
+          { k: 'Failing since', v: formatBriefDateTimeUTC(incidentStartedAt) },
+          { k: 'Incident', v: `#${incidentId}` },
+        ]}
+      />
 
-          <Hr style={hr} />
+      {(incidentUrl || acknowledgeUrl) && (
+        <BtnRow>
+          {incidentUrl && (
+            <EBtn href={incidentUrl} variant="primary">
+              View incident #{incidentId}
+            </EBtn>
+          )}
+          {acknowledgeUrl && (
+            <EBtn href={acknowledgeUrl} variant="outline">
+              Acknowledge
+            </EBtn>
+          )}
+        </BtnRow>
+      )}
 
-          <Text style={footer}>
-            You are receiving this because you have alerts enabled for this monitor.
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+      <EmailFooter
+        reason="You receive this because you are on the alert policy for this monitor. We will email again the moment it recovers."
+        manageLabel="Escalation policy"
+        manageUrl={incidentUrl}
+        unsubscribeUrl={unsubscribeUrl}
+      />
+    </EmailLayout>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-};
-
-const container: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  margin: '40px auto',
-  padding: '20px',
-  borderRadius: '8px',
-  maxWidth: '560px',
-  border: '1px solid #e4e4e7',
-};
-
-const statusBanner: React.CSSProperties = {
-  backgroundColor: '#fef2f2',
-  borderRadius: '6px',
-  padding: '12px 16px',
-  marginBottom: '24px',
-  display: 'flex',
-};
-
-const statusDot: React.CSSProperties = {
-  color: '#dc2626',
-  fontSize: '20px',
-  margin: '0 8px 0 0',
-  lineHeight: '1',
-};
-
-const statusText: React.CSSProperties = {
-  color: '#dc2626',
-  fontWeight: '600',
-  fontSize: '14px',
-  margin: '0',
-};
-
-const heading: React.CSSProperties = {
-  color: '#111827',
-  fontSize: '24px',
-  fontWeight: '700',
-  margin: '0 0 16px',
-};
-
-const paragraph: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
-};
-
-const detailsBox: React.CSSProperties = {
-  backgroundColor: '#f9fafb',
-  borderRadius: '6px',
-  padding: '16px',
-  marginBottom: '20px',
-};
-
-const detailRow: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  margin: '0 0 8px',
-};
-
-const link: React.CSSProperties = {
-  color: '#2563eb',
-  textDecoration: 'none',
-};
-
-const hr: React.CSSProperties = {
-  borderColor: '#e4e4e7',
-  margin: '20px 0',
-};
-
-const footer: React.CSSProperties = {
-  color: '#9ca3af',
-  fontSize: '12px',
-  margin: '0',
-};

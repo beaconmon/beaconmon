@@ -1,16 +1,17 @@
 import * as React from 'react';
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from '@react-email/components';
+  EmailLayout,
+  Eyebrow,
+  H1,
+  Para,
+  StepRow,
+  EBtn,
+  BtnRow,
+  EmailFooter,
+  EP,
+  MONO,
+} from '@beaconmon/emails';
+import { Section, Text } from '@react-email/components';
 
 export interface WelcomeProps {
   competitorDomains: string[];
@@ -19,139 +20,87 @@ export interface WelcomeProps {
 }
 
 export function Welcome({ competitorDomains, appUrl, unsubscribeUrl }: WelcomeProps) {
+  const preview = "You're live on Beaconmon. First check in ~10 minutes — here's what to expect.";
+
   return (
-    <Html>
-      <Head />
-      <Preview>You're set up on Beaconmon. Competitor checks start in ~10 minutes.</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Heading style={heading}>You're all set on Beaconmon</Heading>
+    <EmailLayout preview={preview} context="Welcome">
+      <Eyebrow color={EP.brandDeep}>You&apos;re live</Eyebrow>
+      <H1>Your competitor intelligence is now running</H1>
+      <Para>Your monitors are active. Here is exactly what happens next, and when.</Para>
 
-          <Text style={paragraph}>
-            Your monitors are live. Here's what happens next.
+      {competitorDomains.length > 0 && (
+        <Section
+          style={{
+            backgroundColor: EP.surface,
+            border: `1px solid ${EP.line}`,
+            borderRadius: '9px',
+            padding: '14px 16px',
+            marginBottom: '24px',
+          }}
+        >
+          <Text
+            style={{
+              margin: '0 0 10px',
+              fontFamily: MONO,
+              fontSize: '10.5px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: EP.muted,
+            }}
+          >
+            Tracking {competitorDomains.length} competitor{competitorDomains.length === 1 ? '' : 's'}
           </Text>
+          {competitorDomains.map((d) => (
+            <Text
+              key={d}
+              style={{
+                margin: '0 0 4px',
+                fontFamily: MONO,
+                fontSize: '12.5px',
+                color: EP.body,
+              }}
+            >
+              ✓ {d}
+            </Text>
+          ))}
+        </Section>
+      )}
 
-          {competitorDomains.length > 0 && (
-            <Section style={competitorBox}>
-              <Text style={competitorHeading}>Competitors you're tracking</Text>
-              {competitorDomains.map((domain) => (
-                <Text key={domain} style={competitorItem}>
-                  {domain}
-                </Text>
-              ))}
-            </Section>
-          )}
+      <Section style={{ marginBottom: '24px' }}>
+        <StepRow
+          n={1}
+          title="First check in ~10 minutes"
+          body="We baseline every competitor page, then watch for price, promo, stock, and content changes."
+        />
+        <StepRow
+          n={2}
+          title="Instant alerts on big moves"
+          body="Price drops, sales, and stockouts hit your inbox the moment we detect them."
+        />
+        <StepRow
+          n={3}
+          title="A briefing every morning"
+          body="One digest at 08:00 with everything that changed overnight, ranked by impact."
+          last
+        />
+      </Section>
 
-          <Text style={paragraph}>
-            Your first competitor check runs in ~10 minutes. You'll get notified when prices,
-            promotions, or page content changes.
-          </Text>
+      <BtnRow>
+        <EBtn href={`${appUrl}/wire`} variant="primary">
+          Open your feed
+        </EBtn>
+        <EBtn href={`${appUrl}/wire?tab=competitors`} variant="outline">
+          Add competitors
+        </EBtn>
+      </BtnRow>
 
-          <Text style={paragraph}>
-            Every morning you'll receive an intelligence digest summarizing what changed overnight
-            across all your competitors.
-          </Text>
-
-          <Section style={ctaSection}>
-            <Link href={`${appUrl}/wire`} style={ctaButton}>
-              Open your feed
-            </Link>
-          </Section>
-
-          <Hr style={hr} />
-
-          <Text style={footer}>
-            You received this because you completed Beaconmon setup.{' '}
-            <Link href={`${appUrl}/settings`} style={footerLink}>
-              Manage account
-            </Link>
-            {unsubscribeUrl && (
-              <>
-                {' · '}
-                <Link href={unsubscribeUrl} style={footerLink}>
-                  Unsubscribe
-                </Link>
-              </>
-            )}
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+      <EmailFooter
+        reason="You receive this because you completed Beaconmon setup."
+        manageLabel="Manage account"
+        manageUrl={`${appUrl}/settings`}
+        unsubscribeUrl={unsubscribeUrl}
+      />
+    </EmailLayout>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-};
-
-const container: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  margin: '0 auto',
-  padding: '40px 32px',
-  maxWidth: '560px',
-  borderRadius: '8px',
-};
-
-const heading: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '22px',
-  fontWeight: '700',
-  margin: '0 0 16px',
-};
-
-const paragraph: React.CSSProperties = {
-  color: '#475569',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '0 0 14px',
-};
-
-const competitorBox: React.CSSProperties = {
-  backgroundColor: '#f8fafc',
-  borderRadius: '6px',
-  padding: '16px',
-  margin: '0 0 20px',
-};
-
-const competitorHeading: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '13px',
-  fontWeight: '600',
-  margin: '0 0 8px',
-};
-
-const competitorItem: React.CSSProperties = {
-  color: '#64748b',
-  fontSize: '13px',
-  margin: '0 0 4px',
-};
-
-const ctaSection: React.CSSProperties = {
-  margin: '24px 0',
-};
-
-const ctaButton: React.CSSProperties = {
-  backgroundColor: '#00e57a',
-  borderRadius: '6px',
-  color: '#0a1a0f',
-  display: 'inline-block',
-  fontWeight: '600',
-  fontSize: '14px',
-  padding: '12px 24px',
-  textDecoration: 'none',
-};
-
-const hr: React.CSSProperties = {
-  borderColor: '#e2e8f0',
-  margin: '24px 0',
-};
-
-const footer: React.CSSProperties = {
-  color: '#94a3b8',
-  fontSize: '12px',
-};
-
-const footerLink: React.CSSProperties = {
-  color: '#64748b',
-};

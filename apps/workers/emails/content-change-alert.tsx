@@ -1,16 +1,23 @@
 import * as React from 'react';
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from '@react-email/components';
+  EmailLayout,
+  AlertBanner,
+  H1,
+  Para,
+  Strong,
+  EventCard,
+  DetailBox,
+  EBtn,
+  BtnRow,
+  EmailFooter,
+  EP,
+  badgeKindFromEventType,
+  formatBriefDateTimeUTC,
+  formatRelativeAgo,
+  hostnameFrom,
+  type Severity,
+  type BadgeKind,
+} from '@beaconmon/emails';
 
 export interface ContentChangeAlertProps {
   monitorName: string;
@@ -19,6 +26,84 @@ export interface ContentChangeAlertProps {
   summary?: string;
   classification?: string;
   diffUrl?: string;
+  muteUrl?: string;
+  unsubscribeUrl?: string;
+}
+
+interface BannerCopy {
+  sev: Severity;
+  label: string;
+  badge: BadgeKind;
+  headline: string;
+}
+
+function deriveBannerCopy(classification: string | undefined, monitorName: string): BannerCopy {
+  const host = monitorName;
+  switch (classification) {
+    case 'price_changed':
+      return {
+        sev: 'warning',
+        label: 'Price drop detected',
+        badge: 'priceDown',
+        headline: `${host} just changed a price you track`,
+      };
+    case 'sale_started':
+      return {
+        sev: 'warning',
+        label: 'Sale started',
+        badge: 'sale',
+        headline: `${host} launched a sale`,
+      };
+    case 'sale_ended':
+      return {
+        sev: 'info',
+        label: 'Sale ended',
+        badge: 'promo',
+        headline: `${host} ended a sale`,
+      };
+    case 'out_of_stock':
+      return {
+        sev: 'critical',
+        label: 'Product went out of stock',
+        badge: 'stockout',
+        headline: `${host} just sold out of a product you track`,
+      };
+    case 'back_in_stock':
+      return {
+        sev: 'positive',
+        label: 'Back in stock',
+        badge: 'restock',
+        headline: `${host} restocked a product you track`,
+      };
+    case 'product_added':
+      return {
+        sev: 'info',
+        label: 'New product listed',
+        badge: 'newProduct',
+        headline: `${host} added a new product`,
+      };
+    case 'product_removed':
+      return {
+        sev: 'info',
+        label: 'Product removed',
+        badge: 'removed',
+        headline: `${host} removed a product`,
+      };
+    case 'promo_detected':
+      return {
+        sev: 'warning',
+        label: 'Promotion detected',
+        badge: 'promo',
+        headline: `${host} pushed a new promotion`,
+      };
+    default:
+      return {
+        sev: 'info',
+        label: 'Content change detected',
+        badge: 'info',
+        headline: `${host} changed`,
+      };
+  }
 }
 
 export function ContentChangeAlert({
@@ -28,172 +113,71 @@ export function ContentChangeAlert({
   summary,
   classification,
   diffUrl,
+  muteUrl,
+  unsubscribeUrl,
 }: ContentChangeAlertProps) {
-  const formattedTime = changedAt.toUTCString();
+  const copy = deriveBannerCopy(classification, monitorName);
+  const host = hostnameFrom(monitorUrl);
+  const preview = summary
+    ? `${monitorName} — ${summary}`
+    : `${monitorName} — content change detected`;
+
+  const detailRows = [
+    { k: 'Competitor', v: monitorName, mono: false },
+    { k: 'URL', v: monitorUrl, mono: true, break: true },
+    ...(summary ? [{ k: 'Change', v: summary, mono: false }] : []),
+    { k: 'Detected', v: formatBriefDateTimeUTC(changedAt) },
+  ];
 
   return (
-    <Html>
-      <Head />
-      <Preview>{summary ? `${monitorName} — ${summary}` : `${monitorName} — content change detected`}</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Section style={statusBanner}>
-            <Text style={statusDot}>●</Text>
-            <Text style={statusText}>
-              Content Changed
-              {classification ? (
-                <span style={classificationTag}>{classification}</span>
-              ) : null}
-            </Text>
-          </Section>
+    <EmailLayout preview={preview} context="Competitor Alert">
+      <AlertBanner
+        sev={copy.sev}
+        label={copy.label}
+        tag={{ kind: badgeKindFromEventType(classification) }}
+      />
 
-          <Heading style={heading}>Content Change Alert</Heading>
+      <H1>{copy.headline}</H1>
 
-          <Text style={paragraph}>
-            A change was detected on <strong>{monitorName}</strong>.
-          </Text>
+      <Para>
+        Beaconmon detected a change on <Strong>{monitorName}</Strong>
+        {classification === 'price_changed' && summary ? <>: {summary}.</> : '.'}
+      </Para>
 
-          {summary ? (
-            <Text style={summaryParagraph}>{summary}</Text>
-          ) : (
-            <Text style={mutedText}>AI summary not available for this change.</Text>
+      <EventCard
+        name={monitorName}
+        host={host}
+        badge={copy.badge}
+        sev={copy.sev}
+        summary={summary}
+        time={`Detected ${formatRelativeAgo(changedAt)} · ${formatBriefDateTimeUTC(changedAt)}`}
+        actionLabel={diffUrl ? 'View diff' : undefined}
+        actionUrl={diffUrl}
+      />
+
+      <DetailBox rows={detailRows} />
+
+      {(diffUrl || muteUrl) && (
+        <BtnRow>
+          {diffUrl && (
+            <EBtn href={diffUrl} variant="primary">
+              View the change
+            </EBtn>
           )}
+          {muteUrl && (
+            <EBtn href={muteUrl} variant="outline">
+              Mute this monitor
+            </EBtn>
+          )}
+        </BtnRow>
+      )}
 
-          <Section style={detailsBox}>
-            <Text style={detailRow}>
-              <strong>Monitor:</strong> {monitorName}
-            </Text>
-            <Text style={detailRow}>
-              <strong>URL:</strong>{' '}
-              <Link href={monitorUrl} style={link}>
-                {monitorUrl}
-              </Link>
-            </Text>
-            <Text style={detailRow}>
-              <strong>Detected at:</strong> {formattedTime}
-            </Text>
-            {diffUrl ? (
-              <Text style={detailRow}>
-                <strong>View diff:</strong>{' '}
-                <Link href={diffUrl} style={link}>
-                  Open in Beaconmon →
-                </Link>
-              </Text>
-            ) : null}
-          </Section>
-
-          <Hr style={hr} />
-
-          <Text style={footer}>
-            You are receiving this because you have alerts enabled for this monitor.
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+      <EmailFooter
+        reason="You receive this because you have alerts enabled for this monitor. Switch to a daily roll-up any time."
+        manageLabel="Alert settings"
+        manageUrl={diffUrl}
+        unsubscribeUrl={unsubscribeUrl}
+      />
+    </EmailLayout>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-};
-
-const container: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  margin: '40px auto',
-  padding: '20px',
-  borderRadius: '8px',
-  maxWidth: '560px',
-  border: '1px solid #e4e4e7',
-};
-
-const statusBanner: React.CSSProperties = {
-  backgroundColor: '#eff6ff',
-  borderRadius: '6px',
-  padding: '12px 16px',
-  marginBottom: '24px',
-  display: 'flex',
-};
-
-const statusDot: React.CSSProperties = {
-  color: '#2563eb',
-  fontSize: '20px',
-  margin: '0 8px 0 0',
-  lineHeight: '1',
-};
-
-const statusText: React.CSSProperties = {
-  color: '#2563eb',
-  fontWeight: '600',
-  fontSize: '14px',
-  margin: '0',
-};
-
-const heading: React.CSSProperties = {
-  color: '#111827',
-  fontSize: '24px',
-  fontWeight: '700',
-  margin: '0 0 16px',
-};
-
-const paragraph: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
-};
-
-const summaryParagraph: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  lineHeight: '1.6',
-  margin: '-8px 0 20px',
-};
-
-const mutedText: React.CSSProperties = {
-  color: '#9ca3af',
-  fontSize: '13px',
-  fontStyle: 'italic',
-  margin: '-8px 0 20px',
-};
-
-const classificationTag: React.CSSProperties = {
-  backgroundColor: '#eff6ff',
-  color: '#2563eb',
-  fontSize: '10px',
-  fontWeight: '600',
-  textTransform: 'uppercase',
-  letterSpacing: '0.04em',
-  padding: '2px 6px',
-  borderRadius: '3px',
-  marginLeft: '8px',
-};
-
-const detailsBox: React.CSSProperties = {
-  backgroundColor: '#f9fafb',
-  borderRadius: '6px',
-  padding: '16px',
-  marginBottom: '20px',
-};
-
-const detailRow: React.CSSProperties = {
-  color: '#374151',
-  fontSize: '14px',
-  margin: '0 0 8px',
-};
-
-const link: React.CSSProperties = {
-  color: '#2563eb',
-  textDecoration: 'none',
-};
-
-const hr: React.CSSProperties = {
-  borderColor: '#e4e4e7',
-  margin: '20px 0',
-};
-
-const footer: React.CSSProperties = {
-  color: '#9ca3af',
-  fontSize: '12px',
-  margin: '0',
-};

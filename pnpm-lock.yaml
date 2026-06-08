@@ -41,6 +41,9 @@ importers:
       '@beaconmon/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@beaconmon/emails':
+        specifier: workspace:*
+        version: link:../../packages/emails
       '@beaconmon/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -237,6 +240,9 @@ importers:
       '@beaconmon/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@beaconmon/emails':
+        specifier: workspace:*
+        version: link:../../packages/emails
       '@beaconmon/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -413,6 +419,25 @@ importers:
       tsx:
         specifier: ^4.19.2
         version: 4.21.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/emails:
+    dependencies:
+      '@react-email/components':
+        specifier: ^1.0.12
+        version: 1.0.12(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react:
+        specifier: ^19.2.5
+        version: 19.2.5
+    devDependencies:
+      '@beaconmon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19.1.5
+        version: 19.2.14
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
