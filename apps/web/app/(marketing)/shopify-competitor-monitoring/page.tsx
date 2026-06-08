@@ -122,7 +122,7 @@ export default function ShopifyCompetitorMonitoringPage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Every competitor move, in one feed</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Get alerts when competitors change prices, launch products, or update their site</h2>
             <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Price drops, new product launches, and promo changes across your Shopify competitor set.</p>
           </div>
           <div className="reveal">

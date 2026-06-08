@@ -31,7 +31,7 @@ const INTELLIGENCE: MatrixRow[] = [
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
   { feature: 'Intelligence Digest',   free: 'Weekly',      starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
-  { feature: 'AI content-diff',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'AI content-diff (plain-English summaries of what changed)',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Deploy-aware alerts',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Reliability Targets',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
@@ -244,7 +244,12 @@ export default function PricingPage() {
       <section className="pb-[80px]">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <PricingToggle />
-          <p className="text-center mt-8 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
+          <div className="mt-8 max-w-[540px] mx-auto px-5 py-4 rounded-xl border border-[var(--brand-green-border-20)] bg-[var(--brand-green-glow-04)] text-center">
+            <p className="text-[14px] text-brand-dim leading-[1.6]">
+              One price-match decision on a $80 product = Beaconmon pays for itself in the first week.
+            </p>
+          </div>
+          <p className="text-center mt-6 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
             All plans include SSL monitoring, domain expiry alerts, and public status pages. Annual billing saves 20%. No contracts. Cancel anytime.
           </p>
         </div>

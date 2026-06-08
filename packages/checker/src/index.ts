@@ -10,3 +10,5 @@ export { classifyError } from './errors.js';
 export { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from './evaluate.js';
 export type { EvaluationResult } from './evaluate.js';
 export type { CheckInput, CheckMonitorType } from './types.js';
+export { detectAnomaly, ANOMALY_MIN_SAMPLES, ANOMALY_Z_THRESHOLD, ANOMALY_COOLDOWN_MINUTES, ANOMALY_WINDOW_HOURS } from './anomaly.js';
+export type { AnomalyResult } from './anomaly.js';

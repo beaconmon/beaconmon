@@ -222,7 +222,7 @@ export default function NavBar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                      className="py-3 text-sm text-brand-dim hover:text-brand-text transition-colors block"
                       onClick={() => setMenuOpen(false)}
                     >
                       {item.label}
@@ -244,7 +244,7 @@ export default function NavBar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="py-[6px] text-sm text-brand-dim hover:text-brand-text transition-colors block"
+                      className="py-3 text-sm text-brand-dim hover:text-brand-text transition-colors block"
                       onClick={() => setMenuOpen(false)}
                     >
                       {item.label}

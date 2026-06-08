@@ -121,7 +121,7 @@ export default function CompetitorProductLaunchTrackingPage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Every competitor launch, as it happens</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Get alerted when competitors launch new products</h2>
             <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Structured new-product events from the Shopify feed, with title, variants, and price.</p>
           </div>
           <div className="reveal">

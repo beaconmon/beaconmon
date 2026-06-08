@@ -20,10 +20,18 @@ const FOR_LINKS: [string, string][] = [
 
 const COMPARE_LINKS: [string, string][] = [
   ['/vs', 'All comparisons'],
-  ['/vs/uptimerobot', 'vs UptimeRobot'],
-  ['/vs/pingdom', 'vs Pingdom'],
-  ['/vs/better-uptime', 'vs Better Uptime'],
-  ['/vs/statuscake', 'vs StatusCake'],
+  ['/vs/distill', 'vs Distill'],
+  ['/vs/hexowatch', 'vs Hexowatch'],
+  ['/vs/prisync', 'vs Prisync'],
+  ['/vs/visualping', 'vs Visualping'],
+];
+
+const GUIDES_LINKS: [string, string][] = [
+  ['/shopify-competitor-monitoring', 'Shopify Competitor Monitoring'],
+  ['/competitor-price-tracking', 'Price Tracking'],
+  ['/ecommerce-competitor-intelligence', 'Competitor Intelligence'],
+  ['/woocommerce-competitor-monitoring', 'WooCommerce Monitoring'],
+  ['/ecommerce-uptime-monitoring-guide', 'Uptime Monitoring Guide'],
 ];
 
 const COMPANY_LINKS: [string, string][] = [
@@ -55,7 +63,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <div className="grid grid-cols-4 max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-8">
+          <div className="grid grid-cols-5 max-[800px]:grid-cols-3 max-[640px]:grid-cols-2 max-[400px]:grid-cols-1 gap-8">
             <div>
               <h4 className="text-[12px] font-semibold text-brand-dim mb-4">Product</h4>
               <ul className="space-y-0">
@@ -84,6 +92,18 @@ export default function Footer() {
               <h4 className="text-[12px] font-semibold text-brand-dim mb-4">Compare</h4>
               <ul className="space-y-0">
                 {COMPARE_LINKS.map(([href, label]) => (
+                  <li key={label} className="py-[6px]">
+                    <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-semibold text-brand-dim mb-4">Guides</h4>
+              <ul className="space-y-0">
+                {GUIDES_LINKS.map(([href, label]) => (
                   <li key={label} className="py-[6px]">
                     <Link href={href} className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
                       {label}

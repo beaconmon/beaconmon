@@ -1,5 +1,6 @@
 import NavBar from '@/components/marketing/NavBar';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -92,9 +93,40 @@ const ENTRIES: Entry[] = [
   },
 ];
 
+const CHANGELOG_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Beaconmon Changelog',
+  url: 'https://beaconmon.com/changelog',
+  itemListElement: ENTRIES.map(({ date, title, body }, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Article',
+      headline: title,
+      datePublished: (() => {
+        const parts = date.split(' ');
+        const month = parts[0] ?? '';
+        const year = parts[1] ?? '';
+        const months: Record<string, string> = {
+          January: '01', February: '02', March: '03', April: '04',
+          May: '05', June: '06', July: '07', August: '08',
+          September: '09', October: '10', November: '11', December: '12',
+        };
+        return `${year}-${months[month] ?? '01'}-01`;
+      })(),
+      description: body,
+      author: { '@type': 'Organization', name: 'Beaconmon' },
+      publisher: { '@type': 'Organization', name: 'Beaconmon', url: 'https://beaconmon.com' },
+      url: `https://beaconmon.com/changelog`,
+    },
+  })),
+};
+
 export default function ChangelogPage() {
   return (
     <>
+      <JsonLd data={CHANGELOG_SCHEMA} />
       <NavBar />
 
       <main>

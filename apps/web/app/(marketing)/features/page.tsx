@@ -199,7 +199,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Intelligence</span>
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Know what your rivals changed overnight.</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How competitor price and content tracking works in Beaconmon</h2>
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Track competitor prices, promotions, and page content. Get a daily brief with AI summaries of everything that moved.</p>
           </div>
 

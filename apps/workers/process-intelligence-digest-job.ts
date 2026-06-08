@@ -6,7 +6,9 @@ import { prisma, digestRepository } from '@beaconmon/db';
 import type { IntelligenceDigestJob } from '@beaconmon/queue';
 import { digestPrefsSchema } from '@beaconmon/types';
 import { emailChannelConfigSchema, slackChannelConfigSchema } from '@beaconmon/types';
-import { IntelligenceDigestEmail } from './emails/intelligence-digest.js';
+import { IntelligenceDigestEmail, significanceWeight, hasAnySignal, formatEventSummary } from './emails/intelligence-digest.js';
+export { significanceWeight, hasAnySignal } from './emails/intelligence-digest.js';
+import { buildSlackPayload } from './emails/intelligence-digest-slack.js';
 import { getEffectivePlan } from './lib/get-effective-plan.js';
 import { logger } from './lib/logger.js';
 import { env } from './lib/env.js';
@@ -18,158 +20,6 @@ import type {
 } from './emails/intelligence-digest.js';
 
 const service = 'digest-worker';
-
-export function significanceWeight(significance: string | null): number {
-  if (significance === 'high') return 0;
-  if (significance === 'low') return 2;
-  return 1; // 'medium' or null
-}
-
-export function hasAnySignal(sections: {
-  incidents?: unknown[];
-  ownContent?: unknown[];
-  competitors?: unknown[];
-  smartAlerts?: unknown[];
-  expiry?: unknown[];
-}): boolean {
-  return (
-    (sections.incidents?.length ?? 0) > 0 ||
-    (sections.ownContent?.length ?? 0) > 0 ||
-    (sections.competitors?.length ?? 0) > 0 ||
-    (sections.smartAlerts?.length ?? 0) > 0 ||
-    (sections.expiry?.length ?? 0) > 0
-  );
-}
-
-function formatEventSummary(type: string, payload: Record<string, unknown>): string {
-  switch (type) {
-    case 'price_changed':
-      return `$${payload.oldPrice} → $${payload.newPrice}`;
-    case 'product_added':
-      return `New: ${payload.title}`;
-    case 'product_removed':
-      return `Removed: ${payload.title}`;
-    case 'stock_changed':
-      return payload.newAvailable ? 'Back in stock' : 'Out of stock';
-    case 'out_of_stock':
-      return `Out of stock: ${payload.productHandle ?? 'product'}`;
-    case 'back_in_stock':
-      return `Back in stock: ${payload.productHandle ?? 'product'}`;
-    case 'site_changed':
-    case 'promo_detected':
-      return (payload.diffSummary as string | undefined) ?? 'Content changed';
-    default:
-      return 'Competitor event';
-  }
-}
-
-// Slack Block Kit digest payload
-function buildSlackPayload(
-  frequency: 'daily' | 'weekly',
-  windowStart: Date,
-  windowEnd: Date,
-  dashboardUrl: string,
-  sections: {
-    incidents?: DigestIncidentItem[];
-    ownContent?: DigestContentItem[];
-    competitors?: DigestContentItem[];
-    smartAlerts?: DigestSmartAlertItem[];
-    expiry?: DigestExpiryItem[];
-  }
-): object {
-  const label = frequency === 'daily' ? 'Daily' : 'Weekly';
-  const dateRange = `${windowStart.toUTCString().slice(0, 16)} to ${windowEnd.toUTCString().slice(0, 16)} UTC`;
-
-  const blocks: object[] = [
-    {
-      type: 'header',
-      text: { type: 'plain_text', text: `${label} Intelligence Digest` },
-    },
-    {
-      type: 'section',
-      text: { type: 'mrkdwn', text: `*Period:* ${dateRange}` },
-    },
-    { type: 'divider' },
-  ];
-
-  if (sections.incidents && sections.incidents.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Incidents (${sections.incidents.length})*\n` +
-          sections.incidents
-            .map(
-              (inc) =>
-                `• *${inc.monitorName}* — started ${inc.startedAt.toUTCString()}${inc.resolvedAt ? `, resolved ${inc.resolvedAt.toUTCString()}` : ' (ongoing)'}`
-            )
-            .join('\n'),
-      },
-    });
-  }
-
-  if (sections.smartAlerts && sections.smartAlerts.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Smart Alerts (${sections.smartAlerts.length})*\n` +
-          sections.smartAlerts
-            .map((a) => `• *${a.monitorName}* — ${a.responseTimeMs}ms response time`)
-            .join('\n'),
-      },
-    });
-  }
-
-  if (sections.expiry && sections.expiry.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*SSL and Domain Expiry (${sections.expiry.length})*\n` +
-          sections.expiry
-            .map((e) => `• *${e.monitorName}* — ${e.type.toUpperCase()} expires in ${e.daysRemaining} days`)
-            .join('\n'),
-      },
-    });
-  }
-
-  if (sections.competitors && sections.competitors.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Competitor Changes (${sections.competitors.length})*\n` +
-          sections.competitors.map((c) => `• *${c.monitorName}* — ${c.diffSummary ?? 'content changed'}`).join('\n'),
-      },
-    });
-  }
-
-  if (sections.ownContent && sections.ownContent.length > 0) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Own Content Changes (${sections.ownContent.length})*\n` +
-          sections.ownContent.map((c) => `• *${c.monitorName}* — ${c.diffSummary ?? 'content changed'}`).join('\n'),
-      },
-    });
-  }
-
-  blocks.push({
-    type: 'actions',
-    elements: [
-      {
-        type: 'button',
-        text: { type: 'plain_text', text: 'Open Intelligence Dashboard' },
-        url: dashboardUrl,
-        style: 'primary',
-      },
-    ],
-  });
-
-  return { blocks };
-}
 
 export async function processIntelligenceDigestJob(
   data: IntelligenceDigestJob,

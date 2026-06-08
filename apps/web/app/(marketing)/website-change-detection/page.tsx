@@ -258,7 +258,7 @@ export default function WebsiteChangeDetectionPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Every change, captured and explained for your team</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How website change detection alerts your team to what actually changed</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (

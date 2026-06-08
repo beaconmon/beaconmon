@@ -16,3 +16,4 @@ export * from './competitor-events.js';
 export * from './competitor-pages.js';
 export * from './competitors.js';
 export * from './monitoring-runs.js';
+export * from './escalation-policies.js';

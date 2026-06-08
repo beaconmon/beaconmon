@@ -37,7 +37,10 @@ export const lifecycleEmailsTask: SchedulerTask = {
             select: { domain: true },
           },
           _count: {
-            select: { competitors: { where: { deletedAt: null, isActive: true } } },
+            select: {
+              competitors: { where: { deletedAt: null, isActive: true } },
+              alertChannels: { where: { isActive: true, disabledAt: null } },
+            },
           },
         },
       });
@@ -70,6 +73,7 @@ export const lifecycleEmailsTask: SchedulerTask = {
           ownerEmail,
           competitorDomains: team.competitors.map((c) => c.domain),
           competitorCount: team._count.competitors,
+          alertChannelCount: team._count.alertChannels,
         };
 
         for (const config of lifecycleEmailRegistry.values()) {

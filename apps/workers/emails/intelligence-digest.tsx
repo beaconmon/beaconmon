@@ -44,6 +44,50 @@ export interface DigestSmartAlertItem {
   checkedAt: Date;
 }
 
+export function significanceWeight(significance: string | null): number {
+  if (significance === 'high') return 0;
+  if (significance === 'low') return 2;
+  return 1; // 'medium' or null
+}
+
+export function hasAnySignal(sections: {
+  incidents?: unknown[];
+  ownContent?: unknown[];
+  competitors?: unknown[];
+  smartAlerts?: unknown[];
+  expiry?: unknown[];
+}): boolean {
+  return (
+    (sections.incidents?.length ?? 0) > 0 ||
+    (sections.ownContent?.length ?? 0) > 0 ||
+    (sections.competitors?.length ?? 0) > 0 ||
+    (sections.smartAlerts?.length ?? 0) > 0 ||
+    (sections.expiry?.length ?? 0) > 0
+  );
+}
+
+export function formatEventSummary(type: string, payload: Record<string, unknown>): string {
+  switch (type) {
+    case 'price_changed':
+      return `$${payload.oldPrice} → $${payload.newPrice}`;
+    case 'product_added':
+      return `New: ${payload.title}`;
+    case 'product_removed':
+      return `Removed: ${payload.title}`;
+    case 'stock_changed':
+      return payload.newAvailable ? 'Back in stock' : 'Out of stock';
+    case 'out_of_stock':
+      return `Out of stock: ${payload.productHandle ?? 'product'}`;
+    case 'back_in_stock':
+      return `Back in stock: ${payload.productHandle ?? 'product'}`;
+    case 'site_changed':
+    case 'promo_detected':
+      return (payload.diffSummary as string | undefined) ?? 'Content changed';
+    default:
+      return 'Competitor event';
+  }
+}
+
 export interface IntelligenceDigestEmailProps {
   frequency: 'daily' | 'weekly';
   windowStart: Date;
