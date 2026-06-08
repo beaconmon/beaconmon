@@ -113,7 +113,7 @@ export default function CompetitorCollectionsMonitoringPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">See what competitors are pushing, not just what they stock</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How to track which products competitors are actively promoting</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (

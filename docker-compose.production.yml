@@ -147,6 +147,15 @@ services:
       migrate:
         condition: service_completed_successfully
 
+  lifecycle-email-worker:
+    <<: *workers
+    command: ["pnpm", "run", "start:worker:lifecycle-email"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
   # CLAUDE.md rule: scheduler must be a singleton. Never scale this above 1.
   scheduler:
     <<: *workers

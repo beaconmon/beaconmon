@@ -169,14 +169,128 @@ export default function ForShopifyPage() {
         </div>
       </section>
 
+      {/* Shopify use cases */}
+      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-14">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">What Shopify merchants track most</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Four scenarios where Beaconmon pays for itself before the end of the month.</p>
+          </div>
+          <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
+            {[
+              {
+                heading: 'Competitor price drops',
+                body: 'Your largest competitor cut their price at midnight. By 9am, customers are asking you to match it. Beaconmon catches price changes on competitor product and pricing pages the moment they happen and fires a Slack alert. You can decide to match, hold, or message your existing customers before they notice.',
+              },
+              {
+                heading: 'New product launches',
+                body: "Competitor launches are easy to miss unless you're checking their catalog every day. Beaconmon watches competitor collection and new arrivals pages for content changes. When a new product appears, you see the change in your feed and your next Intelligence Digest, with a diff of exactly what was added.",
+              },
+              {
+                heading: 'Promotional banner changes',
+                body: "A competitor's homepage hero is one of the fastest signals that a sale is about to start. Beaconmon monitors the full text of homepage banners. When the copy shifts from evergreen content to a promo announcement, you get an alert within the hour, well before the sale appears in your customers' social feeds.",
+              },
+              {
+                heading: 'Stock changes and sellouts',
+                body: 'A competitor selling out of a popular product is a buying window. Beaconmon tracks stock status on competitor product pages using CSS selectors targeting out-of-stock indicators. When a bestseller sells out, you know to promote your own inventory or adjust pricing while demand is unmet.',
+              },
+            ].map(({ heading, body }) => (
+              <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+                <h3 className="text-[18px] font-bold tracking-[-0.015em] mb-3 text-brand-green-ink">{heading}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-[100px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-14">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How to set up Shopify monitoring in three steps</h2>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">No plugins, no DNS changes, no code. Paste, confirm, done.</p>
+          </div>
+          <div className="reveal grid grid-cols-3 max-[880px]:grid-cols-1 gap-4">
+            {[
+              {
+                num: '01',
+                heading: 'Paste your store URL',
+                body: "Beaconmon detects your Shopify store automatically and suggests a starter bundle covering your homepage, product pages, cart, and checkout. Confirm the bundle in one click.",
+              },
+              {
+                num: '02',
+                heading: 'Add competitors to watch',
+                body: 'Enter your competitors by domain. Beaconmon suggests their pricing and product pages to monitor. You pick check frequency and CSS selectors for precise price tracking.',
+              },
+              {
+                num: '03',
+                heading: 'Get alerts and your morning brief',
+                body: 'Alerts fire to email or Slack within 60 seconds of a confirmed change. Your Intelligence Digest summarizes everything from the past 24 hours every morning at 8am.',
+              },
+            ].map(({ num, heading, body }) => (
+              <div key={num} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px]">
+                <span className="font-mono text-[13px] text-brand-green-ink mb-6 block">{num}</span>
+                <h3 className="text-[20px] font-bold tracking-[-0.015em] mb-[10px]">{heading}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.6]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-[80px] border-t border-brand-line-soft bg-brand-bg-section">
+        <div className="max-w-[780px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-10">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Questions from Shopify merchants</h2>
+          </div>
+          <div className="reveal">
+            {[
+              {
+                q: 'Does Beaconmon require a Shopify app or plugin?',
+                a: 'No. Beaconmon works from outside your store by fetching your public pages the same way a browser would. There is nothing to install in your Shopify admin and no impact on your store performance.',
+              },
+              {
+                q: 'Can I track competitor prices on Shopify stores?',
+                a: 'Yes. Add any competitor URL as a content monitor with a CSS selector targeting their price element. Beaconmon checks the page on your chosen interval and alerts you the moment the price changes. This works for Shopify and non-Shopify competitors.',
+              },
+              {
+                q: 'What happens if my checkout goes down at 2am?',
+                a: 'Beaconmon requires two consecutive failed checks before marking a monitor down, which prevents false alarms from transient blips. With a 1-minute check interval, you get an alert within 2 to 3 minutes of a real checkout failure, typically before any customer complaint arrives.',
+              },
+              {
+                q: 'How is Beaconmon different from Shopify uptime monitoring apps?',
+                a: 'Shopify monitoring apps run inside your store and are limited to what the Shopify platform exposes. Beaconmon checks your public URLs from outside, the same way customers and search engines access your store. It also monitors SSL expiry, domain expiry, and competitor pages, none of which Shopify apps can do.',
+              },
+              {
+                q: 'What check intervals are available?',
+                a: 'Check intervals range from 5 minutes on the Free plan to 30 seconds on the Scale plan. Most Shopify merchants start with 1-minute checks on the Starter plan, which catches checkout failures before a second customer encounters them.',
+              },
+            ].map(({ q, a }) => (
+              <details key={q} open className="group border-b border-brand-line-soft">
+                <summary className="flex items-center justify-between py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[16px] font-semibold tracking-[-0.01em] text-brand-text">
+                  {q}
+                  <svg className="w-4 h-4 shrink-0 text-brand-muted transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </summary>
+                <p className="text-brand-dim text-[15px] leading-[1.6] pb-5">{a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Internal links */}
       <section className="py-12 border-t border-brand-line-soft">
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
-          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
+          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">Related guides</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence (deep dive)</Link>
+            <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking guide</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
-            <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
           </div>
         </div>
       </section>

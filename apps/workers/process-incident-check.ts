@@ -1,9 +1,9 @@
 import { logger } from './lib/logger.js';
-import { prisma } from '@beaconmon/db';
 import {
   monitorRepository,
   incidentRepository,
   statusPageWorkerRepository,
+  escalationPoliciesRepository,
   type MonitorForCheck,
 } from '@beaconmon/db';
 import { evaluateCheckResult, CONSECUTIVE_FAILURES_THRESHOLD } from '@beaconmon/checker';
@@ -20,10 +20,7 @@ async function enqueueEscalationSteps(
   policyId: string,
   escalationQueue: Queue<EscalationStepJob>
 ): Promise<void> {
-  const policy = await prisma.escalationPolicy.findUnique({
-    where: { id: policyId },
-    include: { steps: { orderBy: { stepOrder: 'asc' } } },
-  });
+  const policy = await escalationPoliciesRepository.findWithSteps(policyId);
   if (!policy || policy.steps.length === 0) return;
 
   for (const step of policy.steps) {
@@ -54,11 +51,7 @@ async function resolveEscalationPolicyId(
   teamId: string
 ): Promise<string | null> {
   if (monitorEscalationPolicyId) return monitorEscalationPolicyId;
-  const team = await prisma.team.findUnique({
-    where: { id: teamId },
-    select: { defaultEscalationPolicyId: true },
-  });
-  return team?.defaultEscalationPolicyId ?? null;
+  return escalationPoliciesRepository.getDefaultPolicyId(teamId);
 }
 
 async function dispatchDownAlert(params: {

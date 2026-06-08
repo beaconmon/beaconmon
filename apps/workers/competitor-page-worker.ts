@@ -5,13 +5,14 @@ initSentry('competitor-page-worker'); // must be before other imports
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
-import { QUEUE_NAMES, createCompetitorNotifyQueue, createManagedWorker } from '@beaconmon/queue';
+import { QUEUE_NAMES, createCompetitorNotifyQueue, createLifecycleEmailQueue, createManagedWorker } from '@beaconmon/queue';
 import type { CompetitorPageCheckJob } from '@beaconmon/queue';
 import { prisma, monitoringRunWorkerRepository } from '@beaconmon/db';
 import { processCompetitorPageCheckJob } from './process-competitor-page-check-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const competitorNotifyQueue = createCompetitorNotifyQueue(connection);
+const lifecycleEmailQueue = createLifecycleEmailQueue(connection);
 
 const { worker } = createManagedWorker<CompetitorPageCheckJob>({
   queueName: QUEUE_NAMES.COMPETITOR_PAGE_CHECK,
@@ -22,10 +23,11 @@ const { worker } = createManagedWorker<CompetitorPageCheckJob>({
   processor: async (job) => {
     const { competitorPageId, competitorId } = job.data;
     logger.info({ service: 'competitor-page-worker', competitorPageId, competitorId }, 'Processing competitor page check job');
-    await processCompetitorPageCheckJob(job.data, connection, competitorNotifyQueue);
+    await processCompetitorPageCheckJob(job.data, connection, competitorNotifyQueue, lifecycleEmailQueue);
   },
   onShutdown: async () => {
     await competitorNotifyQueue.close();
+    await lifecycleEmailQueue.close();
     await prisma.$disconnect();
     await connection.quit();
   },

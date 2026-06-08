@@ -7,6 +7,9 @@ import {
   runSslCheck,
   runTcpCheck,
   runDomainCheck,
+  detectAnomaly,
+  ANOMALY_COOLDOWN_MINUTES,
+  ANOMALY_WINDOW_HOURS,
   type CheckInput,
 } from '@beaconmon/checker';
 import {
@@ -126,16 +129,6 @@ function probeToCheckResult(
 
 // ─── Anomaly detection ────────────────────────────────────────────────────────
 
-const ANOMALY_MIN_SAMPLES = 30;
-const ANOMALY_Z_THRESHOLD = 3.0;
-const ANOMALY_COOLDOWN_MINUTES = 30;
-const ANOMALY_WINDOW_HOURS = 24;
-
-/**
- * Z-score anomaly detection over a 24-hour rolling window.
- * Fires at most once per 30 minutes per monitor.
- * Creates a performance_alert row and sends via all team alert channels (no incident).
- */
 async function checkForAnomaly(
   monitor: MonitorForCheck,
   responseTimeMs: number,
@@ -144,7 +137,6 @@ async function checkForAnomaly(
   const service = 'check-worker';
   const { id: monitorId, teamId } = monitor;
 
-  // Fetch recent response times
   const since = new Date(checkedAt.getTime() - ANOMALY_WINDOW_HOURS * 60 * 60 * 1000);
   let samples: number[];
   try {
@@ -154,19 +146,9 @@ async function checkForAnomaly(
     return;
   }
 
-  if (samples.length < ANOMALY_MIN_SAMPLES) return; // not enough data
+  const anomaly = detectAnomaly(samples, responseTimeMs);
+  if (!anomaly) return;
 
-  const n = samples.length;
-  const mean = samples.reduce((a, b) => a + b, 0) / n;
-  const variance = samples.reduce((sum, v) => sum + (v - mean) ** 2, 0) / n;
-  const stdDev = Math.sqrt(variance);
-
-  if (stdDev === 0) return; // all samples identical
-
-  const zScore = (responseTimeMs - mean) / stdDev;
-  if (zScore <= ANOMALY_Z_THRESHOLD) return; // within normal range
-
-  // Cooldown: skip if a notification was sent in the last 30 minutes
   try {
     const last = await performanceAlertRepository.findLastNotified(monitorId);
     if (last?.notifiedAt) {
@@ -178,7 +160,6 @@ async function checkForAnomaly(
     return;
   }
 
-  // Persist the alert
   const alertId = crypto.randomUUID();
   try {
     await performanceAlertRepository.create({
@@ -187,16 +168,15 @@ async function checkForAnomaly(
       monitorId,
       checkedAt,
       responseTimeMs,
-      meanMs: mean,
-      stdDevMs: stdDev,
-      zScore,
+      meanMs: anomaly.mean,
+      stdDevMs: anomaly.stdDev,
+      zScore: anomaly.zScore,
     });
   } catch (err) {
     logger.error({ service, monitorId, err }, 'Anomaly: failed to persist performance_alert');
     return;
   }
 
-  // Send via all active team alert channels (no incident)
   try {
     const channels = await alertChannelRepository.findActiveByTeamId(teamId);
     for (const channel of channels) {
@@ -214,7 +194,7 @@ async function checkForAnomaly(
     }
     await performanceAlertRepository.markNotified(alertId, checkedAt);
     logger.info(
-      { service, monitorId, zScore: zScore.toFixed(2), responseTimeMs, mean: mean.toFixed(0) },
+      { service, monitorId, zScore: anomaly.zScore.toFixed(2), responseTimeMs, mean: anomaly.mean.toFixed(0) },
       'Anomaly detected — performance alert sent'
     );
   } catch (err) {

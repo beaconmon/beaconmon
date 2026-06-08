@@ -41,10 +41,10 @@ interface BundleStepProps {
 }
 
 const TYPE_LABEL: Record<BundleItem['type'], string> = {
-  http:    'HTTP',
-  content: 'Content',
-  ssl:     'SSL',
-  domain:  'Domain',
+  http:    'Uptime check',
+  content: 'Change detection',
+  ssl:     'SSL certificate',
+  domain:  'Domain expiry',
 };
 
 function getItemIcon(item: BundleItem): React.ReactNode {
@@ -390,10 +390,10 @@ export function BundleStep({
                     onChange={(e) => setAddType(e.target.value as BundleItem['type'])}
                     className="shrink-0 rounded-md border border-brand-line bg-brand-bg px-2 py-1.5 text-xs text-brand-dim focus:border-brand-green focus:outline-none"
                   >
-                    <option value="http">HTTP</option>
-                    <option value="content">Content</option>
-                    <option value="ssl">SSL</option>
-                    <option value="domain">Domain</option>
+                    <option value="http">Uptime check</option>
+                    <option value="content">Change detection</option>
+                    <option value="ssl">SSL certificate</option>
+                    <option value="domain">Domain expiry</option>
                   </select>
                   <button
                     onClick={commitAddForm}

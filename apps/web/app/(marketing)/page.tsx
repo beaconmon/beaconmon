@@ -3,7 +3,6 @@ import IntelligenceMockup from '@/components/marketing/IntelligenceMockup';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import PricingToggle from '@/components/marketing/PricingToggle';
-import Testimonials from '@/components/marketing/Testimonials';
 import { PRICING } from '@/lib/pricing';
 import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
@@ -11,7 +10,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Intelligence | Beaconmon',
+  title: 'Competitor Intelligence & Uptime Monitoring for eCommerce | Beaconmon',
   description:
     'Beaconmon monitors your Shopify competitors and delivers a daily brief of every price drop, new launch, and content change. Set up in five minutes. Free to start.',
   alternates: { canonical: 'https://beaconmon.com' },
@@ -109,7 +108,7 @@ export default function LandingPage() {
       <NavBar />
 
       {/* ====== HERO ====== */}
-      <section className="relative py-[100px] max-[1024px]:py-16 overflow-hidden">
+      <section className="relative py-16 overflow-hidden">
         <div
           aria-hidden
           className="absolute pointer-events-none"
@@ -126,12 +125,6 @@ export default function LandingPage() {
           <div className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] max-[1024px]:grid-cols-1 gap-16 max-[1024px]:gap-12 items-center">
             {/* Left */}
             <div>
-              <Link
-                href="/features"
-                className="inline-flex items-center gap-2 text-[12px] font-semibold text-brand-green-ink border border-[var(--brand-green-border-25)] bg-[var(--brand-green-glow-06)] rounded-full px-3 py-1 mb-5 hover:bg-[var(--brand-green-glow-10)] transition-colors"
-              >
-                New: Shopify product feed integration →
-              </Link>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
                 Your daily Shopify competitor brief,{' '}
                 <span className="text-brand-green-ink">written automatically.</span>
@@ -180,13 +173,37 @@ export default function LandingPage() {
           <p className="text-center text-[12px] tracking-[0.08em] uppercase text-brand-muted mb-6">
             Trusted by merchants on
           </p>
-          <div className="flex justify-between items-center gap-8 flex-wrap">
+          <div className="flex justify-center items-center gap-12 flex-wrap">
             <Link href="/for/shopify" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</Link>
             <Link href="/for/woocommerce" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</Link>
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">BigCommerce</span>
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Webflow Ecom</span>
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Squarespace</span>
-            <span className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Magento</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== WHAT IS BEACONMON ====== */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[780px] mx-auto px-8 max-[640px]:px-5">
+          <h2 className="text-[clamp(24px,3vw,34px)] tracking-[-0.025em] font-extrabold mb-5">Website and competitor intelligence for eCommerce stores</h2>
+          <div className="text-brand-dim text-[16px] leading-[1.7] space-y-4">
+            <p>
+              Beaconmon is a monitoring platform built specifically for Shopify and WooCommerce store owners. It checks your store pages every 30 seconds (Scale plan) to 5 minutes (Free plan) and sends an alert within 60 seconds of a confirmed failure, before a customer notices or emails you.
+            </p>
+            <p>
+              Beyond uptime, Beaconmon monitors competitor product pages, pricing pages, and homepage hero sections for content changes. When a competitor drops a price or runs a promotion, Beaconmon detects the change and notifies you immediately or includes it in your next Intelligence Digest.
+            </p>
+            <p>
+              The Intelligence Digest is a scheduled email or Slack message summarizing every competitor move and store anomaly from the previous period. Growth and Scale plan subscribers receive a daily digest. All plans receive a weekly digest.
+            </p>
+            <p>
+              Beaconmon tracks six monitor types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port status, keyword presence, and content change detection. No code changes or plugins required to get started.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[14px]">
+            <Link href="/shopify-competitor-monitoring" className="text-brand-green-ink hover:underline">Shopify competitor monitoring</Link>
+            <Link href="/competitor-price-tracking" className="text-brand-green-ink hover:underline">Competitor price tracking</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-green-ink hover:underline">Competitor intelligence guide</Link>
+            <Link href="/ecommerce-uptime-monitoring-guide" className="text-brand-green-ink hover:underline">Uptime monitoring for eCommerce</Link>
+            <Link href="/website-change-detection" className="text-brand-green-ink hover:underline">Website change detection</Link>
           </div>
         </div>
       </section>
@@ -299,7 +316,7 @@ export default function LandingPage() {
                 label: 'Brief',
                 labelColor: 'text-blue-400',
                 heading: 'Your morning brief, at 8am sharp.',
-                body: 'One email or Slack message with every competitor move and store event, ranked by what matters to a Shopify merchant. No dashboard required.',
+                body: 'A daily brief, automatically compiled from your competitor moves. Like having a research analyst watching 10 competitors full-time.',
               },
             ].map(({ step, label, labelColor, heading, body }) => (
               <div key={step} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px] flex flex-col">
@@ -315,14 +332,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ====== TESTIMONIALS ====== */}
-      <Testimonials />
-
       {/* ====== COMPARISON ====== */}
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Built for ecommerce. Not generic website watching.</h2>
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">How Beaconmon compares to generic uptime and competitor monitoring tools</h2>
             <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">A quick side-by-side with the alternatives.</p>
           </div>
           <div className="reveal max-w-[920px] mx-auto overflow-x-auto border border-brand-line rounded-[14px] bg-brand-bg1">
@@ -352,12 +366,6 @@ export default function LandingPage() {
                     ps: <span className="text-brand-green-ink font-semibold">✓</span>,
                   },
                   {
-                    feat: 'JS-rendered pages',
-                    bm: <span className="text-red-400 font-semibold">✗</span>,
-                    vp: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    ps: <span className="text-brand-muted">—</span>,
-                  },
-                  {
                     feat: 'Daily intelligence digest',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
@@ -379,6 +387,12 @@ export default function LandingPage() {
                     feat: 'Status pages included',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
+                  },
+                  {
+                    feat: 'HTML-first monitoring',
+                    bm: <span className="text-brand-green-ink font-semibold text-[12px]">✓ faster checks</span>,
+                    vp: <span className="text-brand-muted text-[12px]">JS renderer</span>,
                     ps: <span className="text-brand-muted">—</span>,
                   },
                   {

@@ -25,6 +25,7 @@ alerts
 aliases
 all
 allow
+alternatives
 analysis
 analytics
 and
@@ -114,6 +115,8 @@ caps
 caption
 capture
 card
+cards
+cases
 casing
 catalog
 category
@@ -122,6 +125,7 @@ central
 cents
 change
 changelog
+changes
 changing
 channel
 channels
@@ -150,6 +154,7 @@ cname
 code
 codebase
 col
+collections
 color
 colors
 cols
@@ -173,6 +178,7 @@ concurrently
 condition
 config
 connection
+connections
 consecutive
 consistent
 constraints
@@ -187,7 +193,6 @@ cookie
 cookies
 copy
 core
-cost
 count
 countdown
 create
@@ -252,9 +257,11 @@ dismiss
 dismissed
 dispatch
 display
+distill
 divider
 dns
 docker
+does
 dom
 domain
 domains
@@ -306,6 +313,7 @@ evaluate
 evaluation
 event
 events
+examples
 excerpt
 exclude
 expiry
@@ -346,7 +354,6 @@ forgot
 form
 format
 found
-founders
 frame
 free
 freelancers
@@ -390,8 +397,8 @@ heading
 headline
 heartbeat
 heartbeats
-helps
 hero
+hexowatch
 hide
 high
 highlight
@@ -471,6 +478,7 @@ label
 labels
 landing
 last
+launch
 layer
 layered
 layout
@@ -670,6 +678,7 @@ prioritize
 prioritized
 priority
 prisma
+prisync
 privacy
 private
 probe
@@ -680,6 +689,7 @@ production
 products
 project
 promo
+promotion
 prompt
 property
 propose
@@ -850,7 +860,6 @@ snapshot
 snapshots
 social
 software
-solo
 solutions
 source
 southeast
@@ -1003,6 +1012,7 @@ view
 viewport
 violation
 visual
+visualping
 vitest
 vocabulary
 warm

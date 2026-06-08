@@ -165,7 +165,7 @@ export default function EcommerceCompetitorIntelligencePage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Every signal that matters to your business</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">What competitor signals Beaconmon tracks for ecommerce stores</h2>
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Beaconmon tracks any change on any public competitor page, not just the price on the product listing.</p>
           </div>
           <div className="reveal grid grid-cols-3 max-[880px]:grid-cols-2 max-[560px]:grid-cols-1 gap-4 max-w-[900px] mx-auto">
@@ -183,7 +183,7 @@ export default function EcommerceCompetitorIntelligencePage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Everything your team needs to stay ahead</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How ecommerce teams use competitor intelligence to respond faster</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (

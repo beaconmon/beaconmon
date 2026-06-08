@@ -4,9 +4,11 @@ import { Day7Reengagement } from '../../emails/day7-reengagement.js';
 import { Welcome } from '../../emails/welcome.js';
 import { LimitHit } from '../../emails/limit-hit.js';
 import { Day2Aha } from '../../emails/day2-aha.js';
+import { Day3AlertsSetup } from '../../emails/day3-alerts-setup.js';
 import { Day8Detection } from '../../emails/day8-detection.js';
 import { Day12Urgency } from '../../emails/day12-urgency.js';
 import { Day14Paused } from '../../emails/day14-paused.js';
+import { FirstCompetitorChange } from '../../emails/first-competitor-change.js';
 import { digestRepository } from '@beaconmon/db';
 
 export interface TeamForLifecycle {
@@ -19,6 +21,7 @@ export interface TeamForLifecycle {
   subscription: { status: string } | null;
   ownerEmail: string | null;
   competitorCount: number;
+  alertChannelCount?: number;
 }
 
 export interface LifecycleEmailTriggerConfig {
@@ -281,9 +284,49 @@ const day14Paused: LifecycleEmailTriggerConfig = {
   },
 };
 
+const day3AlertsSetup: LifecycleEmailTriggerConfig = {
+  type: 'day3-alerts-setup',
+  category: 'lifecycle',
+  trigger(team, now) {
+    if (!team.onboardingCompletedAt) return false;
+    if ((team.alertChannelCount ?? 0) > 0) return false;
+    const completed = team.onboardingCompletedAt.getTime();
+    return (
+      completed >= utcDayStart(now, -3).getTime() &&
+      completed < utcDayStart(now, -2).getTime()
+    );
+  },
+  payload() {
+    return {};
+  },
+  template: Day3AlertsSetup,
+  subject() {
+    return 'Set up alerts for your monitors';
+  },
+  dedupKey(team) {
+    return `day3:alerts:setup:${team.id}`;
+  },
+};
+
+const firstCompetitorChange: LifecycleEmailTriggerConfig = {
+  type: 'first-competitor-change',
+  category: 'transactional',
+  // Event-triggered from process-competitor-page-check-job.ts; never fires from the scheduler.
+  trigger() { return false; },
+  payload() { return {}; },
+  template: FirstCompetitorChange,
+  subject() {
+    return 'We found your first competitor change!';
+  },
+  dedupKey(team) {
+    return `first:competitor:change:${team.id}`;
+  },
+};
+
 export const lifecycleEmailRegistry = new Map<string, LifecycleEmailTriggerConfig>([
   [welcome.type, welcome],
   [day2Aha.type, day2Aha],
+  [day3AlertsSetup.type, day3AlertsSetup],
   [trial7d.type, trial7d],
   [trial1d.type, trial1d],
   [day7Reengagement.type, day7Reengagement],
@@ -291,4 +334,5 @@ export const lifecycleEmailRegistry = new Map<string, LifecycleEmailTriggerConfi
   [limitHit.type, limitHit],
   [day12Urgency.type, day12Urgency],
   [day14Paused.type, day14Paused],
+  [firstCompetitorChange.type, firstCompetitorChange],
 ]);
