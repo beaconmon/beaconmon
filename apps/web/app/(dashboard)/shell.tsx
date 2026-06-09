@@ -7,20 +7,15 @@ import { authClient } from '@/lib/auth-client';
 import {
   Activity,
   AlertTriangle,
-  Bell,
   Brain,
   ChevronLeft,
   ChevronRight,
   CreditCard,
-  FileText,
-  GitBranch,
-  Globe,
   LayoutGrid,
   LogOut,
   Plus,
   Search,
   Settings,
-  Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -44,16 +39,20 @@ import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
 
 const NAV_ITEMS = [
-  { href: '/today',                  label: 'Today',              icon: LayoutGrid },
-  { href: '/monitors',               label: 'Monitors',           icon: Activity },
-  { href: '/wire',                   label: 'Wire',               icon: Brain,   badge: 'NEW' },
-  { href: '/incidents',              label: 'Incidents',          icon: AlertTriangle },
-  { href: '/maintenance-windows',    label: 'Maintenance',        icon: Wrench },
-  { href: '/status-pages',           label: 'Status Pages',       icon: Globe },
-  { href: '/alert-channels',         label: 'Alert Channels',     icon: Bell },
-  { href: '/escalation-policies',    label: 'Escalations',        icon: GitBranch },
-  { href: '/reports',                label: 'Reports',            icon: FileText },
-  { href: '/settings',               label: 'Settings',           icon: Settings },
+  { href: '/today',     label: 'Today',     icon: LayoutGrid },
+  { href: '/wire',      label: 'Wire',      icon: Brain, badge: 'NEW' },
+  { href: '/monitors',  label: 'Monitors',  icon: Activity },
+  { href: '/incidents', label: 'Incidents', icon: AlertTriangle },
+  { href: '/settings',  label: 'Settings',  icon: Settings },
+];
+
+const SETTINGS_ACTIVE_PREFIXES = [
+  '/settings',
+  '/alert-channels',
+  '/escalation-policies',
+  '/status-pages',
+  '/maintenance-windows',
+  '/reports',
 ];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];
@@ -74,7 +73,12 @@ function NavItem({
   collapsed: boolean;
 }) {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(href + '/');
+  const isActive =
+    href === '/settings'
+      ? SETTINGS_ACTIVE_PREFIXES.some(
+          (p) => pathname === p || pathname.startsWith(p + '/')
+        )
+      : pathname === href || pathname.startsWith(href + '/');
 
   return (
     <Link
