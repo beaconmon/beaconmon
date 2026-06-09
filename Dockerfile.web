@@ -24,6 +24,7 @@ COPY packages/ai/package.json ./packages/ai/
 COPY packages/billing/package.json ./packages/billing/
 COPY packages/checker/package.json ./packages/checker/
 COPY packages/db/package.json ./packages/db/
+COPY packages/emails/package.json ./packages/emails/
 COPY packages/logger/package.json ./packages/logger/
 COPY packages/queue/package.json ./packages/queue/
 COPY packages/status-pages/package.json ./packages/status-pages/
