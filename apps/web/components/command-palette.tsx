@@ -3,7 +3,7 @@
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
-import { Activity, AlertTriangle, Bell, Globe, Settings, Plus, Search, CreditCard, Users, Wrench } from 'lucide-react';
+import { Activity, AlertTriangle, Bell, Brain, FileText, GitBranch, Globe, Settings, Plus, Search, CreditCard, Users, Wrench, LayoutGrid } from 'lucide-react';
 import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useStatusPages } from '@/lib/hooks/use-status-pages';
@@ -14,18 +14,22 @@ interface CommandPaletteProps {
 }
 
 const NAV_ITEMS = [
-  { label: 'Monitors',       href: '/monitors',         icon: Activity },
-  { label: 'Incidents',      href: '/incidents',        icon: AlertTriangle },
-  { label: 'Status Pages',   href: '/status-pages',     icon: Globe },
-  { label: 'Alert Channels', href: '/alert-channels',   icon: Bell },
-  { label: 'Settings',       href: '/settings',         icon: Settings },
+  { label: 'Today',          href: '/today',     icon: LayoutGrid },
+  { label: 'Wire',           href: '/wire',      icon: Brain },
+  { label: 'Monitors',       href: '/monitors',  icon: Activity },
+  { label: 'Incidents',      href: '/incidents', icon: AlertTriangle },
+  { label: 'Settings',       href: '/settings',  icon: Settings },
 ];
 
 const SETTINGS_SHORTCUTS = [
-  { label: 'Settings — General',    href: '/settings/general',    icon: Settings },
-  { label: 'Settings — Team',       href: '/settings/team',       icon: Users },
-  { label: 'Settings — Billing',    href: '/settings/billing',    icon: CreditCard },
-  { label: 'Maintenance Windows',   href: '/maintenance-windows', icon: Wrench },
+  { label: 'Settings — General',           href: '/settings/general',       icon: Settings },
+  { label: 'Settings — Team & members',    href: '/settings/team',          icon: Users },
+  { label: 'Settings — Billing',           href: '/settings/billing',       icon: CreditCard },
+  { label: 'Settings — Alert channels',    href: '/alert-channels',         icon: Bell },
+  { label: 'Settings — Escalation policies', href: '/escalation-policies',  icon: GitBranch },
+  { label: 'Settings — Status pages',      href: '/status-pages',           icon: Globe },
+  { label: 'Settings — Maintenance windows', href: '/maintenance-windows',  icon: Wrench },
+  { label: 'Settings — Reports',           href: '/reports',                icon: FileText },
 ];
 
 function CmdGroupHeading({ children }: { children: React.ReactNode }) {
