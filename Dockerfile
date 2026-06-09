@@ -21,6 +21,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc package.json ./
 COPY apps/web/package.json ./apps/web/
 COPY apps/workers/package.json ./apps/workers/
 COPY apps/region-probe/package.json ./apps/region-probe/
+COPY packages/emails/package.json ./packages/emails/
 COPY packages/ai/package.json ./packages/ai/
 COPY packages/billing/package.json ./packages/billing/
 COPY packages/checker/package.json ./packages/checker/
