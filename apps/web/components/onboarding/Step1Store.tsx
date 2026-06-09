@@ -114,7 +114,7 @@ export function Step1Store({
         <p className="font-mono text-[11px] uppercase tracking-widest text-brand-green-ink">
           Welcome to Beaconmon
         </p>
-        <h1 className="text-5xl font-semibold italic leading-tight text-brand-text">
+        <h1 className="text-5xl font-semibold leading-tight text-brand-text">
           Let&apos;s get your store on the radar.
         </h1>
         <p className="text-sm text-brand-dim">

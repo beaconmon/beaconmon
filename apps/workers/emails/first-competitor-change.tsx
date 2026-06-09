@@ -1,16 +1,18 @@
 import * as React from 'react';
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from '@react-email/components';
+  EmailLayout,
+  Eyebrow,
+  H1,
+  Para,
+  Strong,
+  EBtn,
+  BtnRow,
+  EmailFooter,
+  EP,
+  MONO,
+  hostnameFrom,
+} from '@beaconmon/emails';
+import { Section, Text } from '@react-email/components';
 
 export interface FirstCompetitorChangeProps {
   pageUrl: string;
@@ -20,14 +22,6 @@ export interface FirstCompetitorChangeProps {
   unsubscribeUrl?: string;
 }
 
-function hostnameFrom(url: string): string {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return url;
-  }
-}
-
 export function FirstCompetitorChange({
   pageUrl,
   diffSummary,
@@ -35,142 +29,72 @@ export function FirstCompetitorChange({
   unsubscribeUrl,
 }: FirstCompetitorChangeProps) {
   const hostname = hostnameFrom(pageUrl);
+  const preview = 'Your competitor intelligence just picked up its first signal.';
 
   return (
-    <Html>
-      <Head />
-      <Preview>Your competitor intelligence just picked up its first signal.</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Text style={logoText}>Beaconmon</Text>
-          <Heading style={heading}>We found your first competitor change!</Heading>
+    <EmailLayout preview={preview} context="First signal">
+      <Eyebrow color={EP.brandDeep}>First signal</Eyebrow>
+      <H1>We found your first competitor change</H1>
 
-          <Text style={paragraph}>
-            Beaconmon detected a change on <strong>{hostname}</strong>. Your competitor
-            intelligence feed is live, and it is already paying attention.
+      <Para>
+        Beaconmon detected a change on <Strong>{hostname}</Strong>. Your competitor intelligence
+        feed is live, and it is already paying attention.
+      </Para>
+
+      {diffSummary && (
+        <Section
+          style={{
+            backgroundColor: EP.surface,
+            border: `1px solid ${EP.line}`,
+            borderLeft: `3px solid ${EP.brand}`,
+            borderRadius: '9px',
+            padding: '14px 16px',
+            marginBottom: '20px',
+          }}
+        >
+          <Text
+            style={{
+              margin: '0 0 6px',
+              fontFamily: MONO,
+              fontSize: '10.5px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: EP.muted,
+            }}
+          >
+            What changed
           </Text>
-
-          {diffSummary && (
-            <Section style={diffBox}>
-              <Text style={diffLabel}>What changed</Text>
-              <Text style={diffText}>{diffSummary}</Text>
-            </Section>
-          )}
-
-          <Text style={paragraph}>
-            From here, every price update, promotion, or content change on your tracked competitors
-            will surface in your intelligence feed.
+          <Text
+            style={{
+              margin: 0,
+              fontSize: '14px',
+              lineHeight: 1.55,
+              color: EP.body,
+            }}
+          >
+            {diffSummary}
           </Text>
+        </Section>
+      )}
 
-          <Section style={ctaSection}>
-            <Link href={`${appUrl}/wire`} style={ctaButton}>
-              View the change
-            </Link>
-          </Section>
+      <Para>
+        From here, every price update, promotion, or content change on your tracked competitors
+        will surface in your intelligence feed.
+      </Para>
 
-          <Hr style={hr} />
+      <BtnRow>
+        <EBtn href={`${appUrl}/wire`} variant="primary">
+          View the change
+        </EBtn>
+      </BtnRow>
 
-          <Text style={footer}>
-            You received this email because you signed up for Beaconmon.{' '}
-            <Link href={`${appUrl}/settings`} style={footerLink}>
-              Manage your account
-            </Link>
-            {unsubscribeUrl && (
-              <>
-                {' · '}
-                <Link href={unsubscribeUrl} style={footerLink}>
-                  Unsubscribe
-                </Link>
-              </>
-            )}
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+      <EmailFooter
+        reason="You received this email because you signed up for Beaconmon."
+        manageLabel="Manage account"
+        manageUrl={`${appUrl}/settings`}
+        unsubscribeUrl={unsubscribeUrl}
+      />
+    </EmailLayout>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-};
-
-const container: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  margin: '0 auto',
-  padding: '40px 32px',
-  maxWidth: '560px',
-  borderRadius: '8px',
-};
-
-const logoText: React.CSSProperties = {
-  color: '#22c55e',
-  fontWeight: '700',
-  fontSize: '16px',
-  margin: '0 0 24px',
-};
-
-const heading: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '22px',
-  fontWeight: '700',
-  margin: '0 0 16px',
-};
-
-const paragraph: React.CSSProperties = {
-  color: '#475569',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '0 0 14px',
-};
-
-const diffBox: React.CSSProperties = {
-  borderLeft: '3px solid #00e57a',
-  paddingLeft: '12px',
-  margin: '0 0 20px',
-};
-
-const diffLabel: React.CSSProperties = {
-  color: '#64748b',
-  fontSize: '12px',
-  fontWeight: '600',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  margin: '0 0 4px',
-};
-
-const diffText: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '14px',
-  lineHeight: '1.6',
-  margin: '0',
-};
-
-const ctaSection: React.CSSProperties = {
-  margin: '24px 0',
-};
-
-const ctaButton: React.CSSProperties = {
-  backgroundColor: '#00e57a',
-  borderRadius: '6px',
-  color: '#0a1a0f',
-  display: 'inline-block',
-  fontWeight: '600',
-  fontSize: '14px',
-  padding: '12px 24px',
-  textDecoration: 'none',
-};
-
-const hr: React.CSSProperties = {
-  borderColor: '#e2e8f0',
-  margin: '24px 0',
-};
-
-const footer: React.CSSProperties = {
-  color: '#94a3b8',
-  fontSize: '12px',
-};
-
-const footerLink: React.CSSProperties = {
-  color: '#64748b',
-};

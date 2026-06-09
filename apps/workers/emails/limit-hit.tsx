@@ -1,16 +1,14 @@
 import * as React from 'react';
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from '@react-email/components';
+  EmailLayout,
+  AlertBanner,
+  H1,
+  Para,
+  EBtn,
+  BtnRow,
+  EmailFooter,
+  DetailBox,
+} from '@beaconmon/emails';
 
 export interface LimitHitProps {
   limitType: 'competitor' | 'monitor';
@@ -21,7 +19,14 @@ export interface LimitHitProps {
   unsubscribeUrl?: string;
 }
 
-export function LimitHit({ limitType, currentCount, planLimit, planTier, appUrl, unsubscribeUrl }: LimitHitProps) {
+export function LimitHit({
+  limitType,
+  currentCount,
+  planLimit,
+  planTier,
+  appUrl,
+  unsubscribeUrl,
+}: LimitHitProps) {
   const label = limitType === 'competitor' ? 'competitor' : 'monitor';
   const plural = `${label}s`;
   const planName = planTier.charAt(0).toUpperCase() + planTier.slice(1);
@@ -30,153 +35,56 @@ export function LimitHit({ limitType, currentCount, planLimit, planTier, appUrl,
   const upgradeTarget = isGrowth ? 'Scale' : 'Growth';
   const preview = `You've reached your ${label} limit. Upgrade to ${upgradeTarget} to add more.`;
 
+  const growthRows = [
+    { k: 'Growth plan', v: '100 uptime monitors, 1-min intervals', mono: false },
+    { k: 'Competitors', v: '25 competitor monitors', mono: false },
+    { k: 'Locations', v: '5 monitoring locations', mono: false },
+    { k: 'History', v: '90 days', mono: false },
+  ];
+  const scaleRows = [
+    { k: 'Scale plan', v: 'Unlimited competitor monitors', mono: false },
+    { k: 'Uptime', v: 'Unlimited uptime monitors', mono: false },
+    { k: 'History', v: '1 year', mono: false },
+    { k: 'Support', v: 'Priority support', mono: false },
+  ];
+
   return (
-    <Html>
-      <Head />
-      <Preview>{preview}</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Heading style={heading}>You've reached your {label} limit</Heading>
+    <EmailLayout preview={preview} context="Account">
+      <AlertBanner sev="warning" label={`${label.charAt(0).toUpperCase() + label.slice(1)} limit reached`} />
 
-          <Text style={paragraph}>
-            You tried to add a {label}, but your {planName} plan allows a maximum of {planLimit} {limitLabel}.
-            You already have {currentCount}.
-          </Text>
+      <H1>You&apos;ve reached your {label} limit</H1>
 
-          {isGrowth ? (
-            <Text style={paragraph}>
-              Upgrade to Scale for unlimited competitor and uptime monitoring, 5-minute check
-              intervals, and 1-year history.
-            </Text>
-          ) : (
-            <Text style={paragraph}>
-              Upgrade to Growth to monitor up to 25 competitors and 100 websites, or to Scale for
-              unlimited monitoring.
-            </Text>
-          )}
+      <Para>
+        You tried to add a {label}, but your {planName} plan allows a maximum of {planLimit}{' '}
+        {limitLabel}. You already have {currentCount}.
+      </Para>
 
-          <Section style={ctaSection}>
-            <Link href={`${appUrl}/settings/billing`} style={ctaButton}>
-              Upgrade to {upgradeTarget}
-            </Link>
-          </Section>
+      {isGrowth ? (
+        <Para>
+          Upgrade to Scale for unlimited competitor and uptime monitoring, 5-minute check
+          intervals, and 1-year history.
+        </Para>
+      ) : (
+        <Para>
+          Upgrade to Growth to monitor up to 25 competitors and 100 websites, or to Scale for
+          unlimited monitoring.
+        </Para>
+      )}
 
-          <Hr style={hr} />
+      <BtnRow>
+        <EBtn href={`${appUrl}/settings/billing`} variant="primary">
+          Upgrade to {upgradeTarget}
+        </EBtn>
+      </BtnRow>
 
-          <Section style={planList}>
-            {isGrowth ? (
-              <>
-                <Text style={planHeading}>Scale plan highlights</Text>
-                <Text style={planItem}>Unlimited competitor monitors</Text>
-                <Text style={planItem}>Unlimited uptime monitors</Text>
-                <Text style={planItem}>1-year history</Text>
-                <Text style={planItem}>Priority support</Text>
-              </>
-            ) : (
-              <>
-                <Text style={planHeading}>Growth plan highlights</Text>
-                <Text style={planItem}>25 competitor monitors</Text>
-                <Text style={planItem}>100 uptime monitors, 1-minute intervals</Text>
-                <Text style={planItem}>5 monitoring locations</Text>
-                <Text style={planItem}>90-day history</Text>
-                <Text style={planItem}>Unlimited alert channels</Text>
-              </>
-            )}
-          </Section>
+      <DetailBox rows={isGrowth ? scaleRows : growthRows} />
 
-          <Hr style={hr} />
-
-          <Text style={footer}>
-            You received this because you have a Beaconmon account.{' '}
-            <Link href={`${appUrl}/settings/billing`} style={footerLink}>
-              Manage billing
-            </Link>
-            {unsubscribeUrl && (
-              <>
-                {' · '}
-                <Link href={unsubscribeUrl} style={footerLink}>
-                  Unsubscribe
-                </Link>
-              </>
-            )}
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+      <EmailFooter
+        reason="You received this because you have a Beaconmon account."
+        manageLabel="Manage billing"
+        manageUrl={`${appUrl}/settings/billing`}
+        unsubscribeUrl={unsubscribeUrl}
+      />
+    </EmailLayout>
   );
 }
-
-const body: React.CSSProperties = {
-  backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-};
-
-const container: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  margin: '0 auto',
-  padding: '40px 32px',
-  maxWidth: '560px',
-  borderRadius: '8px',
-};
-
-const heading: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '22px',
-  fontWeight: '700',
-  margin: '0 0 16px',
-};
-
-const paragraph: React.CSSProperties = {
-  color: '#475569',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '0 0 14px',
-};
-
-const ctaSection: React.CSSProperties = {
-  margin: '24px 0',
-};
-
-const ctaButton: React.CSSProperties = {
-  backgroundColor: '#00e57a',
-  borderRadius: '6px',
-  color: '#0a1a0f',
-  display: 'inline-block',
-  fontWeight: '600',
-  fontSize: '14px',
-  padding: '12px 24px',
-  textDecoration: 'none',
-};
-
-const hr: React.CSSProperties = {
-  borderColor: '#e2e8f0',
-  margin: '24px 0',
-};
-
-const planList: React.CSSProperties = {
-  backgroundColor: '#f8fafc',
-  borderRadius: '6px',
-  padding: '16px',
-};
-
-const planHeading: React.CSSProperties = {
-  color: '#0f172a',
-  fontSize: '13px',
-  fontWeight: '600',
-  margin: '0 0 8px',
-};
-
-const planItem: React.CSSProperties = {
-  color: '#64748b',
-  fontSize: '13px',
-  margin: '0 0 4px',
-};
-
-const footer: React.CSSProperties = {
-  color: '#94a3b8',
-  fontSize: '12px',
-};
-
-const footerLink: React.CSSProperties = {
-  color: '#64748b',
-};

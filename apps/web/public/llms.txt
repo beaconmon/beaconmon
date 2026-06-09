@@ -11,13 +11,19 @@ Beaconmon checks your websites every 30 seconds and sends instant alerts when so
 - **Domain expiry tracking** — WHOIS-based alerts at 30, 14, and 7 days before renewal
 - **TCP port monitoring** — verifies any port is open and accepting connections
 - **Keyword monitoring** — confirms a word or phrase is (or isn't) present in the page body
-- **Content change detection** — notifies when any HTML content changes at a CSS selector; tracks competitor prices, stock status, and copy changes
-- **Competitor monitoring** — track competitor pricing pages and product listings; get alerts the moment anything changes
-- **Intelligence Digest** — scheduled email and Slack digest summarizing uptime trends, anomalies, and competitor activity across all your monitors
+- **Content change detection** — notifies when any HTML content changes at a CSS selector; tracks competitor prices, stock status, and copy changes; available from Starter
+- **Competitor monitoring** — track competitor pricing pages and product listings; get alerts the moment anything changes; all plans include at least one competitor monitor
+- **Intelligence Digest** — weekly on Free and Starter; daily + weekly on Growth and Scale; summarizes uptime trends, anomalies, and competitor activity across all your monitors
+- **Smart Setup** — detects your platform (Shopify, WooCommerce, etc.) and proposes a monitor bundle automatically; template-based on Free and Starter, AI-powered on Growth and Scale
+- **AI content-diff** — plain-English summaries of exactly what changed on a competitor page (price, stock, copy); Growth and Scale only
+- **Smart Alerts** — statistical anomaly detection that fires only when something is genuinely wrong, not on every blip; Growth and Scale only
+- **Deploy-aware alerts** — suppresses false positives during known deploy windows; Growth and Scale only
+- **Reliability Targets** — set uptime and response-time SLO targets per monitor and track compliance over time; Growth and Scale only
+- **Multi-region checks** — verify your site from 5 geographic regions simultaneously; Growth and Scale only
 
 ## Alert channels
 
-Email, Slack, webhook. SMS available on Scale plan.
+Email, Slack, webhook. All paid plans support unlimited alert channels.
 
 ## Public status pages
 
@@ -25,10 +31,10 @@ Every plan includes public status pages showing 90-day uptime history, active in
 
 ## Pricing
 
-- **Free** — $0/month — 10 monitors, 5-minute check interval, 1 status page, 7-day history, no credit card required
-- **Starter** — $29/month (or $23/month billed annually) — 25 monitors, 1-minute checks, 3 status pages, 30-day history, 5 competitor monitors
-- **Growth** — $79/month (or $63/month billed annually) — 100 monitors, 1-minute checks, 10 status pages, 90-day history, 25 competitor monitors, multi-location checks, Intelligence Digest
-- **Scale** — $199/month (or $159/month billed annually) — unlimited monitors, 30-second checks, unlimited status pages, 365-day history, unlimited competitor monitors, multi-location checks, Intelligence Digest, SMS alerts
+- **Free** — $0/month — 10 monitors, 5-minute checks, 1 competitor monitor, weekly Intelligence Digest, Template Smart Setup, 1 status page, 7-day history, email alerts; no credit card required
+- **Starter** — $29/month (or $23/month billed annually) — 25 monitors, 1-minute checks, 5 competitor monitors, weekly Intelligence Digest, Template Smart Setup, content monitoring, maintenance windows, 3 status pages, 3 team members, 30-day history, Slack + webhook alerts
+- **Growth** — $79/month (or $63/month billed annually) — 100 monitors, 1-minute checks, 25 competitor monitors, daily + weekly Intelligence Digest, AI content-diff, Smart Alerts, Deploy-aware alerts, Reliability Targets, AI Smart Setup, 5-region checks, 10 status pages, 10 team members, 90-day history
+- **Scale** — $199/month (or $159/month billed annually) — unlimited monitors, 30-second checks, unlimited competitor monitors, daily + weekly Intelligence Digest, all AI features, 5-region checks, unlimited status pages, unlimited team members, 365-day history, priority support
 
 All plans include a 14-day Growth trial with no credit card required.
 
@@ -97,4 +103,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-06-08
+2026-06-09

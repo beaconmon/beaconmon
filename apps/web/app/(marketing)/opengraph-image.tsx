@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Monitor your store and competitors automatically | Beaconmon';
+export const alt = 'Your daily Shopify competitor brief, written automatically | Beaconmon';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -35,15 +35,46 @@ export default function OGImage() {
 
       {/* Brand */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '52px' }}>
-        <div
-          style={{
-            width: '34px',
-            height: '34px',
-            background: '#00E57A',
-            borderRadius: '8px',
-            display: 'flex',
-          }}
-        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          width="36"
+          height="36"
+        >
+          <rect fill="#0f172a" width="32" height="32" rx="7" />
+          <path
+            d="M4 22a12 12 0 0 0 24 0"
+            fill="none"
+            stroke="#06b6d4"
+            strokeWidth="2"
+            strokeLinecap="round"
+            style={{ opacity: 0.28 }}
+          />
+          <path
+            d="M8 22a8 8 0 0 0 16 0"
+            fill="none"
+            stroke="#06b6d4"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            style={{ opacity: 0.62 }}
+          />
+          <path
+            d="M12 22a4 4 0 0 0 8 0"
+            fill="none"
+            stroke="#06b6d4"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+          <path
+            d="M16 24.5V28"
+            fill="none"
+            stroke="#06b6d4"
+            strokeWidth="2"
+            strokeLinecap="round"
+            style={{ opacity: 0.45 }}
+          />
+          <circle cx="16" cy="22" r="2.5" fill="#06b6d4" />
+        </svg>
         <span style={{ color: '#FFFFFF', fontSize: '22px', fontWeight: 700, letterSpacing: '-0.01em' }}>
           Beaconmon
         </span>
@@ -55,7 +86,7 @@ export default function OGImage() {
           display: 'flex',
           flexDirection: 'column',
           color: '#FFFFFF',
-          fontSize: '58px',
+          fontSize: '52px',
           fontWeight: 800,
           lineHeight: 1.08,
           letterSpacing: '-0.035em',
@@ -63,8 +94,9 @@ export default function OGImage() {
           marginBottom: '28px',
         }}
       >
-        <span>Monitor your store and</span>
-        <span style={{ color: '#00E57A' }}>competitors automatically.</span>
+        <span>Your daily Shopify</span>
+        <span>competitor brief,</span>
+        <span style={{ color: '#00E57A' }}>written automatically.</span>
       </div>
 
       {/* Subheadline */}
@@ -77,7 +109,7 @@ export default function OGImage() {
           display: 'flex',
         }}
       >
-        Outages, pricing changes, SSL expiry, and competitor updates before they hurt sales.
+        Track pricing changes, product launches, and content updates across every competitor. One digest, every morning at 8am.
       </div>
 
       {/* Bottom bar */}
