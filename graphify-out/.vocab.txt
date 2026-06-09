@@ -72,6 +72,7 @@ best
 better
 billing
 bin
+blocks
 body
 boundary
 bounded
@@ -84,6 +85,7 @@ brands
 breadcrumb
 breadcrumbs
 breaker
+brief
 browserslist
 btn
 bucket
@@ -322,6 +324,7 @@ export
 exports
 extends
 extract
+eyebrow
 factory
 fail
 failed
@@ -383,6 +386,7 @@ group
 growth
 guard
 guide
+guides
 hand
 handle
 handler
@@ -397,6 +401,7 @@ heading
 headline
 heartbeat
 heartbeats
+helpers
 hero
 hexowatch
 hide
@@ -452,6 +457,7 @@ inter
 interface
 interop
 interval
+into
 invalidate
 invitation
 invitations
@@ -517,6 +523,7 @@ map
 mark
 marketing
 mass
+masthead
 match
 matches
 matrix
@@ -557,6 +564,7 @@ month
 monthly
 months
 motif
+mrkdwn
 multi
 must
 muted
@@ -592,6 +600,7 @@ option
 options
 opts
 out
+outer
 outline
 output
 outputs
@@ -607,6 +616,7 @@ page
 pages
 palette
 panel
+para
 paragraph
 parallel
 params
@@ -691,6 +701,7 @@ project
 promo
 promotion
 prompt
+proof
 property
 propose
 props
@@ -889,6 +900,7 @@ strengths
 strict
 string
 strip
+strong
 stub
 studio
 style
@@ -994,6 +1006,7 @@ user
 utc
 utf
 utils
+val
 valid
 validate
 validation
@@ -1036,6 +1049,7 @@ with
 within
 wizard
 woo
+wordmark
 worker
 workers
 workflow
