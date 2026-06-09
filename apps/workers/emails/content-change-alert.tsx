@@ -174,8 +174,6 @@ export function ContentChangeAlert({
 
       <EmailFooter
         reason="You receive this because you have alerts enabled for this monitor. Switch to a daily roll-up any time."
-        manageLabel="Alert settings"
-        manageUrl={diffUrl}
         unsubscribeUrl={unsubscribeUrl}
       />
     </EmailLayout>

@@ -79,7 +79,7 @@ export function Day12Urgency({
                     },
                   ]
                 : []),
-              { n: '100%', label: 'uptime tracked' },
+              ...(incidentCount === 0 ? [{ n: '100%', label: 'uptime tracked' }] : []),
             ]}
           />
 

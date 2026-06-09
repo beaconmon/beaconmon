@@ -18,6 +18,7 @@ import {
   badgeKindFromEventType,
   formatBriefDate,
   formatTimeUTC,
+  formatBriefDateTimeUTC,
   formatRelativeAgo,
   hostnameFrom,
 } from '@beaconmon/emails';
@@ -79,11 +80,11 @@ export function hasAnySignal(sections: {
 export function formatEventSummary(type: string, payload: Record<string, unknown>): string {
   switch (type) {
     case 'price_changed':
-      return `$${payload.oldPrice} → $${payload.newPrice}`;
+      return `$${payload.oldPrice ?? '?'} → $${payload.newPrice ?? '?'}`;
     case 'product_added':
-      return `New: ${payload.title}`;
+      return `New: ${payload.title ?? 'product'}`;
     case 'product_removed':
-      return `Removed: ${payload.title}`;
+      return `Removed: ${payload.title ?? 'product'}`;
     case 'stock_changed':
       return payload.newAvailable ? 'Back in stock' : 'Out of stock';
     case 'out_of_stock':
@@ -91,9 +92,9 @@ export function formatEventSummary(type: string, payload: Record<string, unknown
     case 'back_in_stock':
       return `Back in stock: ${payload.productHandle ?? 'product'}`;
     case 'sale_started':
-      return `Sale: $${payload.currentPrice} (was $${payload.compareAtPrice})`;
+      return `Sale: $${payload.currentPrice ?? '?'} (was $${payload.compareAtPrice ?? '?'})`;
     case 'sale_ended':
-      return `Sale ended (was $${payload.wasCompareAtPrice})`;
+      return `Sale ended (was $${payload.wasCompareAtPrice ?? '?'})`;
     case 'site_changed':
     case 'promo_detected':
       return (payload.diffSummary as string | undefined) ?? 'Content changed';
@@ -128,7 +129,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections']): {
   if (ongoingIncident) {
     return {
       title: `${ongoingIncident.monitorName} is still down`,
-      body: `Failing since ${ongoingIncident.startedAt.toUTCString().slice(5, 22)} UTC. Open the incident to triage.`,
+      body: `Failing since ${formatBriefDateTimeUTC(ongoingIncident.startedAt)}. Open the incident to triage.`,
       sev: 'critical',
     };
   }
@@ -297,7 +298,7 @@ export function IntelligenceDigestEmail({
               host={hostnameFrom(a.monitorUrl)}
               badge="info"
               sev="info"
-              summary="Response time elevated,"
+              summary="Response time elevated"
               delta={`${a.responseTimeMs}ms`}
               time={formatRelativeAgo(a.checkedAt)}
             />

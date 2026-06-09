@@ -73,7 +73,7 @@ export function Para({
 }
 
 export function Strong({ children }: { children: React.ReactNode }) {
-  return <strong style={{ color: EP.ink, fontWeight: 650 }}>{children}</strong>;
+  return <strong style={{ color: EP.ink, fontWeight: 600 }}>{children}</strong>;
 }
 
 export function MonoVal({

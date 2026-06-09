@@ -4,6 +4,7 @@ import { EP, MONO, SEV, type Severity } from './tokens';
 export type BadgeKind =
   | 'priceDown'
   | 'priceUp'
+  | 'priceChanged'
   | 'sale'
   | 'newProduct'
   | 'removed'
@@ -17,6 +18,7 @@ export type BadgeKind =
 const BADGE_META: Record<BadgeKind, { sev: Severity; text: string }> = {
   priceDown: { sev: 'positive', text: 'Price drop' },
   priceUp: { sev: 'warning', text: 'Price up' },
+  priceChanged: { sev: 'info', text: 'Price changed' },
   sale: { sev: 'warning', text: 'Sale started' },
   newProduct: { sev: 'info', text: 'New product' },
   removed: { sev: 'info', text: 'Removed' },
@@ -56,7 +58,7 @@ export function Badge({ kind, text }: { kind: BadgeKind; text?: string }) {
 export function badgeKindFromEventType(type: string | null | undefined): BadgeKind {
   switch (type) {
     case 'price_changed':
-      return 'priceDown';
+      return 'priceChanged';
     case 'sale_started':
       return 'sale';
     case 'sale_ended':

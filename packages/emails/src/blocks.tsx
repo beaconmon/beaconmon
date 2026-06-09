@@ -33,7 +33,7 @@ export function AlertBanner({
               <span
                 style={{
                   fontSize: '14px',
-                  fontWeight: 650,
+                  fontWeight: 600,
                   color: s.ink,
                   letterSpacing: '-0.005em',
                 }}
@@ -118,7 +118,7 @@ export function EventCard({
                 style={{
                   margin: 0,
                   fontSize: '14px',
-                  fontWeight: 650,
+                  fontWeight: 600,
                   color: EP.ink,
                 }}
               >
@@ -324,7 +324,7 @@ export function TopSignal({
         style={{
           margin: '0 0 4px',
           fontSize: '15px',
-          fontWeight: 650,
+          fontWeight: 600,
           color: EP.ink,
         }}
       >
@@ -424,7 +424,7 @@ export function EBtn({
         padding: '13px 26px',
         borderRadius: '8px',
         fontSize: '14px',
-        fontWeight: 650,
+        fontWeight: 600,
         letterSpacing: '-0.005em',
         textDecoration: 'none',
         ...BTN_STYLES[variant],
@@ -495,7 +495,7 @@ export function StepRow({
             </div>
           </td>
           <td style={{ paddingLeft: '13px', verticalAlign: 'top' }}>
-            <Text style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 650, color: EP.ink }}>
+            <Text style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 600, color: EP.ink }}>
               {title}
             </Text>
             <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.55, color: EP.body }}>
