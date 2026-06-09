@@ -12,11 +12,11 @@
   },
   "dependencies": {
     "@react-email/components": "^1.0.12",
-    "@types/react": "^19.1.5",
     "react": "^19.2.5"
   },
   "devDependencies": {
     "@beaconmon/tsconfig": "workspace:*",
+    "@types/react": "^19.1.5",
     "typescript": "^5.7.3"
   }
 }
