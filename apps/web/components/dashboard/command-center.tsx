@@ -20,7 +20,6 @@ interface CommandCenterProps {
   reliabilitySpark: number[];
   openIncident: FeedItem | undefined;
   recentOutage: FeedItem | undefined;
-  leadActionDismissed?: boolean;
 }
 
 function formatRelative(iso: string): string {

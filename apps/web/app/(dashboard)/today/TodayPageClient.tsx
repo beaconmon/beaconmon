@@ -16,6 +16,7 @@ import {
   buildBriefingHeadline,
   buildLeadAction,
   buildBusinessStats,
+  countPricingEvents,
   getRecentOutage,
   getOpenIncident,
   reliabilityDirection,
@@ -100,6 +101,7 @@ export function TodayPageClient() {
       buildBusinessStats(
         competitorEvents24h.length,
         competitorEvents.length,
+        countPricingEvents(competitorEvents),
         activeCompetitorCount,
         totalCompetitorCount,
         resolvedMonitors,
@@ -108,7 +110,7 @@ export function TodayPageClient() {
       ),
     [
       competitorEvents24h.length,
-      competitorEvents.length,
+      competitorEvents,
       activeCompetitorCount,
       totalCompetitorCount,
       resolvedMonitors,

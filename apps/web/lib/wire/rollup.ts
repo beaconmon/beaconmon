@@ -123,7 +123,9 @@ export function buildWireStats(
   events: IntelligenceEvent[],
   rollups: CompetitorRollup[]
 ): WireSentenceStat[] {
-  const competitorEvents = events.filter((e) => e.type === 'competitor_event');
+  const competitorEvents = events
+    .filter((e) => e.type === 'competitor_event')
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   const activeRollups = rollups.filter((r) => r.month > 0);
   const monthTotal = activeRollups.reduce((sum, r) => sum + r.month, 0);
   const competitorCount = activeRollups.length;
@@ -177,7 +179,7 @@ export function buildWireStats(
       recent12.length === 0
         ? 'Nothing to compare'
         : `${recent12Pricing} of last ${recent12.length} moves`,
-    tone: pricingCount > 0 ? 'text' : 'text',
+    tone: pricingCount > 0 ? 'amber' : 'text',
   });
 
   stats.push(

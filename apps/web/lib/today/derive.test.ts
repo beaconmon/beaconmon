@@ -185,17 +185,17 @@ describe('buildLeadAction', () => {
 
 describe('buildBusinessStats', () => {
   it('returns exactly four stats', () => {
-    const stats = buildBusinessStats(2, 5, 1, 3, [monitor({})], 99.97, 'quiet');
+    const stats = buildBusinessStats(2, 5, 0, 1, 3, [monitor({})], 99.97, 'quiet');
     expect(stats).toHaveLength(4);
   });
 
   it('flags down monitors in red', () => {
-    const stats = buildBusinessStats(0, 0, 0, 0, [monitor({ currentStatus: 'down' })], 99, 'issue');
+    const stats = buildBusinessStats(0, 0, 0, 0, 0, [monitor({ currentStatus: 'down' })], 99, 'issue');
     expect(stats.some((s) => s.tone === 'red' && s.head.includes('down'))).toBe(true);
   });
 
   it('switches the fourth stat to "pricing pressure" on high-activity days', () => {
-    const stats = buildBusinessStats(8, 12, 3, 5, [monitor({})], 99.95, 'high');
+    const stats = buildBusinessStats(8, 12, 4, 3, 5, [monitor({})], 99.95, 'high');
     expect(stats[3]?.head).toBe('Pricing pressure rising');
     expect(stats[3]?.tone).toBe('amber');
   });
@@ -217,21 +217,32 @@ describe('getRecentOutage / getOpenIncident', () => {
     expect(getOpenIncident([open])?.id).toBe('open');
   });
 
-  it('considers an incident resolved if a later resolved entry mentions it', () => {
+  it('considers an incident resolved if a later resolved entry shares its ID', () => {
     const open = feedItem({
-      id: 'open',
+      id: 'incident-open:abc123',
       kind: 'incident.opened',
-      title: 'Checkout 503',
       occurredAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
     });
     const resolved = feedItem({
-      id: 'res',
+      id: 'incident-resolved:abc123',
       kind: 'incident.resolved',
-      title: 'Resolved',
-      subtitle: 'Checkout 503 has recovered',
       occurredAt: new Date().toISOString(),
     });
     expect(getOpenIncident([open, resolved])).toBeUndefined();
+  });
+
+  it('does not consider an incident resolved when the resolved entry is for a different incident', () => {
+    const open = feedItem({
+      id: 'incident-open:abc123',
+      kind: 'incident.opened',
+      occurredAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    });
+    const resolved = feedItem({
+      id: 'incident-resolved:xyz999',
+      kind: 'incident.resolved',
+      occurredAt: new Date().toISOString(),
+    });
+    expect(getOpenIncident([open, resolved])?.id).toBe('incident-open:abc123');
   });
 });
 

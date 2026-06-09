@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   TrendingDown,
@@ -98,7 +99,11 @@ export function MorningBriefing({
   newSinceLastVisit,
   hasEverVisited,
 }: MorningBriefingProps) {
-  const now = new Date();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
   const dayLabel = `${DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}`;
   const timeLabel = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
   const accent = scenarioAccent(scenario);
@@ -216,7 +221,7 @@ export function MorningBriefing({
           style={{ boxShadow: 'inset 0 0 0 1px var(--brand-line)' }}
         >
           <BookOpen className="h-3.5 w-3.5" />
-          View today&apos;s digest
+          Wire settings
         </Link>
       </div>
     </section>

@@ -38,15 +38,15 @@ function recentOutageItem(items: FeedItem[]): FeedItem | undefined {
 
 function openIncidentItem(items: FeedItem[]): FeedItem | undefined {
   const opened = items.filter((i) => i.kind === 'incident.opened');
-  return opened.find(
-    (o) =>
-      !items.some(
-        (r) =>
-          r.kind === 'incident.resolved' &&
-          r.subtitle.includes(o.title) &&
-          new Date(r.occurredAt) > new Date(o.occurredAt)
-      )
-  );
+  return opened.find((o) => {
+    const incidentId = o.id.split(':')[1] ?? o.id;
+    return !items.some(
+      (r) =>
+        r.kind === 'incident.resolved' &&
+        r.id === `incident-resolved:${incidentId}` &&
+        new Date(r.occurredAt) > new Date(o.occurredAt)
+    );
+  });
 }
 
 export function pickScenario(
@@ -288,6 +288,7 @@ export interface BusinessStat {
 export function buildBusinessStats(
   competitorEvents24h: number,
   competitorEvents7d: number,
+  pricingEvents7d: number,
   activeCompetitorCount: number,
   totalCompetitorCount: number,
   monitors: MonitorRow[],
@@ -364,15 +365,12 @@ export function buildBusinessStats(
     });
   }
 
-  if (scenario === 'high' && competitorEvents7d > 0) {
-    const pricingEvents = competitorEvents7d;
-    if (pricingEvents > 0) {
-      stats[stats.length - 1] = {
-        head: 'Pricing pressure rising',
-        sub: `${pricingEvents} move${pricingEvents === 1 ? '' : 's'} in 7d`,
-        tone: 'amber',
-      };
-    }
+  if (scenario === 'high' && pricingEvents7d > 0) {
+    stats[stats.length - 1] = {
+      head: 'Pricing pressure rising',
+      sub: `${pricingEvents7d} move${pricingEvents7d === 1 ? '' : 's'} in 7d`,
+      tone: 'amber',
+    };
   }
 
   return stats.slice(0, 4);
@@ -399,15 +397,6 @@ export function reliabilityDirection(rate: number | undefined): 'up' | 'flat' | 
   return 'down';
 }
 
-export function pseudoReliabilitySpark(rate: number | undefined): number[] {
-  const target = rate === undefined ? 99.5 : rate;
-  const len = 12;
-  const out: number[] = [];
-  for (let i = 0; i < len; i++) {
-    const drift = Math.sin(i * 0.7) * 0.4;
-    const ramp = (i / (len - 1)) * (target - 99) * 0.6;
-    out.push(Math.max(95, Math.min(100, 99.5 + drift + ramp)));
-  }
-  out[len - 1] = target;
-  return out;
+export function pseudoReliabilitySpark(_rate: number | undefined): number[] {
+  return [];
 }

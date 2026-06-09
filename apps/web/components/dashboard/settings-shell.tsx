@@ -58,6 +58,10 @@ const GROUPS: SubNavGroup[] = [
   },
 ];
 
+export const SETTINGS_ACTIVE_PREFIXES = [
+  ...new Set(GROUPS.flatMap((g) => g.items.map((i) => '/' + i.href.split('/')[1]))),
+];
+
 interface SettingsShellProps {
   children: React.ReactNode;
 }

@@ -37,6 +37,7 @@ import { TeamSwitcher } from '@/components/dashboard/team-switcher';
 import Logo from '@/components/logo';
 import { useIncidents } from '@/lib/hooks/use-incidents';
 import { useSession } from '@/lib/hooks/use-session';
+import { SETTINGS_ACTIVE_PREFIXES } from '@/components/dashboard/settings-shell';
 
 const NAV_ITEMS = [
   { href: '/today',     label: 'Today',     icon: LayoutGrid },
@@ -46,14 +47,6 @@ const NAV_ITEMS = [
   { href: '/settings',  label: 'Settings',  icon: Settings },
 ];
 
-const SETTINGS_ACTIVE_PREFIXES = [
-  '/settings',
-  '/alert-channels',
-  '/escalation-policies',
-  '/status-pages',
-  '/maintenance-windows',
-  '/reports',
-];
 
 const ADD_MONITOR_ROUTES = ['/monitors', '/incidents', '/status-pages'];
 
