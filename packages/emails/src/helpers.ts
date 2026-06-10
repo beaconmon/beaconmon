@@ -8,7 +8,7 @@ export function formatBriefDate(d: Date, tz = 'UTC'): string {
   });
 }
 
-export function formatTimeUTC(d: Date, tz = 'UTC'): string {
+export function formatTime(d: Date, tz = 'UTC'): string {
   // "08:00 EDT" (or "08:00 UTC" when no timezone supplied)
   const parts = new Intl.DateTimeFormat('en-US', {
     hour: '2-digit',
@@ -27,7 +27,7 @@ export function formatTimeUTC(d: Date, tz = 'UTC'): string {
 export function formatBriefDateTimeUTC(d: Date, tz = 'UTC'): string {
   // "Jun 7, 09:14 EDT"
   const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: tz });
-  return `${date}, ${formatTimeUTC(d, tz)}`;
+  return `${date}, ${formatTime(d, tz)}`;
 }
 
 export function hostnameFrom(url: string): string {

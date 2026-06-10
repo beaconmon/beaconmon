@@ -1,7 +1,6 @@
 'use client';
 
 import { format, differenceInMinutes } from 'date-fns';
-import { Button } from '@/components/ui/button';
 import { QueryState } from '@/components/dashboard/query-state';
 import { AckButton } from '@/components/dashboard/ack-button';
 import { useResolveIncident } from '@/lib/hooks/use-incidents';

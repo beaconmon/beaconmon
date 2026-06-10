@@ -110,6 +110,7 @@ export const COMPETITOR_PRESETS: CompetitorPreset[] = [
     fallbackSelector: 'header',
     suggestedPath: '/',
   },
+  // Same collection grid selectors as new-arrivals, different suggestedPath (/collections/sale).
   {
     id: 'sale-collection',
     vertical: 'ecommerce',

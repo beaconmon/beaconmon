@@ -17,7 +17,7 @@ import {
   MONO,
   badgeKindFromEventType,
   formatBriefDate,
-  formatTimeUTC,
+  formatTime,
   formatBriefDateTimeUTC,
   formatRelativeAgo,
   hostnameFrom,
@@ -194,7 +194,7 @@ export function IntelligenceDigestEmail({
       : `${totalEvents} event${totalEvents !== 1 ? 's' : ''} in the last ${frequency === 'daily' ? '24 hours' : '7 days'}.`;
 
   const top = pickTopSignal(sections, timezone);
-  const dateContext = `${label} · ${formatBriefDate(windowStart, timezone)} · ${formatTimeUTC(windowEnd, timezone)}`;
+  const dateContext = `${label} · ${formatBriefDate(windowStart, timezone)} · ${formatTime(windowEnd, timezone)}`;
 
   return (
     <EmailLayout preview={preview} context="Intelligence Digest">

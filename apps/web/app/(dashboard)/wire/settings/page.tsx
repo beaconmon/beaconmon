@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { QueryState } from '@/components/dashboard/query-state';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useIntelligenceSettings, useUpdateIntelligenceSettings } from '@/lib/hooks/use-intelligence-settings';
@@ -80,36 +81,47 @@ function TimezoneSelect({
   disabled: boolean;
   onChange: (v: string) => void;
 }) {
-  const zones = useMemo(() => {
-    const supported =
-      typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : [];
-    return supported.includes(value) ? supported : [value, ...supported];
-  }, [value]);
+  const supportedZones = useMemo(
+    () => (typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : []),
+    []
+  );
+  const zones = supportedZones.includes(value) ? supportedZones : [value, ...supportedZones];
 
   const browserZone =
     typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null;
 
+  const [draft, setDraft] = useState(value);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value;
+    setDraft(v);
+    if (zones.includes(v)) onChange(v);
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Select value={value} disabled={disabled} onValueChange={onChange}>
-        <SelectTrigger className="w-64">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {zones.map((tz) => (
-            <SelectItem key={tz} value={tz}>
-              {timezoneLabel(tz)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Input
+        list="tz-zones"
+        value={draft}
+        disabled={disabled}
+        onChange={handleChange}
+        className="w-64"
+      />
+      <datalist id="tz-zones">
+        {zones.map((tz) => (
+          <option key={tz} value={tz} />
+        ))}
+      </datalist>
       {browserZone && browserZone !== value && (
         <Button
           type="button"
           variant="outline"
           size="sm"
           disabled={disabled}
-          onClick={() => onChange(browserZone)}
+          onClick={() => {
+            setDraft(browserZone);
+            onChange(browserZone);
+          }}
         >
           <Globe className="mr-1.5 h-3.5 w-3.5" />
           Use {timezoneLabel(browserZone)}
@@ -239,6 +251,7 @@ export default function IntelligenceSettingsPage() {
             <div className="space-y-1.5">
               <p className="text-sm font-medium text-brand-text">Timezone</p>
               <TimezoneSelect
+                key={timezone}
                 value={timezone}
                 disabled={isFreePlan}
                 onChange={setLocalTimezone}

@@ -30,6 +30,7 @@ export const intelligenceDigestTask: SchedulerTask = {
     const now = new Date();
 
     try {
+      // All teams are queried on every tick so per-team local hours can be checked below.
       const teams = await prisma.team.findMany({
         where: { digestPrefs: { not: Prisma.DbNull } },
         select: {
