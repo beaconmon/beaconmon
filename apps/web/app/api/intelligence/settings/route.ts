@@ -6,12 +6,12 @@ import { ValidationError, ForbiddenError } from '@/lib/api/errors';
 export const GET = withAuth(async (_req, ctx) => {
   const { teamId, plan } = ctx;
 
-  const digestPrefs = await digestRepository.getDigestPrefs(teamId);
+  const settings = await digestRepository.getDigestPrefs(teamId);
 
-  const parsedPrefs = digestPrefsSchema.safeParse(digestPrefs ?? {});
+  const parsedPrefs = digestPrefsSchema.safeParse(settings?.digestPrefs ?? {});
   const prefs = parsedPrefs.success ? parsedPrefs.data : DEFAULT_DIGEST_PREFS;
 
-  return Response.json({ prefs, plan });
+  return Response.json({ prefs, plan, timezone: settings?.timezone ?? 'Etc/UTC' });
 });
 
 export const PATCH = withAuth(async (req, ctx) => {
@@ -41,7 +41,9 @@ export const PATCH = withAuth(async (req, ctx) => {
     }
   }
 
-  await digestRepository.updateDigestPrefs(teamId, input);
+  // Timezone lives on Team, not inside the digest_prefs JSON
+  const { timezone, ...prefs } = input;
+  await digestRepository.updateDigestPrefs(teamId, prefs, timezone);
 
   return Response.json({ ok: true });
 });

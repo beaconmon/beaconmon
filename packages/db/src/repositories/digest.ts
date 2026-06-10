@@ -5,6 +5,7 @@ export interface DigestTeam {
   plan: string;
   trialEndsAt: Date | null;
   digestPrefs: unknown;
+  timezone: string;
   subscription: { status: string } | null;
 }
 
@@ -57,19 +58,20 @@ export interface DigestCompetitorEvent {
 }
 
 export const digestRepository = {
-  async getDigestPrefs(teamId: string): Promise<unknown> {
+  async getDigestPrefs(teamId: string): Promise<{ digestPrefs: unknown; timezone: string } | null> {
     const team = await prisma.team.findUnique({
       where: { id: teamId },
-      select: { digestPrefs: true },
+      select: { digestPrefs: true, timezone: true },
     });
-    return team?.digestPrefs ?? null;
+    if (!team) return null;
+    return { digestPrefs: team.digestPrefs ?? null, timezone: team.timezone };
   },
 
-  async updateDigestPrefs(teamId: string, prefs: unknown): Promise<void> {
+  async updateDigestPrefs(teamId: string, prefs: unknown, timezone: string): Promise<void> {
     await prisma.team.update({
       where: { id: teamId },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: { digestPrefs: prefs as any },
+      data: { digestPrefs: prefs as any, timezone },
     });
   },
 
@@ -81,6 +83,7 @@ export const digestRepository = {
         plan: true,
         trialEndsAt: true,
         digestPrefs: true,
+        timezone: true,
         subscription: { select: { status: true } },
       },
     });

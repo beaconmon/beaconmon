@@ -7,6 +7,7 @@ import type { DigestPrefs, UpdateDigestPrefs } from '@beaconmon/types';
 interface SettingsResponse {
   prefs: DigestPrefs;
   plan: string;
+  timezone: string;
 }
 
 export function useIntelligenceSettings() {

@@ -108,6 +108,7 @@ export interface IntelligenceDigestEmailProps {
   windowStart: Date;
   windowEnd: Date;
   dashboardUrl: string;
+  timezone?: string;
   sections: {
     incidents?: DigestIncidentItem[];
     ownContent?: DigestContentItem[];
@@ -120,7 +121,7 @@ export interface IntelligenceDigestEmailProps {
 // Pick the highest-priority item to highlight as "Top signal".
 // Critical incidents first, then high-significance competitor events,
 // then any incident, then anything else.
-function pickTopSignal(sections: IntelligenceDigestEmailProps['sections']): {
+function pickTopSignal(sections: IntelligenceDigestEmailProps['sections'], tz: string): {
   title: string;
   body: string;
   sev: 'critical' | 'warning' | 'info';
@@ -129,7 +130,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections']): {
   if (ongoingIncident) {
     return {
       title: `${ongoingIncident.monitorName} is still down`,
-      body: `Failing since ${formatBriefDateTimeUTC(ongoingIncident.startedAt)}. Open the incident to triage.`,
+      body: `Failing since ${formatBriefDateTimeUTC(ongoingIncident.startedAt, tz)}. Open the incident to triage.`,
       sev: 'critical',
     };
   }
@@ -173,6 +174,7 @@ export function IntelligenceDigestEmail({
   windowStart,
   windowEnd,
   dashboardUrl,
+  timezone = 'UTC',
   sections,
 }: IntelligenceDigestEmailProps) {
   const label = frequency === 'daily' ? 'Daily Briefing' : 'Weekly Briefing';
@@ -191,8 +193,8 @@ export function IntelligenceDigestEmail({
       ? `${totalEvents} change${totalEvents !== 1 ? 's' : ''} across ${distinctCompetitors} competitor${distinctCompetitors !== 1 ? 's' : ''} overnight.`
       : `${totalEvents} event${totalEvents !== 1 ? 's' : ''} in the last ${frequency === 'daily' ? '24 hours' : '7 days'}.`;
 
-  const top = pickTopSignal(sections);
-  const dateContext = `${label} · ${formatBriefDate(windowStart)} · ${formatTimeUTC(windowEnd)}`;
+  const top = pickTopSignal(sections, timezone);
+  const dateContext = `${label} · ${formatBriefDate(windowStart, timezone)} · ${formatTimeUTC(windowEnd, timezone)}`;
 
   return (
     <EmailLayout preview={preview} context="Intelligence Digest">

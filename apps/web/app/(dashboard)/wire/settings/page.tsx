@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Mail, Slack, Sparkles } from 'lucide-react';
+import { CheckCircle2, Globe, Mail, Slack, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -67,6 +67,58 @@ function FrequencySelect({
   );
 }
 
+function timezoneLabel(tz: string): string {
+  return tz === 'Etc/UTC' ? 'UTC' : tz.replace(/_/g, ' ');
+}
+
+function TimezoneSelect({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: string;
+  disabled: boolean;
+  onChange: (v: string) => void;
+}) {
+  const zones = useMemo(() => {
+    const supported =
+      typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : [];
+    return supported.includes(value) ? supported : [value, ...supported];
+  }, [value]);
+
+  const browserZone =
+    typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Select value={value} disabled={disabled} onValueChange={onChange}>
+        <SelectTrigger className="w-64">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {zones.map((tz) => (
+            <SelectItem key={tz} value={tz}>
+              {timezoneLabel(tz)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {browserZone && browserZone !== value && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={disabled}
+          onClick={() => onChange(browserZone)}
+        >
+          <Globe className="mr-1.5 h-3.5 w-3.5" />
+          Use {timezoneLabel(browserZone)}
+        </Button>
+      )}
+    </div>
+  );
+}
+
 function ChannelIcon({ type }: { type: string }) {
   if (type === 'slack') return <Slack className="h-4 w-4 shrink-0 text-brand-muted" />;
   return <Mail className="h-4 w-4 shrink-0 text-brand-muted" />;
@@ -81,6 +133,9 @@ export default function IntelligenceSettingsPage() {
   const isFreePlan = plan === 'free';
 
   const [localPrefs, setLocalPrefs] = useState<DigestPrefs | null>(null);
+  const [localTimezone, setLocalTimezone] = useState<string | null>(null);
+  const serverTimezone = settingsQ.data?.timezone ?? 'Etc/UTC';
+  const timezone = localTimezone ?? serverTimezone;
   const prefs: DigestPrefs = localPrefs ?? settingsQ.data?.prefs ?? {
     frequency: null,
     channelIds: [],
@@ -94,7 +149,8 @@ export default function IntelligenceSettingsPage() {
   };
 
   const isDirty =
-    localPrefs !== null && JSON.stringify(localPrefs) !== JSON.stringify(settingsQ.data?.prefs);
+    (localPrefs !== null && JSON.stringify(localPrefs) !== JSON.stringify(settingsQ.data?.prefs)) ||
+    (localTimezone !== null && localTimezone !== serverTimezone);
 
   function setPrefs(p: DigestPrefs) {
     setLocalPrefs(p);
@@ -121,8 +177,10 @@ export default function IntelligenceSettingsPage() {
       frequency: prefs.frequency,
       channelIds: prefs.channelIds,
       sections: prefs.sections,
+      timezone,
     });
     setLocalPrefs(null);
+    setLocalTimezone(null);
   }
 
   // Only show email and slack channels
@@ -168,16 +226,24 @@ export default function IntelligenceSettingsPage() {
             <CardTitle className="text-base">Digest Schedule</CardTitle>
             <CardDescription>
               How often to receive a summary of activity across your monitors.
-              Starts delivering at 7:00 AM UTC.
+              Delivered at 7:00 AM in your team timezone.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <FrequencySelect
               value={prefs.frequency}
               plan={plan}
               disabled={isFreePlan}
               onChange={setFrequency}
             />
+            <div className="space-y-1.5">
+              <p className="text-sm font-medium text-brand-text">Timezone</p>
+              <TimezoneSelect
+                value={timezone}
+                disabled={isFreePlan}
+                onChange={setLocalTimezone}
+              />
+            </div>
           </CardContent>
         </Card>
 
