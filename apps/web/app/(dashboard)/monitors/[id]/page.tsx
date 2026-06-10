@@ -25,7 +25,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { QueryState } from '@/components/dashboard/query-state';
 import { StatusBadge } from '@/components/dashboard/status-badge';
-import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
 import { useMonitor, useDeleteMonitor, useUpdateMonitor } from '@/lib/hooks/use-monitors';
 import { Switch } from '@/components/ui/switch';
 import { useBreadcrumbOverride } from '@/lib/breadcrumb-context';

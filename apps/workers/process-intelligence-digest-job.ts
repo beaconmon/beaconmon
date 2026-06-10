@@ -192,6 +192,7 @@ export async function processIntelligenceDigestJob(
             windowStart: start,
             windowEnd: end,
             dashboardUrl,
+            timezone: team.timezone,
             sections,
           })
         );
@@ -217,7 +218,7 @@ export async function processIntelligenceDigestJob(
           continue;
         }
 
-        const payload = buildSlackPayload(frequency, start, end, dashboardUrl, sections);
+        const payload = buildSlackPayload(frequency, start, end, dashboardUrl, sections, team.timezone);
         const response = await fetch(parsed.data.webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

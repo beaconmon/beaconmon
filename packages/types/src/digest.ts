@@ -1,5 +1,18 @@
 import { z } from 'zod';
 
+export function isValidTimeZone(tz: string): boolean {
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const timezoneSchema = z
+  .string()
+  .refine(isValidTimeZone, { message: 'Invalid IANA timezone' });
+
 export const digestPrefsSchema = z.object({
   frequency: z.enum(['daily', 'weekly', 'both']).nullable().default(null),
   channelIds: z.array(z.string()).default([]),
@@ -17,6 +30,8 @@ export const digestPrefsSchema = z.object({
 export const updateDigestPrefsSchema = z.object({
   frequency: z.enum(['daily', 'weekly', 'both']).nullable(),
   channelIds: z.array(z.string()),
+  // Stored on Team.timezone, not inside digest_prefs JSON
+  timezone: timezoneSchema,
   sections: z.object({
     incidents: z.boolean(),
     ownContent: z.boolean(),

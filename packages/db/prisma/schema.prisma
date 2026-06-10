@@ -102,6 +102,9 @@ model Team {
   // Intelligence Digest preferences (frequency, opted-in channels, section toggles)
   digestPrefs Json? @map("digest_prefs")
 
+  // IANA timezone used for digest delivery timing (7am local). Etc/UTC preserves legacy behavior.
+  timezone String @default("Etc/UTC")
+
   members                     TeamMember[]
   invitations                 TeamInvitation[]
   subscription                Subscription?
