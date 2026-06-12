@@ -5,11 +5,11 @@ import { normalizeDomain, domainToName } from './competitor-domain-input';
 // The component itself requires jsdom; these tests cover the data-transform layer
 // that drives the API call.
 
-function buildPayload(domain: string) {
+function buildPayload(domain: string, platform: 'shopify' | 'woocommerce' | 'other' = 'other') {
   return {
     name: domainToName(domain),
     url: `https://${domain}`,
-    platform: 'other' as const,
+    platform,
   };
 }
 
@@ -25,8 +25,13 @@ describe('AddCompetitorWizard POST payload', () => {
     expect(buildPayload('bombas.com').name).toBe('Bombas');
   });
 
-  it('always sets platform to other', () => {
+  it('defaults platform to other when detection finds nothing', () => {
     expect(buildPayload('bombas.com').platform).toBe('other');
+  });
+
+  it('passes the detected platform through to the payload', () => {
+    expect(buildPayload('bombas.com', 'shopify').platform).toBe('shopify');
+    expect(buildPayload('stitchy.de', 'woocommerce').platform).toBe('woocommerce');
   });
 
   it('handles a normalized domain from user input correctly', () => {
@@ -38,7 +43,7 @@ describe('AddCompetitorWizard POST payload', () => {
 
   it('submits all queued domains as separate requests', () => {
     const domains = ['bombas.com', 'happysocks.com', 'stance.com'];
-    const payloads = domains.map(buildPayload);
+    const payloads = domains.map((d) => buildPayload(d));
     expect(payloads).toHaveLength(3);
     expect(payloads.map((p) => p.url)).toEqual([
       'https://bombas.com',

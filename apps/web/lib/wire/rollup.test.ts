@@ -18,6 +18,8 @@ function comp(partial: Partial<CompetitorItem>): CompetitorItem {
     name: 'GymGear',
     domain: 'gymgear.com',
     platform: 'shopify',
+    dataTier: 'full_catalog',
+    discoveryState: 'ready',
     isActive: true,
     ...partial,
   };

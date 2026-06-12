@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Sparkline } from '@/components/dashboard/sparkline';
+import { CoverageBadge } from '@/components/competitors/coverage-badge';
 import { CompetitorAvatar } from './competitor-avatar';
 import { TrendTag } from './trend-tag';
 import { formatRelative, type CompetitorRollup } from '@/lib/wire/rollup';
@@ -227,6 +228,7 @@ export function CompetitorGroupCard({ rollup, rank }: CompetitorGroupCardProps) 
                 {PLATFORM_LABEL[competitor.platform] ?? 'Other'}
               </span>
             )}
+            <CoverageBadge dataTier={competitor.dataTier} />
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2.5">
