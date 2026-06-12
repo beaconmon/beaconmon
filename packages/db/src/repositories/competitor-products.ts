@@ -1,8 +1,12 @@
 import { Prisma, prisma } from '../index.js';
 
+export type ProductSource = 'shopify_feed' | 'jsonld' | 'html';
+
 export interface CompetitorProductRow {
   id: string;
-  shopifyProductId: string;
+  externalId: string;
+  source: string;
+  sourceUrl: string | null;
   title: string;
   handle: string;
   isAvailable: boolean;
@@ -16,7 +20,9 @@ export interface CompetitorProductRow {
 export interface UpsertProductData {
   competitorId: string;
   teamId: string;
-  shopifyProductId: string;
+  externalId: string;
+  source: ProductSource;
+  sourceUrl?: string | null;
   title: string;
   handle: string;
   vendor?: string;
@@ -31,12 +37,14 @@ export interface UpsertProductData {
 }
 
 export const competitorProductRepository = {
-  async findByCompetitorId(competitorId: string): Promise<CompetitorProductRow[]> {
+  async findByCompetitorId(competitorId: string, source?: ProductSource): Promise<CompetitorProductRow[]> {
     return prisma.competitorProduct.findMany({
-      where: { competitorId },
+      where: { competitorId, ...(source ? { source } : {}) },
       select: {
         id: true,
-        shopifyProductId: true,
+        externalId: true,
+        source: true,
+        sourceUrl: true,
         title: true,
         handle: true,
         isAvailable: true,
@@ -52,15 +60,18 @@ export const competitorProductRepository = {
   async upsertProduct(data: UpsertProductData): Promise<string> {
     const row = await prisma.competitorProduct.upsert({
       where: {
-        competitorId_shopifyProductId: {
+        competitorId_source_externalId: {
           competitorId: data.competitorId,
-          shopifyProductId: data.shopifyProductId,
+          source: data.source,
+          externalId: data.externalId,
         },
       },
       create: {
         competitorId: data.competitorId,
         teamId: data.teamId,
-        shopifyProductId: data.shopifyProductId,
+        externalId: data.externalId,
+        source: data.source,
+        sourceUrl: data.sourceUrl ?? null,
         title: data.title,
         handle: data.handle,
         vendor: data.vendor,
@@ -74,6 +85,7 @@ export const competitorProductRepository = {
         lastSeenAt: data.lastSeenAt,
       },
       update: {
+        sourceUrl: data.sourceUrl ?? null,
         title: data.title,
         handle: data.handle,
         vendor: data.vendor,
@@ -91,10 +103,10 @@ export const competitorProductRepository = {
     return row.id;
   },
 
-  async markUnavailable(competitorId: string, shopifyProductId: string): Promise<void> {
+  async markUnavailable(competitorId: string, source: ProductSource, externalId: string): Promise<void> {
     await prisma.competitorProduct.update({
       where: {
-        competitorId_shopifyProductId: { competitorId, shopifyProductId },
+        competitorId_source_externalId: { competitorId, source, externalId },
       },
       data: { isAvailable: false },
     });

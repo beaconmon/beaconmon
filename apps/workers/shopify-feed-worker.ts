@@ -6,23 +6,23 @@ import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
 import { Redis } from 'ioredis';
 import { QUEUE_NAMES, createCompetitorNotifyQueue, createManagedWorker } from '@beaconmon/queue';
-import type { ShopifyFeedJob } from '@beaconmon/queue';
+import type { CatalogSyncJob } from '@beaconmon/queue';
 import { prisma, updateCompetitorDiscoveryState, monitoringRunWorkerRepository } from '@beaconmon/db';
-import { processShopifyFeedJob } from './process-shopify-feed-job.js';
+import { processCatalogSyncJob } from './process-catalog-sync-job.js';
 
 const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
 const competitorNotifyQueue = createCompetitorNotifyQueue(connection);
 
-const { worker } = createManagedWorker<ShopifyFeedJob>({
+const { worker } = createManagedWorker<CatalogSyncJob>({
   queueName: QUEUE_NAMES.SHOPIFY_FEED,
   workerName: 'shopify-feed',
   connection,
   concurrency: 3,
   logger,
   processor: async (job) => {
-    const { competitorId, domain } = job.data;
-    logger.info({ service: 'shopify-feed-worker', competitorId, domain }, 'Processing Shopify feed job');
-    await processShopifyFeedJob(job.data, connection, competitorNotifyQueue);
+    const { competitorId, domain, mode } = job.data;
+    logger.info({ service: 'shopify-feed-worker', competitorId, domain, mode: mode ?? 'sync' }, 'Processing catalog sync job');
+    await processCatalogSyncJob(job.data, connection, competitorNotifyQueue);
   },
   onShutdown: async () => {
     await competitorNotifyQueue.close();

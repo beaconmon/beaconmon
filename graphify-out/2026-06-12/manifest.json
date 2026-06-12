@@ -1555,23 +1555,23 @@
     "semantic_hash": "d51830bd7d80c5c456b138eeab73abab"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/content-change-alert.tsx": {
-    "mtime": 1780983558.0489197,
-    "ast_hash": "db339c83e02353903843888966a8096c",
+    "mtime": 1781247075.181393,
+    "ast_hash": "8e7d6579cd61494b853a2471a792fd47",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/downtime-alert.tsx": {
-    "mtime": 1780983558.0527768,
-    "ast_hash": "0b0f6030174570aa8e6dc159eed404ed",
+    "mtime": 1781247078.2492776,
+    "ast_hash": "7dcae63b24890102746a7e2c00b71a90",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/intelligence-digest.tsx": {
-    "mtime": 1781100764.5549653,
-    "ast_hash": "553790c235349505d353041cc46d24b5",
+    "mtime": 1781247076.207914,
+    "ast_hash": "0403afd95cac499f9e634837fa11d04b",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/recovery-alert.tsx": {
-    "mtime": 1780983558.0547066,
-    "ast_hash": "4f0acd5f843a9847a2feaf3606a0edbc",
+    "mtime": 1781247074.4750242,
+    "ast_hash": "359c4ce9765b5b626b6506f7fdcf97f2",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/trial-reminder.tsx": {
@@ -2925,8 +2925,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/intelligence-digest-slack.ts": {
-    "mtime": 1781100764.5545335,
-    "ast_hash": "a1850c29a02e3092c4e380e9d1d39269",
+    "mtime": 1781247077.170105,
+    "ast_hash": "f1eb59e4944e497b24d37748f701e3c0",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/anomaly.ts": {
@@ -2955,8 +2955,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/emails/src/helpers.ts": {
-    "mtime": 1781100764.572367,
-    "ast_hash": "aa7a71ac9782ca2c42a9945a50839607",
+    "mtime": 1781247047.4623983,
+    "ast_hash": "2eeb535c3802100f5637ca35f6b6f37c",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/emails/src/index.tsx": {

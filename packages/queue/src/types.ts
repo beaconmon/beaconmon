@@ -85,12 +85,22 @@ export interface ContentNotifyJob {
   appUrl?: string;
 }
 
-/** Enqueued by competitor scheduler to sync a Shopify product feed */
-export interface ShopifyFeedJob {
+/**
+ * Enqueued by the competitor scheduler to sync a competitor catalog.
+ * The queue name stays 'shopify-feed' for compatibility with in-flight jobs.
+ * mode:
+ *  - absent or 'sync': tier-aware catalog sync (probes when no usable tier yet)
+ *  - 'sitemap_rescan': weekly product-URL diff for launch detection (selected_products tier)
+ */
+export interface CatalogSyncJob {
   competitorId: string;
   teamId: string;
   domain: string;
+  mode?: 'sync' | 'sitemap_rescan';
 }
+
+/** Back-compat alias for pre-fallback-ladder payloads (same shape, no mode) */
+export type ShopifyFeedJob = CatalogSyncJob;
 
 /** Enqueued by competitor scheduler to check a competitor page for changes */
 export interface CompetitorPageCheckJob {

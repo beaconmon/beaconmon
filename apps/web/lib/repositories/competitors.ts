@@ -14,6 +14,8 @@ export interface CompetitorListItem {
   name: string;
   domain: string;
   platform: string;
+  dataTier: string;
+  discoveryState: string;
   isActive: boolean;
   createdAt: Date;
 }
@@ -29,6 +31,9 @@ export interface CompetitorRow {
   discoveryState: DiscoveryState;
   discoverySyncedAt: Date | null;
   discoveryError: string | null;
+  dataTier: string;
+  sitemapUrl: string | null;
+  trackedProductUrls: unknown;
   isActive: boolean;
   deletedAt: Date | null;
   createdAt: Date;
@@ -62,7 +67,9 @@ export interface CompetitorProductRow {
   id: string;
   competitorId: string;
   teamId: string;
-  shopifyProductId: string;
+  externalId: string;
+  source: string;
+  sourceUrl: string | null;
   title: string;
   handle: string;
   sku: string | null;
@@ -146,7 +153,7 @@ export const competitorRepository = {
   async findAll(teamId: string): Promise<CompetitorListItem[]> {
     return prisma.competitor.findMany({
       where: { teamId, deletedAt: null },
-      select: { id: true, name: true, domain: true, platform: true, isActive: true, createdAt: true },
+      select: { id: true, name: true, domain: true, platform: true, dataTier: true, discoveryState: true, isActive: true, createdAt: true },
       orderBy: { name: 'asc' },
     });
   },
@@ -169,6 +176,8 @@ export const competitorRepository = {
         name: data.name,
         domain,
         platform: data.platform,
+        // Non-Shopify competitors start limited; the worker's probe ladder upgrades them
+        dataTier: data.platform === 'shopify' ? 'full_catalog' : 'limited',
         pages: {
           create: { teamId, label: data.name, url: data.url },
         },
@@ -180,7 +189,7 @@ export const competitorRepository = {
   async update(
     teamId: string,
     id: string,
-    data: Partial<{ name: string; platform: string }>
+    data: Partial<{ name: string; platform: string; trackedProductUrls: string[] }>
   ): Promise<CompetitorRow | null> {
     const result = await prisma.competitor.updateMany({
       where: { id, teamId, deletedAt: null },
