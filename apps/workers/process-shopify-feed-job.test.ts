@@ -60,6 +60,22 @@ function makeFeedResponse(products: unknown[]) {
   };
 }
 
+function makeMetaResponse(currency: string) {
+  return {
+    ok: true,
+    json: async () => ({ currency }),
+    headers: { get: () => null },
+  };
+}
+
+function makeProducts(startId: number, count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    ...mockProduct,
+    id: startId + i,
+    handle: `product-${startId + i}`,
+  }));
+}
+
 function existingProduct(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     id: 'existing-id',
@@ -243,5 +259,70 @@ describe('processCatalogSyncJob — stock change', () => {
     expect(competitorProductRepository.upsertProduct).toHaveBeenCalledTimes(1);
     expect(competitorEventRepository.createEvent).not.toHaveBeenCalled();
     expect(notifyQueue.add).not.toHaveBeenCalled();
+  });
+
+  it('paginates past 250 products via ?page=N until a short page', async () => {
+    const { competitorProductRepository } = await import('@beaconmon/db');
+    (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce(makeFeedResponse(makeProducts(1, 250)))
+      .mockResolvedValueOnce(makeFeedResponse(makeProducts(251, 250)))
+      .mockResolvedValueOnce(makeFeedResponse(makeProducts(501, 10)))
+      .mockResolvedValue(makeMetaResponse('USD'));
+
+    await processCatalogSyncJob(
+      { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
+      redis as Redis,
+      notifyQueue as Queue<CompetitorNotifyJob>
+    );
+
+    // All 510 products across three pages are upserted, not truncated at 250.
+    expect(competitorProductRepository.upsertProduct).toHaveBeenCalledTimes(510);
+
+    const urls = (fetchWithRetry as ReturnType<typeof vi.fn>).mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(urls.some((u) => u.includes('page=2'))).toBe(true);
+    expect(urls.some((u) => u.includes('page=3'))).toBe(true);
+    // The short third page ends pagination — no page 4 request.
+    expect(urls.some((u) => u.includes('page=4'))).toBe(false);
+  });
+
+  it('labels prices with the store currency from meta.json', async () => {
+    const { competitorProductRepository } = await import('@beaconmon/db');
+    (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce(makeFeedResponse([mockProduct]))
+      .mockResolvedValue(makeMetaResponse('GBP'));
+
+    await processCatalogSyncJob(
+      { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
+      redis as Redis,
+      notifyQueue as Queue<CompetitorNotifyJob>
+    );
+
+    const upsertArg = (competitorProductRepository.upsertProduct as ReturnType<typeof vi.fn>).mock.calls[0]![0];
+    expect(upsertArg.currency).toBe('GBP');
+  });
+
+  it('falls back to USD when meta.json is unavailable', async () => {
+    const { competitorProductRepository } = await import('@beaconmon/db');
+    (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce(makeFeedResponse([mockProduct]))
+      .mockResolvedValue({ ok: false, status: 404, json: async () => ({}), headers: { get: () => null } });
+
+    await processCatalogSyncJob(
+      { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
+      redis as Redis,
+      notifyQueue as Queue<CompetitorNotifyJob>
+    );
+
+    const upsertArg = (competitorProductRepository.upsertProduct as ReturnType<typeof vi.fn>).mock.calls[0]![0];
+    expect(upsertArg.currency).toBe('USD');
   });
 });

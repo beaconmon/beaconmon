@@ -75,6 +75,27 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
       .filter((l) => l.length > 0)
       .join('\n');
 
+    // A selector that no longer matches after a redesign (or a body that yields
+    // no text) extracts to ''. Snapshotting that would fire one bogus
+    // "everything was removed" change and then go permanently silent, because
+    // empty never diffs against empty again. Surface it as a failure so the
+    // page's consecutive-failure tracking handles it like any other outage
+    // instead of reporting a calm, broken monitor.
+    if (content.length === 0) {
+      return {
+        monitorId,
+        checkedAt,
+        success: false,
+        content: null,
+        statusCode,
+        responseTimeMs,
+        errorType: 'empty_content',
+        errorMessage: selector
+          ? `Selector "${selector}" matched no content`
+          : 'Page body extracted no text',
+      };
+    }
+
     return {
       monitorId,
       checkedAt,
