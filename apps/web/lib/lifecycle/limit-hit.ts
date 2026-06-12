@@ -41,7 +41,7 @@ export async function enqueueLimitHitEmail(opts: {
           dedupKey,
           ownerEmail,
         },
-        { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
+        { jobId: `lc_${dedupKey}` }
       );
     } catch (enqueueErr) {
       await redis.del(redisKey);
