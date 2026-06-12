@@ -29,6 +29,7 @@ export const competitorPageRepository = {
     return prisma.competitorPage.findMany({
       where: {
         isActive: true,
+        competitor: { isActive: true, deletedAt: null },
         OR: [{ nextCheckAt: null }, { nextCheckAt: { lte: now } }],
       },
       select: {
@@ -93,7 +94,29 @@ export const competitorPageRepository = {
         ...(data.lastSnapshotHash !== undefined ? { lastSnapshotHash: data.lastSnapshotHash } : {}),
         lastCheckedAt: data.lastCheckedAt,
         nextCheckAt: data.nextCheckAt,
+        consecutiveFailures: 0,
       },
     });
+  },
+
+  /**
+   * Record a failed check: reschedule and bump the failure counter so the UI
+   * can flag pages that have silently stopped producing intel. Returns the new
+   * consecutive failure count.
+   */
+  async recordCheckFailure(
+    id: string,
+    data: { lastCheckedAt: Date; nextCheckAt: Date }
+  ): Promise<number> {
+    const row = await prisma.competitorPage.update({
+      where: { id },
+      data: {
+        lastCheckedAt: data.lastCheckedAt,
+        nextCheckAt: data.nextCheckAt,
+        consecutiveFailures: { increment: 1 },
+      },
+      select: { consecutiveFailures: true },
+    });
+    return row.consecutiveFailures;
   },
 };

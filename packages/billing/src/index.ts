@@ -41,7 +41,8 @@ export type BillingFeature =
 export function canUseFeature(plan: PlanTier, feature: BillingFeature): boolean {
   switch (feature) {
     case 'ai':
-      return plan !== 'free';
+      // AI features are Growth/Scale only (CLAUDE.md domain rule)
+      return plan === 'growth' || plan === 'scale';
     case 'digest_daily':
       return plan === 'growth' || plan === 'scale';
     case 'multi_location':

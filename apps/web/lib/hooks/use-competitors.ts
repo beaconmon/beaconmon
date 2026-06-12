@@ -61,6 +61,7 @@ export interface CompetitorPageRow {
   selector: string | null;
   intervalSeconds: number;
   isActive: boolean;
+  consecutiveFailures: number;
   lastSnapshotHash: string | null;
   lastCheckedAt: string | null;
 }

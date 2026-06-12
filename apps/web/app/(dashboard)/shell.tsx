@@ -41,7 +41,7 @@ import { SETTINGS_ACTIVE_PREFIXES } from '@/components/dashboard/settings-shell'
 
 const NAV_ITEMS = [
   { href: '/today',     label: 'Today',     icon: LayoutGrid },
-  { href: '/wire',      label: 'Wire',      icon: Brain, badge: 'NEW' },
+  { href: '/wire',      label: 'Wire',      icon: Brain },
   { href: '/monitors',  label: 'Monitors',  icon: Activity },
   { href: '/incidents', label: 'Incidents', icon: AlertTriangle },
   { href: '/settings',  label: 'Settings',  icon: Settings },
@@ -55,14 +55,12 @@ function NavItem({
   label,
   icon: Icon,
   badge,
-  labelBadge,
   collapsed,
 }: {
   href: string;
   label: string;
   icon: React.ElementType;
   badge?: number;
-  labelBadge?: string;
   collapsed: boolean;
 }) {
   const pathname = usePathname();
@@ -98,18 +96,6 @@ function NavItem({
       {!collapsed && (
         <>
           <span className="flex-1">{label}</span>
-          {labelBadge && (
-            <span
-              className="rounded px-1 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
-              style={{
-                background: 'rgba(0,229,122,0.12)',
-                color: 'var(--brand-green-ink)',
-                boxShadow: 'inset 0 0 0 1px rgba(0,229,122,0.3)',
-              }}
-            >
-              {labelBadge}
-            </span>
-          )}
           {badge != null && badge > 0 && (
             <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-red px-1 text-[9px] font-bold text-white">
               {badge > 9 ? '9+' : badge}
@@ -163,7 +149,6 @@ function Sidebar({
             label={item.label}
             icon={item.icon}
             badge={item.href === '/incidents' ? incidentCount : undefined}
-            labelBadge={'badge' in item ? (item.badge as string) : undefined}
             collapsed={collapsed}
           />
         ))}

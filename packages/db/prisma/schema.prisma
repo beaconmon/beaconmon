@@ -704,6 +704,7 @@ model CompetitorPage {
   selector         String?
   intervalSeconds  Int       @default(3600) @map("interval_seconds")
   isActive         Boolean   @default(true) @map("is_active")
+  consecutiveFailures Int    @default(0) @map("consecutive_failures")
   lastSnapshotHash String?   @map("last_snapshot_hash")
   lastCheckedAt    DateTime? @map("last_checked_at")
   nextCheckAt      DateTime? @map("next_check_at")

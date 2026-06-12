@@ -10,6 +10,7 @@ export const PLAN_LIMITS = {
     alertChannels: 1,
     regions: 0,
     competitorMonitors: 1,
+    competitorPagesPerCompetitor: 3,
   },
   starter: {
     monitors: 25,
@@ -20,6 +21,7 @@ export const PLAN_LIMITS = {
     alertChannels: -1,
     regions: 0,
     competitorMonitors: 5,
+    competitorPagesPerCompetitor: 10,
   },
   growth: {
     monitors: 100,
@@ -30,6 +32,7 @@ export const PLAN_LIMITS = {
     alertChannels: -1,
     regions: 5,
     competitorMonitors: 25,
+    competitorPagesPerCompetitor: 25,
   },
   scale: {
     monitors: -1,
@@ -40,6 +43,7 @@ export const PLAN_LIMITS = {
     alertChannels: -1,
     regions: 5,
     competitorMonitors: -1,
+    competitorPagesPerCompetitor: -1,
   },
 } as const satisfies Record<PlanTier, PlanLimits>;
 
@@ -52,6 +56,7 @@ export interface PlanLimits {
   alertChannels: number;
   regions: number;
   competitorMonitors: number;
+  competitorPagesPerCompetitor: number;
 }
 
 export function planRetentionCutoff(plan: PlanTier): Date {

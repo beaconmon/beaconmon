@@ -8,6 +8,10 @@ import { logger } from './lib/logger.js';
 
 const service = 'shopify-feed-worker';
 
+// Atomically delete a Redis key only if the stored value matches the caller's token.
+// Prevents a sync that outlived its 300s lock TTL from deleting a successor's lock.
+const RELEASE_LOCK_IF_OWNER = `if redis.call("get",KEYS[1])==ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end`;
+
 interface ShopifyVariant {
   id: number;
   price: string;
@@ -136,6 +140,15 @@ export async function processShopifyFeedJob(
     return;
   }
 
+  // The first successful sync establishes the catalog baseline. Diffing against
+  // an empty catalog would emit one product_added event (and notification) per
+  // item in the store, so event creation is suppressed until a baseline exists.
+  const competitor = await prisma.competitor.findUnique({
+    where: { id: competitorId },
+    select: { discoverySyncedAt: true },
+  });
+  const isBaselineSync = !competitor?.discoverySyncedAt;
+
   await updateCompetitorDiscoveryState(competitorId, { discoveryState: 'syncing' });
 
   try {
@@ -219,22 +232,24 @@ export async function processShopifyFeedJob(
 
             if (!existingProduct) {
               const productId = await competitorProductRepository.upsertProduct(upsertData);
-              const addedPayload = { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' };
-              const event = await competitorEventRepository.createEvent({
-                teamId,
-                competitorId,
-                productId,
-                type: 'product_added',
-                payload: addedPayload,
-                significance: scoreRuleBased('product_added', addedPayload),
-                detectedAt: now,
-              });
-              await maybeEnqueueNotify(event.id);
+              if (!isBaselineSync) {
+                const addedPayload = { productHandle: product.handle, title: product.title, price: newPrice, currency: 'USD' };
+                const event = await competitorEventRepository.createEvent({
+                  teamId,
+                  competitorId,
+                  productId,
+                  type: 'product_added',
+                  payload: addedPayload,
+                  significance: scoreRuleBased('product_added', addedPayload),
+                  detectedAt: now,
+                });
+                await maybeEnqueueNotify(event.id);
+              }
             } else {
               const oldPrice = existingProduct.currentPrice?.toString() ?? '0';
               const oldAvailable = existingProduct.isAvailable;
-              const priceChanged = toCents(newPrice) !== toCents(oldPrice);
-              const availabilityChanged = newAvailable !== oldAvailable;
+              const priceChanged = !isBaselineSync && toCents(newPrice) !== toCents(oldPrice);
+              const availabilityChanged = !isBaselineSync && newAvailable !== oldAvailable;
 
               const productId = await competitorProductRepository.upsertProduct(upsertData);
 
@@ -259,16 +274,9 @@ export async function processShopifyFeedJob(
               }
 
               if (availabilityChanged) {
-                const stockPayload = { productHandle: product.handle, oldAvailable, newAvailable };
-                await competitorEventRepository.createEvent({
-                  teamId,
-                  competitorId,
-                  productId,
-                  type: 'stock_changed',
-                  payload: stockPayload,
-                  significance: scoreRuleBased('stock_changed', stockPayload),
-                  detectedAt: now,
-                });
+                // Only the granular out_of_stock/back_in_stock event is created.
+                // A parallel stock_changed event would double-count the same flip
+                // in the event feed and digests.
                 const granularType = newAvailable ? 'back_in_stock' : 'out_of_stock';
                 const granularPayload = { productHandle: product.handle, oldAvailable, newAvailable, previouslyAvailable: oldAvailable };
                 const granularEvent = await competitorEventRepository.createEvent({
@@ -285,8 +293,14 @@ export async function processShopifyFeedJob(
 
               const oldCompareAt = existingProduct.compareAtPrice != null ? String(existingProduct.compareAtPrice) : null;
               const newCompareAt = priceVariant?.compare_at_price ?? null;
-              const saleStarted = !oldCompareAt && !!newCompareAt && toCents(newCompareAt) > toCents(newPrice);
-              const saleEnded = !!oldCompareAt && !newCompareAt;
+              // A product is on sale only when compare-at exceeds the current price.
+              // Comparing the on-sale state before and after catches products first
+              // seen mid-sale and avoids a sale_ended for a compare-at that was
+              // never an actual discount.
+              const wasOnSale = !!oldCompareAt && toCents(oldCompareAt) > toCents(oldPrice);
+              const isOnSale = !!newCompareAt && toCents(newCompareAt) > toCents(newPrice);
+              const saleStarted = !isBaselineSync && !wasOnSale && isOnSale;
+              const saleEnded = !isBaselineSync && wasOnSale && !isOnSale;
 
               if (saleStarted) {
                 const saleStartedPayload = { productHandle: product.handle, title: product.title, compareAtPrice: newCompareAt, currentPrice: newPrice, currency: 'USD' };
@@ -331,17 +345,19 @@ export async function processShopifyFeedJob(
     for (const [shopifyProductId, existingProduct] of existingByShopifyId) {
       if (!fetchedIds.has(shopifyProductId) && existingProduct.isAvailable) {
         await competitorProductRepository.markUnavailable(competitorId, shopifyProductId);
-        const removedPayload = { productHandle: existingProduct.handle, title: existingProduct.title };
-        const event = await competitorEventRepository.createEvent({
-          teamId,
-          competitorId,
-          productId: existingProduct.id,
-          type: 'product_removed',
-          payload: removedPayload,
-          significance: scoreRuleBased('product_removed', removedPayload),
-          detectedAt: now,
-        });
-        await maybeEnqueueNotify(event.id);
+        if (!isBaselineSync) {
+          const removedPayload = { productHandle: existingProduct.handle, title: existingProduct.title };
+          const event = await competitorEventRepository.createEvent({
+            teamId,
+            competitorId,
+            productId: existingProduct.id,
+            type: 'product_removed',
+            payload: removedPayload,
+            significance: scoreRuleBased('product_removed', removedPayload),
+            detectedAt: now,
+          });
+          await maybeEnqueueNotify(event.id);
+        }
       }
     }
 
@@ -364,7 +380,7 @@ export async function processShopifyFeedJob(
       'Shopify feed processed'
     );
   } finally {
-    // 8. Release lock
-    await redis.del(lockKey);
+    // 8. Release lock only if this run still owns it
+    await redis.eval(RELEASE_LOCK_IF_OWNER, 1, lockKey, lockValue);
   }
 }

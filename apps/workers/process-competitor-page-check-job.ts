@@ -67,11 +67,14 @@ export async function processCompetitorPageCheckJob(
     });
 
     if (!result.success || result.content === null) {
-      logger.warn({ service, competitorPageId, errorType: result.errorType }, 'Content check failed');
-      await competitorPageRepository.updateAfterCheck(competitorPageId, {
+      const consecutiveFailures = await competitorPageRepository.recordCheckFailure(competitorPageId, {
         lastCheckedAt: now,
         nextCheckAt: computeNextCheckAt(now, page.intervalSeconds),
       });
+      logger.warn(
+        { service, competitorPageId, errorType: result.errorType, consecutiveFailures },
+        'Content check failed'
+      );
       return;
     }
 
@@ -130,6 +133,7 @@ async function handleFirstRun(
         lastSnapshotHash: contentHash,
         lastCheckedAt: now,
         nextCheckAt: computeNextCheckAt(now, intervalSeconds),
+        consecutiveFailures: 0,
       },
     }),
   ]);
@@ -225,6 +229,7 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
             lastSnapshotHash: contentHash,
             lastCheckedAt: now,
             nextCheckAt: computeNextCheckAt(now, intervalSeconds),
+            consecutiveFailures: 0,
           },
         }),
       ]);
@@ -271,6 +276,7 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
           lastSnapshotHash: contentHash,
           lastCheckedAt: now,
           nextCheckAt: computeNextCheckAt(now, intervalSeconds),
+          consecutiveFailures: 0,
         },
       }),
     ]);

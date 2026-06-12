@@ -197,6 +197,7 @@ export const digestRepository = {
       where: {
         teamId,
         detectedAt: { gte: start, lte: end },
+        competitor: { isActive: true, deletedAt: null },
         OR: [
           { significance: null },
           { significance: 'medium' },
@@ -205,6 +206,9 @@ export const digestRepository = {
       },
       include: { competitor: { select: { id: true, name: true, domain: true } } },
       orderBy: { detectedAt: 'desc' },
+      // Cap the load: the email renders a handful of items, and the subject line
+      // count should not require loading an unbounded event history.
+      take: 50,
     });
 
     return rows.map((r) => ({

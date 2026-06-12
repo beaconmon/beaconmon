@@ -149,6 +149,34 @@ export const contentSnapshotWorkerRepository = {
   },
 
   /**
+   * Delete competitor page snapshots beyond the retention limit.
+   * Mirrors pruneToLimit, keyed by competitorPageId instead of monitorId.
+   */
+  async pruneToLimitByCompetitorPage(competitorPageId: string, keepCount: number): Promise<number> {
+    if (keepCount < 0) return 0;
+
+    const survivors = await prisma.contentSnapshot.findMany({
+      where: { competitorPageId },
+      select: { id: true },
+      orderBy: { capturedAt: 'desc' },
+      take: keepCount,
+    });
+
+    if (survivors.length === 0) {
+      const result = await prisma.contentSnapshot.deleteMany({ where: { competitorPageId } });
+      return result.count;
+    }
+
+    const result = await prisma.contentSnapshot.deleteMany({
+      where: {
+        competitorPageId,
+        id: { notIn: survivors.map((s) => s.id) },
+      },
+    });
+    return result.count;
+  },
+
+  /**
    * Returns all content snapshots for a team's competitor monitors within a time window.
    * Used by the daily digest worker to build the email body.
    */
@@ -223,6 +251,43 @@ export const contentSnapshotWorkerRepository = {
 
     return rows.map((r) => ({
       monitorId: r.id,
+      teamId: r.teamId,
+      plan: r.team.plan,
+      trialEndsAt: r.team.trialEndsAt,
+      subscriptionStatus: r.team.subscription?.status ?? null,
+    }));
+  },
+
+  /**
+   * Returns all competitor pages paired with the raw team plan so the retention
+   * task can prune competitor page snapshots to per-plan limits. Caller resolves
+   * trial expiry to an effective tier.
+   */
+  async findCompetitorPagesWithTeamPlan(): Promise<
+    Array<{
+      competitorPageId: string;
+      teamId: string;
+      plan: string;
+      trialEndsAt: Date | null;
+      subscriptionStatus: string | null;
+    }>
+  > {
+    const rows = await prisma.competitorPage.findMany({
+      select: {
+        id: true,
+        teamId: true,
+        team: {
+          select: {
+            plan: true,
+            trialEndsAt: true,
+            subscription: { select: { status: true } },
+          },
+        },
+      },
+    });
+
+    return rows.map((r) => ({
+      competitorPageId: r.id,
       teamId: r.teamId,
       plan: r.team.plan,
       trialEndsAt: r.team.trialEndsAt,

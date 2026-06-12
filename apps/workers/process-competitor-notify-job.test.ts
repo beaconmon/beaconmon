@@ -93,4 +93,34 @@ describe('processCompetitorNotifyJob — new event types', () => {
     const { subject } = sendSpy.mock.calls[0]![0] as { subject: string };
     expect(subject).toBe("Competitor change detected on 'Nike'");
   });
+
+  it('throws and releases the channel idempotency key when a send fails', async () => {
+    const db = await import('@beaconmon/db');
+    (db.prisma.competitorEvent.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'ev-1',
+      type: 'price_changed',
+      payload: { oldPrice: '90.00', newPrice: '80.00' },
+      detectedAt: new Date(),
+      competitor: { id: 'comp-1', name: 'Nike', domain: 'nike.com' },
+    });
+    (db.prisma.competitorNotificationChannel.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([emailChannel]);
+
+    const { Resend } = await import('resend');
+    (Resend as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+      emails: { send: vi.fn().mockResolvedValue({ error: { message: 'rate limited' } }) },
+    }));
+
+    const redis = makeRedis();
+    (redis.del as ReturnType<typeof vi.fn>).mockResolvedValue(1);
+
+    const { processCompetitorNotifyJob } = await import('./process-competitor-notify-job.js');
+    await expect(
+      processCompetitorNotifyJob(
+        { competitorEventId: 'ev-1', teamId: 'team-1', competitorId: 'comp-1' },
+        redis as Redis
+      )
+    ).rejects.toThrow('failed for 1 channel(s)');
+
+    expect(redis.del).toHaveBeenCalledWith('competitor:notify:sent:ev-1:ch-1');
+  });
 });

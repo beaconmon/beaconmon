@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { prisma } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
+import { competitorRepository } from '@/lib/repositories/competitors';
 import { createMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
@@ -10,6 +11,7 @@ import { logger } from '@/lib/logger';
 import { getPostHogClient } from '@/lib/posthog-server';
 import { getLifecycleEmailQueue } from '@/lib/queue';
 import { enqueueLimitHitEmail } from '@/lib/lifecycle/limit-hit';
+import { assertPublicHttpUrl } from '@/lib/validations/public-url';
 
 const bulkCreateSchema = z.object({
   monitors: z.array(createMonitorSchema).min(1).max(50),
@@ -66,6 +68,40 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
     { service: 'web', teamId, count: created.length, source },
     'Monitors bulk-created'
   );
+
+  // Sync competitor records for any isCompetitor inputs so the wire page can find them.
+  // The monitors table is the checker's source of truth; the competitors table is the
+  // intelligence domain's source of truth, so both need a row. Enforces the same
+  // competitor plan limit as POST /api/competitors; inputs beyond the limit are
+  // skipped with a log rather than failing the request, since the monitors are
+  // already created at this point.
+  const competitorInputs = inputs.filter((m) => m.isCompetitor);
+  if (competitorInputs.length > 0) {
+    const competitorLimit = PLAN_LIMITS[plan].competitorMonitors;
+    let activeCount = await competitorRepository.countActive(teamId);
+    for (const ci of competitorInputs) {
+      try {
+        assertPublicHttpUrl(ci.url);
+        const domain = new URL(ci.url).hostname;
+        const existing = await prisma.competitor.findFirst({ where: { teamId, domain, deletedAt: null } });
+        if (existing) continue;
+        if (competitorLimit !== -1 && activeCount >= competitorLimit) {
+          logger.warn(
+            { service: 'web', teamId, url: ci.url, limit: competitorLimit },
+            'Competitor plan limit reached during bulk-create, skipping competitor record'
+          );
+          continue;
+        }
+        const competitor = await competitorRepository.create(teamId, { name: ci.name, url: ci.url, platform: 'other' });
+        // Non-Shopify competitors have no catalog discovery; without this the
+        // record stays 'pending' forever (POST /api/competitors does the same).
+        await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'not_applicable' });
+        activeCount++;
+      } catch (err) {
+        logger.warn({ service: 'web', teamId, url: ci.url, err }, 'Competitor record sync failed during bulk-create');
+      }
+    }
+  }
 
   try {
     const ph = getPostHogClient();

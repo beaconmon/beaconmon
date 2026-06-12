@@ -1,4 +1,4 @@
-import { formatBriefDateTimeUTC } from '@beaconmon/emails';
+import { formatBriefDateTime } from '@beaconmon/emails';
 import type {
   DigestIncidentItem,
   DigestContentItem,
@@ -53,7 +53,7 @@ export function buildSlackPayload(
   timezone = 'UTC'
 ): object {
   const label = frequency === 'daily' ? 'Daily' : 'Weekly';
-  const dateRange = `${formatBriefDateTimeUTC(windowStart, timezone)} to ${formatBriefDateTimeUTC(windowEnd, timezone)}`;
+  const dateRange = `${formatBriefDateTime(windowStart, timezone)} to ${formatBriefDateTime(windowEnd, timezone)}`;
 
   const blocks: object[] = [
     {
@@ -73,7 +73,7 @@ export function buildSlackPayload(
         `*Incidents (${sections.incidents.length})*`,
         sections.incidents.map(
           (inc) =>
-            `• *${escapeSlackMrkdwn(inc.monitorName)}* — started ${formatBriefDateTimeUTC(inc.startedAt, timezone)}${inc.resolvedAt ? `, resolved ${formatBriefDateTimeUTC(inc.resolvedAt, timezone)}` : ' (ongoing)'}`
+            `• *${escapeSlackMrkdwn(inc.monitorName)}* — started ${formatBriefDateTime(inc.startedAt, timezone)}${inc.resolvedAt ? `, resolved ${formatBriefDateTime(inc.resolvedAt, timezone)}` : ' (ongoing)'}`
         )
       )
     );

@@ -12,7 +12,7 @@ import {
   EmailFooter,
   EP,
   badgeKindFromEventType,
-  formatBriefDateTimeUTC,
+  formatBriefDateTime,
   formatRelativeAgo,
   hostnameFrom,
   type Severity,
@@ -126,7 +126,7 @@ export function ContentChangeAlert({
     { k: 'Competitor', v: monitorName, mono: false },
     { k: 'URL', v: monitorUrl, mono: true, break: true },
     ...(summary ? [{ k: 'Change', v: summary, mono: false }] : []),
-    { k: 'Detected', v: formatBriefDateTimeUTC(changedAt) },
+    { k: 'Detected', v: formatBriefDateTime(changedAt) },
   ];
 
   return (
@@ -150,7 +150,7 @@ export function ContentChangeAlert({
         badge={copy.badge}
         sev={copy.sev}
         summary={summary}
-        time={`Detected ${formatRelativeAgo(changedAt)} · ${formatBriefDateTimeUTC(changedAt)}`}
+        time={`Detected ${formatRelativeAgo(changedAt)} · ${formatBriefDateTime(changedAt)}`}
         actionLabel={diffUrl ? 'View diff' : undefined}
         actionUrl={diffUrl}
       />

@@ -50,3 +50,5 @@ packages/db/generated/
 # Claude Code
 .claw/
 next-env.d.ts
+
+/outreach

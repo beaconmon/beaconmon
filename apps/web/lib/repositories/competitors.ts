@@ -1,5 +1,5 @@
 import { prisma } from '@beaconmon/db';
-import { NotFoundError } from '@/lib/api/errors';
+import { NotFoundError, ValidationError } from '@/lib/api/errors';
 
 export interface CompetitorFeedItem {
   competitorPageId: string;
@@ -88,6 +88,7 @@ export interface CompetitorPageRow {
   selector: string | null;
   intervalSeconds: number;
   isActive: boolean;
+  consecutiveFailures: number;
   lastSnapshotHash: string | null;
   lastCheckedAt: Date | null;
   nextCheckAt: Date | null;
@@ -193,10 +194,19 @@ export const competitorRepository = {
   updateDiscoveryState,
 
   async softDelete(teamId: string, id: string): Promise<boolean> {
-    const result = await prisma.competitor.updateMany({
-      where: { id, teamId, deletedAt: null },
-      data: { deletedAt: new Date() },
-    });
+    // Also clear isActive and deactivate child pages: the scheduler's due-page
+    // and Shopify feed queries key off isActive, so deletedAt alone would keep
+    // the backend checking and syncing a deleted competitor forever.
+    const [result] = await prisma.$transaction([
+      prisma.competitor.updateMany({
+        where: { id, teamId, deletedAt: null },
+        data: { deletedAt: new Date(), isActive: false },
+      }),
+      prisma.competitorPage.updateMany({
+        where: { competitorId: id, teamId },
+        data: { isActive: false },
+      }),
+    ]);
     return result.count > 0;
   },
 
@@ -212,6 +222,7 @@ export const competitorRepository = {
       const pipeIdx = opts.before.indexOf('|');
       if (pipeIdx !== -1) {
         const beforeDate = new Date(opts.before.slice(0, pipeIdx));
+        if (Number.isNaN(beforeDate.getTime())) throw new ValidationError('Invalid before cursor');
         const beforeId = opts.before.slice(pipeIdx + 1);
         beforeFilter = {
           OR: [
@@ -220,7 +231,9 @@ export const competitorRepository = {
           ],
         };
       } else {
-        beforeFilter = { detectedAt: { lt: new Date(opts.before) } };
+        const beforeDate = new Date(opts.before);
+        if (Number.isNaN(beforeDate.getTime())) throw new ValidationError('Invalid before cursor');
+        beforeFilter = { detectedAt: { lt: beforeDate } };
       }
     }
 
@@ -263,6 +276,13 @@ export const competitorRepository = {
       where: { teamId, competitorId },
       orderBy: { title: 'asc' },
       take: 25_001,
+    });
+  },
+
+  async countActivePages(teamId: string, competitorId: string): Promise<number> {
+    await assertOwnership(teamId, competitorId);
+    return prisma.competitorPage.count({
+      where: { teamId, competitorId, isActive: true },
     });
   },
 

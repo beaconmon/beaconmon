@@ -1,4 +1,4 @@
-import { request } from 'undici';
+import { request, Agent, interceptors } from 'undici';
 import * as cheerio from 'cheerio';
 import type { CheckErrorType } from '@beaconmon/types';
 import { classifyError } from './errors.js';
@@ -9,6 +9,10 @@ export interface ContentCheckInput {
   selector?: string;
   timeoutMs: number;
 }
+
+// Follow up to 5 redirects so a 301/302 yields the destination page, not the
+// redirect stub body (undici does not follow redirects by default).
+const redirectDispatcher = new Agent().compose(interceptors.redirect({ maxRedirections: 5 }));
 
 export interface ContentCheckResult {
   monitorId: string;
@@ -33,6 +37,7 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
   try {
     const { statusCode, body } = await request(url, {
       method: 'GET',
+      dispatcher: redirectDispatcher,
       headersTimeout: timeoutMs,
       bodyTimeout: timeoutMs,
       headers: {
@@ -43,6 +48,22 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
 
     const html = await body.text();
     const responseTimeMs = Date.now() - startedAt;
+
+    // A 404, 500, or bot-challenge page must not become the snapshot baseline:
+    // treating it as success would emit a bogus change event and corrupt every
+    // diff until the page recovers.
+    if (statusCode < 200 || statusCode >= 300) {
+      return {
+        monitorId,
+        checkedAt,
+        success: false,
+        content: null,
+        statusCode,
+        responseTimeMs,
+        errorType: 'non_2xx',
+        errorMessage: `HTTP ${statusCode}`,
+      };
+    }
 
     const $ = cheerio.load(html);
     const rawText = selector ? $(selector).text() : $('body').text();

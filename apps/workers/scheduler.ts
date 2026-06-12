@@ -283,6 +283,7 @@ async function scheduleChecks(): Promise<void> {
     const duePages = await prisma.competitorPage.findMany({
       where: {
         isActive: true,
+        competitor: { isActive: true, deletedAt: null },
         OR: [{ nextCheckAt: { lte: now } }, { nextCheckAt: null }],
       },
       select: {
@@ -305,7 +306,11 @@ async function scheduleChecks(): Promise<void> {
           selector: page.selector ?? undefined,
           intervalSeconds: page.intervalSeconds,
         },
-        { jobId: `cpc_${page.id}` }
+        // Timestamped jobId: a static id is silently deduplicated by BullMQ while a
+        // previous completed job is retained (removeOnComplete count 100), which
+        // stalls the page forever. The worker's Redis processing lock and change
+        // dedup guard already prevent concurrent double-processing.
+        { jobId: `cpc_${page.id}_${now.getTime()}` }
       );
       await prisma.competitorPage.update({
         where: { id: page.id },
@@ -315,12 +320,12 @@ async function scheduleChecks(): Promise<void> {
 
     // Shopify feed scheduling — 60-min cadence enforced via Redis NX key (55-min TTL)
     const shopifyCompetitors = await prisma.competitor.findMany({
-      where: { platform: 'shopify', isActive: true },
+      where: { platform: 'shopify', isActive: true, deletedAt: null },
       select: { id: true, teamId: true, domain: true },
     });
     for (const c of shopifyCompetitors) {
       const key = `shopify:scheduled:${c.id}`;
-      const set = await connection.set(key, '1', 'EX', 3600, 'NX');
+      const set = await connection.set(key, '1', 'EX', 3300, 'NX');
       if (set === 'OK') {
         await shopifyFeedQueue.add(
           'shopify-feed',
