@@ -24,6 +24,10 @@ beforeAll(async () => {
         res.writeHead(500, { 'content-type': 'text/html' });
         res.end('<html><body><p>internal error</p></body></html>');
         break;
+      case '/empty-body':
+        res.writeHead(200, { 'content-type': 'text/html' });
+        res.end('<html><body></body></html>');
+        break;
       default:
         res.writeHead(404);
         res.end();
@@ -67,5 +71,26 @@ describe('runContentCheck', () => {
     expect(result.success).toBe(false);
     expect(result.statusCode).toBe(500);
     expect(result.errorType).toBe('non_2xx');
+  });
+
+  it('fails when the body extracts no text instead of snapshotting empty content', async () => {
+    const result = await runContentCheck({ monitorId: 'm1', url: `${baseUrl}/empty-body`, timeoutMs: 5000 });
+    expect(result.success).toBe(false);
+    expect(result.statusCode).toBe(200);
+    expect(result.content).toBeNull();
+    expect(result.errorType).toBe('empty_content');
+  });
+
+  it('fails when a selector matches nothing rather than reporting an empty diff', async () => {
+    const result = await runContentCheck({
+      monitorId: 'm1',
+      url: `${baseUrl}/ok`,
+      selector: '.does-not-exist',
+      timeoutMs: 5000,
+    });
+    expect(result.success).toBe(false);
+    expect(result.statusCode).toBe(200);
+    expect(result.content).toBeNull();
+    expect(result.errorType).toBe('empty_content');
   });
 });

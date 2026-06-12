@@ -9,6 +9,7 @@ export type CheckErrorType =
   | 'dns_error'
   | 'keyword_not_found'
   | 'keyword_config_error'
+  | 'empty_content'
   | 'unknown';
 
 export interface CheckResult {

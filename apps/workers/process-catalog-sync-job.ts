@@ -72,56 +72,83 @@ class FeedUnusableError extends Error {
   }
 }
 
-function parseNextPageUrl(linkHeader: string | null): string | null {
-  if (!linkHeader) return null;
-  for (const part of linkHeader.split(',')) {
-    if (part.includes('rel="next"')) {
-      const match = part.match(/<([^>]+)>/);
-      if (match?.[1]) return match[1];
-    }
-  }
-  return null;
+// Max products per products.json page; also the public endpoint's hard ceiling.
+const PRODUCTS_PER_PAGE = 250;
+// Safety cap on pages so a misbehaving or unbounded catalog cannot loop forever.
+// 40 pages * 250 = 10k products, well beyond a typical tracked competitor.
+const MAX_FEED_PAGES = 40;
+
+/**
+ * Paginate the public products.json feed.
+ *
+ * The public storefront endpoint does NOT emit rel="next" Link headers (that is
+ * the authenticated Admin API); it paginates via ?page=N and returns a short or
+ * empty page at the end. Relying on a Link header silently truncated every
+ * catalog at 250 products, which then surfaced as false product_removed/stock
+ * events when items shuffled in and out of the first page. We page until a page
+ * shorter than the limit, with a hard cap.
+ */
+interface FeedFetchResult {
+  products: ShopifyProduct[];
+  /** True when a mid-pagination error stopped the fetch early; callers must not
+   * mark missing products unavailable on a partial result set. */
+  partial: boolean;
 }
 
-async function fetchAllShopifyProducts(domain: string): Promise<ShopifyProduct[]> {
+async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult> {
   const allProducts: ShopifyProduct[] = [];
-  let url: string | null = `https://${domain}/products.json?limit=250`;
 
-  while (url) {
+  for (let page = 1; page <= MAX_FEED_PAGES; page++) {
+    const url = `https://${domain}/products.json?limit=${PRODUCTS_PER_PAGE}&page=${page}`;
     const res = await fetchWithRetry(url);
 
     if (!res.ok) {
-      if (isBlockedStatus(res.status) || res.status === 404 || res.status === 410) {
-        throw new FeedUnusableError(res.status);
+      // A failure on the first page means the feed itself is unusable, so the
+      // caller can descend the fallback ladder. A failure mid-pagination keeps
+      // the pages already collected rather than discarding a partial catalog.
+      if (page === 1) {
+        if (isBlockedStatus(res.status) || res.status === 404 || res.status === 410) {
+          throw new FeedUnusableError(res.status);
+        }
+        throw new Error(`Shopify feed returned ${res.status} for ${url}`);
       }
-      throw new Error(`Shopify feed returned ${res.status} for ${url}`);
+      logger.warn({ service, domain, page, status: res.status }, 'Shopify feed pagination stopped early on error');
+      return { products: allProducts, partial: true };
     }
 
     const data = (await res.json()) as ShopifyProductsResponse;
     allProducts.push(...data.products);
 
-    const linkHeader = res.headers.get('link');
-    const nextUrl = parseNextPageUrl(linkHeader);
-    if (nextUrl) {
-      let parsed: URL;
-      try {
-        parsed = new URL(nextUrl);
-      } catch {
-        throw new Error(`Malformed pagination URL in Link header: ${nextUrl}`);
-      }
-      if (parsed.protocol !== 'https:' || parsed.hostname !== domain) {
-        throw new Error(`Pagination URL ${nextUrl} does not match expected domain ${domain}`);
-      }
-      url = nextUrl;
-    } else {
-      url = null;
-    }
+    // A page shorter than the limit (including empty) is the last page.
+    if (data.products.length < PRODUCTS_PER_PAGE) break;
+
+    // Be polite between sequential page fetches against one storefront IP.
+    await politeJitter();
   }
 
-  return allProducts;
+  return { products: allProducts, partial: false };
 }
 
-function shopifyToExtracted(product: ShopifyProduct): ExtractedProduct {
+/**
+ * Resolve a Shopify store's base currency. products.json carries no currency,
+ * so prices would otherwise be mislabeled (a UK store's £49 reported as $49).
+ * meta.json exposes it; fall back to USD when missing or unparseable.
+ */
+async function fetchStoreCurrency(domain: string): Promise<string> {
+  try {
+    const res = await fetchWithRetry(`https://${domain}/meta.json`, { maxAttempts: 2, timeoutMs: 10_000 });
+    if (!res.ok) return 'USD';
+    const data = (await res.json()) as { currency?: unknown };
+    if (typeof data.currency === 'string' && /^[A-Z]{3}$/.test(data.currency)) {
+      return data.currency;
+    }
+    return 'USD';
+  } catch {
+    return 'USD';
+  }
+}
+
+function shopifyToExtracted(product: ShopifyProduct, currency: string): ExtractedProduct {
   const priceVariant =
     product.variants.length > 0
       ? product.variants.reduce((min, v) =>
@@ -138,7 +165,7 @@ function shopifyToExtracted(product: ShopifyProduct): ExtractedProduct {
     price: priceVariant?.price ?? '0',
     compareAtPrice: priceVariant?.compare_at_price ?? null,
     available: product.variants.some((v) => v.available),
-    currency: 'USD',
+    currency,
     variants: product.variants.map((v) => ({
       id: v.id,
       price: v.price,
@@ -356,8 +383,9 @@ export async function processCatalogSyncJob(
 
     if (tier === 'full_catalog') {
       let fetched: ShopifyProduct[];
+      let feedPartial = false;
       try {
-        fetched = await fetchAllShopifyProducts(domain);
+        ({ products: fetched, partial: feedPartial } = await fetchAllShopifyProducts(domain));
       } catch (err) {
         if (err instanceof FeedUnusableError) {
           // The feed is blocked or gone: descend the ladder instead of retrying
@@ -383,13 +411,17 @@ export async function processCatalogSyncJob(
       }
 
       if (tier === 'full_catalog') {
+        const currency = await fetchStoreCurrency(domain);
         const { productErrors } = await syncCatalog({
           competitorId,
           teamId,
           source: 'shopify_feed',
-          products: fetched!.map(shopifyToExtracted),
+          products: fetched!.map((p) => shopifyToExtracted(p, currency)),
           isBaselineSync,
-          markMissingUnavailable: true,
+          // Do not mark missing products unavailable when pagination was cut
+          // short by an error: only pages 1..N-1 were fetched, so items on
+          // the missing pages are not actually gone.
+          markMissingUnavailable: !feedPartial,
           notifyQueue,
         });
 
