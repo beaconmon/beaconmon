@@ -88,7 +88,14 @@ const MAX_FEED_PAGES = 40;
  * events when items shuffled in and out of the first page. We page until a page
  * shorter than the limit, with a hard cap.
  */
-async function fetchAllShopifyProducts(domain: string): Promise<ShopifyProduct[]> {
+interface FeedFetchResult {
+  products: ShopifyProduct[];
+  /** True when a mid-pagination error stopped the fetch early; callers must not
+   * mark missing products unavailable on a partial result set. */
+  partial: boolean;
+}
+
+async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult> {
   const allProducts: ShopifyProduct[] = [];
 
   for (let page = 1; page <= MAX_FEED_PAGES; page++) {
@@ -106,7 +113,7 @@ async function fetchAllShopifyProducts(domain: string): Promise<ShopifyProduct[]
         throw new Error(`Shopify feed returned ${res.status} for ${url}`);
       }
       logger.warn({ service, domain, page, status: res.status }, 'Shopify feed pagination stopped early on error');
-      break;
+      return { products: allProducts, partial: true };
     }
 
     const data = (await res.json()) as ShopifyProductsResponse;
@@ -119,7 +126,7 @@ async function fetchAllShopifyProducts(domain: string): Promise<ShopifyProduct[]
     await politeJitter();
   }
 
-  return allProducts;
+  return { products: allProducts, partial: false };
 }
 
 /**
@@ -376,8 +383,9 @@ export async function processCatalogSyncJob(
 
     if (tier === 'full_catalog') {
       let fetched: ShopifyProduct[];
+      let feedPartial = false;
       try {
-        fetched = await fetchAllShopifyProducts(domain);
+        ({ products: fetched, partial: feedPartial } = await fetchAllShopifyProducts(domain));
       } catch (err) {
         if (err instanceof FeedUnusableError) {
           // The feed is blocked or gone: descend the ladder instead of retrying
@@ -410,7 +418,10 @@ export async function processCatalogSyncJob(
           source: 'shopify_feed',
           products: fetched!.map((p) => shopifyToExtracted(p, currency)),
           isBaselineSync,
-          markMissingUnavailable: true,
+          // Do not mark missing products unavailable when pagination was cut
+          // short by an error: only pages 1..N-1 were fetched, so items on
+          // the missing pages are not actually gone.
+          markMissingUnavailable: !feedPartial,
           notifyQueue,
         });
 
