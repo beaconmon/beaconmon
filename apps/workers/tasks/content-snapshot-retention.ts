@@ -11,7 +11,6 @@ export const contentSnapshotRetentionTask: SchedulerTask = {
   async run(): Promise<void> {
     try {
       const monitors = await contentSnapshotWorkerRepository.findContentMonitorsWithTeamPlan();
-      if (monitors.length === 0) return;
 
       let totalDeleted = 0;
 
@@ -23,6 +22,20 @@ export const contentSnapshotRetentionTask: SchedulerTask = {
         });
         const keep = getSnapshotRetentionLimit(effectivePlan);
         const deleted = await contentSnapshotWorkerRepository.pruneToLimit(m.monitorId, keep);
+        totalDeleted += deleted;
+      }
+
+      // Competitor page snapshots carry the full page text per change and grow
+      // unbounded without this pass.
+      const pages = await contentSnapshotWorkerRepository.findCompetitorPagesWithTeamPlan();
+      for (const p of pages) {
+        const effectivePlan = getEffectivePlan({
+          plan: p.plan,
+          trialEndsAt: p.trialEndsAt,
+          subscription: p.subscriptionStatus ? { status: p.subscriptionStatus } : null,
+        });
+        const keep = getSnapshotRetentionLimit(effectivePlan);
+        const deleted = await contentSnapshotWorkerRepository.pruneToLimitByCompetitorPage(p.competitorPageId, keep);
         totalDeleted += deleted;
       }
 

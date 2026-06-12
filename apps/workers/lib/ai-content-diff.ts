@@ -4,7 +4,7 @@ import {
   summarizeContentDiff,
   type ContentDiffClassification,
 } from '@beaconmon/ai';
-import { getEffectivePlan } from '@beaconmon/billing';
+import { getEffectivePlan, canUseFeature } from '@beaconmon/billing';
 import { env } from './env.js';
 import { logger } from './logger.js';
 
@@ -68,8 +68,8 @@ export async function runAiAnalysisIfEligible(
     trialEndsAt: input.trialEndsAt,
     subscription: input.subscriptionStatus ? { status: input.subscriptionStatus } : null,
   });
-  if (effectivePlan === 'free') {
-    logger.debug({ service, monitorId: input.monitorId }, 'AI skipped — free plan');
+  if (!canUseFeature(effectivePlan, 'ai')) {
+    logger.debug({ service, monitorId: input.monitorId, plan: effectivePlan }, 'AI skipped — plan not eligible');
     return null;
   }
 

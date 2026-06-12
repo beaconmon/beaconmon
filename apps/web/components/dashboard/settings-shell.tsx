@@ -19,7 +19,6 @@ interface SubNavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  moved?: boolean;
 }
 
 interface SubNavGroup {
@@ -39,21 +38,21 @@ const GROUPS: SubNavGroup[] = [
   {
     group: 'Alerting',
     items: [
-      { href: '/alert-channels',         label: 'Alert channels',     icon: Bell,       moved: true },
-      { href: '/escalation-policies',    label: 'Escalation policies', icon: GitBranch, moved: true },
+      { href: '/alert-channels',         label: 'Alert channels',     icon: Bell },
+      { href: '/escalation-policies',    label: 'Escalation policies', icon: GitBranch },
     ],
   },
   {
     group: 'Public & ops',
     items: [
-      { href: '/status-pages',           label: 'Status pages',         icon: Globe,    moved: true },
-      { href: '/maintenance-windows',    label: 'Maintenance windows',  icon: Wrench,   moved: true },
+      { href: '/status-pages',           label: 'Status pages',         icon: Globe },
+      { href: '/maintenance-windows',    label: 'Maintenance windows',  icon: Wrench },
     ],
   },
   {
     group: 'Insights',
     items: [
-      { href: '/reports',                label: 'Reports',              icon: FileText, moved: true },
+      { href: '/reports',                label: 'Reports',              icon: FileText },
     ],
   },
 ];
@@ -82,7 +81,7 @@ export function SettingsShell({ children }: SettingsShellProps) {
                   {group.group}
                 </p>
                 <ul className="flex flex-row gap-1 lg:flex-col lg:gap-0.5">
-                  {group.items.map(({ href, label, icon: Icon, moved }) => {
+                  {group.items.map(({ href, label, icon: Icon }) => {
                     const isActive =
                       pathname === href ||
                       (href !== '/' && pathname.startsWith(href + '/'));
@@ -110,14 +109,6 @@ export function SettingsShell({ children }: SettingsShellProps) {
                             )}
                           />
                           <span className="flex-1">{label}</span>
-                          {moved && (
-                            <span
-                              className="font-mono text-[9px] uppercase tracking-wider"
-                              style={{ color: 'var(--brand-green-ink)' }}
-                            >
-                              moved
-                            </span>
-                          )}
                         </Link>
                       </li>
                     );

@@ -44,72 +44,76 @@ function deriveNotifySubject(type: string, monitorName: string): string {
 export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redis: Redis): Promise<void> {
   const { competitorEventId, teamId: _teamId, competitorId } = data;
 
-  // 1. Idempotency guard — prevent double-notify on BullMQ retries
-  const idempotencyKey = `competitor:notify:sent:${competitorEventId}`;
-  const claimed = await redis.set(idempotencyKey, '1', 'EX', 300, 'NX');
-  if (!claimed) {
-    logger.info({ service, competitorEventId }, 'Notification already sent — skipping');
+  // 1. Load event with competitor name
+  const event = await prisma.competitorEvent.findUnique({
+    where: { id: competitorEventId },
+    include: { competitor: true },
+  });
+  if (!event) {
+    logger.warn({ service, competitorEventId }, 'CompetitorEvent not found');
     return;
   }
 
-  try {
-    // 2. Load event with competitor name
-    const event = await prisma.competitorEvent.findUnique({
-      where: { id: competitorEventId },
-      include: { competitor: true },
-    });
-    if (!event) {
-      logger.warn({ service, competitorEventId }, 'CompetitorEvent not found');
-      return;
+  // 2. Load linked notification channels
+  const channelLinks = await prisma.competitorNotificationChannel.findMany({
+    where: { competitorId },
+    include: { channel: true },
+  });
+
+  // 3. No channels configured
+  if (channelLinks.length === 0) {
+    logger.info({ service, competitorId }, 'No notification channels configured');
+    return;
+  }
+
+  // 4. Build competitor detail URL
+  const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
+
+  // 5. Extract payload fields
+  const payload = event.payload as Record<string, unknown>;
+
+  const monitorName = event.competitor.name;
+  const monitorUrl = (payload.pageUrl as string | undefined) ?? '';
+  const changedAt = event.detectedAt;
+  const summary = deriveEventSummary(event.type, payload);
+  const classification = event.type;
+  const subject = deriveNotifySubject(event.type, monitorName);
+
+  let failureCount = 0;
+  for (const link of channelLinks) {
+    const channel = link.channel;
+
+    // Per-channel idempotency: BullMQ retries after a partial failure re-send
+    // only to the channels that failed, never double-sending the rest.
+    const idempotencyKey = `competitor:notify:sent:${competitorEventId}:${channel.id}`;
+    const claimed = await redis.set(idempotencyKey, '1', 'EX', 300, 'NX');
+    if (!claimed) {
+      logger.info({ service, competitorEventId, channelId: channel.id }, 'Notification already sent to channel, skipping');
+      continue;
     }
 
-    // 3. Load linked notification channels
-    const channelLinks = await prisma.competitorNotificationChannel.findMany({
-      where: { competitorId },
-      include: { channel: true },
-    });
-
-    // 4. No channels configured
-    if (channelLinks.length === 0) {
-      logger.info({ service, competitorId }, 'No notification channels configured');
-      return;
-    }
-
-    // 5. Build competitor detail URL
-    const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
-
-    // 6. Extract payload fields
-    const payload = event.payload as Record<string, unknown>;
-
-    const monitorName = event.competitor.name;
-    const monitorUrl = (payload.pageUrl as string | undefined) ?? '';
-    const changedAt = event.detectedAt;
-    const summary = deriveEventSummary(event.type, payload);
-    const classification = event.type;
-    const subject = deriveNotifySubject(event.type, monitorName);
-
-    for (const link of channelLinks) {
-      const channel = link.channel;
-      try {
-        switch (channel.type) {
-          case 'email':
-            await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl, subject);
-            break;
-          case 'slack':
-            await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
-            break;
-          default:
-            logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for competitor notification');
-        }
-        logger.info({ service, channelId: channel.id, channelType: channel.type }, 'Competitor change notification sent');
-      } catch (err) {
-        logger.error({ service, channelId: channel.id, channelType: channel.type, err }, 'Failed to send competitor change notification');
+    try {
+      switch (channel.type) {
+        case 'email':
+          await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl, subject);
+          break;
+        case 'slack':
+          await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
+          break;
+        default:
+          logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for competitor notification');
       }
+      logger.info({ service, channelId: channel.id, channelType: channel.type }, 'Competitor change notification sent');
+    } catch (err) {
+      logger.error({ service, channelId: channel.id, channelType: channel.type, err }, 'Failed to send competitor change notification');
+      failureCount++;
+      // Release the channel key so the retry can re-attempt this channel
+      await redis.del(idempotencyKey).catch(() => null);
     }
-  } catch (err) {
-    // Release the key so BullMQ retries can re-attempt delivery
-    await redis.del(idempotencyKey);
-    throw err;
+  }
+
+  if (failureCount > 0) {
+    throw new Error(`Competitor notification failed for ${failureCount} channel(s), triggering retry`);
   }
 }
 

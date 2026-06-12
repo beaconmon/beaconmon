@@ -202,7 +202,7 @@ export async function processIntelligenceDigestJob(
         const { error } = await resend.emails.send({
           from: env.EMAIL_FROM,
           to: parsed.data.recipients,
-          subject: `${label} Intelligence Digest — ${totalEvents} event${totalEvents !== 1 ? 's' : ''}`,
+          subject: `${label} Intelligence Digest: ${totalEvents} event${totalEvents !== 1 ? 's' : ''}`,
           html,
         });
 

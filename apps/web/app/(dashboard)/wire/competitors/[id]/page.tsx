@@ -480,7 +480,17 @@ function PagesTab({ competitorId }: { competitorId: string }) {
                 className={`flex items-center gap-4 px-4 py-3 hover:bg-brand-bg3/30 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-brand-text">{p.label}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-brand-text">{p.label}</p>
+                    {p.consecutiveFailures >= 3 && (
+                      <span
+                        className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-medium text-amber-500"
+                        title={`${p.consecutiveFailures} checks in a row have failed. The page may have moved or be blocking us.`}
+                      >
+                        Needs attention
+                      </span>
+                    )}
+                  </div>
                   <a
                     href={p.url}
                     target="_blank"

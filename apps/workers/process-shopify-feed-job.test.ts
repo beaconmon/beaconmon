@@ -6,6 +6,7 @@ import type { CompetitorNotifyJob } from '@beaconmon/queue';
 vi.mock('@beaconmon/db', () => ({
   prisma: {
     competitorNotificationChannel: { count: vi.fn().mockResolvedValue(0) },
+    competitor: { findUnique: vi.fn().mockResolvedValue({ discoverySyncedAt: new Date('2026-01-01') }) },
   },
   competitorProductRepository: {
     findByCompetitorId: vi.fn(),
@@ -54,17 +55,21 @@ describe('processShopifyFeedJob — stock change', () => {
     redis = {
       set: vi.fn().mockResolvedValue('OK'),
       del: vi.fn().mockResolvedValue(1),
-    };
+      eval: vi.fn().mockResolvedValue(1),
+    } as unknown as Partial<Redis>;
     notifyQueue = { add: vi.fn() };
 
     const db = await import('@beaconmon/db');
+    (db.prisma.competitor.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({
+      discoverySyncedAt: new Date('2026-01-01'),
+    });
     competitorEventRepository = db.competitorEventRepository as unknown as { createEvent: ReturnType<typeof vi.fn> };
 
     const mod = await import('./process-shopify-feed-job.js');
     processShopifyFeedJob = mod.processShopifyFeedJob;
   });
 
-  it('emits stock_changed then out_of_stock when product goes unavailable', async () => {
+  it('emits out_of_stock without a duplicate stock_changed when product goes unavailable', async () => {
     const { competitorProductRepository } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
@@ -91,12 +96,11 @@ describe('processShopifyFeedJob — stock change', () => {
     const calls = (competitorEventRepository.createEvent as ReturnType<typeof vi.fn>).mock.calls;
     const types = calls.map((c: unknown[]) => (c[0] as { type: string }).type);
 
-    expect(types).toContain('stock_changed');
+    expect(types).not.toContain('stock_changed');
     expect(types).toContain('out_of_stock');
-    expect(types.indexOf('stock_changed')).toBeLessThan(types.indexOf('out_of_stock'));
   });
 
-  it('emits stock_changed then back_in_stock when product becomes available', async () => {
+  it('emits back_in_stock without a duplicate stock_changed when product becomes available', async () => {
     const { competitorProductRepository } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
@@ -123,7 +127,7 @@ describe('processShopifyFeedJob — stock change', () => {
     const calls = (competitorEventRepository.createEvent as ReturnType<typeof vi.fn>).mock.calls;
     const types = calls.map((c: unknown[]) => (c[0] as { type: string }).type);
 
-    expect(types).toContain('stock_changed');
+    expect(types).not.toContain('stock_changed');
     expect(types).toContain('back_in_stock');
   });
 
@@ -159,7 +163,7 @@ describe('processShopifyFeedJob — stock change', () => {
     expect(types).not.toContain('stock_changed');
   });
 
-  it('enqueues notify only for granular event, not stock_changed', async () => {
+  it('enqueues notify exactly once for the granular stock event', async () => {
     const { competitorProductRepository, prisma } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
@@ -191,5 +195,25 @@ describe('processShopifyFeedJob — stock change', () => {
 
     // Should be called exactly once — for the out_of_stock event, not for stock_changed
     expect(notifyQueue.add).toHaveBeenCalledTimes(1);
+  });
+
+  it('suppresses events and notifications on the baseline (first) sync', async () => {
+    const { competitorProductRepository, prisma } = await import('@beaconmon/db');
+    (prisma.competitor.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({ discoverySyncedAt: null });
+    (prisma.competitorNotificationChannel.count as ReturnType<typeof vi.fn>).mockResolvedValue(1);
+    (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+    vi.stubGlobal('fetch', makeFetchResponse([mockProduct]));
+
+    await processShopifyFeedJob(
+      { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
+      redis as Redis,
+      notifyQueue as Queue<CompetitorNotifyJob>
+    );
+
+    const { competitorProductRepository: repo } = await import('@beaconmon/db');
+    expect(repo.upsertProduct).toHaveBeenCalledTimes(1);
+    expect(competitorEventRepository.createEvent).not.toHaveBeenCalled();
+    expect(notifyQueue.add).not.toHaveBeenCalled();
   });
 });

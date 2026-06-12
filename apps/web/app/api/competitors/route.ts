@@ -6,6 +6,7 @@ import { ForbiddenError, PlanLimitError, ValidationError } from '@/lib/api/error
 import { getShopifyFeedQueue, getQueueRedis } from '@/lib/queue';
 import { logger } from '@/lib/logger';
 import { enqueueLimitHitEmail } from '@/lib/lifecycle/limit-hit';
+import { assertPublicHttpUrl } from '@/lib/validations/public-url';
 
 export const GET = withAuth(async (_req, { teamId }) => {
   const competitors = await competitorRepository.findAll(teamId);
@@ -39,6 +40,9 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
 
   const parsed = createCompetitorSchema.safeParse(body);
   if (!parsed.success) throw new ValidationError('Validation error', parsed.error.issues);
+
+  // Competitor creation also creates a default tracked page the worker will fetch
+  assertPublicHttpUrl(parsed.data.url);
 
   const competitor = await competitorRepository.create(teamId, parsed.data);
 
