@@ -10,7 +10,7 @@ import {
   BtnRow,
   EmailFooter,
   EP,
-  formatBriefDateTimeUTC,
+  formatBriefDateTime,
 } from '@beaconmon/emails';
 
 export interface DowntimeAlertProps {
@@ -32,7 +32,7 @@ export function DowntimeAlert({
   acknowledgeUrl,
   unsubscribeUrl,
 }: DowntimeAlertProps) {
-  const preview = `${monitorName} is down — incident detected at ${formatBriefDateTimeUTC(incidentStartedAt)}.`;
+  const preview = `${monitorName} is down — incident detected at ${formatBriefDateTime(incidentStartedAt)}.`;
 
   return (
     <EmailLayout preview={preview} context="Uptime Alert">
@@ -54,7 +54,7 @@ export function DowntimeAlert({
           { k: 'Monitor', v: monitorName, mono: false },
           { k: 'URL', v: monitorUrl, break: true },
           { k: 'Status', v: 'Unreachable', color: EP.critInk },
-          { k: 'Failing since', v: formatBriefDateTimeUTC(incidentStartedAt) },
+          { k: 'Failing since', v: formatBriefDateTime(incidentStartedAt) },
           { k: 'Incident', v: `#${incidentId}` },
         ]}
       />

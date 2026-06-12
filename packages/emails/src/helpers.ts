@@ -24,7 +24,7 @@ export function formatTime(d: Date, tz = 'UTC'): string {
   return `${hh}:${minute} ${tzLabel}`;
 }
 
-export function formatBriefDateTimeUTC(d: Date, tz = 'UTC'): string {
+export function formatBriefDateTime(d: Date, tz = 'UTC'): string {
   // "Jun 7, 09:14 EDT"
   const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: tz });
   return `${date}, ${formatTime(d, tz)}`;

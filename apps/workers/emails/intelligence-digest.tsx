@@ -18,7 +18,7 @@ import {
   badgeKindFromEventType,
   formatBriefDate,
   formatTime,
-  formatBriefDateTimeUTC,
+  formatBriefDateTime,
   formatRelativeAgo,
   hostnameFrom,
 } from '@beaconmon/emails';
@@ -130,7 +130,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections'], tz: s
   if (ongoingIncident) {
     return {
       title: `${ongoingIncident.monitorName} is still down`,
-      body: `Failing since ${formatBriefDateTimeUTC(ongoingIncident.startedAt, tz)}. Open the incident to triage.`,
+      body: `Failing since ${formatBriefDateTime(ongoingIncident.startedAt, tz)}. Open the incident to triage.`,
       sev: 'critical',
     };
   }

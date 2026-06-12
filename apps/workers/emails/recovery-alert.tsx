@@ -12,7 +12,7 @@ import {
   BtnRow,
   EmailFooter,
   formatDurationMs,
-  formatBriefDateTimeUTC,
+  formatBriefDateTime,
 } from '@beaconmon/emails';
 
 export interface RecoveryAlertProps {
@@ -61,10 +61,10 @@ export function RecoveryAlert({
           { k: 'Monitor', v: monitorName, mono: false },
           { k: 'URL', v: monitorUrl, break: true },
           ...(incidentStartedAt
-            ? [{ k: 'Down at', v: formatBriefDateTimeUTC(incidentStartedAt) }]
+            ? [{ k: 'Down at', v: formatBriefDateTime(incidentStartedAt) }]
             : []),
           ...(recoveredAt
-            ? [{ k: 'Recovered at', v: formatBriefDateTimeUTC(recoveredAt) }]
+            ? [{ k: 'Recovered at', v: formatBriefDateTime(recoveredAt) }]
             : []),
           { k: 'Incident', v: `#${incidentId}` },
         ]}
