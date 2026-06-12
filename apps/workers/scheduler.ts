@@ -318,20 +318,45 @@ async function scheduleChecks(): Promise<void> {
       });
     }
 
-    // Shopify feed scheduling — 60-min cadence enforced via Redis NX key (55-min TTL)
-    const shopifyCompetitors = await prisma.competitor.findMany({
-      where: { platform: 'shopify', isActive: true, deletedAt: null },
-      select: { id: true, teamId: true, domain: true },
+    // Catalog sync scheduling, cadence by data tier, each enforced via Redis NX key:
+    //   full_catalog       hourly sync (55-min TTL, key name kept from the Shopify-only era)
+    //   selected_products  daily fallback sync (23h TTL) plus weekly sitemap rescan (6.5d TTL)
+    //   limited            weekly re-probe of the extraction ladder (6.5d TTL)
+    const catalogCompetitors = await prisma.competitor.findMany({
+      where: { isActive: true, deletedAt: null },
+      select: { id: true, teamId: true, domain: true, dataTier: true },
     });
-    for (const c of shopifyCompetitors) {
-      const key = `shopify:scheduled:${c.id}`;
-      const set = await connection.set(key, '1', 'EX', 3300, 'NX');
-      if (set === 'OK') {
-        await shopifyFeedQueue.add(
-          'shopify-feed',
-          { competitorId: c.id, teamId: c.teamId, domain: c.domain },
-          { jobId: `sf_${c.id}_${now.getTime()}` }
-        );
+    for (const c of catalogCompetitors) {
+      const payload = { competitorId: c.id, teamId: c.teamId, domain: c.domain };
+
+      if (c.dataTier === 'full_catalog') {
+        const set = await connection.set(`shopify:scheduled:${c.id}`, '1', 'EX', 3300, 'NX');
+        if (set === 'OK') {
+          await shopifyFeedQueue.add('shopify-feed', payload, { jobId: `sf_${c.id}_${now.getTime()}` });
+        }
+        continue;
+      }
+
+      if (c.dataTier === 'selected_products') {
+        const syncSet = await connection.set(`catalog:scheduled:${c.id}`, '1', 'EX', 82_800, 'NX');
+        if (syncSet === 'OK') {
+          await shopifyFeedQueue.add('catalog-sync', payload, { jobId: `cs_${c.id}_${now.getTime()}` });
+        }
+        const rescanSet = await connection.set(`sitemap:scheduled:${c.id}`, '1', 'EX', 561_600, 'NX');
+        if (rescanSet === 'OK') {
+          await shopifyFeedQueue.add(
+            'sitemap-rescan',
+            { ...payload, mode: 'sitemap_rescan' as const },
+            { jobId: `sr_${c.id}_${now.getTime()}` }
+          );
+        }
+        continue;
+      }
+
+      // limited: weekly re-probe; the worker climbs the ladder and upgrades the tier if access improved
+      const probeSet = await connection.set(`probe:scheduled:${c.id}`, '1', 'EX', 561_600, 'NX');
+      if (probeSet === 'OK') {
+        await shopifyFeedQueue.add('catalog-probe', payload, { jobId: `cp_${c.id}_${now.getTime()}` });
       }
     }
 

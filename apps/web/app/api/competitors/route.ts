@@ -46,25 +46,28 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
 
   const competitor = await competitorRepository.create(teamId, parsed.data);
 
-  if (parsed.data.platform === 'shopify') {
-    try {
-      const domain = new URL(parsed.data.url).hostname;
-      const queue = getShopifyFeedQueue();
-      const redis = getQueueRedis();
-      await queue.add(
-        'shopify-feed',
-        { competitorId: competitor.id, teamId, domain },
-        { jobId: `sf_${competitor.id}_initial` }
-      );
-      // Prevent scheduler from double-enqueueing within the same hour
-      await redis.set(`shopify:scheduled:${competitor.id}`, '1', 'EX', 3600, 'NX');
-      await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'syncing' });
-    } catch (err) {
-      logger.error({ competitorId: competitor.id, err }, 'Failed to enqueue initial Shopify feed job');
-      // Fail open: scheduler will pick it up later
-    }
-  } else {
-    await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'not_applicable' });
+  // Every platform gets an initial catalog-sync job. The worker syncs the
+  // Shopify feed directly or climbs the extraction fallback ladder
+  // (products.json, then sitemap JSON-LD pages, then limited).
+  try {
+    const domain = new URL(parsed.data.url).hostname;
+    const queue = getShopifyFeedQueue();
+    const redis = getQueueRedis();
+    await queue.add(
+      'catalog-sync',
+      { competitorId: competitor.id, teamId, domain },
+      { jobId: `sf_${competitor.id}_initial` }
+    );
+    // Prevent scheduler from double-enqueueing within the same hour
+    const guardKey =
+      parsed.data.platform === 'shopify'
+        ? `shopify:scheduled:${competitor.id}`
+        : `probe:scheduled:${competitor.id}`;
+    await redis.set(guardKey, '1', 'EX', 3600, 'NX');
+    await competitorRepository.updateDiscoveryState(teamId, competitor.id, { discoveryState: 'syncing' });
+  } catch (err) {
+    logger.error({ competitorId: competitor.id, err }, 'Failed to enqueue initial catalog sync job');
+    // Fail open: scheduler will pick it up later
   }
 
   return Response.json(competitor, { status: 201 });
