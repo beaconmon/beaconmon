@@ -1,9 +1,11 @@
 import { formatBriefDateTime } from '@beaconmon/emails';
+import { formatCoverageLine } from './intelligence-digest.js';
 import type {
   DigestIncidentItem,
   DigestContentItem,
   DigestExpiryItem,
   DigestSmartAlertItem,
+  DigestCoverage,
 } from './intelligence-digest.js';
 
 type DigestSections = {
@@ -50,7 +52,8 @@ export function buildSlackPayload(
   windowEnd: Date,
   dashboardUrl: string,
   sections: DigestSections,
-  timezone = 'UTC'
+  timezone = 'UTC',
+  coverage?: DigestCoverage
 ): object {
   const label = frequency === 'daily' ? 'Daily' : 'Weekly';
   const dateRange = `${formatBriefDateTime(windowStart, timezone)} to ${formatBriefDateTime(windowEnd, timezone)}`;
@@ -121,6 +124,13 @@ export function buildSlackPayload(
         )
       )
     );
+  }
+
+  if (coverage && coverage.totalCount > 0) {
+    blocks.push({
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: escapeSlackMrkdwn(formatCoverageLine(coverage)) }],
+    });
   }
 
   blocks.push({

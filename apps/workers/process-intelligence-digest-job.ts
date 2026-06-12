@@ -17,6 +17,7 @@ import type {
   DigestContentItem,
   DigestExpiryItem,
   DigestSmartAlertItem,
+  DigestCoverage,
 } from './emails/intelligence-digest.js';
 
 const service = 'digest-worker';
@@ -98,7 +99,17 @@ export async function processIntelligenceDigestJob(
     }));
   }
 
+  let coverage: DigestCoverage | undefined;
+
   if (prefs.sections.competitors) {
+    const [totalCount, fullCount] = await Promise.all([
+      prisma.competitor.count({ where: { teamId, isActive: true, deletedAt: null } }),
+      prisma.competitor.count({
+        where: { teamId, isActive: true, deletedAt: null, dataTier: 'full_catalog' },
+      }),
+    ]);
+    if (totalCount > 0) coverage = { fullCount, totalCount };
+
     const events = await digestRepository.findCompetitorEventsForDigest(teamId, start, end);
     sections.competitors = events
       .sort((a, b) => {
@@ -193,6 +204,7 @@ export async function processIntelligenceDigestJob(
             windowEnd: end,
             dashboardUrl,
             timezone: team.timezone,
+            coverage,
             sections,
           })
         );
@@ -218,7 +230,7 @@ export async function processIntelligenceDigestJob(
           continue;
         }
 
-        const payload = buildSlackPayload(frequency, start, end, dashboardUrl, sections, team.timezone);
+        const payload = buildSlackPayload(frequency, start, end, dashboardUrl, sections, team.timezone, coverage);
         const response = await fetch(parsed.data.webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

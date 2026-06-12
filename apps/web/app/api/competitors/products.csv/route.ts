@@ -35,7 +35,7 @@ export const GET = withAuth(async (_req, { teamId }) => {
 
     return {
       product_name: p.title,
-      product_url: `https://${p.competitorDomain}/products/${p.handle}`,
+      product_url: p.sourceUrl ?? `https://${p.competitorDomain}/products/${p.handle}`,
       competitor: p.competitorName,
       current_price: p.currentPrice != null ? String(p.currentPrice) : '',
       last_known_price: oldPrice != null ? String(oldPrice) : '',

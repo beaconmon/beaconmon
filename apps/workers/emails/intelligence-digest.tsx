@@ -103,12 +103,24 @@ export function formatEventSummary(type: string, payload: Record<string, unknown
   }
 }
 
+export interface DigestCoverage {
+  fullCount: number;
+  totalCount: number;
+}
+
+export function formatCoverageLine(coverage: DigestCoverage): string {
+  const base = `${coverage.fullCount} of ${coverage.totalCount} competitor${coverage.totalCount !== 1 ? 's' : ''} fully tracked.`;
+  if (coverage.fullCount >= coverage.totalCount) return base;
+  return `${base} The rest sync from selected product pages or have limited access.`;
+}
+
 export interface IntelligenceDigestEmailProps {
   frequency: 'daily' | 'weekly';
   windowStart: Date;
   windowEnd: Date;
   dashboardUrl: string;
   timezone?: string;
+  coverage?: DigestCoverage;
   sections: {
     incidents?: DigestIncidentItem[];
     ownContent?: DigestContentItem[];
@@ -175,6 +187,7 @@ export function IntelligenceDigestEmail({
   windowEnd,
   dashboardUrl,
   timezone = 'UTC',
+  coverage,
   sections,
 }: IntelligenceDigestEmailProps) {
   const label = frequency === 'daily' ? 'Daily Briefing' : 'Weekly Briefing';
@@ -324,6 +337,19 @@ export function IntelligenceDigestEmail({
             />
           ))}
         </DigestSection>
+      )}
+
+      {coverage && coverage.totalCount > 0 && (
+        <Para
+          style={{
+            margin: '0 0 14px',
+            fontFamily: MONO,
+            fontSize: '11px',
+            color: EP.muted,
+          }}
+        >
+          {formatCoverageLine(coverage)}
+        </Para>
       )}
 
       <BtnRow>

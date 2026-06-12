@@ -25,9 +25,12 @@ import {
   useRemoveCompetitorChannel,
   usePriceHistory,
   useDismissBulk,
+  useUpdateTrackedProductUrls,
   type PriceHistoryPoint,
+  type CompetitorDetail,
 } from '@/lib/hooks/use-competitors';
 import { useCompetitorDiscovery } from '@/lib/hooks/use-competitor-discovery';
+import { CoverageBadge } from '@/components/competitors/coverage-badge';
 import { DecisionActionBar } from '@/components/competitors/decision-action-bar';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import type { CompetitorEventRow, CompetitorDecisionData } from '@/lib/hooks/use-competitors';
@@ -160,25 +163,23 @@ function ProductRow({ p, competitorId }: { p: { id: string; title: string; handl
 
 // ─── Discovery banner ─────────────────────────────────────────────────────────
 
-function DiscoveryBanner({ competitorId, platform }: { competitorId: string; platform: string }) {
+function DiscoveryBanner({
+  competitorId,
+  dataTier,
+  trackedCount,
+}: {
+  competitorId: string;
+  dataTier: string;
+  trackedCount: number;
+}) {
   const { data: discovery } = useCompetitorDiscovery(competitorId);
   const state = discovery?.state;
-
-  if (platform !== 'shopify') {
-    return (
-      <div className="mb-4 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3 text-sm text-brand-muted">
-        Catalog tracking is Shopify-only today. We are monitoring this competitor&apos;s homepage and key pages for changes.
-      </div>
-    );
-  }
-
-  if (!state || state === 'ready') return null;
 
   if (state === 'pending' || state === 'syncing') {
     return (
       <div className="mb-4 flex items-center gap-2 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3">
         <div className="h-2 w-2 animate-pulse rounded-full bg-brand-amber" />
-        <p className="text-sm text-brand-dim">Syncing catalog. Products will appear within 30s.</p>
+        <p className="text-sm text-brand-dim">Syncing catalog. Products will appear shortly.</p>
       </div>
     );
   }
@@ -194,17 +195,45 @@ function DiscoveryBanner({ competitorId, platform }: { competitorId: string; pla
     );
   }
 
+  if (dataTier === 'selected_products') {
+    return (
+      <div className="mb-4 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3 text-sm text-brand-muted">
+        This store does not expose a full catalog feed, so we track{' '}
+        {trackedCount > 0 ? `${trackedCount} selected product page${trackedCount !== 1 ? 's' : ''}` : 'selected product pages'}{' '}
+        directly. Prices sync daily, and a weekly sitemap scan catches new launches. You can choose which
+        products to track in Settings.
+      </div>
+    );
+  }
+
+  if (dataTier === 'limited') {
+    return (
+      <div className="mb-4 rounded-lg border border-brand-line bg-brand-bg3/40 px-4 py-3 text-sm text-brand-muted">
+        Limited access. This site blocks automated catalog access, so product level tracking is unavailable
+        for now. We still monitor its key pages for changes and re-check access weekly.
+      </div>
+    );
+  }
+
   return null;
 }
 
 // ─── Products tab ─────────────────────────────────────────────────────────────
 
-function ProductsTab({ competitorId, platform }: { competitorId: string; platform: string }) {
+function ProductsTab({
+  competitorId,
+  dataTier,
+  trackedCount,
+}: {
+  competitorId: string;
+  dataTier: string;
+  trackedCount: number;
+}) {
   const { data: products, isLoading, isError, refetch } = useCompetitorProducts(competitorId);
 
   return (
     <div className="space-y-0">
-      <DiscoveryBanner competitorId={competitorId} platform={platform} />
+      <DiscoveryBanner competitorId={competitorId} dataTier={dataTier} trackedCount={trackedCount} />
       <div className="rounded-lg border border-brand-line bg-brand-surface">
         <div className="flex items-center justify-between border-b border-brand-line px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
@@ -221,7 +250,9 @@ function ProductsTab({ competitorId, platform }: { competitorId: string; platfor
         <QueryState isLoading={isLoading} isError={isError} onRetry={() => refetch()} skeletonRows={5}>
           {!products || products.length === 0 ? (
             <p className="px-4 py-8 text-center text-sm text-brand-muted">
-              No products tracked yet. Products appear after the first Shopify feed sync.
+              {dataTier === 'limited'
+                ? 'No products tracked. This site blocks automated catalog access.'
+                : 'No products tracked yet. Products appear after the first catalog sync.'}
             </p>
           ) : (
             <div>
@@ -523,9 +554,114 @@ function PagesTab({ competitorId }: { competitorId: string }) {
   );
 }
 
+// ─── Tracked products card ────────────────────────────────────────────────────
+
+const MAX_TRACKED_URLS = 50;
+
+function TrackedProductsCard({
+  competitorId,
+  domain,
+  trackedUrls,
+}: {
+  competitorId: string;
+  domain: string;
+  trackedUrls: string[];
+}) {
+  const [newUrl, setNewUrl] = useState('');
+  const updateUrls = useUpdateTrackedProductUrls(competitorId);
+
+  function handleAdd() {
+    const url = newUrl.trim();
+    if (!url) return;
+    if (trackedUrls.includes(url)) {
+      setNewUrl('');
+      return;
+    }
+    updateUrls.mutate(
+      { trackedProductUrls: [...trackedUrls, url] },
+      { onSuccess: () => setNewUrl('') }
+    );
+  }
+
+  function handleRemove(url: string) {
+    updateUrls.mutate({ trackedProductUrls: trackedUrls.filter((u) => u !== url) });
+  }
+
+  return (
+    <div className="rounded-lg border border-brand-line bg-brand-surface">
+      <div className="border-b border-brand-line px-4 py-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
+          Tracked product pages
+        </h2>
+        <p className="mt-1 text-xs text-brand-muted">
+          Product pages on {domain} we fetch daily for price and stock changes. Up to {MAX_TRACKED_URLS} URLs.
+        </p>
+      </div>
+      {trackedUrls.length === 0 ? (
+        <p className="px-4 py-6 text-sm text-brand-muted">
+          No product pages tracked yet. Paste a product page URL below, for example a bestseller you want to watch.
+        </p>
+      ) : (
+        <div>
+          {trackedUrls.map((url, i) => (
+            <div
+              key={url}
+              className={`flex items-center gap-3 px-4 py-2.5 hover:bg-brand-bg3/30 ${i > 0 ? 'border-t border-brand-line/60' : ''}`}
+            >
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-w-0 flex-1 items-center gap-1 font-mono text-xs text-brand-dim hover:text-brand-text"
+              >
+                <span className="truncate">{url}</span>
+                <ExternalLink className="h-3 w-3 shrink-0" />
+              </a>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-brand-muted hover:text-brand-red"
+                disabled={updateUrls.isPending}
+                onClick={() => handleRemove(url)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="border-t border-brand-line p-4 space-y-2">
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={newUrl}
+            onChange={(e) => setNewUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleAdd();
+            }}
+            placeholder={`https://${domain}/products/...`}
+            className="h-8 flex-1 rounded-md border border-brand-line bg-brand-bg3/40 px-2 font-mono text-xs text-brand-text placeholder:text-brand-muted focus:outline-none focus:ring-1 focus:ring-brand-line"
+          />
+          <Button
+            size="sm"
+            onClick={handleAdd}
+            disabled={!newUrl.trim() || updateUrls.isPending || trackedUrls.length >= MAX_TRACKED_URLS}
+          >
+            {updateUrls.isPending ? 'Saving...' : 'Add'}
+          </Button>
+        </div>
+        {trackedUrls.length >= MAX_TRACKED_URLS && (
+          <p className="text-xs text-brand-muted">Tracked URL limit reached. Remove one to add another.</p>
+        )}
+        {updateUrls.isError && <p className="text-xs text-brand-red">{updateUrls.error.message}</p>}
+      </div>
+    </div>
+  );
+}
+
 // ─── Settings tab ─────────────────────────────────────────────────────────────
 
-function SettingsTab({ competitorId }: { competitorId: string }) {
+function SettingsTab({ competitorId, competitor }: { competitorId: string; competitor?: CompetitorDetail }) {
   const [selectedChannelId, setSelectedChannelId] = useState('');
   const { data: linkedChannels, isLoading: loadingLinked } = useCompetitorChannels(competitorId);
   const { data: allChannels, isLoading: loadingChannels } = useAlertChannels();
@@ -543,8 +679,21 @@ function SettingsTab({ competitorId }: { competitorId: string }) {
     );
   }
 
+  const trackedUrls = Array.isArray(competitor?.trackedProductUrls)
+    ? competitor.trackedProductUrls.filter((u): u is string => typeof u === 'string')
+    : [];
+
   return (
     <div className="space-y-5">
+      {/* Tracked product pages: only relevant when the full catalog feed is unavailable */}
+      {competitor && competitor.dataTier !== 'full_catalog' && (
+        <TrackedProductsCard
+          competitorId={competitorId}
+          domain={competitor.domain}
+          trackedUrls={trackedUrls}
+        />
+      )}
+
       {/* Linked channels */}
       <div className="rounded-lg border border-brand-line bg-brand-surface">
         <div className="border-b border-brand-line px-4 py-3">
@@ -686,6 +835,7 @@ export default function CompetitorDetailPage({ params }: { params: Promise<{ id:
                 >
                   {competitor.platform}
                 </span>
+                <CoverageBadge dataTier={competitor.dataTier} />
               </div>
             </div>
           </div>
@@ -711,7 +861,13 @@ export default function CompetitorDetailPage({ params }: { params: Promise<{ id:
         </TabsList>
 
         <TabsContent value="products" className="mt-0">
-          <ProductsTab competitorId={id} platform={competitor?.platform ?? 'other'} />
+          <ProductsTab
+            competitorId={id}
+            dataTier={competitor?.dataTier ?? 'limited'}
+            trackedCount={
+              Array.isArray(competitor?.trackedProductUrls) ? competitor.trackedProductUrls.length : 0
+            }
+          />
         </TabsContent>
 
         <TabsContent value="events" className="mt-0">
@@ -723,7 +879,7 @@ export default function CompetitorDetailPage({ params }: { params: Promise<{ id:
         </TabsContent>
 
         <TabsContent value="settings" className="mt-0">
-          <SettingsTab competitorId={id} />
+          <SettingsTab competitorId={id} competitor={competitor} />
         </TabsContent>
       </Tabs>
     </div>

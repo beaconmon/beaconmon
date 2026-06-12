@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ChevronRight, Flame } from 'lucide-react';
 import { Sparkline } from '@/components/dashboard/sparkline';
+import { CoverageBadge } from '@/components/competitors/coverage-badge';
 import { CompetitorAvatar } from './competitor-avatar';
 import { TrendTag } from './trend-tag';
 import { eventLabel, formatRelative, type CompetitorRollup } from '@/lib/wire/rollup';
@@ -90,6 +91,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
                       >
                         {PLATFORM_LABEL[r.competitor.platform] ?? 'Other'}
                       </span>
+                      <CoverageBadge dataTier={r.competitor.dataTier} />
                     </div>
                   </div>
                 </div>

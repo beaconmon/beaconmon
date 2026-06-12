@@ -43,20 +43,38 @@ export function AddCompetitorWizard({
     onOpenChange(v);
   }
 
+  async function detectPlatform(domain: string): Promise<'shopify' | 'woocommerce' | 'other'> {
+    try {
+      const res = await apiFetch('/api/onboarding/check-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: `https://${domain}` }),
+      });
+      if (!res.ok) return 'other';
+      const data = (await res.json()) as { platform?: string };
+      return data.platform === 'shopify' || data.platform === 'woocommerce' ? data.platform : 'other';
+    } catch {
+      return 'other';
+    }
+  }
+
   async function handleSubmit() {
     if (domains.length === 0) return;
     setError(null);
     setSubmitting(true);
     const created: string[] = [];
     try {
-      for (const domain of domains) {
+      // Detect platform up front: Shopify stores start at the full catalog
+      // tier, everything else is probed by the worker after creation.
+      const platforms = await Promise.all(domains.map(detectPlatform));
+      for (const [i, domain] of domains.entries()) {
         const res = await apiFetch('/api/competitors', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: domainToName(domain),
             url: `https://${domain}`,
-            platform: 'other',
+            platform: platforms[i] ?? 'other',
           }),
         });
         if (!res.ok) {
@@ -96,6 +114,11 @@ export function AddCompetitorWizard({
 
         <div className="space-y-4">
           <CompetitorDomainInput value={domains} onChange={setDomains} plan={plan} />
+
+          <p className="text-xs text-brand-muted">
+            We detect the store platform automatically. Shopify stores get full catalog tracking,
+            and other platforms are tracked at the best tier their site allows.
+          </p>
 
           {error && (
             <Alert variant="destructive">

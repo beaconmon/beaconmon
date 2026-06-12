@@ -6,11 +6,15 @@ import { apiFetch } from '@/lib/api-fetch';
 
 // ─── List types ───────────────────────────────────────────────────────────────
 
+export type CompetitorDataTier = 'full_catalog' | 'selected_products' | 'limited';
+
 export interface CompetitorItem {
   id: string;
   name: string;
   domain: string;
   platform: string;
+  dataTier: CompetitorDataTier;
+  discoveryState: string;
   isActive: boolean;
 }
 
@@ -21,6 +25,9 @@ export interface CompetitorDetail {
   name: string;
   domain: string;
   platform: string;
+  dataTier: CompetitorDataTier;
+  sitemapUrl: string | null;
+  trackedProductUrls: string[];
   isActive: boolean;
   createdAt: string;
 }
@@ -101,6 +108,26 @@ export function useCompetitor(id: string) {
       const res = await apiFetch(`/api/competitors/${id}`);
       if (!res.ok) throw new Error('Failed to fetch competitor');
       return res.json();
+    },
+  });
+}
+
+export function useUpdateTrackedProductUrls(competitorId: string) {
+  const qc = useQueryClient();
+  return useMutation<void, Error, { trackedProductUrls: string[] }>({
+    mutationFn: async ({ trackedProductUrls }) => {
+      const res = await apiFetch(`/api/competitors/${competitorId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trackedProductUrls }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as { error?: string }).error ?? 'Failed to update tracked products');
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitor', competitorId] });
     },
   });
 }
