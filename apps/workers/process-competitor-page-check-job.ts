@@ -332,7 +332,7 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
                 dedupKey,
                 ownerEmail,
               },
-              { jobId: `lc_${dedupKey}` }
+              { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
             )
             .then(() => {
               logger.info({ service, competitorPageId, teamId }, 'First competitor change lifecycle email enqueued');

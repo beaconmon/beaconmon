@@ -101,7 +101,7 @@ async function runEnforcementPass(now: Date): Promise<void> {
             dedupKey,
             ownerEmail,
           },
-          { jobId: `lc_${dedupKey}` },
+          { jobId: `lc_${dedupKey.replace(/:/g, '_')}` },
         );
       } catch (err) {
         logger.error({ service: 'scheduler', teamId: team.id, err }, 'Failed to enqueue day14-paused email');

@@ -87,9 +87,10 @@ export const intelligenceDigestTask: SchedulerTask = {
 
         const windowHours = due.frequency === 'daily' ? 24 : 7 * 24;
         const windowStart = new Date(now.getTime() - windowHours * 60 * 60 * 1000).toISOString();
-        const jobId = `digest:${due.frequency}:${due.teamId}:${due.periodKey}`;
+        const jobName = `digest:${due.frequency}:${due.teamId}:${due.periodKey}`;
+        const jobId = jobName.replace(/:/g, '_');
         await intelligenceDigestQueue.add(
-          jobId,
+          jobName,
           { teamId: due.teamId, frequency: due.frequency, windowStart, windowEnd },
           { jobId }
         );

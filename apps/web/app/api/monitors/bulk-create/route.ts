@@ -156,7 +156,7 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
         await getLifecycleEmailQueue().add(
           `lifecycle:welcome:${teamId}`,
           { teamId, emailType: 'welcome', payload: { competitorDomains }, dedupKey, ownerEmail },
-          { jobId: `lc_${dedupKey}` }
+          { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
         );
       }
     }

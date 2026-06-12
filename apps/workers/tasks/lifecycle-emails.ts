@@ -110,7 +110,7 @@ export const lifecycleEmailsTask: SchedulerTask = {
                 dedupKey,
                 ownerEmail,
               },
-              { jobId: `lc_${dedupKey}` }
+              { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
             );
             enqueued++;
           } catch (enqueueErr) {
