@@ -6,7 +6,6 @@ import type { CompetitorNotifyJob } from '@beaconmon/queue';
 vi.mock('@beaconmon/db', () => ({
   prisma: {
     competitorNotificationChannel: { count: vi.fn().mockResolvedValue(0) },
-    competitor: { findUnique: vi.fn().mockResolvedValue({ discoverySyncedAt: new Date('2026-01-01') }) },
   },
   competitorProductRepository: {
     findByCompetitorId: vi.fn(),
@@ -16,11 +15,32 @@ vi.mock('@beaconmon/db', () => ({
   competitorEventRepository: {
     createEvent: vi.fn().mockResolvedValue({ id: 'event-id' }),
   },
+  getCompetitorSyncInfo: vi.fn(),
   updateCompetitorDiscoveryState: vi.fn(),
+  updateCompetitorTier: vi.fn(),
+}));
+
+vi.mock('./lib/polite-fetch.js', () => ({
+  fetchWithRetry: vi.fn(),
+  validateCompetitorDomain: vi.fn(),
+  assertUrlOnDomain: vi.fn(),
+  politeJitter: vi.fn(),
+  isBlockedStatus: vi.fn().mockReturnValue(false),
 }));
 
 vi.mock('./lib/logger.js', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
+}));
+
+vi.mock('./lib/sitemap-discovery.js', () => ({
+  probeCompetitor: vi.fn(),
+  discoverProductUrls: vi.fn(),
+  MAX_TRACKED_URLS: 100,
+  AUTO_SELECT_URLS: 20,
+}));
+
+vi.mock('./lib/extract-jsonld.js', () => ({
+  extractProductFromHtml: vi.fn(),
 }));
 
 const mockProduct = {
@@ -29,22 +49,40 @@ const mockProduct = {
   handle: 'air-max-2024',
   vendor: 'Nike',
   product_type: 'shoes',
-  variants: [{ id: 101, price: '100.00', compare_at_price: null, available: false, sku: 'AM2024', title: 'Default' }],
+  variants: [{ id: 101, price: '100.00', compare_at_price: null, available: true, sku: 'AM2024', title: 'Default' }],
 };
 
-function makeFetchResponse(products: unknown[]) {
-  return vi.fn().mockResolvedValue({
+function makeFeedResponse(products: unknown[]) {
+  return {
     ok: true,
     json: async () => ({ products }),
     headers: { get: () => null },
-  });
+  };
 }
 
-describe('processShopifyFeedJob — stock change', () => {
+function existingProduct(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    id: 'existing-id',
+    externalId: '1',
+    source: 'shopify_feed',
+    sourceUrl: null,
+    handle: 'air-max-2024',
+    title: 'Air Max 2024',
+    isAvailable: true,
+    currentPrice: '100.00',
+    compareAtPrice: null,
+    currency: 'USD',
+    lastSeenAt: new Date(),
+    variants: [],
+    ...overrides,
+  };
+}
+
+describe('processCatalogSyncJob — stock change', () => {
   let redis: Partial<Redis>;
   let notifyQueue: Partial<Queue<CompetitorNotifyJob>>;
   let competitorEventRepository: { createEvent: ReturnType<typeof vi.fn> };
-  let processShopifyFeedJob: (
+  let processCatalogSyncJob: (
     data: { competitorId: string; teamId: string; domain: string },
     redis: Redis,
     notifyQueue: Queue<CompetitorNotifyJob>
@@ -60,40 +98,40 @@ describe('processShopifyFeedJob — stock change', () => {
     notifyQueue = { add: vi.fn() };
 
     const db = await import('@beaconmon/db');
-    (db.prisma.competitor.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({
+    (db.getCompetitorSyncInfo as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'comp-1',
+      teamId: 'team-1',
+      domain: 'nike.com',
+      platform: 'shopify',
+      dataTier: 'full_catalog',
+      sitemapUrl: null,
+      trackedProductUrls: [],
       discoverySyncedAt: new Date('2026-01-01'),
     });
     competitorEventRepository = db.competitorEventRepository as unknown as { createEvent: ReturnType<typeof vi.fn> };
 
-    const mod = await import('./process-shopify-feed-job.js');
-    processShopifyFeedJob = mod.processShopifyFeedJob;
+    const mod = await import('./process-catalog-sync-job.js');
+    processCatalogSyncJob = mod.processCatalogSyncJob;
   });
 
   it('emits out_of_stock without a duplicate stock_changed when product goes unavailable', async () => {
     const { competitorProductRepository } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
-      {
-        id: 'existing-id',
-        shopifyProductId: '1',
-        handle: 'air-max-2024',
-        title: 'Air Max 2024',
-        isAvailable: true,
-        currentPrice: '100.00',
-        compareAtPrice: null,
-        currency: 'USD',
-        lastSeenAt: new Date(),
-      },
+      existingProduct({ isAvailable: true }),
     ]);
 
-    vi.stubGlobal('fetch', makeFetchResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: false }] }]));
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>).mockResolvedValue(
+      makeFeedResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: false }] }])
+    );
 
-    await processShopifyFeedJob(
+    await processCatalogSyncJob(
       { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
       redis as Redis,
       notifyQueue as Queue<CompetitorNotifyJob>
     );
 
-    const calls = (competitorEventRepository.createEvent as ReturnType<typeof vi.fn>).mock.calls;
+    const calls = competitorEventRepository.createEvent.mock.calls;
     const types = calls.map((c: unknown[]) => (c[0] as { type: string }).type);
 
     expect(types).not.toContain('stock_changed');
@@ -103,28 +141,21 @@ describe('processShopifyFeedJob — stock change', () => {
   it('emits back_in_stock without a duplicate stock_changed when product becomes available', async () => {
     const { competitorProductRepository } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
-      {
-        id: 'existing-id',
-        shopifyProductId: '1',
-        handle: 'air-max-2024',
-        title: 'Air Max 2024',
-        isAvailable: false,
-        currentPrice: '100.00',
-        compareAtPrice: null,
-        currency: 'USD',
-        lastSeenAt: new Date(),
-      },
+      existingProduct({ isAvailable: false }),
     ]);
 
-    vi.stubGlobal('fetch', makeFetchResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: true }] }]));
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>).mockResolvedValue(
+      makeFeedResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: true }] }])
+    );
 
-    await processShopifyFeedJob(
+    await processCatalogSyncJob(
       { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
       redis as Redis,
       notifyQueue as Queue<CompetitorNotifyJob>
     );
 
-    const calls = (competitorEventRepository.createEvent as ReturnType<typeof vi.fn>).mock.calls;
+    const calls = competitorEventRepository.createEvent.mock.calls;
     const types = calls.map((c: unknown[]) => (c[0] as { type: string }).type);
 
     expect(types).not.toContain('stock_changed');
@@ -134,28 +165,21 @@ describe('processShopifyFeedJob — stock change', () => {
   it('does not emit granular events when availability is unchanged', async () => {
     const { competitorProductRepository } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
-      {
-        id: 'existing-id',
-        shopifyProductId: '1',
-        handle: 'air-max-2024',
-        title: 'Air Max 2024',
-        isAvailable: true,
-        currentPrice: '100.00',
-        compareAtPrice: null,
-        currency: 'USD',
-        lastSeenAt: new Date(),
-      },
+      existingProduct({ isAvailable: true }),
     ]);
 
-    vi.stubGlobal('fetch', makeFetchResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: true }] }]));
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>).mockResolvedValue(
+      makeFeedResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: true }] }])
+    );
 
-    await processShopifyFeedJob(
+    await processCatalogSyncJob(
       { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
       redis as Redis,
       notifyQueue as Queue<CompetitorNotifyJob>
     );
 
-    const calls = (competitorEventRepository.createEvent as ReturnType<typeof vi.fn>).mock.calls;
+    const calls = competitorEventRepository.createEvent.mock.calls;
     const types = calls.map((c: unknown[]) => (c[0] as { type: string }).type);
 
     expect(types).not.toContain('out_of_stock');
@@ -166,17 +190,7 @@ describe('processShopifyFeedJob — stock change', () => {
   it('enqueues notify exactly once for the granular stock event', async () => {
     const { competitorProductRepository, prisma } = await import('@beaconmon/db');
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([
-      {
-        id: 'existing-id',
-        shopifyProductId: '1',
-        handle: 'air-max-2024',
-        title: 'Air Max 2024',
-        isAvailable: true,
-        currentPrice: '100.00',
-        compareAtPrice: null,
-        currency: 'USD',
-        lastSeenAt: new Date(),
-      },
+      existingProduct({ isAvailable: true }),
     ]);
     (prisma.competitorNotificationChannel.count as ReturnType<typeof vi.fn>).mockResolvedValue(1);
 
@@ -185,9 +199,12 @@ describe('processShopifyFeedJob — stock change', () => {
       Promise.resolve({ id: `event-${callIndex++}` })
     );
 
-    vi.stubGlobal('fetch', makeFetchResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: false }] }]));
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>).mockResolvedValue(
+      makeFeedResponse([{ ...mockProduct, variants: [{ ...mockProduct.variants[0], available: false }] }])
+    );
 
-    await processShopifyFeedJob(
+    await processCatalogSyncJob(
       { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
       redis as Redis,
       notifyQueue as Queue<CompetitorNotifyJob>
@@ -198,21 +215,32 @@ describe('processShopifyFeedJob — stock change', () => {
   });
 
   it('suppresses events and notifications on the baseline (first) sync', async () => {
+    const db = await import('@beaconmon/db');
+    (db.getCompetitorSyncInfo as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'comp-1',
+      teamId: 'team-1',
+      domain: 'nike.com',
+      platform: 'shopify',
+      dataTier: 'full_catalog',
+      sitemapUrl: null,
+      trackedProductUrls: [],
+      discoverySyncedAt: null,
+    });
+
     const { competitorProductRepository, prisma } = await import('@beaconmon/db');
-    (prisma.competitor.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({ discoverySyncedAt: null });
-    (prisma.competitorNotificationChannel.count as ReturnType<typeof vi.fn>).mockResolvedValue(1);
     (competitorProductRepository.findByCompetitorId as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+    (prisma.competitorNotificationChannel.count as ReturnType<typeof vi.fn>).mockResolvedValue(1);
 
-    vi.stubGlobal('fetch', makeFetchResponse([mockProduct]));
+    const { fetchWithRetry } = await import('./lib/polite-fetch.js');
+    (fetchWithRetry as ReturnType<typeof vi.fn>).mockResolvedValue(makeFeedResponse([mockProduct]));
 
-    await processShopifyFeedJob(
+    await processCatalogSyncJob(
       { competitorId: 'comp-1', teamId: 'team-1', domain: 'nike.com' },
       redis as Redis,
       notifyQueue as Queue<CompetitorNotifyJob>
     );
 
-    const { competitorProductRepository: repo } = await import('@beaconmon/db');
-    expect(repo.upsertProduct).toHaveBeenCalledTimes(1);
+    expect(competitorProductRepository.upsertProduct).toHaveBeenCalledTimes(1);
     expect(competitorEventRepository.createEvent).not.toHaveBeenCalled();
     expect(notifyQueue.add).not.toHaveBeenCalled();
   });

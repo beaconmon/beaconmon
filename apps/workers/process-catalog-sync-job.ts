@@ -156,6 +156,7 @@ interface FallbackFetchResult {
   fetchErrors: number;
   blockedCount: number;
   attempted: number;
+  timedOut: number;
 }
 
 /** Fetch tracked PDPs sequentially with jitter and extract products via the in-page ladder */
@@ -168,13 +169,15 @@ async function fetchFallbackProducts(
   let fetchErrors = 0;
   let blockedCount = 0;
   let attempted = 0;
+  let timedOut = 0;
   const startedAt = Date.now();
   const capped = urls.slice(0, MAX_TRACKED_URLS);
 
   for (const url of capped) {
     if (Date.now() - startedAt > FALLBACK_TIME_BUDGET_MS) {
-      logger.warn({ service, competitorId, attempted, total: capped.length }, 'Fallback sync time budget exhausted');
-      fetchErrors += capped.length - attempted;
+      const skipped = capped.length - attempted;
+      logger.warn({ service, competitorId, attempted, total: capped.length, skipped }, 'Fallback sync time budget exhausted');
+      timedOut = skipped;
       break;
     }
     attempted++;
@@ -199,7 +202,7 @@ async function fetchFallbackProducts(
     }
   }
 
-  return { products, fetchErrors, blockedCount, attempted };
+  return { products, fetchErrors, blockedCount, attempted, timedOut };
 }
 
 async function markLimited(competitorId: string, reason: string): Promise<void> {
@@ -415,7 +418,7 @@ export async function processCatalogSyncJob(
       return;
     }
 
-    const { products, fetchErrors, blockedCount, attempted } = await fetchFallbackProducts(competitorId, domain, trackedUrls);
+    const { products, fetchErrors, blockedCount, attempted, timedOut } = await fetchFallbackProducts(competitorId, domain, trackedUrls);
 
     if (products.length === 0 && blockedCount > 0) {
       // Pages exist but block automated access: be honest, do not retry hard
@@ -456,11 +459,15 @@ export async function processCatalogSyncJob(
     await updateCompetitorDiscoveryState(competitorId, {
       discoveryState: 'ready',
       discoverySyncedAt: new Date(),
-      discoveryError: fetchErrors > 0 ? `${fetchErrors} of ${attempted} tracked page(s) failed` : null,
+      discoveryError:
+        fetchErrors > 0 || timedOut > 0
+          ? `${fetchErrors} of ${attempted} tracked page(s) failed` +
+            (timedOut > 0 ? `, ${timedOut} skipped (time budget exhausted)` : '')
+          : null,
     });
 
     logger.info(
-      { service, competitorId, domain, tier, extracted: products.length, fetchErrors, productErrors },
+      { service, competitorId, domain, tier, extracted: products.length, fetchErrors, productErrors, timedOut },
       'Fallback catalog sync processed'
     );
   } finally {
