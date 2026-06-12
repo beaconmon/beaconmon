@@ -18,16 +18,14 @@ const TIER_STYLE: Record<CompetitorDataTier, { background: string; color: string
   limited: { background: 'var(--brand-bg3)', color: 'var(--brand-muted)' },
 };
 
-export function CoverageBadge({ dataTier }: { dataTier: string }) {
-  const tier: CompetitorDataTier =
-    dataTier === 'full_catalog' || dataTier === 'selected_products' ? dataTier : 'limited';
+export function CoverageBadge({ dataTier }: { dataTier: CompetitorDataTier }) {
   return (
     <span
       className="rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
-      style={TIER_STYLE[tier]}
-      title={TIER_TITLE[tier]}
+      style={TIER_STYLE[dataTier]}
+      title={TIER_TITLE[dataTier]}
     >
-      {TIER_LABEL[tier]}
+      {TIER_LABEL[dataTier]}
     </span>
   );
 }

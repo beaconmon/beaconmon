@@ -45,11 +45,15 @@ export function AddCompetitorWizard({
 
   async function detectPlatform(domain: string): Promise<'shopify' | 'woocommerce' | 'other'> {
     try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
       const res = await apiFetch('/api/onboarding/check-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: `https://${domain}` }),
+        signal: ctrl.signal,
       });
+      clearTimeout(timer);
       if (!res.ok) return 'other';
       const data = (await res.json()) as { platform?: string };
       return data.platform === 'shopify' || data.platform === 'woocommerce' ? data.platform : 'other';
