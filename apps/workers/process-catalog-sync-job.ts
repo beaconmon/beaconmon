@@ -107,7 +107,7 @@ async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult>
       // caller can descend the fallback ladder. A failure mid-pagination keeps
       // the pages already collected rather than discarding a partial catalog.
       if (page === 1) {
-        if (isBlockedStatus(res.status) || res.status === 404 || res.status === 410) {
+        if (isBlockedStatus(res.status) || res.status === 404 || res.status === 410 || res.status === 500 || res.status === 503) {
           throw new FeedUnusableError(res.status);
         }
         throw new Error(`Shopify feed returned ${res.status} for ${url}`);

@@ -323,7 +323,7 @@ async function scheduleChecks(): Promise<void> {
     //   selected_products  daily fallback sync (23h TTL) plus weekly sitemap rescan (6.5d TTL)
     //   limited            weekly re-probe of the extraction ladder (6.5d TTL)
     const catalogCompetitors = await prisma.competitor.findMany({
-      where: { isActive: true, deletedAt: null },
+      where: { isActive: true, deletedAt: null, discoveryState: { not: 'not_applicable' } },
       select: { id: true, teamId: true, domain: true, dataTier: true },
     });
     for (const c of catalogCompetitors) {
