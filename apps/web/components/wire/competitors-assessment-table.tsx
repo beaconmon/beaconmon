@@ -71,7 +71,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
                       </p>
                       {isHot && (
                         <span
-                          className="inline-flex items-center gap-1 rounded-full px-2 py-0 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                          className="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0 font-mono text-[9px] font-semibold uppercase tracking-wider whitespace-nowrap"
                           style={{
                             background: 'rgba(180,83,9,0.12)',
                             color: 'var(--brand-amber)',
@@ -86,7 +86,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
                         {r.competitor.domain}
                       </span>
                       <span
-                        className="rounded px-1.5 py-0 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                        className="shrink-0 rounded px-1.5 py-0 font-mono text-[9px] font-semibold uppercase tracking-wider whitespace-nowrap"
                         style={{ background: 'var(--brand-bg3)', color: 'var(--brand-muted)' }}
                       >
                         {PLATFORM_LABEL[r.competitor.platform] ?? 'Other'}

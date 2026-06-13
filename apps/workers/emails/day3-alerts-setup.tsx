@@ -35,13 +35,13 @@ export function Day3AlertsSetup({ appUrl, unsubscribeUrl }: Day3AlertsSetupProps
       </Para>
 
       <Section style={{ marginBottom: '20px' }}>
-        <StepRow n={1} title="Go to Settings, Alerts" body="Open the Alerts section in your account settings." />
+        <StepRow n={1} title="Go to Alert Channels" body="Open Alert Channels from your account sidebar." />
         <StepRow n={2} title="Click Add channel" body="Choose Slack or email and follow the prompts to authorize." />
         <StepRow n={3} title="Attach it to monitors" body="Pick which monitors should fire to this new channel." last />
       </Section>
 
       <BtnRow>
-        <EBtn href={`${appUrl}/settings/alerts`} variant="primary">
+        <EBtn href={`${appUrl}/alert-channels`} variant="primary">
           Configure alerts
         </EBtn>
       </BtnRow>

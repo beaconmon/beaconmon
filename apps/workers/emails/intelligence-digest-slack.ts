@@ -109,7 +109,7 @@ export function buildSlackPayload(
       ...splitIntoMrkdwnBlocks(
         `*Competitor Changes (${sections.competitors.length})*`,
         sections.competitors.map(
-          (c) => `• *${escapeSlackMrkdwn(c.monitorName)}* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+          (c) => `• *<${c.dashboardUrl}|${escapeSlackMrkdwn(c.monitorName)}>* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
         )
       )
     );
@@ -120,7 +120,7 @@ export function buildSlackPayload(
       ...splitIntoMrkdwnBlocks(
         `*Own Content Changes (${sections.ownContent.length})*`,
         sections.ownContent.map(
-          (c) => `• *${escapeSlackMrkdwn(c.monitorName)}* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+          (c) => `• *<${c.dashboardUrl}|${escapeSlackMrkdwn(c.monitorName)}>* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
         )
       )
     );

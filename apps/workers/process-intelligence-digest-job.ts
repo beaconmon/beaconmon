@@ -125,7 +125,7 @@ export async function processIntelligenceDigestJob(
         capturedAt: e.detectedAt,
         diffSummary: formatEventSummary(e.type, e.payload),
         classification: e.type,
-        dashboardUrl: `${appUrl}/competitors/${e.competitorId}`,
+        dashboardUrl: `${appUrl}/wire/competitors/${e.competitorId}`,
       }));
   }
 
@@ -163,7 +163,7 @@ export async function processIntelligenceDigestJob(
     return;
   }
 
-  const dashboardUrl = `${appUrl}/intelligence`;
+  const dashboardUrl = `${appUrl}/wire`;
   let successCount = 0;
   let failureCount = 0;
 
