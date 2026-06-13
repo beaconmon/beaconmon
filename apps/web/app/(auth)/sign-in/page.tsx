@@ -84,7 +84,7 @@ function SignInForm() {
         <div>
           <h1 className="text-xl font-bold text-brand-text">Sign in to Beaconmon</h1>
           <p className="mt-1 text-sm text-brand-dim">
-            {resetSuccess ? 'Password updated. Sign in below.' : 'Monitor smarter, respond faster.'}
+            {resetSuccess ? 'Password updated. Sign in below.' : 'Competitor intelligence and uptime monitoring for eCommerce.'}
           </p>
         </div>
 

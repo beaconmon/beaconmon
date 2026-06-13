@@ -28,7 +28,7 @@ export default async function OnboardingPage() {
 
   const monitorCount = await monitorRepository.countByTeam(teamId);
   if (monitorCount > 0) {
-    redirect('/monitors');
+    redirect('/today');
   }
 
   return (

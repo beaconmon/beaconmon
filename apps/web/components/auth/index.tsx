@@ -41,12 +41,12 @@ type PanelVariant = 'default' | 'welcome' | 'reset';
 
 const PANEL_COPY: Record<PanelVariant, { headline: string; sub: string }> = {
   default: {
-    headline: 'Never miss a minute of downtime.',
-    sub: 'Add a monitor in 30 seconds. Get alerted the instant something breaks.',
+    headline: 'Know every move your competitors make.',
+    sub: 'Track price drops, promotions, and content changes across competitor stores. Get alerted the moment something shifts.',
   },
   welcome: {
     headline: 'Welcome back.',
-    sub: 'Your monitors are running. Let\'s check in.',
+    sub: 'Your competitor and uptime monitors are running. Let\'s check in.',
   },
   reset: {
     headline: 'Locked out? No problem.',
@@ -55,9 +55,9 @@ const PANEL_COPY: Record<PanelVariant, { headline: string; sub: string }> = {
 };
 
 const MONITOR_ROWS = [
-  { name: 'api.acme.com', ms: '142ms', status: 'up' },
-  { name: 'checkout.acme.com', ms: '98ms', status: 'up' },
-  { name: 'cdn.acme.com', ms: '23ms', status: 'up' },
+  { name: 'rival-brand.com/collections', ms: '142ms', status: 'up' },
+  { name: 'competitor.io/pricing', ms: '98ms', status: 'up' },
+  { name: 'bigstore.com/sale', ms: '23ms', status: 'up' },
 ];
 
 function Sparkline() {
@@ -118,8 +118,8 @@ export function AuthPanel({ variant = 'default' }: { variant?: PanelVariant }) {
             <span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
           </div>
           <div>
-            <p className="text-xs font-semibold text-brand-green-ink">All systems operational</p>
-            <p className="text-[11px] text-brand-dim mt-0.5">3 monitors · last checked 12s ago</p>
+            <p className="text-xs font-semibold text-brand-green-ink">Competitor activity detected</p>
+            <p className="text-[11px] text-brand-dim mt-0.5">rival-brand.com · pricing page updated · 4 min ago</p>
           </div>
         </div>
       </div>
@@ -127,9 +127,9 @@ export function AuthPanel({ variant = 'default' }: { variant?: PanelVariant }) {
       {/* Bottom: social proof */}
       <div className="relative z-10 flex items-center gap-6 border-t border-brand-line pt-6">
         {[
-          { value: '30s', label: 'check interval' },
-          { value: '<60s', label: 'alert latency' },
-          { value: '99.9%', label: 'uptime' },
+          { value: '30s', label: 'uptime checks' },
+          { value: '5min', label: 'content scans' },
+          { value: 'instant', label: 'change alerts' },
         ].map((s) => (
           <div key={s.label}>
             <p className="text-sm font-bold text-brand-green-ink">{s.value}</p>

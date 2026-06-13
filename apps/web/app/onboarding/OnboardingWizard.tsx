@@ -164,13 +164,13 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
 
   useEffect(() => {
     if (!ready) {
-      router.replace('/monitors');
+      router.replace('/today');
     }
   }, [ready, router]);
 
   function skip(): void {
     markComplete(teamId);
-    router.push('/monitors');
+    router.push('/today');
   }
 
   function prefetchDiscover(hostname: string): void {
@@ -316,7 +316,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
 
       if (total === 0) {
         markComplete(teamId);
-        router.push('/monitors');
+        router.push('/today');
         return;
       }
 
@@ -365,7 +365,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
         }
         setCatalogPreviewLoading(false);
       } else {
-        router.push('/monitors');
+        router.push('/today');
       }
     } catch {
       setError('Something went wrong. Try again.');
@@ -414,7 +414,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
             <OnboardingSuccess
               catalogPreviewLoading={catalogPreviewLoading}
               catalogPreview={catalogPreview}
-              onDone={() => router.push('/monitors')}
+              onDone={() => router.push('/today')}
             />
           ) : (
             <>
