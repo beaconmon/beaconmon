@@ -66,6 +66,8 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
     }
 
     const $ = cheerio.load(html);
+    $('script, style').remove();
+    $('*').contents().filter((_, n) => n.type === 'comment').remove();
     const rawText = selector ? $(selector).text() : $('body').text();
     // Normalize: collapse horizontal whitespace per line, drop blank lines.
     // Preserves newlines so diffLines() produces meaningful per-line diffs.

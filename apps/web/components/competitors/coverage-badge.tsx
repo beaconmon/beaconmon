@@ -21,7 +21,7 @@ const TIER_STYLE: Record<CompetitorDataTier, { background: string; color: string
 export function CoverageBadge({ dataTier }: { dataTier: CompetitorDataTier }) {
   return (
     <span
-      className="rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+      className="shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider whitespace-nowrap"
       style={TIER_STYLE[dataTier]}
       title={TIER_TITLE[dataTier]}
     >

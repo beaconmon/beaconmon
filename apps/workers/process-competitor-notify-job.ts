@@ -67,7 +67,7 @@ export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redi
   }
 
   // 4. Build competitor detail URL
-  const diffUrl = env.APP_URL ? `${env.APP_URL}/competitors/${competitorId}` : undefined;
+  const diffUrl = env.APP_URL ? `${env.APP_URL}/wire/competitors/${competitorId}` : undefined;
 
   // 5. Extract payload fields
   const payload = event.payload as Record<string, unknown>;
@@ -98,7 +98,7 @@ export async function processCompetitorNotifyJob(data: CompetitorNotifyJob, redi
           await sendEmailNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl, subject);
           break;
         case 'slack':
-          await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl);
+          await sendSlackNotification(channel.config, monitorName, monitorUrl, changedAt, summary, classification, diffUrl, subject);
           break;
         default:
           logger.debug({ service, channelType: channel.type }, 'Unsupported channel type for competitor notification');
@@ -165,7 +165,8 @@ async function sendSlackNotification(
   changedAt: Date,
   summary?: string,
   classification?: string,
-  diffUrl?: string
+  diffUrl?: string,
+  subject?: string
 ): Promise<void> {
   const config = SlackChannelConfig.parse(rawConfig);
 
@@ -176,15 +177,12 @@ async function sendSlackNotification(
   if (classification) {
     slackFields.unshift({ title: 'Classification', value: classification, short: true });
   }
-  if (summary) {
-    slackFields.unshift({ title: 'Summary', value: summary, short: false });
-  }
 
   const slackPayload = {
     attachments: [
       {
         color: '#2563eb',
-        title: `Competitor Changed: ${monitorName}`,
+        title: subject ?? `Competitor Changed: ${monitorName}`,
         title_link: diffUrl,
         text: summary,
         fields: slackFields,

@@ -28,6 +28,16 @@ beforeAll(async () => {
         res.writeHead(200, { 'content-type': 'text/html' });
         res.end('<html><body></body></html>');
         break;
+      case '/with-scripts':
+        res.writeHead(200, { 'content-type': 'text/html' });
+        res.end(
+          '<html><body><p>visible</p><script>window.__rayId="abc123";window.__experiments=["v2"];</script></body></html>',
+        );
+        break;
+      case '/with-comments':
+        res.writeHead(200, { 'content-type': 'text/html' });
+        res.end('<html><body><p>visible</p><!-- build:a1b2c3d4 deploy:prod --></body></html>');
+        break;
       default:
         res.writeHead(404);
         res.end();
@@ -79,6 +89,22 @@ describe('runContentCheck', () => {
     expect(result.statusCode).toBe(200);
     expect(result.content).toBeNull();
     expect(result.errorType).toBe('empty_content');
+  });
+
+  it('excludes inline script content from the snapshot', async () => {
+    const result = await runContentCheck({ monitorId: 'm1', url: `${baseUrl}/with-scripts`, timeoutMs: 5000 });
+    expect(result.success).toBe(true);
+    expect(result.content).toBe('visible');
+    expect(result.content).not.toContain('rayId');
+    expect(result.content).not.toContain('experiments');
+  });
+
+  it('excludes HTML comment content from the snapshot', async () => {
+    const result = await runContentCheck({ monitorId: 'm1', url: `${baseUrl}/with-comments`, timeoutMs: 5000 });
+    expect(result.success).toBe(true);
+    expect(result.content).toBe('visible');
+    expect(result.content).not.toContain('build:');
+    expect(result.content).not.toContain('deploy:');
   });
 
   it('fails when a selector matches nothing rather than reporting an empty diff', async () => {

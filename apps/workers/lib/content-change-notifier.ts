@@ -121,9 +121,6 @@ async function sendSlackNotification(
   if (classification) {
     slackFields.unshift({ title: 'Classification', value: classification, short: true });
   }
-  if (summary) {
-    slackFields.unshift({ title: 'Summary', value: summary, short: false });
-  }
 
   const slackPayload = {
     attachments: [
