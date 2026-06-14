@@ -35,7 +35,7 @@ const MONTHLY_TIERS: PricingTier[] = [
     features: [
       '25 competitor monitors',
       'Daily + weekly intelligence digest',
-      'AI content-diff, Smart Alerts, AI Smart Setup',
+      'AI change summaries, Smart Alerts, AI Smart Setup',
     ],
     alsoIncludes: '100 monitors, 5-region checks, 90-day history',
     ctaLabel: 'Start 14-day trial',

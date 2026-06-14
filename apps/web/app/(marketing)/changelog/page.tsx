@@ -46,7 +46,7 @@ const ENTRIES: Entry[] = [
   {
     date: 'March 2026',
     tag: 'Feature',
-    title: 'Reliability Targets',
+    title: 'Uptime goals',
     body: 'Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires immediate or sustained burn alerts when you\'re consuming it too quickly. Alert thresholds are configurable. Available on Growth and Scale plans.',
   },
   {
@@ -64,8 +64,8 @@ const ENTRIES: Entry[] = [
   {
     date: 'January 2026',
     tag: 'Feature',
-    title: 'Deploy-aware monitoring',
-    body: 'Suppress false-positive alerts during your own deployments. Trigger a deployment event via webhook or from the dashboard. Beaconmon holds alerts for up to 30 minutes while your services restart. Auto-expires so you can\'t accidentally leave it on.',
+    title: 'Update-aware alerts',
+    body: 'Suppress false-positive alerts while you\'re pushing your own changes. Trigger an update event via webhook or from the dashboard, and Beaconmon holds alerts for up to 30 minutes while things settle. Auto-expires so you can\'t accidentally leave it on.',
   },
   {
     date: 'January 2026',

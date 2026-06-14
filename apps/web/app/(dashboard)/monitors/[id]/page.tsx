@@ -199,8 +199,8 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               {[
                 { value: 'performance', label: 'Performance' },
                 ...(!isCompetitorMonitor ? [{ value: 'incidents', label: 'Incidents' }] : []),
-                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'Reliability Targets' }] : []),
-                ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Deploys' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'Uptime goals' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Updates' }] : []),
                 ...(isContentMonitor ? [{ value: 'snapshots', label: 'Snapshots' }] : []),
                 ...(isAnomalyMonitor ? [{ value: 'anomalies', label: 'Smart Alerts' }] : []),
                 ...(multiLocationEnabled && hasRegionData ? [{ value: 'regions', label: 'Regions' }] : []),

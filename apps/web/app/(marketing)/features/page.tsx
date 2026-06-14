@@ -56,7 +56,7 @@ const MONITOR_TYPES = [
     name: 'HTTP Monitoring',
     tagline: 'Know the moment your site or API stops responding.',
     body: 'Beaconmon checks your URLs every 30 seconds (Scale) or 1 minute (Growth and Starter). If the response is anything other than a 2xx, you\'re alerted within 60 seconds. Set custom request headers, follow redirects, and configure per-monitor response-time thresholds to catch slow sites and APIs before users notice.',
-    highlights: ['Response code validation', 'Response time thresholds', 'Custom request headers', 'API endpoint monitoring'],
+    highlights: ['Response code validation', 'Response time thresholds', 'Custom request headers', 'Third-party app health checks'],
   },
   {
     slug: 'ssl-monitoring',
@@ -83,7 +83,7 @@ const MONITOR_TYPES = [
     ),
     name: 'Domain Expiry Tracking',
     tagline: 'The worst outage is one you could have prevented.',
-    body: 'Domain renewals slip through the cracks, especially for client sites you manage. Beaconmon checks WHOIS records and alerts you at 30, 14, and 7 days before the domain expires. No more panicked domain rescues.',
+    body: 'Domain renewals slip through the cracks, especially when you\'re heads-down on a campaign. Beaconmon checks WHOIS records and alerts you at 30, 14, and 7 days before the domain expires. No more panicked domain rescues.',
     highlights: ['WHOIS-based expiry detection', '30/14/7-day alerts', 'Works on all TLDs', 'Per-domain alert channels'],
   },
   {
@@ -95,7 +95,7 @@ const MONITOR_TYPES = [
     ),
     name: 'TCP Port Monitoring',
     tagline: 'Monitor any service that speaks TCP.',
-    body: 'Not everything is a website. Database servers, mail servers, game servers, custom APIs. If it listens on a TCP port, Beaconmon can watch it. You\'ll be alerted the moment a port becomes unreachable, before your users hit a connection error.',
+    body: 'Not everything is a webpage. Payment gateways, fulfillment APIs, and third-party services your store depends on all speak TCP. If a port goes unreachable, you hear about it before your checkout does.',
     highlights: ['Any TCP port', 'Works on private IPs via VPN probes', 'Sub-60 second alerts', 'Works alongside HTTP monitors'],
   },
   {
@@ -108,7 +108,7 @@ const MONITOR_TYPES = [
     ),
     name: 'Keyword Monitoring',
     tagline: 'Verify your pages say exactly what they should.',
-    body: 'A 200 response doesn\'t always mean everything is fine. A broken deploy could serve an empty page, a database error, or a maintenance placeholder. Keyword monitoring checks that a specific string is present (or absent) in the response body, so you know the page actually loaded correctly.',
+    body: 'A 200 response doesn\'t always mean your store is right. A theme update could quietly remove your free shipping banner, or an app conflict could replace your checkout CTA with an error state. Keyword monitoring checks that the right text is present on the right page, so you catch silent breakages before they cost you conversions.',
     highlights: ['Keyword present or absent', 'Case-sensitive matching', 'Works on any HTTP response', 'Combine with HTTP threshold checks'],
   },
   {
@@ -294,8 +294,8 @@ export default function FeaturesPage() {
       <div className="border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 py-12 text-center">
           <span className="inline-block text-[11px] font-semibold tracking-[0.14em] uppercase text-brand-muted mb-3">Also included on every paid plan</span>
-          <h2 className="text-[clamp(24px,3vw,38px)] font-extrabold tracking-[-0.03em] leading-[1.1] mb-4">Website reliability monitoring</h2>
-          <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Full uptime monitoring for your own store. Know the moment your checkout page, API, or SSL certificate has a problem.</p>
+          <h2 className="text-[clamp(24px,3vw,38px)] font-extrabold tracking-[-0.03em] leading-[1.1] mb-4">Your store, always on</h2>
+          <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Know the moment your checkout page, product pages, or homepage go down, before a customer does.</p>
         </div>
       </div>
 
@@ -303,8 +303,8 @@ export default function FeaturesPage() {
       <section id="monitors" className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Six ways to watch your stack</h2>
-            <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Each monitor type is purpose-built for a different failure mode, so you catch the right problems, every time.</p>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Six ways to monitor your store</h2>
+            <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Each type covers a different way your store can go wrong, so the right problem gets caught every time.</p>
           </div>
           <div className="grid grid-cols-2 max-[880px]:grid-cols-1 gap-5">
             {MONITOR_TYPES.map(({ slug, icon, name, tagline, body, highlights }) => (
@@ -410,7 +410,7 @@ export default function FeaturesPage() {
                 A status page your clients will actually trust.
               </h2>
               <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                Clients shouldn&apos;t have to email you to find out if their site is down. Give them a public status page at your own domain that shows real-time uptime, incident history, and scheduled maintenance. It looks professional, and it takes two minutes to set up.
+                Customers shouldn&apos;t have to guess whether your store is down. Give them a public status page at your own domain that shows real-time uptime and incident history. It builds trust during outages, cuts support tickets, and takes two minutes to set up.
               </p>
               <ul className="space-y-3">
                 {[
@@ -432,24 +432,24 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Reliability Targets */}
+      {/* Uptime goals */}
       <section id="reliability-targets" className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.1fr] max-[880px]:grid-cols-1 gap-16 items-center">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Reliability Targets</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Uptime goals</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 Know if your store is meeting its uptime promise.
               </h2>
               <p className="text-brand-dim text-[16px] leading-[1.65] mb-6">
-                Set a per-monitor uptime target (e.g. 99.9%). Beaconmon tracks your error budget in real time and fires immediate or sustained burn alerts when you&apos;re consuming it too quickly, so you can act before the window closes.
+                Set an uptime target for your store, say 99.9%, and Beaconmon tracks how much downtime you have left in the window. If you&apos;re burning through it too fast, you get an alert before the window closes and before it hits your revenue.
               </p>
               <ul className="space-y-3">
                 {[
-                  'Per-monitor reliability targets (e.g. 99.9%)',
+                  'Per-monitor uptime goals (e.g. 99.9%)',
                   'Error budget tracking in real time',
                   'Immediate and sustained burn alerts',
-                  'Available on Growth and Scale plans',
+                  'Available on all paid plans (unlimited on Growth and Scale)',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-brand-dim">
                     <span className="mt-[5px] w-[5px] h-[5px] rounded-full bg-brand-green shrink-0" />
@@ -459,7 +459,7 @@ export default function FeaturesPage() {
               </ul>
             </div>
             <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6">
-              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Reliability targets: this period</div>
+              <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-brand-muted mb-5">Uptime goals: this period</div>
               <div className="space-y-5">
                 {[
                   { name: 'acme-storefront.com', target: '99.9%', remaining: 82 },
@@ -502,9 +502,9 @@ export default function FeaturesPage() {
         />
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center relative">
           <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">
-            Ready to set up your first monitor?
+            Ready to see what your competitors changed overnight?
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">Free forever for 1 competitor monitor. 14-day Growth trial starts the moment you sign up, no card required.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Start free. Add 1 competitor. Your first digest arrives tomorrow morning.</p>
           <CtaForm className="mx-auto mb-5" />
           <Link href="/pricing" className="text-[14px] text-brand-dim hover:text-brand-text transition-colors">
             See pricing →

@@ -59,7 +59,7 @@ export function SloTab({ monitorId, plan }: { monitorId: string; plan: string })
   if (plan === 'free') {
     return (
       <div className="p-4">
-        <UpgradePrompt currentPlan="free" limitReached="Reliability Targets" />
+        <UpgradePrompt currentPlan="free" limitReached="Uptime goals" />
       </div>
     );
   }

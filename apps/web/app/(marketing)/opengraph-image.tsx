@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Your daily Shopify competitor brief, written automatically | Beaconmon';
+export const alt = 'Know what competitors changed before it costs you sales | Beaconmon';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -94,9 +94,9 @@ export default function OGImage() {
           marginBottom: '28px',
         }}
       >
-        <span>Your daily Shopify</span>
-        <span>competitor brief,</span>
-        <span style={{ color: '#00E57A' }}>written automatically.</span>
+        <span>Know what competitors</span>
+        <span>changed before</span>
+        <span style={{ color: '#00E57A' }}>it costs you sales.</span>
       </div>
 
       {/* Subheadline */}

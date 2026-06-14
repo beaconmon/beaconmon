@@ -52,3 +52,8 @@ packages/db/generated/
 next-env.d.ts
 
 /outreach
+
+# Playwright MCP run artifacts + local screenshot assets
+.playwright-mcp/
+*.png
+/showcase/

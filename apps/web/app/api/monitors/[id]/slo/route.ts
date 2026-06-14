@@ -6,7 +6,7 @@ import { ForbiddenError, NotFoundError, PlanLimitError, ValidationError } from '
 type Params = { id: string; [key: string]: string };
 
 export const GET = withAuth<Params>(async (_req, { teamId, plan }, params) => {
-  if (plan === 'free') throw new PlanLimitError('Reliability Targets require a Starter plan or higher');
+  if (plan === 'free') throw new PlanLimitError('Uptime goals require a Starter plan or higher');
 
   const data = await sloRepository.getSloData(teamId, params.id, plan);
   if (!data) throw new NotFoundError();
@@ -16,7 +16,7 @@ export const GET = withAuth<Params>(async (_req, { teamId, plan }, params) => {
 
 export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params) => {
   if (role === 'viewer') throw new ForbiddenError();
-  if (plan === 'free') throw new PlanLimitError('Reliability Targets require a Starter plan or higher');
+  if (plan === 'free') throw new PlanLimitError('Uptime goals require a Starter plan or higher');
 
   let body: unknown;
   try {
@@ -36,7 +36,7 @@ export const PATCH = withAuth<Params>(async (req, { teamId, plan, role }, params
 
     const isNewSlo = current.config.sloTarget === null;
     if (isNewSlo && existingCount >= 1) {
-      throw new PlanLimitError('Starter plan allows 1 Reliability Target. Upgrade to Growth for unlimited.');
+      throw new PlanLimitError('Starter plan allows 1 uptime goal. Upgrade to Growth for unlimited.');
     }
   }
 

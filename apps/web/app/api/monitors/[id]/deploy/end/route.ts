@@ -8,7 +8,7 @@ type Params = { id: string; [key: string]: string };
 
 export const POST = withAuth<Params>(async (_req, { teamId, plan, role }, params) => {
   if (role === 'viewer') throw new ForbiddenError();
-  if (plan === 'free') throw new PlanLimitError('Deploy-aware monitoring requires a Pro or Business plan');
+  if (plan === 'free') throw new PlanLimitError('Update-aware alerts require a Starter plan or higher');
 
   const monitor = await monitorRepository.findById(teamId, params.id);
   if (!monitor) throw new NotFoundError();

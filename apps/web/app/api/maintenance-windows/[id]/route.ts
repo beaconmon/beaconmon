@@ -29,7 +29,7 @@ const updateMaintenanceWindowSchema = z
 export const PATCH = withAuth(async (req, { teamId, plan, role }, params) => {
   if (role === 'viewer') throw new ForbiddenError();
   if (plan === 'free') {
-    throw new PlanLimitError('Maintenance windows require a Pro or Business plan');
+    throw new PlanLimitError('Maintenance windows require a Starter plan or higher');
   }
 
   const { id } = params as { id: string };
