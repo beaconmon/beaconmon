@@ -20,6 +20,7 @@ function buildApiPayload(data: MonitorFormValues): CreateMonitorInput {
     keyword: data.keyword,
     keywordCondition: data.keywordCondition,
     tags: data.tags,
+    isCompetitor: data.isCompetitor,
   };
 
   if (data.type === 'tcp') {

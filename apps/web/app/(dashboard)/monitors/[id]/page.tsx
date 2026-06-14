@@ -165,7 +165,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
                     <Eye className="h-3 w-3" />
                     Competitor
                   </span>
-                ) : (
+                ) : monitor.type === 'ssl' || monitor.type === 'domain' || monitor.type === 'tcp' ? null : (
                   <span className="inline-flex shrink-0 items-center rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-brand-green/10 text-brand-green-ink">
                     Your store
                   </span>
