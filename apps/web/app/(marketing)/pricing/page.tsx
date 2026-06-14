@@ -21,7 +21,7 @@ const CORE_MONITORING: MatrixRow[] = [
   { feature: 'Monitors',              free: '10',          starter: '25',        growth: '100',              scale: 'Unlimited' },
   { feature: 'Check interval',        free: '5 min',       starter: '1 min',     growth: '1 min',            scale: '30 sec' },
   { feature: 'History retention',     free: '7 days',      starter: '30 days',   growth: '90 days',          scale: '365 days' },
-  { feature: 'Multi-region checks',   free: '—',           starter: '—',         growth: '5 regions',        scale: '5 regions' },
+  { feature: 'Global checks',         free: '—',           starter: '—',         growth: '5 regions',        scale: '5 regions' },
   { feature: 'SSL & domain expiry',   free: '✓',           starter: '✓',         growth: '✓',                scale: '✓' },
   { feature: 'Maintenance windows',   free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
 ];
@@ -31,10 +31,10 @@ const INTELLIGENCE: MatrixRow[] = [
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
   { feature: 'Intelligence Digest',   free: 'Weekly',      starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
-  { feature: 'AI content-diff (plain-English summaries of what changed)',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'AI change summaries (what changed, in plain English)',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
-  { feature: 'Deploy-aware alerts',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
-  { feature: 'Reliability Targets',   free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
+  { feature: 'Update-aware alerts',   free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
+  { feature: 'Uptime goals',          free: '—',           starter: '1',         growth: 'Unlimited',        scale: 'Unlimited' },
 ];
 
 const TEAM_AND_ALERTS: MatrixRow[] = [
@@ -232,10 +232,10 @@ export default function PricingPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Pricing</span>
           <h1 className="text-[clamp(40px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5">
-            Start free. Pay when intelligence pays you back.
+            Start free. One smart price move pays for the year.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Every plan includes uptime, SSL checks, and a weekly intelligence digest. Free Lite includes 1 competitor monitor. Daily digests and AI-powered insights unlock on Growth and above.
+            Every plan includes a weekly intelligence digest, uptime monitoring, and SSL checks. Free Lite includes 1 competitor monitor. Daily digests and AI-powered insights unlock on Growth and above.
           </p>
         </div>
       </section>
@@ -246,7 +246,7 @@ export default function PricingPage() {
           <PricingToggle />
           <div className="mt-8 max-w-[540px] mx-auto px-5 py-4 rounded-xl border border-[var(--brand-green-border-20)] bg-[var(--brand-green-glow-04)] text-center">
             <p className="text-[14px] text-brand-dim leading-[1.6]">
-              One price-match decision on a $80 product = Beaconmon pays for itself in the first week.
+              Beaconmon watches your competitors&apos; prices, promos, and stock around the clock, so you hear about a change in hours, not after you&apos;ve lost the sale.
             </p>
           </div>
           <p className="text-center mt-6 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">

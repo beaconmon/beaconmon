@@ -22,7 +22,7 @@ export const GET = withAuth(async (_req, { teamId }) => {
 export const POST = withAuth(async (req, { teamId, plan, role }) => {
   if (role === 'viewer') throw new ForbiddenError();
   if (plan === 'free') {
-    throw new PlanLimitError('Maintenance windows require a Pro or Business plan');
+    throw new PlanLimitError('Maintenance windows require a Starter plan or higher');
   }
 
   let body: unknown;

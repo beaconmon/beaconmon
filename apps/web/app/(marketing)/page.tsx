@@ -53,7 +53,7 @@ const SOFTWARE_SCHEMA = {
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       url: 'https://beaconmon.com/sign-up',
-      description: '100 monitors, 25 competitor monitors, AI content-diff, multi-location checks',
+      description: '100 monitors, 25 competitor monitors, AI change summaries, multi-location checks',
     },
     {
       '@type': 'Offer',
@@ -126,11 +126,11 @@ export default function LandingPage() {
             {/* Left */}
             <div>
               <h1 className="text-[clamp(42px,5.6vw,72px)] leading-[1.02] tracking-[-0.035em] font-extrabold m-0 mb-[22px]">
-                Your daily Shopify competitor brief,{' '}
-                <span className="text-brand-green-ink">written automatically.</span>
+                Know what competitors changed{' '}
+                <span className="text-brand-green-ink">before it costs you sales.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon tracks pricing changes, product launches, and content updates across every competitor you follow. One digest. Every morning at 8am.
+                Beaconmon tracks every Shopify competitor&apos;s price changes, launches, and promos, then delivers one brief every morning at 8am. No dashboard required.
               </p>
 
               <CtaForm />
@@ -183,19 +183,16 @@ export default function LandingPage() {
       {/* ====== WHAT IS BEACONMON ====== */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[780px] mx-auto px-8 max-[640px]:px-5">
-          <h2 className="text-[clamp(24px,3vw,34px)] tracking-[-0.025em] font-extrabold mb-5">Website and competitor intelligence for eCommerce stores</h2>
+          <h2 className="text-[clamp(24px,3vw,34px)] tracking-[-0.025em] font-extrabold mb-5">Competitor intelligence and store monitoring for Shopify and WooCommerce</h2>
           <div className="text-brand-dim text-[16px] leading-[1.7] space-y-4">
             <p>
-              Beaconmon is a monitoring platform built specifically for Shopify and WooCommerce store owners. It checks your store pages every 30 seconds (Scale plan) to 5 minutes (Free plan) and sends an alert within 60 seconds of a confirmed failure, before a customer notices or emails you.
+              Beaconmon is a competitor intelligence platform for Shopify and WooCommerce store owners. It tracks your competitors&apos; prices, product launches, and promotions around the clock and delivers a morning brief summarizing every move, before you lose a sale to a price change you didn&apos;t know about.
             </p>
             <p>
-              Beyond uptime, Beaconmon monitors competitor product pages, pricing pages, and homepage hero sections for content changes. When a competitor drops a price or runs a promotion, Beaconmon detects the change and notifies you immediately or includes it in your next Intelligence Digest.
+              When a competitor drops a price or runs a flash sale, Beaconmon captures the change and includes it in your Intelligence Digest, a daily email or Slack message at 8am covering every competitor move from the previous day. Growth and Scale subscribers get AI summaries of what changed and why it matters.
             </p>
             <p>
-              The Intelligence Digest is a scheduled email or Slack message summarizing every competitor move and store anomaly from the previous period. Growth and Scale plan subscribers receive a daily digest. All plans receive a weekly digest.
-            </p>
-            <p>
-              Beaconmon tracks six monitor types: HTTP uptime, SSL certificate expiry, domain expiry, TCP port status, keyword presence, and content change detection. No code changes or plugins required to get started.
+              Beaconmon also keeps an eye on your own store. If your checkout goes down or a key page changes unexpectedly, you hear about it before a customer does. No code changes or plugins required.
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[14px]">
@@ -354,12 +351,6 @@ export default function LandingPage() {
               <tbody>
                 {[
                   {
-                    feat: 'Uptime monitoring (30s)',
-                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
-                    vp: <span className="text-brand-muted">—</span>,
-                    ps: <span className="text-brand-muted">—</span>,
-                  },
-                  {
                     feat: 'Competitor price tracking',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted text-[12px]">Pages only</span>,
@@ -379,6 +370,12 @@ export default function LandingPage() {
                   },
                   {
                     feat: 'Shopify-native setup',
+                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    vp: <span className="text-brand-muted">—</span>,
+                    ps: <span className="text-brand-muted">—</span>,
+                  },
+                  {
+                    feat: 'Uptime monitoring (30s)',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted">—</span>,

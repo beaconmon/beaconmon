@@ -30,7 +30,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
   if (plan === 'free') {
     return (
       <div className="p-4">
-        <UpgradePrompt currentPlan="free" limitReached="deploy-aware monitoring" />
+        <UpgradePrompt currentPlan="free" limitReached="update-aware alerts" />
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
           <div className="flex items-center gap-2">
             <Rocket className="h-4 w-4 text-brand-amber" />
             <div>
-              <p className="text-sm font-medium text-brand-text">Deploy in progress</p>
+              <p className="text-sm font-medium text-brand-text">Update in progress</p>
               <p className="text-xs text-brand-muted">
                 Started {formatDistanceToNow(new Date(activeDeploy.startedAt), { addSuffix: true })}
                 {activeDeploy.description && ` · ${activeDeploy.description}`}
@@ -71,7 +71,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
             onClick={() => endDeploy.mutate()}
             disabled={endDeploy.isPending}
           >
-            End deploy
+            End update
           </Button>
         </div>
       )}
@@ -80,21 +80,21 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
         <div className="flex justify-end">
           <Button size="sm" onClick={() => setShowForm(true)}>
             <Rocket className="mr-1.5 h-3.5 w-3.5" />
-            Mark deploy
+            Mark an update
           </Button>
         </div>
       )}
 
       {showForm && (
         <div className="rounded-lg border border-brand-line bg-brand-surface p-4 space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">New deploy</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">New update</h3>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs text-brand-dim">Label (optional)</Label>
               <Input
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
-                placeholder="v2.3.1, hotfix"
+                placeholder="Summer sale launch, theme change"
                 className="h-8 text-sm"
               />
             </div>
@@ -111,7 +111,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
           {formError && <p className="text-xs text-brand-red">{formError}</p>}
           <div className="flex gap-2">
             <Button size="sm" onClick={handleStart} disabled={startDeploy.isPending}>
-              Start deploy
+              Start update
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowForm(false)}>
               Cancel
@@ -122,7 +122,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
 
       <div className="rounded-lg border border-brand-line bg-brand-surface">
         <div className="border-b border-brand-line px-4 py-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Deploy history</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-muted">Update history</h2>
         </div>
         {isLoading ? (
           <div className="space-y-2 p-3">
@@ -132,7 +132,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
           </div>
         ) : isError ? (
           <div className="p-6 text-center">
-            <p className="text-sm text-brand-red">Failed to load deploys.</p>
+            <p className="text-sm text-brand-red">Failed to load updates.</p>
             <Button size="sm" variant="outline" className="mt-2" onClick={() => refetch()}>
               Retry
             </Button>
@@ -140,7 +140,7 @@ export function DeploysTab({ monitorId, plan }: { monitorId: string; plan: strin
         ) : (
           <>
             {!deploys || deploys.length === 0 ? (
-              <p className="px-4 py-8 text-center text-sm text-brand-muted">No deploys recorded yet.</p>
+              <p className="px-4 py-8 text-center text-sm text-brand-muted">No updates recorded yet.</p>
             ) : (
               <div>
                 <div className="grid grid-cols-4 border-b border-brand-line px-4 py-2">

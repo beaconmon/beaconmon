@@ -11,6 +11,7 @@ import {
   Trash2,
   Bell,
   ArrowLeft,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -118,7 +119,7 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
   const multiLocationEnabled = process.env['NEXT_PUBLIC_FEATURE_MULTI_LOCATION'] === 'true';
   const hasRegionData = results.some((r) => r.region != null);
   const isContentMonitor = monitor?.type === 'content';
-  const isCompetitorMonitor = false;
+  const isCompetitorMonitor = monitor?.isCompetitor ?? false;
   const isAnomalyMonitor = (monitor?.type === 'http' || monitor?.type === 'keyword') && monitor?.anomalyDetectionEnabled;
 
   const bucketFmt =
@@ -159,6 +160,16 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               <div className="mb-1 flex items-center gap-3">
                 <h1 className="text-2xl font-semibold text-brand-text">{monitor.name}</h1>
                 <StatusBadge status={monitor.currentStatus} />
+                {monitor.isCompetitor ? (
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-teal-500/10 text-teal-600 dark:text-teal-400">
+                    <Eye className="h-3 w-3" />
+                    Competitor
+                  </span>
+                ) : monitor.type === 'ssl' || monitor.type === 'domain' || monitor.type === 'tcp' ? null : (
+                  <span className="inline-flex shrink-0 items-center rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-brand-green/10 text-brand-green-ink">
+                    Your store
+                  </span>
+                )}
               </div>
               <a
                 href={monitor.url}
@@ -199,8 +210,8 @@ export default function MonitorDetailPage({ params }: { params: Promise<{ id: st
               {[
                 { value: 'performance', label: 'Performance' },
                 ...(!isCompetitorMonitor ? [{ value: 'incidents', label: 'Incidents' }] : []),
-                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'Reliability Targets' }] : []),
-                ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Deploys' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'slo', label: 'Uptime goals' }] : []),
+                ...(!isCompetitorMonitor ? [{ value: 'deploys', label: 'Updates' }] : []),
                 ...(isContentMonitor ? [{ value: 'snapshots', label: 'Snapshots' }] : []),
                 ...(isAnomalyMonitor ? [{ value: 'anomalies', label: 'Smart Alerts' }] : []),
                 ...(multiLocationEnabled && hasRegionData ? [{ value: 'regions', label: 'Regions' }] : []),

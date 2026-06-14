@@ -213,7 +213,7 @@ function WindowForm({
         <Textarea
           value={reason}
           onChange={(e) => onChange({ reason: e.target.value })}
-          placeholder="Planned database migration, routine deploy…"
+          placeholder="Planned theme update, flash sale prep…"
           className="h-20 resize-none text-sm"
           maxLength={500}
         />

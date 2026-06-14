@@ -7,7 +7,7 @@ const PRODUCT_LINKS: [string, string][] = [
   ['/features/intelligence', 'Intelligence'],
   ['/features#status-pages', 'Status Pages'],
   ['/features#smart-alerts', 'Smart Alerts'],
-  ['/features#reliability-targets', 'Reliability Targets'],
+  ['/features#reliability-targets', 'Uptime goals'],
   ['/pricing', 'Pricing'],
   ['/changelog', 'Changelog'],
 ];

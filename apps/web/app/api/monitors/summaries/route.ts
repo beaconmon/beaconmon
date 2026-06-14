@@ -12,9 +12,13 @@ export const GET = withAuth(async (_req, { teamId, plan }) => {
 
   const summaries = await checkResultRepository.getMonitorSummaries(teamId, monitorIds, plan);
 
-  const result: Record<string, { uptime30d: number | null; recentRts: number[] }> = {};
+  const result: Record<string, { uptime30d: number | null; recentRts: number[]; lastSnapshotAt: string | null }> = {};
   for (const [id, data] of summaries) {
-    result[id] = data;
+    result[id] = {
+      uptime30d: data.uptime30d,
+      recentRts: data.recentRts,
+      lastSnapshotAt: data.lastSnapshotAt ? data.lastSnapshotAt.toISOString() : null,
+    };
   }
 
   return Response.json(result);

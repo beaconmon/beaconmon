@@ -7,7 +7,7 @@ import { NotFoundError, PlanLimitError, ValidationError } from '@/lib/api/errors
 type Params = { id: string; [key: string]: string };
 
 export const GET = withAuth<Params>(async (req, { teamId, plan }, params) => {
-  if (plan === 'free') throw new PlanLimitError('Deploy-aware monitoring requires a Pro or Business plan');
+  if (plan === 'free') throw new PlanLimitError('Update-aware alerts require a Starter plan or higher');
 
   const monitor = await monitorRepository.findById(teamId, params.id);
   if (!monitor) throw new NotFoundError();

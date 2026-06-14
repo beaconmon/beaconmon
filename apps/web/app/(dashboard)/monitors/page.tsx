@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { AlertCircle, Plus, Tag, Pause, Play, Trash2, Clock, Tag as TagIcon, X } from 'lucide-react';
+import { AlertCircle, Plus, Tag, Pause, Play, Trash2, Clock, Tag as TagIcon, X, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QueryState } from '@/components/dashboard/query-state';
 import { DiscoverEmptyState } from '@/components/monitors/discover-empty-state';
@@ -99,6 +99,73 @@ function DownBanner({
   );
 }
 
+// ─── Ownership badge ─────────────────────────────────────────────────────────
+
+function OwnershipBadge({ isCompetitor, type }: { isCompetitor: boolean; type: string }) {
+  if (isCompetitor) {
+    return (
+      <span className="inline-flex shrink-0 items-center gap-0.5 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider bg-teal-500/10 text-teal-600 dark:text-teal-400">
+        <Eye className="h-2.5 w-2.5" />
+        Competitor
+      </span>
+    );
+  }
+  // "Your store" only makes sense for page-level monitors. Infra checks
+  // (SSL, domain, TCP) are not store pages, so leave them unbadged.
+  if (type === 'ssl' || type === 'domain' || type === 'tcp') return null;
+  return (
+    <span className="inline-flex shrink-0 items-center rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider bg-brand-green/10 text-brand-green-ink">
+      Your store
+    </span>
+  );
+}
+
+// ─── Category filter tabs ─────────────────────────────────────────────────────
+
+type CategoryFilter = 'all' | 'store' | 'competitors';
+
+function CategoryTabs({
+  active,
+  counts,
+  onChange,
+}: {
+  active: CategoryFilter;
+  counts: { all: number; store: number; competitors: number };
+  onChange: (c: CategoryFilter) => void;
+}) {
+  const tabs: { key: CategoryFilter; label: string; count: number }[] = [
+    { key: 'all', label: 'All', count: counts.all },
+    { key: 'store', label: 'Your Store', count: counts.store },
+    { key: 'competitors', label: 'Competitors', count: counts.competitors },
+  ];
+  return (
+    <div className="flex items-center gap-1">
+      {tabs.map((tab) => (
+        <button
+          key={tab.key}
+          onClick={() => onChange(tab.key)}
+          className={cn(
+            'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+            active === tab.key
+              ? 'bg-brand-green/15 text-brand-green-ink'
+              : 'text-brand-muted hover:bg-brand-bg3 hover:text-brand-text'
+          )}
+        >
+          {tab.label}
+          <span
+            className={cn(
+              'rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums',
+              active === tab.key ? 'bg-brand-green/20 text-brand-green-ink' : 'bg-brand-bg3 text-brand-muted'
+            )}
+          >
+            {tab.count}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ─── Tag filter strip ────────────────────────────────────────────────────────
 
 function TagFilter({
@@ -145,7 +212,7 @@ function TagFilter({
 
 // ─── Monitor table row ───────────────────────────────────────────────────────
 
-const GRID_COLS = '32px 20px 1fr 72px 110px 100px 72px 120px';
+const GRID_COLS = '32px 20px 1fr 72px 110px 100px 72px 110px 120px';
 
 function p95Color(rts: number[], threshold?: number | null): string {
   if (rts.length === 0) return 'text-brand-muted';
@@ -203,6 +270,7 @@ function MonitorTableRow({
             <span className="truncate font-medium text-sm text-brand-text transition-colors group-hover:text-brand-green-ink">
               {monitor.name}
             </span>
+            <OwnershipBadge isCompetitor={monitor.isCompetitor} type={monitor.type} />
             {monitor.tags.length > 0 && (
               <span className="flex shrink-0 gap-1">
                 {monitor.tags.slice(0, 3).map((t) => (
@@ -241,6 +309,13 @@ function MonitorTableRow({
         {/* Uptime 30d */}
         <span className="font-mono text-sm text-brand-dim">
           {summary?.uptime30d != null ? `${summary.uptime30d}%` : '—'}
+        </span>
+
+        {/* Last change (content snapshots) */}
+        <span className="text-xs text-brand-muted">
+          {summary?.lastSnapshotAt
+            ? formatDistanceToNow(new Date(summary.lastSnapshotAt), { addSuffix: true })
+            : monitor.type === 'content' ? 'No change yet' : '—'}
         </span>
 
         {/* Last checked */}
@@ -440,25 +515,41 @@ function BulkActionBar({
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
+const ONBOARDING_KEY = 'beaconmon_onboarding_dismissed';
+
 export default function MonitorsPage() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [limitBannerDismissed, setLimitBannerDismissed] = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem(ONBOARDING_KEY) === '1';
+  });
   const monitorsQ = useMonitors({ tag: activeTag ?? undefined });
   const summariesQ = useMonitorSummaries();
   const incidentsQ = useIncidents();
   const tagsQ = useMonitorTags();
   const sessionQ = useSession();
 
-  const monitors = monitorsQ.data ?? [];
+  const allMonitors = monitorsQ.data ?? [];
   const summaries = summariesQ.data ?? {};
   const incidents = (incidentsQ.data ?? []) as IncidentWithMonitor[];
   const allTags = tagsQ.data ?? [];
   const plan = sessionQ.data?.plan ?? 'free';
   const minInterval = PLAN_LIMITS[plan].checkIntervalSeconds;
   const planMax = PLAN_LIMITS[plan].monitors;
-  const nearLimit = planMax > 0 && monitors.length >= Math.floor(planMax * 0.8);
-  const atLimit = planMax > 0 && monitors.length >= planMax;
+  const nearLimit = planMax > 0 && allMonitors.length >= Math.floor(planMax * 0.8);
+  const atLimit = planMax > 0 && allMonitors.length >= planMax;
+
+  const competitorCount = allMonitors.filter((m) => m.isCompetitor).length;
+  const storeCount = allMonitors.filter((m) => !m.isCompetitor).length;
+
+  const monitors = activeCategory === 'competitors'
+    ? allMonitors.filter((m) => m.isCompetitor)
+    : activeCategory === 'store'
+    ? allMonitors.filter((m) => !m.isCompetitor)
+    : allMonitors;
 
   const visibleIds = monitors.map((m) => m.id);
   const visibleSelectedIds = selectedIds.filter((id) => visibleIds.includes(id));
@@ -481,8 +572,8 @@ export default function MonitorsPage() {
     }
   }
 
-  const upCount = monitors.filter((m) => m.currentStatus === 'up').length;
-  const downCount = monitors.filter((m) => m.currentStatus === 'down').length;
+  const upCount = allMonitors.filter((m) => m.currentStatus === 'up').length;
+  const downCount = allMonitors.filter((m) => m.currentStatus === 'down').length;
 
   const avgUptime = (() => {
     const values = Object.values(summaries)
@@ -495,7 +586,10 @@ export default function MonitorsPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-brand-text">Monitors</h1>
+        <div>
+          <h1 className="text-2xl font-semibold text-brand-text">Monitors</h1>
+          <p className="mt-0.5 text-xs text-brand-muted">Track uptime for your store and watch for moves by competitors.</p>
+        </div>
         <Link
           href="/monitors/new"
           className="flex items-center gap-1.5 rounded-md bg-brand-green px-3 py-1.5 text-xs font-semibold text-brand-green-fg transition-colors hover:bg-brand-green/90"
@@ -505,12 +599,53 @@ export default function MonitorsPage() {
         </Link>
       </div>
 
+      {!onboardingDismissed && allMonitors.length === 0 && (
+        <div className="flex flex-col gap-3 rounded-lg border border-brand-green/30 bg-brand-green/5 px-4 py-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-brand-text">Track your store and watch your competitors</p>
+              <p className="text-xs text-brand-muted">Add your store for uptime monitoring, then add competitor sites to watch for price and promo changes.</p>
+            </div>
+            <button
+              onClick={() => {
+                setOnboardingDismissed(true);
+                localStorage.setItem(ONBOARDING_KEY, '1');
+              }}
+              aria-label="Dismiss"
+              className="shrink-0 rounded p-0.5 text-brand-muted hover:bg-brand-green/10 hover:text-brand-text transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/monitors/new"
+              className="rounded-md border border-brand-green bg-brand-green/10 px-3 py-1.5 text-xs font-medium text-brand-green-ink transition-colors hover:bg-brand-green/20"
+            >
+              Add your store
+            </Link>
+            <Link
+              href="/wire?tab=competitors"
+              className="rounded-md border border-brand-line bg-brand-surface px-3 py-1.5 text-xs font-medium text-brand-dim transition-colors hover:text-brand-text"
+            >
+              Add competitors
+            </Link>
+            <Link
+              href="/today"
+              className="rounded-md border border-brand-line bg-brand-surface px-3 py-1.5 text-xs font-medium text-brand-dim transition-colors hover:text-brand-text"
+            >
+              Check today
+            </Link>
+          </div>
+        </div>
+      )}
+
       {nearLimit && !limitBannerDismissed && (
         <div className="flex items-center justify-between gap-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <span>
             {atLimit
               ? <>You have reached your monitor limit ({planMax} monitors on the {plan} plan).</>
-              : <>You are using {monitors.length} of {planMax} monitors on the {plan} plan.</>
+              : <>You are using {allMonitors.length} of {planMax} monitors on the {plan} plan.</>
             }{' '}
             <Link href="/settings/billing" className="font-medium underline hover:no-underline">
               Upgrade your plan
@@ -527,7 +662,14 @@ export default function MonitorsPage() {
         </div>
       )}
 
-      <TagFilter tags={allTags} active={activeTag} onChange={setActiveTag} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <CategoryTabs
+          active={activeCategory}
+          counts={{ all: allMonitors.length, store: storeCount, competitors: competitorCount }}
+          onChange={(c) => { setActiveCategory(c); setSelectedIds([]); }}
+        />
+        <TagFilter tags={allTags} active={activeTag} onChange={setActiveTag} />
+      </div>
 
       <QueryState
         isLoading={monitorsQ.isLoading}
@@ -536,16 +678,32 @@ export default function MonitorsPage() {
         onRetry={() => monitorsQ.refetch()}
         skeletonRows={5}
       >
-        {monitors.length === 0 ? (
+        {allMonitors.length === 0 ? (
           <DiscoverEmptyState />
         ) : (
           <>
             {/* Down banner */}
-            <DownBanner monitors={monitors} incidents={incidents} />
+            <DownBanner monitors={allMonitors} incidents={incidents} />
+
+            {/* ICP summary banner */}
+            {competitorCount > 0 && (
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-brand-line bg-brand-surface px-4 py-3">
+                <p className="text-sm text-brand-dim">
+                  <span className="font-medium text-brand-text">{competitorCount} competitor {competitorCount === 1 ? 'site' : 'sites'}</span>
+                  {' '}being tracked{storeCount > 0 && <>, alongside <span className="font-medium text-brand-text">{storeCount} of your store{storeCount === 1 ? "'s page" : "'s pages"}</span></>}.
+                </p>
+                <Link
+                  href="/wire?tab=competitors"
+                  className="shrink-0 text-xs font-medium text-brand-green-ink transition-colors hover:text-brand-green-ink/80"
+                >
+                  Browse the Wire →
+                </Link>
+              </div>
+            )}
 
             {/* Metric cards */}
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              <MetricCard label="Total" value={monitors.length} />
+              <MetricCard label="Total" value={allMonitors.length} />
               <MetricCard label="Up" value={upCount} />
               <MetricCard label="Down" value={downCount} />
               <MetricCard
@@ -585,19 +743,28 @@ export default function MonitorsPage() {
                   30d
                 </span>
                 <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
+                  Last change
+                </span>
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
                   Last check
                 </span>
               </div>
 
-              {monitors.map((monitor) => (
-                <MonitorTableRow
-                  key={monitor.id}
-                  monitor={monitor}
-                  summary={summaries[monitor.id]}
-                  selected={selectedIds.includes(monitor.id)}
-                  onToggle={toggleOne}
-                />
-              ))}
+              {monitors.length === 0 ? (
+                <div className="px-4 py-8 text-center text-sm text-brand-muted">
+                  No {activeCategory === 'competitors' ? 'competitor' : 'store'} monitors yet.
+                </div>
+              ) : (
+                monitors.map((monitor) => (
+                  <MonitorTableRow
+                    key={monitor.id}
+                    monitor={monitor}
+                    summary={summaries[monitor.id]}
+                    selected={selectedIds.includes(monitor.id)}
+                    onToggle={toggleOne}
+                  />
+                ))
+              )}
             </div>
           </>
         )}

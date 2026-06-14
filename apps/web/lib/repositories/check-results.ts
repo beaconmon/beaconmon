@@ -60,13 +60,13 @@ export const checkResultRepository = {
     teamId: string,
     monitorIds: string[],
     plan: PlanTier
-  ): Promise<Map<string, { uptime30d: number | null; recentRts: number[] }>> {
-    const result = new Map<string, { uptime30d: number | null; recentRts: number[] }>();
+  ): Promise<Map<string, { uptime30d: number | null; recentRts: number[]; lastSnapshotAt: Date | null }>> {
+    const result = new Map<string, { uptime30d: number | null; recentRts: number[]; lastSnapshotAt: Date | null }>();
 
     if (monitorIds.length === 0) return result;
 
     for (const id of monitorIds) {
-      result.set(id, { uptime30d: null, recentRts: [] });
+      result.set(id, { uptime30d: null, recentRts: [], lastSnapshotAt: null });
     }
 
     const clampedDays = Math.min(30, PLAN_LIMITS[plan].historyDays);
@@ -106,7 +106,24 @@ export const checkResultRepository = {
       const success = Number(row.success_count);
       const uptime30d = total > 0 ? Math.round((success / total) * 10000) / 100 : null;
       const recentRts = (row.recent_rts ?? []).filter((v): v is number => v != null);
-      result.set(row.monitor_id, { uptime30d, recentRts });
+      result.set(row.monitor_id, { uptime30d, recentRts, lastSnapshotAt: null });
+    }
+
+    // Fetch the most recent content snapshot timestamp per monitor.
+    // Intentionally not clamped to the plan retention window: this powers the
+    // "Last change" column, where surfacing the most recent change ever is the
+    // useful signal. The retention clamp applies to check_results (the
+    // partitioned table) above, not to this lightweight MAX over content_snapshots.
+    interface SnapshotRow { monitor_id: string; last_snapshot_at: Date }
+    const snapshotRows = await prisma.$queryRaw<SnapshotRow[]>(Prisma.sql`
+      SELECT monitor_id, MAX(captured_at) AS last_snapshot_at
+      FROM content_snapshots
+      WHERE monitor_id IN (${idList})
+      GROUP BY monitor_id
+    `);
+    for (const row of snapshotRows) {
+      const existing = result.get(row.monitor_id);
+      if (existing) existing.lastSnapshotAt = row.last_snapshot_at;
     }
 
     return result;

@@ -102,7 +102,7 @@ const SWITCH_REASONS = [
   'You want a daily Intelligence Digest in Slack summarizing every change detected on competitor sites in plain language.',
   'You need SSL and domain expiry warnings sent 30, 14, and 7 days before expiry so a forgotten renewal never kills your checkout.',
   'You want 30-second check intervals and multi-region confirmation to eliminate false positives during high-traffic campaigns.',
-  'You want AI-summarized content diffs that tell you what changed on a page, not just that something changed.',
+  'You want AI change summaries that tell you what changed on a page, not just that something changed.',
 ];
 
 const FAQ_ITEMS = [

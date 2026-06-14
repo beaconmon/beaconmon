@@ -33,6 +33,7 @@ const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content'] as 
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
+  isCompetitor: z.boolean().optional(),
   type: z.enum(MONITOR_TYPES),
   url: z.string().optional(),
   host: z.string().optional(),
@@ -82,6 +83,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
     resolver: standardSchemaResolver(formSchema) as unknown as Resolver<MonitorFormValues>,
     defaultValues: {
       name: '',
+      isCompetitor: false,
       type: 'http',
       intervalSeconds: minInterval,
       timeoutMs: 30000,
@@ -120,6 +122,41 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
               <FormControl>
                 <Input placeholder="My website" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="isCompetitor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What are you monitoring?</FormLabel>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => field.onChange(false)}
+                  className={`flex-1 rounded-md border px-3 py-2 text-sm transition-colors ${
+                    !field.value
+                      ? 'border-brand-green bg-brand-green/10 text-brand-green-ink font-medium'
+                      : 'border-brand-line bg-brand-surface text-brand-muted hover:text-brand-dim'
+                  }`}
+                >
+                  My store
+                </button>
+                <button
+                  type="button"
+                  onClick={() => field.onChange(true)}
+                  className={`flex-1 rounded-md border px-3 py-2 text-sm transition-colors ${
+                    field.value
+                      ? 'border-teal-600/40 bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium'
+                      : 'border-brand-line bg-brand-surface text-brand-muted hover:text-brand-dim'
+                  }`}
+                >
+                  A competitor
+                </button>
+              </div>
               <FormMessage />
             </FormItem>
           )}

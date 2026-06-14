@@ -13,7 +13,7 @@ const generateReportSchema = z.object({
 
 export const POST = withAuth(async (req, { teamId, role, plan }) => {
   if (role === 'viewer') throw new ForbiddenError();
-  if (plan === 'free') throw new PlanLimitError('Report generation requires a Pro or Business plan');
+  if (plan === 'free') throw new PlanLimitError('Report generation requires a Starter plan or higher');
 
   let body: unknown;
   try {

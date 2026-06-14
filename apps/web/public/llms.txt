@@ -1,25 +1,34 @@
 # Beaconmon
 
-> Beaconmon is an uptime, performance, and competitor monitoring platform built for ecommerce stores, freelancers, and agencies.
+> Beaconmon is competitor intelligence for Shopify merchants: track competitor prices, promos, product launches, and stockouts, and get a daily brief on the moves that actually threaten your revenue. Uptime and SSL monitoring are included at no extra cost.
 
-Beaconmon checks your websites every 30 seconds and sends instant alerts when something breaks: downtime, slow responses, SSL certificate expiry, domain expiry, unexpected content changes, or competitor price drops. It is designed for freelancers, agencies, and small ecommerce businesses who need to stay ahead of site issues and track what competitors are doing.
+Beaconmon is built for DTC brands ($50k-$1M/mo GMV) in commoditized niches, coffee, supplements, skincare, apparel, pet, candles, who compete on price, promo timing, and assortment against a handful of named rivals they already watch by hand. It automates that watching: checking Shopify catalogs hourly, falling back to tracked product pages for non-Shopify competitors, and compiling changes into a daily Intelligence Digest so merchants know what to respond to and what to ignore. Uptime, SSL, and domain monitoring are included in every plan as a retention layer.
 
 ## What Beaconmon does
 
-- **HTTP uptime monitoring** — checks every 30 seconds (Scale plan) or 1 minute (Starter/Growth), alerts on non-2xx responses or slow load times
+### Competitor intelligence (primary)
+
+- **Competitor price tracking** — monitors Shopify competitors via products.json (hourly, full catalog); falls back to JSON-LD on tracked product pages for non-Shopify or blocked competitors; alerts on price drops on products that overlap with your catalog
+- **Competitor promo and copy monitoring** — detects sale banners, discount copy, hero image changes, and promotional messaging at any CSS selector on a competitor page
+- **Competitor product launch tracking** — weekly sitemap diffs surface new SKUs and new collections; product_added events fire as soon as a launch is detected
+- **Competitor stockout alerts** — tracks out-of-stock signals on competitor product pages; flags stockout opportunities when a competitor goes OOS on a product you carry
+- **Intelligence Digest** — daily (Growth and Scale) or weekly (Free and Starter) digest summarizing competitor moves ranked by significance; highlights price cuts, new launches, promo changes, and stockouts across all tracked rivals
+- **Decision Layer** — classifies each competitor event as ignore, match, counter, or leapfrog based on catalog overlap and price position; removes the need to manually triage every change
+- **Coverage tiers** — honest about data quality; `full_catalog` (Shopify products.json), `selected_products` (up to 50 tracked hero product pages), or `limited` (tracked pages only); shown clearly in the UI and digests so merchants know how complete the picture is
+- **Smart Setup** — detects your platform (Shopify, WooCommerce) and proposes a competitor monitor bundle automatically; template-based on Free and Starter, AI-powered on Growth and Scale
+- **AI change summaries** — plain-English summaries of exactly what changed on a competitor page (price, stock, copy, promo); Growth and Scale only
+
+### Uptime and site health (included)
+
+- **HTTP uptime monitoring** — checks every 30 seconds (Scale) or 1 minute (Starter/Growth), alerts on non-2xx responses or slow load times
 - **SSL certificate monitoring** — tiered warnings at 30, 14, and 7 days before expiry
 - **Domain expiry tracking** — WHOIS-based alerts at 30, 14, and 7 days before renewal
 - **TCP port monitoring** — verifies any port is open and accepting connections
-- **Keyword monitoring** — confirms a word or phrase is (or isn't) present in the page body
-- **Content change detection** — notifies when any HTML content changes at a CSS selector; tracks competitor prices, stock status, and copy changes; available from Starter
-- **Competitor monitoring** — track competitor pricing pages and product listings; get alerts the moment anything changes; all plans include at least one competitor monitor
-- **Intelligence Digest** — weekly on Free and Starter; daily + weekly on Growth and Scale; summarizes uptime trends, anomalies, and competitor activity across all your monitors
-- **Smart Setup** — detects your platform (Shopify, WooCommerce, etc.) and proposes a monitor bundle automatically; template-based on Free and Starter, AI-powered on Growth and Scale
-- **AI content-diff** — plain-English summaries of exactly what changed on a competitor page (price, stock, copy); Growth and Scale only
+- **Keyword monitoring** — confirms a word or phrase is (or is not) present in the page body
 - **Smart Alerts** — statistical anomaly detection that fires only when something is genuinely wrong, not on every blip; Growth and Scale only
-- **Deploy-aware alerts** — suppresses false positives during known deploy windows; Growth and Scale only
-- **Reliability Targets** — set uptime and response-time SLO targets per monitor and track compliance over time; Growth and Scale only
-- **Multi-region checks** — verify your site from 5 geographic regions simultaneously; Growth and Scale only
+- **Update-aware alerts** — suppresses false positives while you push your own store or site changes; all paid plans
+- **Uptime goals** — set uptime and response-time targets per monitor and track compliance over time; all paid plans (1 on Starter, unlimited on Growth and Scale)
+- **Global checks** — verify your site from 5 geographic regions simultaneously; Growth and Scale only
 
 ## Alert channels
 
@@ -29,12 +38,16 @@ Email, Slack, webhook. All paid plans support unlimited alert channels.
 
 Every plan includes public status pages showing 90-day uptime history, active incidents, and incident history. Custom domains supported.
 
+## Who Beaconmon is for
+
+Shopify merchants in commoditized niches (coffee, supplements, skincare, apparel, pet, candles) at $50k-$1M/mo GMV who compete on price and promo timing against a handful of named rivals. Also works for WooCommerce stores and merchants who track competitors that are not on Shopify. Not designed for large enterprise retailers, agencies managing dozens of unrelated clients, or businesses where conversion analytics or revenue attribution is the primary need.
+
 ## Pricing
 
 - **Free** — $0/month — 10 monitors, 5-minute checks, 1 competitor monitor, weekly Intelligence Digest, Template Smart Setup, 1 status page, 7-day history, email alerts; no credit card required
-- **Starter** — $29/month (or $23/month billed annually) — 25 monitors, 1-minute checks, 5 competitor monitors, weekly Intelligence Digest, Template Smart Setup, content monitoring, maintenance windows, 3 status pages, 3 team members, 30-day history, Slack + webhook alerts
-- **Growth** — $79/month (or $63/month billed annually) — 100 monitors, 1-minute checks, 25 competitor monitors, daily + weekly Intelligence Digest, AI content-diff, Smart Alerts, Deploy-aware alerts, Reliability Targets, AI Smart Setup, 5-region checks, 10 status pages, 10 team members, 90-day history
-- **Scale** — $199/month (or $159/month billed annually) — unlimited monitors, 30-second checks, unlimited competitor monitors, daily + weekly Intelligence Digest, all AI features, 5-region checks, unlimited status pages, unlimited team members, 365-day history, priority support
+- **Starter** — $29/month (or $23/month billed annually) — 25 monitors, 1-minute checks, 5 competitor monitors, weekly Intelligence Digest, Template Smart Setup, content monitoring, maintenance windows, update-aware alerts, 1 uptime goal, 3 status pages, 3 team members, 30-day history, Slack + webhook alerts
+- **Growth** — $79/month (or $63/month billed annually) — 100 monitors, 1-minute checks, 25 competitor monitors, daily + weekly Intelligence Digest, AI change summaries, Smart Alerts, Update-aware alerts, Uptime goals, AI Smart Setup, global checks (5 regions), 10 status pages, 10 team members, 90-day history
+- **Scale** — $199/month (or $159/month billed annually) — unlimited monitors, 30-second checks, unlimited competitor monitors, daily + weekly Intelligence Digest, all AI features, global checks (5 regions), unlimited status pages, unlimited team members, 365-day history, priority support
 
 All plans include a 14-day Growth trial with no credit card required.
 
@@ -73,21 +86,21 @@ All plans include a 14-day Growth trial with no credit card required.
 
 ## How Beaconmon compares to alternatives
 
-**vs Distill** — Distill is a browser extension for manual page watching. Beaconmon is a hosted monitoring service with scheduled checks, team alerting, and a daily Intelligence Digest. Beaconmon runs checks automatically without a browser tab open and routes alerts to email, Slack, or webhook.
+**vs Prisync** — Prisync scrapes product prices at scale for large retail teams. Beaconmon tracks the specific competitor pages and hero SKUs a Shopify merchant actually cares about, pairs the price data with promo and launch signals, and compiles everything into a daily digest with a decision recommendation (ignore/match/counter/leapfrog). Uptime and SSL monitoring are included in every plan.
 
-**vs Hexowatch** — Hexowatch monitors websites for visual, content, and code changes. Beaconmon is purpose-built for ecommerce: it classifies competitor changes by type (price drop, new product, copy change) and compiles them into a daily digest. Beaconmon also includes uptime monitoring and SSL/domain expiry alerts in every plan.
+**vs Distill** — Distill is a browser extension for manual page watching. Beaconmon is a hosted service that runs checks automatically, routes alerts to email, Slack, or webhook, and assembles changes into a daily Intelligence Digest with significance scoring. No browser tab required.
 
-**vs Prisync** — Prisync is a dedicated competitor price intelligence tool that scrapes product prices at scale. Beaconmon tracks competitor pages as content monitors using CSS selectors, which works for any public page without requiring a structured product feed. Beaconmon pairs competitor tracking with uptime monitoring, SSL/domain expiry, and a daily Intelligence Digest in one platform.
+**vs Hexowatch** — Hexowatch monitors websites for visual, content, and code changes across many categories. Beaconmon is purpose-built for ecommerce: it classifies competitor changes by type (price drop, new product, promo, stockout), ranks them by relevance to your catalog, and compiles them into a daily digest. Uptime and SSL monitoring are included in every plan.
 
-**vs Visualping** — Visualping detects visual changes on web pages using screenshot comparison. Beaconmon uses HTML content diffing at a CSS selector level, which means changes are attributed to specific elements (price, stock status, hero copy) rather than a pixel diff. Beaconmon includes uptime monitoring, SSL/domain monitoring, and an automated daily brief.
+**vs Visualping** — Visualping detects visual changes using screenshot comparison. Beaconmon uses HTML content diffing at a CSS selector level so changes are attributed to specific elements (price, stock status, hero copy) rather than a pixel diff. Includes uptime monitoring and an automated daily brief.
 
-**vs UptimeRobot** — UptimeRobot is a general-purpose uptime monitoring tool. Beaconmon adds ecommerce-specific competitor intelligence, content change detection, and a daily digest of competitor moves on top of the same core uptime checks.
+**vs UptimeRobot** — UptimeRobot is a general-purpose uptime tool. Beaconmon adds Shopify-first competitor intelligence: catalog monitoring, promo detection, launch tracking, stockout alerts, and a daily digest, on top of the same core uptime checks.
 
-**vs Pingdom** — Pingdom focuses on uptime and performance monitoring for large sites. Beaconmon is optimized for small ecommerce businesses and adds competitor tracking, content change detection, and Intelligence Digest features that Pingdom does not offer.
+**vs Pingdom** — Pingdom focuses on uptime and performance monitoring for large sites and engineering teams. Beaconmon is optimized for Shopify merchants and adds competitor price, promo, and launch tracking with a daily digest that Pingdom does not offer.
 
-**vs Better Uptime** — Better Uptime offers on-call scheduling and incident management alongside uptime monitoring. Beaconmon does not do on-call routing but adds competitor intelligence and content monitoring tailored to ecommerce use cases.
+**vs Better Uptime** — Better Uptime offers on-call scheduling and incident management. Beaconmon does not do on-call routing but adds Shopify competitor intelligence and content monitoring tailored to ecommerce merchants.
 
-**vs StatusCake** — StatusCake is a general-purpose uptime and SSL monitoring tool. Beaconmon adds ecommerce competitor intelligence, content change detection, and daily digests to the same foundation.
+**vs StatusCake** — StatusCake is a general-purpose uptime and SSL tool. Beaconmon adds Shopify-first competitor intelligence, content change detection, and daily digests to the same foundation.
 
 ## License
 
@@ -103,4 +116,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-06-09
+2026-06-14
