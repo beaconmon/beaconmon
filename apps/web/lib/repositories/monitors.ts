@@ -217,6 +217,7 @@ export const monitorRepository: {
       where: { id: monitorId, teamId, deletedAt: null },
       data: {
         ...(data.name !== undefined && { name: data.name }),
+        ...(data.isCompetitor !== undefined && { isCompetitor: data.isCompetitor }),
         ...(data.url !== undefined && { url: data.url }),
         ...(data.type !== undefined && { type: data.type }),
         ...(data.intervalSeconds !== undefined && { intervalSeconds: data.intervalSeconds }),

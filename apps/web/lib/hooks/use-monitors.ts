@@ -8,6 +8,7 @@ import type { CreateMonitorInput, UpdateMonitorInput } from '@/lib/validations/m
 export interface MonitorSummary {
   uptime30d: number | null;
   recentRts: number[];
+  lastSnapshotAt: string | null;
 }
 
 export function useMonitorSummaries() {

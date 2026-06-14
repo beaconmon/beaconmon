@@ -60,7 +60,7 @@
     "semantic_hash": "97e6a5d858ebd7f3ca386efcdc39612b"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/alert-channels/page.tsx": {
-    "mtime": 1780132581.4897351,
+    "mtime": 1781433783.6843324,
     "ast_hash": "4c998a4727008e10978dc33bcd90031d",
     "semantic_hash": "4c998a4727008e10978dc33bcd90031d"
   },
@@ -90,13 +90,13 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/monitors/[id]/edit/page.tsx": {
-    "mtime": 1779556857.7344992,
-    "ast_hash": "59461117009dd7c5ff0463c824115a1b",
-    "semantic_hash": "59461117009dd7c5ff0463c824115a1b"
+    "mtime": 1781433812.8627088,
+    "ast_hash": "11403cd858d291421cf675a38f4b24c9",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/monitors/[id]/page.tsx": {
-    "mtime": 1781421372.8298588,
-    "ast_hash": "4b5157c3ad4cd6061389abece02fde60",
+    "mtime": 1781433009.8966029,
+    "ast_hash": "50909e1b86f05495d720767bbece8195",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/monitors/new/page.tsx": {
@@ -105,9 +105,9 @@
     "semantic_hash": "b87fb0c5b5eadd74b88654954adb8dea"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/monitors/page.tsx": {
-    "mtime": 1779570026.8090723,
-    "ast_hash": "bb4c776ea146a7802bab2aeeb584a68f",
-    "semantic_hash": "bb4c776ea146a7802bab2aeeb584a68f"
+    "mtime": 1781433805.6474733,
+    "ast_hash": "dd1202bd4f9c225b205aec2c3ba87955",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/reports/page.tsx": {
     "mtime": 1779570026.809266,
@@ -115,9 +115,9 @@
     "semantic_hash": "4d7a59e3160eec8623968962274405f0"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/settings/billing/page.tsx": {
-    "mtime": 1780256499.9110854,
-    "ast_hash": "e6f43a9d766a411153022323fa4065e4",
-    "semantic_hash": "e6f43a9d766a411153022323fa4065e4"
+    "mtime": 1781433145.7967381,
+    "ast_hash": "c0bb1382cae835252e99326a1151f347",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/settings/general/page.tsx": {
     "mtime": 1779297072.4523456,
@@ -515,9 +515,9 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/monitors/summaries/route.ts": {
-    "mtime": 1777030619.0611537,
-    "ast_hash": "9f9f3b57d799bdcec8d5c7638bdee5fd",
-    "semantic_hash": "9f9f3b57d799bdcec8d5c7638bdee5fd"
+    "mtime": 1781433068.4062703,
+    "ast_hash": "3d9596ba992ce5bd95baa76aea7642a1",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/monitors/tags/route.ts": {
     "mtime": 1777658180.3731291,
@@ -810,9 +810,9 @@
     "semantic_hash": "df42ad6dc0981acbe59a1f24b38ff292"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/monitors/monitor-form.tsx": {
-    "mtime": 1779432919.4528723,
-    "ast_hash": "635903c4a8db8a9796a3df66b9c03838",
-    "semantic_hash": "635903c4a8db8a9796a3df66b9c03838"
+    "mtime": 1781433034.1249952,
+    "ast_hash": "e75338afeac11bed27c6554ec5ac3a9d",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/monitors/settings/advanced-tab.tsx": {
     "mtime": 1779556857.762857,
@@ -1250,9 +1250,9 @@
     "semantic_hash": "3ed38c393c0368aeb6399e93ac7aaaea"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/hooks/use-monitors.ts": {
-    "mtime": 1777658180.3760254,
-    "ast_hash": "d4447f049bcca986c022177d9b7583b3",
-    "semantic_hash": "d4447f049bcca986c022177d9b7583b3"
+    "mtime": 1781433072.6969829,
+    "ast_hash": "74545e468f4cb827fdd74c2261b89ca1",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/hooks/use-notification-preferences.ts": {
     "mtime": 1777972400.2946377,
@@ -1335,9 +1335,9 @@
     "semantic_hash": "8e8b7fbcfe9dd303c40aaa9b7b0e14b5"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/repositories/check-results.ts": {
-    "mtime": 1778686109.8204896,
-    "ast_hash": "4cee2e7851a3ac38a26a693c44061e22",
-    "semantic_hash": "4cee2e7851a3ac38a26a693c44061e22"
+    "mtime": 1781433824.0098445,
+    "ast_hash": "b0d9c57a49145b45f164e99cad9c4e75",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/repositories/competitors.ts": {
     "mtime": 1781253217.5440269,
@@ -1385,8 +1385,8 @@
     "semantic_hash": "05d0cbf04a45c333b2c3fdd04338f589"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/repositories/monitors.ts": {
-    "mtime": 1780818048.6464572,
-    "ast_hash": "f8ab2ee4120c15c4d7ff7ce768a65bde",
+    "mtime": 1781433817.8290486,
+    "ast_hash": "8396cd4a87777b07ae36860f02aacf79",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/repositories/notification-preferences.ts": {
@@ -2895,8 +2895,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/monitors/tabs/SloTab.tsx": {
-    "mtime": 1781421388.1307075,
-    "ast_hash": "e624f1d8e42ea54e7657328b7da44958",
+    "mtime": 1781430165.7853668,
+    "ast_hash": "ce8b040bd5f92eea1064ffa30586a4f1",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/monitors/tabs/SnapshotsTab.tsx": {
@@ -3185,8 +3185,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/scripts/frame-screenshot.ts": {
-    "mtime": 1781420926.754624,
-    "ast_hash": "b5ad47811e35fee9a4b082a7bd002665",
+    "mtime": 1781431960.5505722,
+    "ast_hash": "e658b9a16b0a4c4485d97e4eaa5bdcb8",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/scripts/make-demo.sh": {

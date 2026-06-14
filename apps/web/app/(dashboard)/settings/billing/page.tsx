@@ -288,7 +288,7 @@ export default function BillingPage() {
             ) : plan === 'growth' ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Scale for unlimited monitors, 30-second checks, and 365-day history.
+                  Upgrade to Scale for agencies tracking 50+ competitor sites across clients. Unlimited monitors, 30-second checks, and 365-day history.
                   {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['scale']?.amount} (${ANNUAL_PRICES['scale']?.monthly})`}
                   {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['scale']}`}
                 </p>
@@ -311,7 +311,7 @@ export default function BillingPage() {
             ) : plan === 'starter' ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Growth for 100 monitors, 1-minute checks, and 90-day history.
+                  Upgrade to Growth to track 5 to 10 competitor sites alongside your store. 100 monitors, 1-minute checks, and 90-day history.
                   {selectedPeriod === 'annual' && ` ${ANNUAL_PRICES['growth']?.amount} (${ANNUAL_PRICES['growth']?.monthly})`}
                   {selectedPeriod === 'monthly' && ` ${MONTHLY_PRICES['growth']}`}
                 </p>
@@ -337,7 +337,7 @@ export default function BillingPage() {
             ) : (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Starter for 25 monitors, 1-minute checks, and 30-day history.
+                  Upgrade to Starter to monitor your store and track your first competitors. 25 monitors, 1-minute checks, and 30-day history.
                 </p>
                 <div className="flex gap-2 flex-wrap">
                   <Button disabled={!fsReady} onClick={() => handleUpgrade('starter')}>

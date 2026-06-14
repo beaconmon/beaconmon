@@ -24,6 +24,7 @@ type Tab = typeof TABS[number];
 function toFormValues(monitor: MonitorRow): Partial<MonitorFormValues> {
   const base: Partial<MonitorFormValues> = {
     name: monitor.name,
+    isCompetitor: monitor.isCompetitor,
     type: monitor.type as MonitorFormValues['type'],
     intervalSeconds: monitor.intervalSeconds,
     timeoutMs: monitor.timeoutMs,
@@ -54,6 +55,7 @@ function toFormValues(monitor: MonitorRow): Partial<MonitorFormValues> {
 function buildApiPayload(data: MonitorFormValues): UpdateMonitorInput {
   const base = {
     name: data.name,
+    isCompetitor: data.isCompetitor,
     type: data.type,
     intervalSeconds: data.intervalSeconds,
     timeoutMs: data.timeoutMs,
