@@ -226,8 +226,8 @@ async function main() {
   const png = Buffer.from(await response.arrayBuffer());
   writeFileSync(outPath, png);
 
-  console.log(`Framed ${srcW}x${srcH} screenshot -> ${canvasW}x${canvasH}`);
-  console.log(`Wrote ${outPath} (${(png.length / 1024).toFixed(0)} KB)`);
+  console.warn(`Framed ${srcW}x${srcH} screenshot -> ${canvasW}x${canvasH}`);
+  console.warn(`Wrote ${outPath} (${(png.length / 1024).toFixed(0)} KB)`);
 }
 
 main().catch((err) => {
