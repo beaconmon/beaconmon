@@ -18,6 +18,10 @@ const { worker } = createManagedWorker<CatalogSyncJob>({
   workerName: 'shopify-feed',
   connection,
   concurrency: 3,
+  // Catalog sync can take up to 10 minutes for large feeds. Lock must exceed
+  // worst-case duration so BullMQ renewal never races the expiry.
+  lockDuration: 15 * 60 * 1000,
+  maxStalledCount: 2,
   logger,
   processor: async (job) => {
     const { competitorId, domain, mode } = job.data;

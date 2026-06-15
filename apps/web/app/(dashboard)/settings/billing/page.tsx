@@ -41,9 +41,9 @@ declare global {
 
 const PLAN_DISPLAY: Record<string, { label: string; color: string }> = {
   free:    { label: 'Free',    color: 'bg-brand-bg3 text-brand-dim border-brand-line' },
-  starter: { label: 'Starter', color: 'bg-sky-950/60 text-sky-300 border-sky-800/50' },
-  growth:  { label: 'Growth',  color: 'bg-blue-950/60 text-blue-300 border-blue-800/50' },
-  scale:   { label: 'Scale',   color: 'bg-purple-950/60 text-purple-300 border-purple-800/50' },
+  starter: { label: 'Starter', color: 'bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800/50' },
+  growth:  { label: 'Growth',  color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50' },
+  scale:   { label: 'Scale',   color: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/50' },
 };
 
 const ANNUAL_PRICES: Record<string, { amount: string; monthly: string }> = {

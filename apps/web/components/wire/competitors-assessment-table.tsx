@@ -30,7 +30,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
       }}
     >
       <div className="hidden border-b border-brand-line px-4 py-2.5 sm:flex sm:items-center sm:gap-4">
-        <span className="w-[220px] font-mono text-[9px] uppercase tracking-[0.12em] text-brand-muted">
+        <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand-muted">
           Competitor
         </span>
         <span className="flex-1 font-mono text-[9px] uppercase tracking-[0.12em] text-brand-muted">
@@ -58,7 +58,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
                   opacity: silent ? 0.75 : 1,
                 }}
               >
-                <div className="flex w-full items-center gap-3 sm:w-[220px]">
+                <div className="flex w-full items-center gap-3 sm:w-auto sm:shrink-0">
                   <CompetitorAvatar
                     name={r.competitor.name}
                     size={36}
@@ -81,7 +81,7 @@ export function CompetitorsAssessmentTable({ rollups }: CompetitorsAssessmentTab
                         </span>
                       )}
                     </div>
-                    <div className="mt-0.5 flex items-center gap-2">
+                    <div className="mt-0.5 flex min-w-0 items-center gap-2">
                       <span className="truncate font-mono text-[10.5px] text-brand-muted">
                         {r.competitor.domain}
                       </span>

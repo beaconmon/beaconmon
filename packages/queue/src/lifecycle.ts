@@ -20,6 +20,8 @@ export interface ManagedWorkerOptions<T> {
   logger: SimpleLogger;
   onShutdown?: () => Promise<void>;
   drainTimeoutMs?: number;
+  lockDuration?: number;
+  maxStalledCount?: number;
 }
 
 export function createManagedWorker<T>(opts: ManagedWorkerOptions<T>): { worker: Worker<T> } {
@@ -32,12 +34,19 @@ export function createManagedWorker<T>(opts: ManagedWorkerOptions<T>): { worker:
     logger,
     onShutdown,
     drainTimeoutMs = DEFAULT_DRAIN_TIMEOUT_MS,
+    lockDuration,
+    maxStalledCount,
   } = opts;
 
   const heartbeatKey = `worker:heartbeat:${workerName}`;
   const service = `${workerName}-worker`;
 
-  const worker = new Worker<T>(queueName, processor, { connection, concurrency });
+  const worker = new Worker<T>(queueName, processor, {
+    connection,
+    concurrency,
+    ...(lockDuration !== undefined && { lockDuration }),
+    ...(maxStalledCount !== undefined && { maxStalledCount }),
+  });
 
   // Write immediate heartbeat on startup
   connection.set(heartbeatKey, new Date().toISOString(), 'EX', 120).catch(() => {});
