@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import { WelcomeBanner } from '@/components/dashboard/welcome-banner';
 import { MorningBriefing } from '@/components/dashboard/morning-briefing';
 import { BusinessStatStrip } from '@/components/dashboard/business-stat-strip';
 import { CommandCenter } from '@/components/dashboard/command-center';
@@ -164,6 +165,8 @@ export function TodayPageClient() {
 
   return (
     <div className="space-y-5">
+      <WelcomeBanner />
+
       <MorningBriefing
         scenario={scenario}
         headline={headline}

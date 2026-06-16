@@ -9,6 +9,7 @@ import { intelligenceDigestTask } from './intelligence-digest.js';
 import { monitoringRunPruneTask } from './monitoring-run-prune.js';
 import { lifecycleEmailsTask } from './lifecycle-emails.js';
 import { trialEndEnforceTask } from './trial-end-enforce.js';
+import { staleSyncWatchdogTask } from './stale-sync-watchdog.js';
 import type { SchedulerTask } from './types.js';
 
 export const tasks: SchedulerTask[] = [
@@ -23,4 +24,5 @@ export const tasks: SchedulerTask[] = [
   monitoringRunPruneTask,
   lifecycleEmailsTask,
   trialEndEnforceTask,
+  staleSyncWatchdogTask,
 ];

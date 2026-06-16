@@ -39,11 +39,11 @@ declare global {
   }
 }
 
-const PLAN_DISPLAY: Record<string, { label: string; color: string }> = {
-  free:    { label: 'Free',    color: 'bg-brand-bg3 text-brand-dim border-brand-line' },
-  starter: { label: 'Starter', color: 'bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800/50' },
-  growth:  { label: 'Growth',  color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50' },
-  scale:   { label: 'Scale',   color: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/50' },
+const PLAN_DISPLAY: Record<string, { label: string; color: string; useCase: string }> = {
+  free:    { label: 'Free',    color: 'bg-brand-bg3 text-brand-dim border-brand-line', useCase: 'Monitor your store and try out competitor tracking.' },
+  starter: { label: 'Starter', color: 'bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800/50', useCase: 'Monitor your store and track your first competitors.' },
+  growth:  { label: 'Growth',  color: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50', useCase: 'Perfect for tracking 5-10 competitor sites plus your store.' },
+  scale:   { label: 'Scale',   color: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/50', useCase: 'For agencies tracking 50+ competitor sites across clients.' },
 };
 
 const ANNUAL_PRICES: Record<string, { amount: string; monthly: string }> = {
@@ -263,6 +263,7 @@ export default function BillingPage() {
             {subscriptionError && (
               <p className="text-sm text-red-500">Failed to load subscription details. Please refresh the page.</p>
             )}
+            <p className="text-sm text-foreground">{planDisplay.useCase}</p>
             <div className="text-sm text-muted-foreground space-y-1">
               <p>Check interval: every {limits.checkIntervalSeconds}s minimum</p>
               <p>History retention: {limits.historyDays} days</p>

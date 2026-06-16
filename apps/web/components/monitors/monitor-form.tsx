@@ -29,7 +29,7 @@ import { Switch } from '@/components/ui/switch';
 import { AlertCircle, X } from 'lucide-react';
 import { useState, type KeyboardEvent } from 'react';
 
-const MONITOR_TYPES = ['http', 'ssl', 'domain', 'tcp', 'keyword', 'content'] as const;
+const MONITOR_TYPES = ['content', 'keyword', 'http', 'ssl', 'domain', 'tcp'] as const;
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
@@ -84,7 +84,7 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
     defaultValues: {
       name: '',
       isCompetitor: false,
-      type: 'http',
+      type: 'content',
       intervalSeconds: minInterval,
       timeoutMs: 30000,
       anomalyDetectionEnabled: false,
@@ -175,12 +175,12 @@ export function MonitorForm({ defaultValues, plan, onSubmit, isSubmitting, error
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
+                  <SelectItem value="content">Content — HTML change detection</SelectItem>
+                  <SelectItem value="keyword">Keyword — text present/absent</SelectItem>
                   <SelectItem value="http">HTTP — status code &amp; response time</SelectItem>
                   <SelectItem value="ssl">SSL — certificate expiry</SelectItem>
                   <SelectItem value="domain">Domain — WHOIS expiry</SelectItem>
                   <SelectItem value="tcp">TCP — port availability</SelectItem>
-                  <SelectItem value="keyword">Keyword — text present/absent</SelectItem>
-                  <SelectItem value="content">Content — HTML change detection</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
