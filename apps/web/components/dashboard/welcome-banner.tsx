@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { X, Store, Users, CalendarCheck } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -9,19 +9,14 @@ import { Button } from '@/components/ui/button';
 const STORAGE_KEY = 'beaconmon_welcome_dismissed';
 
 export function WelcomeBanner() {
-  // Start hidden so the server render and first client render match. We only
-  // reveal the banner after reading localStorage on the client.
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
     try {
-      if (localStorage.getItem(STORAGE_KEY) !== '1') {
-        setVisible(true);
-      }
+      return localStorage.getItem(STORAGE_KEY) !== '1';
     } catch {
-      // localStorage unavailable (private mode, etc.); skip the banner.
+      return false;
     }
-  }, []);
+  });
 
   function dismiss() {
     try {
