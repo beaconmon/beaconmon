@@ -139,23 +139,24 @@ function CategoryTabs({
     { key: 'competitors', label: 'Competitors', count: counts.competitors },
   ];
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           onClick={() => onChange(tab.key)}
+          aria-pressed={active === tab.key}
           className={cn(
-            'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+            'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors',
             active === tab.key
-              ? 'bg-brand-green/15 text-brand-green-ink'
-              : 'text-brand-muted hover:bg-brand-bg3 hover:text-brand-text'
+              ? 'border-brand-green/40 bg-brand-green/15 text-brand-green-ink'
+              : 'border-brand-line bg-brand-bg3 text-brand-muted hover:border-brand-green/30 hover:text-brand-text'
           )}
         >
           {tab.label}
           <span
             className={cn(
               'rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums',
-              active === tab.key ? 'bg-brand-green/20 text-brand-green-ink' : 'bg-brand-bg3 text-brand-muted'
+              active === tab.key ? 'bg-brand-green/25 text-brand-green-ink' : 'bg-brand-surface text-brand-muted'
             )}
           >
             {tab.count}
@@ -311,11 +312,13 @@ function MonitorTableRow({
           {summary?.uptime30d != null ? `${summary.uptime30d}%` : '—'}
         </span>
 
-        {/* Last change (content snapshots) */}
+        {/* Last change (content snapshots) — competitor rows only */}
         <span className="text-xs text-brand-muted">
-          {summary?.lastSnapshotAt
-            ? formatDistanceToNow(new Date(summary.lastSnapshotAt), { addSuffix: true })
-            : monitor.type === 'content' ? 'No change yet' : '—'}
+          {monitor.isCompetitor
+            ? summary?.lastSnapshotAt
+              ? formatDistanceToNow(new Date(summary.lastSnapshotAt), { addSuffix: true })
+              : 'Never'
+            : '—'}
         </span>
 
         {/* Last checked */}

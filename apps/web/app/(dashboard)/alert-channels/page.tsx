@@ -33,6 +33,11 @@ const TYPE_LABELS: Record<string, string> = {
   webhook: 'Webhook',
 };
 
+// Event-type subscriptions are not stored per channel today. Every active
+// channel receives all categories, so these are shown as static informational
+// badges describing what each channel can deliver.
+const EVENT_TYPE_LABELS = ['Incidents', 'Competitor Changes', 'Smart Alerts'];
+
 const SLACK_MESSAGES: Record<string, string> = {
   slack_connected: 'Slack channel connected successfully.',
   slack_cancelled: 'Slack connection was cancelled.',
@@ -199,7 +204,21 @@ export default function AlertChannelsPage() {
               <TableBody>
                 {channels?.map((channel) => (
                   <TableRow key={channel.id} className="border-brand-line hover:bg-brand-bg3/40 transition-colors duration-150">
-                    <TableCell className="font-medium text-sm text-brand-text">{channel.name}</TableCell>
+                    <TableCell className="font-medium text-sm text-brand-text">
+                      <div className="flex flex-col gap-1.5">
+                        <span>{channel.name}</span>
+                        <div className="flex flex-wrap gap-1">
+                          {EVENT_TYPE_LABELS.map((label) => (
+                            <span
+                              key={label}
+                              className="inline-flex items-center rounded border border-brand-line bg-brand-bg3 px-1.5 py-0.5 text-[10px] font-medium text-brand-muted"
+                            >
+                              {label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <span className="inline-flex items-center rounded border border-brand-line bg-brand-bg3 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-brand-dim">
                         {TYPE_LABELS[channel.type] ?? channel.type}

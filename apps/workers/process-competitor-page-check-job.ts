@@ -67,12 +67,16 @@ export async function processCompetitorPageCheckJob(
     });
 
     if (!result.success || result.content === null) {
+      // The repository computes nextCheckAt from the new failure count, applying
+      // exponential backoff (and a steeper floor for hard WAF blocks) so a page that
+      // keeps failing is not rechecked at its normal interval forever.
       const consecutiveFailures = await competitorPageRepository.recordCheckFailure(competitorPageId, {
         lastCheckedAt: now,
-        nextCheckAt: computeNextCheckAt(now, page.intervalSeconds),
+        intervalSeconds: page.intervalSeconds,
+        statusCode: result.statusCode,
       });
       logger.warn(
-        { service, competitorPageId, errorType: result.errorType, consecutiveFailures },
+        { service, competitorPageId, errorType: result.errorType, statusCode: result.statusCode, consecutiveFailures },
         'Content check failed'
       );
       return;

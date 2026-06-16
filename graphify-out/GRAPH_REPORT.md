@@ -1,16 +1,16 @@
-# Graph Report - beaconmon  (2026-06-14)
+# Graph Report - beaconmon  (2026-06-16)
 
 ## Corpus Check
-- 626 files · ~255,788 words
+- 633 files · ~268,982 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3583 nodes · 6766 edges · 224 communities (202 shown, 22 thin omitted)
+- 3662 nodes · 6864 edges · 221 communities (199 shown, 22 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 71 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7a7d0b89`
+- Built from commit: `a36e8575`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -211,14 +211,11 @@
 - [[_COMMUNITY_Community 213|Community 213]]
 - [[_COMMUNITY_Community 214|Community 214]]
 - [[_COMMUNITY_Community 215|Community 215]]
-- [[_COMMUNITY_Community 216|Community 216]]
 - [[_COMMUNITY_Community 217|Community 217]]
-- [[_COMMUNITY_Community 218|Community 218]]
 - [[_COMMUNITY_Community 219|Community 219]]
-- [[_COMMUNITY_Community 222|Community 222]]
-- [[_COMMUNITY_Community 225|Community 225]]
+- [[_COMMUNITY_Community 220|Community 220]]
+- [[_COMMUNITY_Community 223|Community 223]]
 - [[_COMMUNITY_Community 227|Community 227]]
-- [[_COMMUNITY_Community 231|Community 231]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 84 edges
@@ -226,8 +223,8 @@
 3. `PlanTier` - 49 edges
 4. `ValidationError` - 44 edges
 5. `ForbiddenError` - 41 edges
-6. `JsonLd()` - 38 edges
-7. `Button` - 38 edges
+6. `Button` - 39 edges
+7. `JsonLd()` - 38 edges
 8. `RevealObserver()` - 37 edges
 9. `useSession()` - 37 edges
 10. `apiFetch()` - 30 edges
@@ -235,10 +232,10 @@
 ## Surprising Connections (you probably didn't know these)
 - `docker-compose.yml (local dev stack)` --semantically_similar_to--> `docker-compose.production.yml (production stack)`  [INFERRED] [semantically similar]
   docker-compose.yml → docker-compose.production.yml
+- `OnboardingWizardProps` --references--> `PlanTier`  [EXTRACTED]
+  apps/web/app/onboarding/OnboardingWizard.tsx → packages/types/src/plan.ts
 - `CompetitorDomainInputProps` --references--> `PlanTier`  [EXTRACTED]
   apps/web/components/competitors/competitor-domain-input.tsx → packages/types/src/plan.ts
-- `CompetitorManagementSheetProps` --references--> `PlanTier`  [EXTRACTED]
-  apps/web/components/intelligence/competitor-management-sheet.tsx → packages/types/src/plan.ts
 - `ReliabilityTabProps` --references--> `PlanTier`  [EXTRACTED]
   apps/web/components/monitors/settings/reliability-tab.tsx → packages/types/src/plan.ts
 - `CompetitorsStepProps` --references--> `PlanTier`  [EXTRACTED]
@@ -252,27 +249,27 @@
 - **Beaconmon architectural constraints (CLAUDE.md)** — claude_md_tenant_isolation, claude_md_redis_noeviction, claude_md_isr_status_pages, claude_md_content_monitoring_html_only, claude_md_alert_idempotency, claude_md_check_results_partitioned [EXTRACTED 1.00]
 - **Architecture deepening candidates identified in SKILL.md** — skills_improve_codebase_architecture_scheduler_monolith, skills_improve_codebase_architecture_anomaly_detection, skills_improve_codebase_architecture_plan_gate, skills_improve_codebase_architecture_repo_split [EXTRACTED 1.00]
 
-## Communities (224 total, 22 thin omitted)
+## Communities (221 total, 22 thin omitted)
 
 ### Community 0 - "Content Diff & AI Prompts"
-Cohesion: 0.05
-Nodes (67): buildDiffPrompt(), ContentDiffClassification, ContentDiffOutput, _encoder, truncate(), summarizeContentDiff(), AiClassification, AiAnalysisInput (+59 more)
+Cohesion: 0.06
+Nodes (51): buildDiffPrompt(), ContentDiffClassification, ContentDiffOutput, _encoder, truncate(), summarizeContentDiff(), AiClassification, AiAnalysisOutput (+43 more)
 
 ### Community 1 - "Alert Channel UI"
-Cohesion: 0.16
-Nodes (15): incidentRepository, AckButton(), AckButtonProps, useAcknowledgeIncident(), useMonitorIncidents(), useResolveIncident(), durationStr(), IncidentTabRow() (+7 more)
+Cohesion: 0.12
+Nodes (13): GET(), readCookie(), auth, env, envSchema, resend, Session, UserWithFields (+5 more)
 
 ### Community 2 - "Dashboard Pages & Navigation"
-Cohesion: 0.18
-Nodes (14): BriefingSentence, buildBriefingHeadline(), buildBusinessStats(), buildLeadAction(), CompetitorEventGroup, countPricingEvents(), downMonitorsCount(), getOpenIncident() (+6 more)
+Cohesion: 0.16
+Nodes (15): BriefingSentence, buildBriefingHeadline(), buildBusinessStats(), buildLeadAction(), CompetitorEventGroup, countPricingEvents(), downMonitorsCount(), getOpenIncident() (+7 more)
 
 ### Community 3 - "App Shell & Providers"
 Cohesion: 0.05
-Nodes (41): ANNUAL_PRICES, BillingPage(), FreemiusCheckoutHandler, MONTHLY_PRICES, PLAN_DISPLAY, Window, CommandPaletteProps, NAV_ITEMS (+33 more)
+Nodes (52): ANNUAL_PRICES, FreemiusCheckoutHandler, MONTHLY_PRICES, PLAN_DISPLAY, Window, PolicySheet(), GeneralPage(), useCreateEscalationPolicy() (+44 more)
 
 ### Community 4 - "Authentication UI"
-Cohesion: 0.10
-Nodes (22): AuthLogo(), AuthPanel(), AuthShell(), Checkbox(), Divider(), ErrorBanner(), FieldNote(), Input() (+14 more)
+Cohesion: 0.07
+Nodes (27): AuthLogo(), AuthPanel(), AuthShell(), Checkbox(), Divider(), ErrorBanner(), FieldNote(), Input() (+19 more)
 
 ### Community 5 - "AI Competitor Discovery"
 Cohesion: 0.06
@@ -283,52 +280,52 @@ Cohesion: 0.04
 Nodes (50): dependencies, @beaconmon/ai, @beaconmon/billing, @beaconmon/db, @beaconmon/emails, @beaconmon/logger, @beaconmon/queue, @beaconmon/status-pages (+42 more)
 
 ### Community 7 - "Alert Channels API"
-Cohesion: 0.07
-Nodes (29): GET, POST, AppError, ForbiddenError, NotFoundError, PlanLimitError, UnauthorizedError, DELETE (+21 more)
+Cohesion: 0.06
+Nodes (30): GET, POST, PlanLimitError, ValidationError, DELETE, PATCH, deployEventRepository, Params (+22 more)
 
 ### Community 8 - "Onboarding Templates"
 Cohesion: 0.07
-Nodes (36): getPausedByTrialEnd(), RestoreBanner(), CommandPalette(), DashboardShellInner(), Status, STATUS_CONFIG, StatusBadge(), EditMonitorPage() (+28 more)
+Nodes (39): BillingPage(), CommandPalette(), CommandPaletteProps, NAV_ITEMS, SETTINGS_SHORTCUTS, DashboardShellInner(), Status, STATUS_CONFIG (+31 more)
 
 ### Community 9 - "Escalation Policies"
 Cohesion: 0.10
 Nodes (19): AI Content-Diff (Growth and Scale), Alerts and Notifications, Beaconmon: Shopify Competitor Intelligence for eCommerce, Comparison, Competitor Intelligence, Frequently Asked Questions, Get Started, How It Works (+11 more)
 
 ### Community 10 - "Monitor Detail & Anomalies"
-Cohesion: 0.06
-Nodes (42): useAnomalies(), CheckResultRow, defaultLimitForRange(), TimeRange, useCheckResults(), CreateDeployInput, useDeploys(), useEndDeploy() (+34 more)
+Cohesion: 0.05
+Nodes (46): incidentRepository, AckButton(), AckButtonProps, QueryState(), useAnomalies(), CheckResultRow, defaultLimitForRange(), TimeRange (+38 more)
 
 ### Community 11 - "API Routes & Rate Limiting"
-Cohesion: 0.09
-Nodes (23): { GET, POST: _POST }, POST(), rateLimit(), rateLimitResponse(), RateLimitResult, bodySchema, POST, GET (+15 more)
+Cohesion: 0.11
+Nodes (20): { GET, POST: _POST }, POST(), ForbiddenError, rateLimit(), rateLimitResponse(), RateLimitResult, bulkCreateSchema, POST (+12 more)
 
 ### Community 12 - "Status Pages & Competitors"
-Cohesion: 0.14
-Nodes (15): CatalogPreviewResult, computeHoursPerWeek(), formatHours(), OnboardingSuccess(), OnboardingSuccessProps, buildBundle(), catalogPreviewResponseSchema, catalogPreviewResultSchema (+7 more)
+Cohesion: 0.17
+Nodes (11): buildBundle(), catalogPreviewResponseSchema, catalogPreviewResultSchema, discoverResponseSchema, markComplete(), obKey(), OnboardingWizardProps, shopifyProductsSchema (+3 more)
 
 ### Community 13 - "Notification Channels"
-Cohesion: 0.16
-Nodes (18): discordSender(), formatDuration(), emailSender(), formatDuration(), slackSender(), smsSender(), AlertPayload, ChannelSender (+10 more)
+Cohesion: 0.10
+Nodes (29): discordSender(), formatDuration(), emailSender(), getChannelSender(), formatDuration(), slackSender(), smsSender(), AlertPayload (+21 more)
 
 ### Community 14 - "Architecture Constraints"
 Cohesion: 0.07
 Nodes (36): AI Features Fail Open (AI_PROVIDER=noop safe default), Alert Idempotency (check notifications within 5 min), CLAUDE.md (Beaconmon project instructions), check_results Range-Partitioned by Month, Competitor Tracking (is_competitor flag, competitor-presets endpoint), Content Monitoring HTML-only (cheerio, no Playwright), evaluateCheckResult (two consecutive failures to mark down), Freemius as MoR (billing_cycle int, one plan ID per tier) (+28 more)
 
 ### Community 15 - "Team Invitations API"
-Cohesion: 0.11
-Nodes (24): GET(), parseHeartbeat(), WorkerName, WorkerStatus, competitorNotifyQueue, competitorPageCheckQueue, createStubAlertQueue(), main() (+16 more)
+Cohesion: 0.10
+Nodes (32): GET(), parseHeartbeat(), WorkerName, WorkerStatus, getContentNotifyQueue(), getEscalationQueue(), getLifecycleEmailQueue(), getRedis() (+24 more)
 
 ### Community 16 - "Intelligence Email Templates"
-Cohesion: 0.07
-Nodes (47): ContentChangeAlert(), DowntimeAlert(), body, buttonContainer, card, cardMeta, cardSummary, cardTitle (+39 more)
+Cohesion: 0.06
+Nodes (51): ContentChangeAlert(), DowntimeAlert(), body, buttonContainer, card, cardMeta, cardSummary, cardTitle (+43 more)
 
 ### Community 17 - "Intelligence Feed"
 Cohesion: 0.50
 Nodes (7): extractProspectSlug(), formatProspectTag(), groupByProspect(), isValidProspectSlug(), parseProspectTag(), ProspectSlug, slugifyProspect()
 
 ### Community 18 - "Alert Email Templates"
-Cohesion: 0.11
-Nodes (16): EmailChannelConfig, notifyContentChange(), sendEmailNotification(), sendSlackNotification(), sendWebhookNotification(), SlackChannelConfig, WebhookChannelConfig, runContentCheck() (+8 more)
+Cohesion: 0.27
+Nodes (9): EmailChannelConfig, notifyContentChange(), sendEmailNotification(), sendSlackNotification(), sendWebhookNotification(), SlackChannelConfig, WebhookChannelConfig, ContentNotifyJob (+1 more)
 
 ### Community 19 - "Anomalies API"
 Cohesion: 0.15
@@ -339,8 +336,8 @@ Cohesion: 0.07
 Nodes (31): feedQuerySchema, GET, DELETE, Params, addChannelSchema, GET, Params, POST (+23 more)
 
 ### Community 21 - "DTC Brands Marketing Page"
-Cohesion: 0.08
-Nodes (20): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, FEATURES, metadata, TEMPLATE_MONITORS (+12 more)
+Cohesion: 0.06
+Nodes (26): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, MOCKUP_EVENTS, FEATURES, metadata (+18 more)
 
 ### Community 22 - "Pricing & Marketing"
 Cohesion: 0.08
@@ -351,8 +348,8 @@ Cohesion: 0.17
 Nodes (18): POST(), billingPeriodFromFreemiusCycle(), createPortalSession(), FreemiusEnv, freemiusEnvSchema, freemiusEventSchema, FreemiusSubscriptionData, freemiusSubscriptionDataSchema (+10 more)
 
 ### Community 24 - "Config & Observability"
-Cohesion: 0.19
-Nodes (9): BumpResponse, useIntelligenceLastSeen(), UseIntelligenceLastSeenResult, useReliability(), monitoringRunRepository, ReliabilityStats, pseudoReliabilitySpark(), reliabilityDirection() (+1 more)
+Cohesion: 0.12
+Nodes (17): BusinessStatStrip(), BusinessStatStripProps, WelcomeBanner(), useCompetitors(), useIntelligenceFeed(), BumpResponse, useIntelligenceLastSeen(), UseIntelligenceLastSeenResult (+9 more)
 
 ### Community 25 - "Database Package"
 Cohesion: 0.07
@@ -367,8 +364,8 @@ Cohesion: 0.10
 Nodes (19): body, container, ctaButton, ctaSection, Day2Aha(), Day2AhaBranch, Day2AhaProps, eventItem (+11 more)
 
 ### Community 28 - "Redis & Background Tasks"
-Cohesion: 0.07
-Nodes (38): checkQueue, connection, contentQueue, intelligenceDigestQueue, lifecycleEmailQueue, shopifyFeedQueue, sloBurnQueue, BillingFeature (+30 more)
+Cohesion: 0.09
+Nodes (27): connection, intelligenceDigestQueue, lifecycleEmailQueue, contentSnapshotRetentionTask, deployExpiryTask, formatParts(), getIsoWeekKey(), getLocalSendState() (+19 more)
 
 ### Community 29 - "Monitor Form UI"
 Cohesion: 0.12
@@ -383,8 +380,8 @@ Cohesion: 0.19
 Nodes (12): useMarkNotificationsRead(), useNotifications(), FeedRow(), ICON_COLORS, ICONS, NotificationPopover(), GET, POST (+4 more)
 
 ### Community 32 - "Worker Health & Heartbeat"
-Cohesion: 0.07
-Nodes (36): DiscoveryState, DiscoveryStatus, useCompetitorDiscovery(), CompetitorChannelRow, CompetitorDetail, CompetitorEventRow, CompetitorPageRow, CompetitorProductRow (+28 more)
+Cohesion: 0.09
+Nodes (24): DiscoveryState, DiscoveryStatus, useCompetitorDiscovery(), useCompetitor(), useCompetitorEvents(), useCompetitorPages(), useCompetitorProducts(), useDismissBulk() (+16 more)
 
 ### Community 33 - "AI Package"
 Cohesion: 0.09
@@ -395,20 +392,20 @@ Cohesion: 0.09
 Nodes (21): dependencies, @beaconmon/logger, @beaconmon/types, cheerio, undici, whoiser, devDependencies, @beaconmon/tsconfig (+13 more)
 
 ### Community 35 - "Auth Context & Session"
-Cohesion: 0.09
-Nodes (27): AlertChannelsPage(), ChannelOption, EscalationPoliciesPage(), PolicySheet(), RecipientChip, RecipientPicker(), StepDraft, UserOption (+19 more)
+Cohesion: 0.13
+Nodes (12): COLUMNS, GET, COLUMNS, GET, CsvColumn, COLS, toCsv(), COLUMNS (+4 more)
 
 ### Community 36 - "Notification Preferences"
-Cohesion: 0.13
-Nodes (17): AddCompetitorWizard(), useCompetitors(), useIntelligenceFeed(), IntelligenceUpgradeTeaser(), SAMPLE_EVENTS, TheWireBanner(), CompetitorGroupCard(), CompetitorsTab() (+9 more)
+Cohesion: 0.06
+Nodes (36): AuthContext, metadata, AddCompetitorWizard(), AddCompetitorWizardProps, CompetitorEmptyStateProps, SessionInfo, CompetitorManagementSheet(), CompetitorManagementSheetProps (+28 more)
 
 ### Community 37 - "User & Listing API"
 Cohesion: 0.05
-Nodes (36): Params, PATCH, AuthHandler, RouteParams, withAuth(), GET, feedQuerySchema, GET (+28 more)
+Nodes (38): AuthHandler, RouteParams, withAuth(), GET, feedQuerySchema, GET, GET, GET (+30 more)
 
 ### Community 38 - "Shared Types & Alerts"
 Cohesion: 0.06
-Nodes (27): body, container, ctaButton, ctaSection, Day7Reengagement(), Day7ReengagementProps, footer, footerLink (+19 more)
+Nodes (33): body, container, ctaButton, ctaSection, Day7Reengagement(), Day7ReengagementProps, footer, footerLink (+25 more)
 
 ### Community 39 - "Workers Package"
 Cohesion: 0.09
@@ -416,15 +413,15 @@ Nodes (23): dependencies, @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @be
 
 ### Community 40 - "Changelog Page"
 Cohesion: 0.10
-Nodes (18): DELETE, PATCH, bulkSchema, POST, GET(), resolveTeamPlan(), SlackState, verifyState() (+10 more)
+Nodes (20): POST(), DELETE, PATCH, bulkSchema, POST, GET(), resolveTeamPlan(), SlackState (+12 more)
 
 ### Community 41 - "Build Scripts"
 Cohesion: 0.08
 Nodes (26): scripts, build, db:generate, db:migrate, db:seed, db:studio, dev, frame-screenshot (+18 more)
 
 ### Community 42 - "Public Status Page"
-Cohesion: 0.14
-Nodes (14): ActiveIncidentData, buildPastDays(), deriveActiveIncident(), pageInitials(), PastDay, PastIncidentEntry, Props, relativeTime() (+6 more)
+Cohesion: 0.17
+Nodes (11): ActiveIncidentData, buildPastDays(), deriveActiveIncident(), pageInitials(), PastDay, PastIncidentEntry, Props, relativeTime() (+3 more)
 
 ### Community 43 - "Worker Dev Scripts"
 Cohesion: 0.07
@@ -435,8 +432,8 @@ Cohesion: 0.20
 Nodes (8): BETTER_UPTIME_STRENGTHS, breadcrumbSchema, FAQ_ITEMS, faqSchema, metadata, softwareSchema, SWITCH_REASONS, TABLE_ROWS
 
 ### Community 45 - "Incident Repository"
-Cohesion: 0.13
-Nodes (14): POST(), GET(), readCookie(), auth, env, envSchema, resend, Session (+6 more)
+Cohesion: 0.10
+Nodes (25): CreateChannelDialog(), AlertChannelsPage(), DeleteButton(), EVENT_TYPE_LABELS, SLACK_MESSAGES, TYPE_LABELS, QueryStateProps, useAlertChannels() (+17 more)
 
 ### Community 46 - "TypeScript Base Config"
 Cohesion: 0.11
@@ -447,16 +444,16 @@ Cohesion: 0.07
 Nodes (32): BannerCopy, body, classificationTag, container, ContentChangeAlertProps, deriveBannerCopy(), detailRow, detailsBox (+24 more)
 
 ### Community 48 - "Smoke Tests"
-Cohesion: 0.08
-Nodes (41): GeneralPage(), useUpdateIntelligenceSettings(), TeamNotificationSummaryRow, useMyNotificationPreferences(), useTeamNotificationSummary(), useUpdateMyPrimaryChannel(), usePendingInvitations(), useRemoveMember() (+33 more)
+Cohesion: 0.09
+Nodes (21): botUserAgent, browserUserAgent, countsByTeamBucket, Haimanot Getu's Workspace, Outreach Research, generatedAt, dns_dead, hard_cf (+13 more)
 
 ### Community 49 - "Monitor Repository"
-Cohesion: 0.20
-Nodes (12): connection, { worker }, deriveEventSummary(), deriveNotifySubject(), EmailChannelConfig, processCompetitorNotifyJob(), sendEmailNotification(), sendSlackNotification() (+4 more)
+Cohesion: 0.26
+Nodes (10): deriveEventSummary(), deriveNotifySubject(), EmailChannelConfig, processCompetitorNotifyJob(), sendEmailNotification(), sendSlackNotification(), SlackChannelConfig, emailChannel (+2 more)
 
 ### Community 50 - "UptimeRobot Comparison Page"
-Cohesion: 0.10
-Nodes (15): JsonLd(), CONTACT_SCHEMA, metadata, FEATURES_SCHEMA, INTEL_CARDS, metadata, MONITOR_TYPES, metadata (+7 more)
+Cohesion: 0.09
+Nodes (18): CHANGELOG_SCHEMA, ENTRIES, Entry, metadata, Tag, TAG_STYLES, FAQS, faqSchema (+10 more)
 
 ### Community 51 - "Queue Package"
 Cohesion: 0.12
@@ -471,36 +468,36 @@ Cohesion: 0.12
 Nodes (16): dependencies, @beaconmon/db, @beaconmon/types, ioredis, devDependencies, @beaconmon/tsconfig, @types/node, typescript (+8 more)
 
 ### Community 54 - "Marketing Navbar"
-Cohesion: 0.12
-Nodes (7): NavDropdownProps, NavItem, PRODUCT_LINKS, SOLUTIONS_LINKS, metadata, metadata, metadata
+Cohesion: 0.10
+Nodes (11): NavDropdownProps, NavItem, PRODUCT_LINKS, SOLUTIONS_LINKS, metadata, metadata, metadata, ICONS (+3 more)
 
 ### Community 55 - "Checker Core Types"
-Cohesion: 0.11
-Nodes (26): AnomalyResult, detectAnomaly(), CheckErrorType, CheckResult, ContentCheckInput, ContentCheckResult, redirectDispatcher, DomainCheckDetail (+18 more)
+Cohesion: 0.07
+Nodes (45): escalationPoliciesRepository, createStubAlertQueue(), main(), prisma, redis, startLocalServer(), AnomalyResult, detectAnomaly() (+37 more)
 
 ### Community 56 - "Alert Channel Repository"
 Cohesion: 0.33
 Nodes (5): sloRepository, AggRow, SloConfig, UpdateSloInput, updateSloSchema
 
 ### Community 57 - "Check Results Repository"
-Cohesion: 0.08
-Nodes (19): createManagedWorker(), ManagedWorkerOptions, SimpleLogger, CompetitorNotifyJob, IntelligenceDigestJob, LifecycleEmailJob, QUEUE_NAMES, QueueName (+11 more)
+Cohesion: 0.07
+Nodes (38): env, EnvSchema, result, initSentry(), monitoringRunWorkerRepository, RunInput, createManagedWorker(), createCompetitorNotifyQueue() (+30 more)
 
 ### Community 58 - "Reliability Dashboard Panel"
-Cohesion: 0.11
-Nodes (15): alertChannelRepository, CreateAlertChannelInput, createAlertChannelSchema, DiscordChannelConfig, discordChannelConfigSchema, discordChannelSchema, EmailChannelConfig, emailChannelConfigSchema (+7 more)
+Cohesion: 0.13
+Nodes (12): alertChannelRepository, CreateAlertChannelInput, createAlertChannelSchema, DiscordChannelConfig, discordChannelSchema, EmailChannelConfig, emailChannelConfigSchema, emailChannelSchema (+4 more)
 
 ### Community 59 - "Team Invitation Emails"
-Cohesion: 0.10
-Nodes (26): Day3AlertsSetup(), Day3AlertsSetupProps, FirstCompetitorChange(), FirstCompetitorChangeProps, body, button, buttonContainer, container (+18 more)
+Cohesion: 0.06
+Nodes (38): Day3AlertsSetup(), Day3AlertsSetupProps, FirstCompetitorChange(), FirstCompetitorChangeProps, body, container, ctaButton, ctaSection (+30 more)
 
 ### Community 60 - "Trial Reminder Emails"
-Cohesion: 0.12
-Nodes (15): body, container, ctaButton, ctaSection, footer, footerLink, heading, hr (+7 more)
+Cohesion: 0.15
+Nodes (20): Bucket, BUCKET_ORDER, Classified, classify(), FailingPage, fetchOnce(), FetchOutcome, is2xx() (+12 more)
 
 ### Community 61 - "Team Management Hooks"
-Cohesion: 0.13
-Nodes (12): COLUMNS, GET, COLUMNS, GET, CsvColumn, COLS, toCsv(), COLUMNS (+4 more)
+Cohesion: 0.16
+Nodes (13): CompetitorItem, binBy7Days(), buildWireStats(), computeTrend(), EVENT_LABEL, eventLabel(), formatRelative(), MS (+5 more)
 
 ### Community 62 - "Logger Package"
 Cohesion: 0.13
@@ -511,28 +508,28 @@ Cohesion: 0.21
 Nodes (8): classifyFetchError(), ProbeDurableObject, runProbe(), Env, ProbeRegion, ProbeRequest, ProbeResponse, REGION_DO_LOCATION_HINTS
 
 ### Community 64 - "Escalation Policies API"
-Cohesion: 0.05
-Nodes (33): CreateEventData, competitorPageRepository, CompetitorPageWithPlan, DigestCompetitorEvent, DigestExpiryAlert, DigestIncident, DigestOwnContentSnapshot, digestRepository (+25 more)
+Cohesion: 0.06
+Nodes (30): CreatedEscalationPolicy, CreateEventData, competitorPageRepository, CompetitorPageWithPlan, computeFailureBackoffSeconds(), HARD_BLOCK_STATUS_CODES, CreateEscalationPolicyInput, escalationPolicyRepository (+22 more)
 
 ### Community 65 - "Performance Alerts Repository"
-Cohesion: 0.25
-Nodes (6): CHANGELOG_SCHEMA, ENTRIES, Entry, metadata, Tag, TAG_STYLES
+Cohesion: 0.24
+Nodes (8): MonitorTemplate, ONBOARDING_TEMPLATES, PlatformType, BundleStepProps, CheckResult, PLATFORMS, Step1Store(), Step1StoreProps
 
 ### Community 66 - "Worker Redis Queues"
-Cohesion: 0.25
-Nodes (6): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
+Cohesion: 0.11
+Nodes (12): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS, FAQ_ITEMS, metadata (+4 more)
 
 ### Community 67 - "Billing Package"
 Cohesion: 0.14
 Nodes (13): dependencies, @beaconmon/types, devDependencies, @beaconmon/tsconfig, typescript, exports, main, name (+5 more)
 
 ### Community 68 - "Downtime Alert Emails"
-Cohesion: 0.25
-Nodes (6): FAQ_ITEMS, metadata, PINGDOM_STRENGTHS, schemaData, SWITCH_REASONS, TABLE_ROWS
+Cohesion: 0.27
+Nodes (4): AI_EXAMPLES, CAPABILITIES, metadata, SCHEMA
 
 ### Community 69 - "Intelligence Settings Hooks"
-Cohesion: 0.18
-Nodes (10): deployEventRepository, Params, POST, GET, Params, DeployEventRow, CreateDeployEventInput, createDeployEventSchema (+2 more)
+Cohesion: 0.36
+Nodes (5): buildPayload(), CompetitorDomainInput(), CompetitorDomainInputProps, domainToName(), normalizeDomain()
 
 ### Community 70 - "Maintenance Windows"
 Cohesion: 0.14
@@ -572,11 +569,11 @@ Nodes (16): body, container, detailRow, detailsBox, footer, formatDuration(), he
 
 ### Community 79 - "Content Snapshots Repository"
 Cohesion: 0.12
-Nodes (16): checkResultRepository, performanceAlertRepository, CheckResultsOptions, SummaryRawRow, FeedResult, FindFeedOpts, IntelligenceEventType, intelligenceRepository (+8 more)
+Nodes (16): performanceAlertRepository, FeedResult, FindFeedOpts, IntelligenceEventType, intelligenceRepository, RANGE_DAYS, FindOptions, clampToPlanRetention() (+8 more)
 
 ### Community 80 - "Worker Logger & Check URL"
-Cohesion: 0.09
-Nodes (19): body, container, ctaButton, ctaSection, Day8DetectionProps, eventItem, eventList, eventMeta (+11 more)
+Cohesion: 0.05
+Nodes (31): body, container, ctaButton, ctaSection, Day8DetectionProps, eventItem, eventList, eventMeta (+23 more)
 
 ### Community 81 - "Billing Page UI"
 Cohesion: 0.10
@@ -595,8 +592,8 @@ Cohesion: 0.20
 Nodes (7): dmSans, inter, metadata, mono, SITE_SCHEMA, viewport, PHProvider()
 
 ### Community 85 - "Notification Preferences API"
-Cohesion: 0.19
-Nodes (11): initSentry(), buildStyles(), formatDate(), IncidentReportData, MonitorReportData, UptimeReport(), UptimeReportProps, ReportJob (+3 more)
+Cohesion: 0.12
+Nodes (10): buildStyles(), formatDate(), IncidentReportData, MonitorReportData, UptimeReport(), UptimeReportProps, ManagedWorkerOptions, SimpleLogger (+2 more)
 
 ### Community 86 - "Status Pages Repository"
 Cohesion: 0.24
@@ -623,8 +620,8 @@ Cohesion: 0.20
 Nodes (9): engines, node, pnpm, name, packageManager, pnpm, onlyBuiltDependencies, private (+1 more)
 
 ### Community 92 - "Worker Monitor Repository"
-Cohesion: 0.25
-Nodes (6): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, MOCKUP_EVENTS
+Cohesion: 0.33
+Nodes (7): SettingsResponse, useIntelligenceSettings(), useUpdateIntelligenceSettings(), IntelligenceSettingsPage(), DigestPrefs, DigestPreviewCard(), DigestPreviewCardProps
 
 ### Community 93 - "Uptime Report Generator"
 Cohesion: 0.25
@@ -651,24 +648,24 @@ Cohesion: 0.25
 Nodes (7): compilerOptions, module, moduleResolution, outDir, rootDir, extends, include
 
 ### Community 99 - "Competitor Timeline UI"
-Cohesion: 0.12
-Nodes (13): EVENT_LABEL, FilterKey, FILTERS, parts(), PRICING_TYPES, PROMO_TYPES, readNumber(), readString() (+5 more)
+Cohesion: 0.09
+Nodes (18): EVENT_LABEL, FilterKey, FILTERS, parts(), PRICING_TYPES, PROMO_TYPES, readNumber(), readString() (+10 more)
 
 ### Community 100 - "DB TypeScript Config"
 Cohesion: 0.25
 Nodes (7): compilerOptions, declaration, noEmit, outDir, rootDir, extends, include
 
 ### Community 101 - "eCommerce Competitor Intelligence Page"
-Cohesion: 0.09
-Nodes (18): Day14Paused(), Day8Detection(), LimitHit(), ACTIVE_BILLING_STATUSES, day12Urgency, day14Paused, day2Aha, day3AlertsSetup (+10 more)
+Cohesion: 0.10
+Nodes (17): Day14Paused(), Day8Detection(), ACTIVE_BILLING_STATUSES, day12Urgency, day14Paused, day2Aha, day3AlertsSetup, day7Reengagement (+9 more)
 
 ### Community 102 - "Queue Library"
-Cohesion: 0.25
-Nodes (6): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
+Cohesion: 0.29
+Nodes (6): freemiusClientSchema, freemiusConfig, CompetitorsStep(), CompetitorsStepProps, FreemiusCheckoutHandler, WindowWithFS
 
 ### Community 103 - "Pingdom Comparison Page"
-Cohesion: 0.12
-Nodes (11): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, WHAT_CHANGES, FAQS, faqSchema (+3 more)
+Cohesion: 0.25
+Nodes (6): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, WHAT_CHANGES
 
 ### Community 104 - "Types TypeScript Config"
 Cohesion: 0.25
@@ -679,8 +676,8 @@ Cohesion: 0.25
 Nodes (7): compilerOptions, jsx, outDir, rootDir, types, extends, include
 
 ### Community 106 - "Intelligence Features Page"
-Cohesion: 0.14
-Nodes (14): ValidationError, DELETE, GET, Params, PATCH, updateCompetitorSchema, addPageSchema, GET (+6 more)
+Cohesion: 0.25
+Nodes (6): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
 
 ### Community 107 - "Competitor Price Tracking Page"
 Cohesion: 0.18
@@ -703,20 +700,20 @@ Cohesion: 0.29
 Nodes (6): devDependencies, tsx, turbo, typescript, $schema, ui
 
 ### Community 112 - "DB Incidents Repository"
-Cohesion: 0.10
-Nodes (20): Providers(), metadata, ADD_MONITOR_ROUTES, NAV_ITEMS, NavItem(), SETTINGS_ACTIVE_PREFIXES, Sidebar(), MembershipRow (+12 more)
+Cohesion: 0.09
+Nodes (24): Providers(), Breadcrumbs(), SEGMENT_LABELS, ADD_MONITOR_ROUTES, NAV_ITEMS, NavItem(), SETTINGS_ACTIVE_PREFIXES, Sidebar() (+16 more)
 
 ### Community 113 - "Pricing Change Alerts Page"
-Cohesion: 0.19
-Nodes (10): SettingsResponse, useIntelligenceSettings(), DEFAULT_DIGEST_PREFS, DigestPrefs, digestPrefsSchema, timezoneSchema, UpdateDigestPrefs, updateDigestPrefsSchema (+2 more)
+Cohesion: 0.12
+Nodes (23): AiAnalysisInput, checkCircuitBreaker(), consumeRateLimit(), recordCircuitBreakerFailure(), runAiAnalysisIfEligible(), AttachAiAnalysisInput, ContentSnapshotRecord, contentSnapshotWorkerRepository (+15 more)
 
 ### Community 114 - "Brand Logo & Identity"
 Cohesion: 0.48
 Nodes (7): Beacon Signal Motif (concentric arcs radiating from central point), Beaconmon Brand Identity, Dark Navy and Teal/Cyan Color Scheme, Radar/Signal Icon Design, Beaconmon Logo (PNG), Beaconmon Logo SVG, Uptime Monitoring (visual metaphor)
 
 ### Community 115 - "Escalation Recipients"
-Cohesion: 0.50
-Nodes (3): BusinessStatStrip(), BusinessStatStripProps, BusinessStat
+Cohesion: 0.25
+Nodes (6): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
 
 ### Community 116 - "Shopify Competitor Monitoring Page"
 Cohesion: 0.47
@@ -747,12 +744,12 @@ Cohesion: 0.40
 Nodes (6): Uptime Monitoring, Beacon Signal Visual Motif, Brand Color Dark Mode (#0f172a bg, #06b6d4 signal), Brand Color Light Mode (#f0f9ff bg, #0284c7 signal), Pulsing Concentric Arc Animation, Beaconmon App Icon (SVG)
 
 ### Community 123 - "eCommerce Landing Page"
-Cohesion: 0.16
-Nodes (16): monitorRepository, escalationPoliciesRepository, MonitorForCheck, MonitorWithPlan, UpdateAfterCheckData, evaluateCheckResult(), EvaluationResult, MonitorStatus (+8 more)
+Cohesion: 0.29
+Nodes (5): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata
 
 ### Community 124 - "DNS Provider Detection"
-Cohesion: 0.18
-Nodes (14): getChannelSender(), notificationRepository, AlertJob, SloBurnAlertJob, connection, alertJob, mockChannel, mockClaim (+6 more)
+Cohesion: 0.24
+Nodes (11): UpdateSloInput, useSlo(), useUpdateSlo(), SloTab(), SloData, downtimeLabel(), PRESETS, ReliabilityTab() (+3 more)
 
 ### Community 125 - "Logger TypeScript Config"
 Cohesion: 0.33
@@ -763,8 +760,8 @@ Cohesion: 0.33
 Nodes (5): compilerOptions, outDir, rootDir, extends, include
 
 ### Community 127 - "Community 127"
-Cohesion: 0.13
-Nodes (14): body, container, detailRow, detailsBox, DowntimeAlertProps, footer, heading, hr (+6 more)
+Cohesion: 0.07
+Nodes (29): body, container, detailRow, detailsBox, DowntimeAlertProps, footer, heading, hr (+21 more)
 
 ### Community 128 - "Status Pages TypeScript Config"
 Cohesion: 0.33
@@ -799,8 +796,8 @@ Cohesion: 0.29
 Nodes (5): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata
 
 ### Community 140 - "Turborepo Test Config"
-Cohesion: 0.28
-Nodes (6): Breadcrumbs(), SEGMENT_LABELS, BreadcrumbContext, BreadcrumbContextValue, BreadcrumbProvider(), useBreadcrumbOverrides()
+Cohesion: 0.33
+Nodes (5): ToggleGroup, ToggleGroupContext, ToggleGroupItem, Toggle, toggleVariants
 
 ### Community 141 - "App Icon Assets"
 Cohesion: 0.83
@@ -815,16 +812,16 @@ Cohesion: 1.00
 Nodes (3): analytics.ts (PostHog event tracking methods), instrumentation-client.ts (PostHog init for Next.js 15.3+), PostHog Setup Report
 
 ### Community 150 - "Turborepo Dev Config"
-Cohesion: 0.13
-Nodes (16): AiClassification, BulkCreateInput, DiscoverResponse, DiscoverySuggestion, postJson(), useBulkCreateMonitors(), useDiscoverMonitors(), GenerateReportInput (+8 more)
+Cohesion: 0.07
+Nodes (30): getPausedByTrialEnd(), RestoreBanner(), AiClassification, BulkCreateInput, DiscoverResponse, DiscoverySuggestion, postJson(), useBulkCreateMonitors() (+22 more)
 
 ### Community 159 - "Community 159"
-Cohesion: 0.16
-Nodes (13): CompetitorItem, binBy7Days(), buildWireStats(), computeTrend(), EVENT_LABEL, eventLabel(), formatRelative(), MS (+5 more)
+Cohesion: 0.40
+Nodes (5): DecisionActionBar(), Props, RESPONSES, ResponseValue, CompetitorDecisionData
 
 ### Community 175 - "Community 175"
-Cohesion: 0.10
-Nodes (22): AuthContext, AddCompetitorWizardProps, CompetitorEmptyStateProps, SessionInfo, DAYS, MONTHS, TheWireBannerProps, MonitorFormProps (+14 more)
+Cohesion: 0.47
+Nodes (5): CatalogPreviewResult, computeHoursPerWeek(), formatHours(), OnboardingSuccess(), OnboardingSuccessProps
 
 ### Community 176 - "Community 176"
 Cohesion: 0.18
@@ -835,12 +832,12 @@ Cohesion: 0.17
 Nodes (11): Candidate card, Cross-section (layered shallowness), Diagram patterns, Hand-built boxes-and-arrows, Header, HTML Report Format, Mass diagram (interface vs. implementation size), Mermaid (dependency or call-flow graphs) (+3 more)
 
 ### Community 178 - "Community 178"
-Cohesion: 0.17
-Nodes (8): metadata, Button, ButtonProps, buttonVariants, FreemiusCheckoutHandler, PLAN_LABEL, UpgradePrompt(), Window
+Cohesion: 0.13
+Nodes (14): 2026-06-16 (first run, prod via tunnel), Alert reliability (does the customer actually get told), Competitor data-quality audit, Competitor record hygiene (is the entity well formed), Content page health (is change detection actually running), Discovery and sync health (is the data fresh and real), Event quality and customer value (is the signal trustworthy and worth it), Findings (+6 more)
 
 ### Community 179 - "Community 179"
-Cohesion: 0.15
-Nodes (11): AlertChannel, AlertChannelType, Notification, KeywordCondition, Monitor, ProbeRegion, REGION_DO_LOCATION_HINTS, REGION_ENV_VAR (+3 more)
+Cohesion: 0.12
+Nodes (16): monitorRepository, MonitorForCheck, MonitorWithPlan, UpdateAfterCheckData, AlertChannel, AlertChannelType, Notification, EvaluationResult (+8 more)
 
 ### Community 180 - "Community 180"
 Cohesion: 0.20
@@ -851,16 +848,12 @@ Cohesion: 0.25
 Nodes (6): Commands, Domain decisions worth knowing, graphify, Non-obvious constraints (read before touching these areas), What this is, Writing style
 
 ### Community 182 - "Community 182"
-Cohesion: 0.13
-Nodes (14): body, container, ctaButton, ctaSection, footer, footerLink, heading, hr (+6 more)
-
-### Community 183 - "Community 183"
 Cohesion: 0.19
 Nodes (10): monitorRepository, CommandCenter(), CommandCenterProps, formatRelative(), BulkCreateResponse, BatchResult, MonitorRow, FeedItem (+2 more)
 
 ### Community 184 - "Community 184"
-Cohesion: 0.50
-Nodes (3): contentSnapshotRepository, SnapshotFull, SnapshotWithMeta
+Cohesion: 0.12
+Nodes (14): PATCH, DigestCompetitorEvent, DigestExpiryAlert, DigestIncident, DigestOwnContentSnapshot, digestRepository, DigestSmartAlert, DigestTeam (+6 more)
 
 ### Community 185 - "Community 185"
 Cohesion: 0.33
@@ -879,44 +872,44 @@ Cohesion: 0.24
 Nodes (6): BannerState, computeBannerState(), STORAGE_KEYS, now, TrialBanner(), TrialBannerProps
 
 ### Community 194 - "Community 194"
-Cohesion: 0.10
-Nodes (13): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, MOCKUP_EVENTS, IntelligenceMockupProps, FAQS (+5 more)
+Cohesion: 0.25
+Nodes (6): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, MOCKUP_EVENTS
 
 ### Community 195 - "Community 195"
-Cohesion: 0.12
-Nodes (15): body, competitorBox, competitorHeading, competitorItem, container, ctaButton, ctaSection, footer (+7 more)
+Cohesion: 0.19
+Nodes (11): Category, Check, checks, Finding, JSON_OUTPUT, main(), prisma, runCheck() (+3 more)
 
 ### Community 196 - "Community 196"
-Cohesion: 0.17
-Nodes (10): DELETE, GET, PATCH, createEscalationPolicySchema, escalationStepSchema, GET, POST, escalationStepSchema (+2 more)
+Cohesion: 0.09
+Nodes (18): Params, PATCH, AppError, NotFoundError, UnauthorizedError, DELETE, Params, DELETE (+10 more)
 
 ### Community 197 - "Community 197"
 Cohesion: 0.06
-Nodes (53): ChannelType, CreateChannelDialog(), CreateChannelDialogProps, DeleteButton(), SLACK_MESSAGES, TYPE_LABELS, PresetMatch, Step (+45 more)
+Nodes (59): ChannelType, CreateChannelDialogProps, Step, EmptyState(), EmptyStateProps, ChannelOption, EscalationPoliciesPage(), RecipientChip (+51 more)
 
 ### Community 198 - "Community 198"
-Cohesion: 0.22
-Nodes (7): GET, GET, PATCH, patchSchema, notificationPreferenceRepository, NotificationPreferenceRow, PersonalChannelRow
+Cohesion: 0.50
+Nodes (4): OnboardingWizard(), isPlanTier(), metadata, OnboardingPage()
 
 ### Community 200 - "Community 200"
-Cohesion: 0.15
-Nodes (20): bulkCreateSchema, POST, createCompetitorSchema, GET, POST, getContentNotifyQueue(), getEscalationQueue(), getLifecycleEmailQueue() (+12 more)
+Cohesion: 0.10
+Nodes (21): DELETE, GET, Params, PATCH, createCompetitorSchema, GET, POST, updateCompetitorSchema (+13 more)
 
 ### Community 202 - "Community 202"
 Cohesion: 0.50
 Nodes (4): test, dependsOn, inputs, outputs
 
 ### Community 203 - "Community 203"
-Cohesion: 0.06
-Nodes (65): CatalogSyncOptions, CatalogSyncResult, createNotifyGate(), ExtractedProduct, syncCatalog(), asArray(), availabilityToBool(), bestOffer() (+57 more)
+Cohesion: 0.05
+Nodes (63): CatalogSyncOptions, CatalogSyncResult, createNotifyGate(), ExtractedProduct, syncCatalog(), asArray(), availabilityToBool(), bestOffer() (+55 more)
 
 ### Community 204 - "Community 204"
 Cohesion: 0.20
 Nodes (8): breadcrumbSchema, FAQ_ITEMS, faqSchema, metadata, softwareSchema, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
 
 ### Community 205 - "Community 205"
-Cohesion: 0.15
-Nodes (5): COMPANY_LINKS, COMPARE_LINKS, FOR_LINKS, GUIDES_LINKS, PRODUCT_LINKS
+Cohesion: 0.29
+Nodes (5): checkResultRepository, checkResultRepository, CheckResultsOptions, SummaryRawRow, DailyUptimeStat
 
 ### Community 206 - "Community 206"
 Cohesion: 0.22
@@ -930,77 +923,69 @@ Nodes (6): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata, MOCKUP_EVENTS
 Cohesion: 0.67
 Nodes (3): typecheck, dependsOn, inputs
 
-### Community 209 - "Community 209"
-Cohesion: 0.35
-Nodes (9): DiffLine, SnapshotDiff, SnapshotListResponse, useNotifySnapshot(), useSnapshotDiff(), useSnapshots(), SnapshotsTab(), SnapshotSummary (+1 more)
-
 ### Community 210 - "Community 210"
 Cohesion: 0.11
 Nodes (14): ABOUT_SCHEMA, metadata, PHILOSOPHY, ALTERNATIVES, metadata, schemaData, WHAT_BEACONMON_DOES, RevealObserver() (+6 more)
 
 ### Community 211 - "Community 211"
-Cohesion: 0.31
-Nodes (5): TodayFeedProps, FeedResponse, FilterParams, UseFeedResult, IntelligenceEvent
+Cohesion: 0.22
+Nodes (12): DiffLine, SnapshotDiff, SnapshotListResponse, useNotifySnapshot(), useSnapshotDiff(), useSnapshots(), SnapshotsTab(), contentSnapshotRepository (+4 more)
 
 ### Community 212 - "Community 212"
 Cohesion: 0.25
 Nodes (6): FAQ_ITEMS, metadata, schemaData, STAY_REASONS, SWITCH_REASONS, TABLE_ROWS
 
 ### Community 213 - "Community 213"
-Cohesion: 0.25
-Nodes (6): monitoringRunWorkerRepository, RunInput, alertQueue, connection, escalationQueue, { worker }
+Cohesion: 0.67
+Nodes (3): formatDuration(), PastIncidentCard(), Props
 
 ### Community 214 - "Community 214"
 Cohesion: 0.29
 Nodes (5): FAQS, faqSchema, FEATURES, HOW_IT_WORKS, metadata
 
 ### Community 215 - "Community 215"
-Cohesion: 0.50
-Nodes (4): OnboardingWizard(), isPlanTier(), metadata, OnboardingPage()
+Cohesion: 0.12
+Nodes (14): CompetitorTimelineProps, CompetitorChannelRow, CompetitorDetail, CompetitorEventRow, CompetitorFeedItem, CompetitorPageRow, CompetitorProductRow, EventsState (+6 more)
 
 ### Community 217 - "Community 217"
 Cohesion: 0.38
 Nodes (5): incidentRepository, CreateIncidentData, ResolveIncidentData, Incident, ResolutionType
 
-### Community 218 - "Community 218"
-Cohesion: 0.33
-Nodes (4): ICONS, Theme, THEMES, ThemeToggle()
-
 ### Community 219 - "Community 219"
-Cohesion: 0.12
-Nodes (16): MonitorTemplate, ONBOARDING_TEMPLATES, PlatformType, reliabilityLabel(), BundleItem, BundleStep(), BundleStepProps, extractHostname() (+8 more)
+Cohesion: 0.18
+Nodes (10): reliabilityLabel(), BundleItem, BundleStep(), extractHostname(), formatCheckBudget(), SkeletonRow(), StatCol(), StatColProps (+2 more)
 
-### Community 222 - "Community 222"
+### Community 220 - "Community 220"
 Cohesion: 0.22
-Nodes (7): CompetitorTimelineProps, DecisionActionBar(), Props, RESPONSES, ResponseValue, CompetitorDecisionData, CompetitorFeedItem
+Nodes (8): GET, PresetMatch, COMPETITOR_PRESETS, CompetitorPreset, CompetitorPresetId, CompetitorPresetVertical, SKINCARE_COMPETITOR_SEEDS, SkincareCompetitorSeed
 
-### Community 225 - "Community 225"
-Cohesion: 0.17
-Nodes (11): buildPayload(), CompetitorDomainInput(), CompetitorDomainInputProps, domainToName(), normalizeDomain(), freemiusClientSchema, freemiusConfig, CompetitorsStep() (+3 more)
+### Community 223 - "Community 223"
+Cohesion: 0.50
+Nodes (3): alertChannelRepository, AlertChannel, DisabledChannel
 
 ### Community 227 - "Community 227"
 Cohesion: 0.36
 Nodes (7): BRAND, h(), main(), parseArgs(), pngSize(), PRESETS, Props
 
 ## Knowledge Gaps
-- **1583 isolated node(s):** `PreToolUse`, `allow`, `name`, `version`, `private` (+1578 more)
+- **1627 isolated node(s):** `PreToolUse`, `allow`, `name`, `version`, `private` (+1622 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `PlanTier` connect `Community 175` to `Onboarding Templates`, `Monitor Detail & Anomalies`, `Status Pages & Competitors`, `Billing & Freemius`, `Redis & Background Tasks`, `Auth Context & Session`, `Notification Preferences`, `User & Listing API`, `Changelog Page`, `Incident Repository`, `Community 178`, `Alert Channel Repository`, `Community 188`, `Community 197`, `OAuth Callback Routes`, `Content Snapshots Repository`, `Community 215`, `Community 219`, `Community 225`, `DB Incidents Repository`?**
-  _High betweenness centrality (0.162) - this node is a cross-community bridge._
-- **Why does `ThemeToggle()` connect `Community 218` to `DB Incidents Repository`, `Marketing Navbar`?**
-  _High betweenness centrality (0.064) - this node is a cross-community bridge._
-- **Why does `MonitorType` connect `eCommerce Landing Page` to `DB Incidents Repository`, `Community 179`, `Checker Core Types`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+- **Why does `PlanTier` connect `Notification Preferences` to `Alert Channel UI`, `App Shell & Providers`, `Status Pages & Competitors`, `Billing & Freemius`, `User & Listing API`, `Changelog Page`, `Alert Channel Repository`, `Community 188`, `Performance Alerts Repository`, `Community 197`, `Intelligence Settings Hooks`, `Community 198`, `OAuth Callback Routes`, `Community 205`, `Content Snapshots Repository`, `Community 219`, `Community 223`, `Queue Library`, `Pricing Change Alerts Page`, `DNS Provider Detection`?**
+  _High betweenness centrality (0.150) - this node is a cross-community bridge._
+- **Why does `ThemeToggle()` connect `Marketing Navbar` to `DB Incidents Repository`?**
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
+- **Why does `MonitorType` connect `Community 179` to `App Shell & Providers`, `Checker Core Types`?**
+  _High betweenness centrality (0.049) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `cn()` (e.g. with `MonitorDetailPage()` and `SloGauge()`) actually correct?**
   _`cn()` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `PreToolUse`, `allow`, `name` to the rest of the system?**
-  _1591 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1635 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Content Diff & AI Prompts` be split into smaller, more focused modules?**
-  _Cohesion score 0.051287128712871284 - nodes in this community are weakly interconnected._
-- **Should `App Shell & Providers` be split into smaller, more focused modules?**
-  _Cohesion score 0.054098360655737705 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06473953628425173 - nodes in this community are weakly interconnected._
+- **Should `Alert Channel UI` be split into smaller, more focused modules?**
+  _Cohesion score 0.11904761904761904 - nodes in this community are weakly interconnected._

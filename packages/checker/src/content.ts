@@ -10,6 +10,12 @@ export interface ContentCheckInput {
   timeoutMs: number;
 }
 
+// A bot user-agent gets challenged by Cloudflare and similar WAFs, failing
+// roughly 10% of monitored pages with 403 cf-mitigated responses. Present a
+// current, realistic desktop Chrome user-agent so soft bot-detection passes.
+export const CONTENT_CHECK_USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36';
+
 // Follow up to 5 redirects so a 301/302 yields the destination page, not the
 // redirect stub body (undici does not follow redirects by default).
 const redirectDispatcher = new Agent().compose(interceptors.redirect({ maxRedirections: 5 }));
@@ -41,8 +47,9 @@ export async function runContentCheck(input: ContentCheckInput): Promise<Content
       headersTimeout: timeoutMs,
       bodyTimeout: timeoutMs,
       headers: {
-        'user-agent': 'beaconmon/1.0 (+https://beaconmon.com)',
-        accept: 'text/html,application/xhtml+xml',
+        'user-agent': CONTENT_CHECK_USER_AGENT,
+        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'accept-language': 'en-US,en;q=0.9',
       },
     });
 

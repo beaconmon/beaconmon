@@ -1,0 +1,578 @@
+[
+  {
+    "domain": "youthtothepeople.com",
+    "competitorId": "cmqaxqz8l000c08mtvu79m0kx",
+    "pageId": "cmqaxqz8m000d08mtusezcdx8",
+    "team": "Haimanot Getu's Workspace",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "aritzia.com",
+    "competitorId": "cmqck3uh9tcwykb3v2lqahrw8",
+    "pageId": "cmqck3uh9hg52h0yzp940yxek",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "arsagas.com",
+    "competitorId": "cmqcjyp2uwomdbds3pq6d0ic0",
+    "pageId": "cmqcjyp2u9rggvdmdlml3yicw",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "dns_dead",
+    "reason": "unfetchable (DNS/cert dead): bot=ERR_TLS_CERT_ALTNAME_INVALID browser=ERR_TLS_CERT_ALTNAME_INVALID"
+  },
+  {
+    "domain": "backbeat.co",
+    "competitorId": "cmqck3xjbtnw3xkt2qo11ukm4",
+    "pageId": "cmqck3xjbjnvmk4h7exd159kp",
+    "team": "Outreach Research",
+    "action": "fix_url",
+    "bucket": "other",
+    "reason": "HTTP 404, live brand with wrong seeded homepage URL; re-derive URL"
+  },
+  {
+    "domain": "beams.co.jp",
+    "competitorId": "cmqck56gtpke8whh6prf2ymdi",
+    "pageId": "cmqck56gtb51np7cvmre12hl6",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "slow_timeout",
+    "reason": "slow/timeout; re-check after failure-backoff"
+  },
+  {
+    "domain": "blackriflecoffee.com",
+    "competitorId": "cmqcjxw2cs7t0grxonj6oag3d",
+    "pageId": "cmqcjxw2cmlbrqpppzo8jxm8q",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "bluebottlecoffee.com",
+    "competitorId": "cmqcjzm9v8ivkyrmesrmp9zsw",
+    "pageId": "cmqcjzm9vn87z771ynckvlqbc",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "byhumankind.com",
+    "competitorId": "cmqcjwsk2aya5jkrqui5894cb",
+    "pageId": "cmqcjwsk2fj8ytgzf0cbxpwwg",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "other",
+    "reason": "HTTP 402, frozen/unpaid Shopify store (defunct)"
+  },
+  {
+    "domain": "camposcoffee.com",
+    "competitorId": "cmqcjxs79fbqtpes8vo2c2uua",
+    "pageId": "cmqcjxs79ui8za08gic7cwf9e",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "charlottesweb.com",
+    "competitorId": "cmqcjwb7gr2dcog03blgv1s5r",
+    "pageId": "cmqcjwb7gpok6tfpqsmlzfwsv",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "cityofsaints.org",
+    "competitorId": "cmqcjywr78q8mh6akmozcfr2x",
+    "pageId": "cmqcjywr77t5i841j29shdvz2",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "clevrblends.com",
+    "competitorId": "cmqcjuumaq0geyphrc4xafivy",
+    "pageId": "cmqcjuumailw7w0ds0n7j5bdv",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "commonprojects.com",
+    "competitorId": "cmqck4ss27twjjpx2dguuz043",
+    "pageId": "cmqck4ss2duyttxcoxvrkshi9",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "slow_timeout",
+    "reason": "slow/timeout; re-check after failure-backoff"
+  },
+  {
+    "domain": "communitycoffee.com",
+    "competitorId": "cmqcjz7a7etj2vygo32xwko9c",
+    "pageId": "cmqcjz7a7wnujwmxwvklfagv3",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "cos.com",
+    "competitorId": "cmqck34d799hsupqnooyd7cgg",
+    "pageId": "cmqck34d7eu9zn5n40iuz1dgb",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "soft_block",
+    "reason": "soft block, browser-UA reaches 2xx; re-check after browser-UA"
+  },
+  {
+    "domain": "dogids.com",
+    "competitorId": "cmqck2m1mrz8k28vsnftq72bs",
+    "pageId": "cmqck2m1nr479k3jpe7p5qkdj",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "drinkag1.com",
+    "competitorId": "cmqcjvk9geotax7pger0mxf3k",
+    "pageId": "cmqcjvk9gp4jjtt5734j7qm5c",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "drinkcomplement.com",
+    "competitorId": "cmqcjum7hpznoq7h5g3d81y2c",
+    "pageId": "cmqcjum7hrgyl7fkv6mab6nlr",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "dns_dead",
+    "reason": "unfetchable (DNS/cert dead): bot=ENOTFOUND browser=ENOTFOUND"
+  },
+  {
+    "domain": "eternitycoffeeroasters.com",
+    "competitorId": "cmqcjy3c19215pk0dmw7aorv9",
+    "pageId": "cmqcjy3c1aigr4zgof91sh3pr",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "dns_dead",
+    "reason": "unfetchable (DNS/cert dead): bot=CERT_HAS_EXPIRED browser=CERT_HAS_EXPIRED"
+  },
+  {
+    "domain": "everydaydose.com",
+    "competitorId": "cmqcjuvubita2svuerk3yxdng",
+    "pageId": "cmqcjuvubc33hapc8qa4ofnma",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "fairharborclothing.com",
+    "competitorId": "cmqck51rftuq2e00gqpbvr59m",
+    "pageId": "cmqck51rfp4z90zjjxrajjf6o",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "forestessentialsindia.com",
+    "competitorId": "cmqcjx4c4sb09zeax4j3upgv8",
+    "pageId": "cmqcjx4c4zrzxumrdv5pxf9on",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "freesoul.co.uk",
+    "competitorId": "cmqcjuok5jeskmkmgq7koush4",
+    "pageId": "cmqcjuok54914kmr7bx7nitvo",
+    "team": "Outreach Research",
+    "action": "fix_url",
+    "bucket": "other",
+    "reason": "HTTP 404, live brand with wrong seeded homepage URL; re-derive URL"
+  },
+  {
+    "domain": "gardenoflife.com",
+    "competitorId": "cmqcjtzwlnbxujy98papily8m",
+    "pageId": "cmqcjtzwlwjozusdwoi5o0847",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "soft_block",
+    "reason": "soft block, browser-UA reaches 2xx; re-check after browser-UA"
+  },
+  {
+    "domain": "guineadad.com",
+    "competitorId": "cmqck1agle1ujdxvt7e6m44bz",
+    "pageId": "cmqck1agl5qkupeu0wlt8tj76",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "hannaandersson.com",
+    "competitorId": "cmqck4jzoyw60jlv41qqlbvb3",
+    "pageId": "cmqck4jzornfm32nhcgk5l6xa",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "other",
+    "reason": "other status (bot=200); re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "huckberry.com",
+    "competitorId": "cmqck4q1ek7z0ro94amhzc5uq",
+    "pageId": "cmqck4q1e2s1pa73ilj3a8o1o",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "isagenix.com",
+    "competitorId": "cmqcjuyyxrq27lhfauq0my9ve",
+    "pageId": "cmqcjuyyx14vj44yyogdtw54p",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "joshsfrogs.com",
+    "competitorId": "cmqck18fi5a69k0ly1z3mofkf",
+    "pageId": "cmqck18firu31jg9a4rt394yw",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "jshealthvitamins.com",
+    "competitorId": "cmqcju44tbxaa7vl4suga0771",
+    "pageId": "cmqcju44t1rcp7h956g7hphp7",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "kapiva.in",
+    "competitorId": "cmqcjuhvx0e4qyjihzu78i530",
+    "pageId": "cmqcjuhvxbkwdqf1oow7k7mc9",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "keurig.com",
+    "competitorId": "cmqcjyekm8oke1qz7xdmc8w66",
+    "pageId": "cmqcjyekmk3livij92gv3f7xg",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "dns_dead",
+    "reason": "unfetchable (DNS/cert dead): bot=ECONNREFUSED browser=ECONNREFUSED"
+  },
+  {
+    "domain": "lafco.com",
+    "competitorId": "cmqck0mkflpp7bm2jla0xl3kb",
+    "pageId": "cmqck0mkfbzn47foifvxh95lm",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "lifeextension.com",
+    "competitorId": "cmqcjv2s40rlf01qhi2o5ikmx",
+    "pageId": "cmqcjv2s4dg5bwwzhzp2luiwd",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "soft_block",
+    "reason": "soft block, browser-UA reaches 2xx; re-check after browser-UA"
+  },
+  {
+    "domain": "mightygum.com",
+    "competitorId": "cmqcjvgebr4m9xf89qxwghmgw",
+    "pageId": "cmqcjvgeb8gu1mstvwht2gu72",
+    "team": "Outreach Research",
+    "action": "fix_url",
+    "bucket": "other",
+    "reason": "HTTP 404, live brand with wrong seeded homepage URL; re-derive URL"
+  },
+  {
+    "domain": "mistobox.com",
+    "competitorId": "cmqcjzqyg9fb8di6lc7iq5vsz",
+    "pageId": "cmqcjzqyhrdmqzqdyi85t5i2z",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "mizzenandmain.com",
+    "competitorId": "cmqck4veikybee73gybem5wad",
+    "pageId": "cmqck4vei49kn06int15odf31",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "mybillie.com",
+    "competitorId": "cmqcjw89oi24529tvzbey9skq",
+    "pageId": "cmqcjw89o4sg5136f0i13v332",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "nyxcosmetics.com",
+    "competitorId": "cmqcjxoeu7p0j9uzvqho6a1dp",
+    "pageId": "cmqcjxoeucj399b5gql0addjo",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "octobre-editions.com",
+    "competitorId": "cmqck4vvlaztn7p2s2r0qimzb",
+    "pageId": "cmqck4vvlq9gtz91z8p0w2ewc",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "oliversapparel.com",
+    "competitorId": "cmqck4myl9sbk6lhwfcjb98c9",
+    "pageId": "cmqck4myl2x0yt2f7i2xh3f70",
+    "team": "Outreach Research",
+    "action": "fix_url",
+    "bucket": "other",
+    "reason": "HTTP 404, live brand with wrong seeded homepage URL; re-derive URL"
+  },
+  {
+    "domain": "patchmd.com",
+    "competitorId": "cmqcjvj7ttu67bwlczhzktt7e",
+    "pageId": "cmqcjvj7toqpp1r4f6s0p5hxy",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "paulaschoice.com",
+    "competitorId": "cmqcjwttka928vey5iobfqqgf",
+    "pageId": "cmqcjwttkf8926p5cmft88czh",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "perfectketo.com",
+    "competitorId": "cmqcju132afqhbwh6ixc2aqbk",
+    "pageId": "cmqcju133bk20ki9lnmhuhruz",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "poshcandleco.com",
+    "competitorId": "cmqck0q83qms69dcvxznupo87",
+    "pageId": "cmqck0q8311bz5ox9iu8f6l64",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "other",
+    "reason": "HTTP 402, frozen/unpaid Shopify store (defunct)"
+  },
+  {
+    "domain": "posse.world",
+    "competitorId": "cmqck3ea1lf6q49e5vtc1wore",
+    "pageId": "cmqck3ea17v0t98ge9riopeo4",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "soft_block",
+    "reason": "soft block, browser-UA reaches 2xx; re-check after browser-UA"
+  },
+  {
+    "domain": "purrandmutt.com",
+    "competitorId": "cmqck2dxen7oyhul9l5zp5ojd",
+    "pageId": "cmqck2dxer6cvpud04nojkf0o",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "ok_now",
+    "reason": "fetching fine now; re-check after backoff"
+  },
+  {
+    "domain": "reddingo.com",
+    "competitorId": "cmqck2lf1q8qr348oetdxln40",
+    "pageId": "cmqck2lf159q9x0tewo8kol2a",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "rhone.com",
+    "competitorId": "cmqck38e39exqrc4yyjgfsdb5",
+    "pageId": "cmqck38e397r9ib1w49xrd25z",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "rhude.com",
+    "competitorId": "cmqck4m67nd0x7jtvf75w4vq3",
+    "pageId": "cmqck4m67va78vieu5c1vb8v0",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "dns_dead",
+    "reason": "unfetchable (DNS/cert dead): bot=DEPTH_ZERO_SELF_SIGNED_CERT browser=DEPTH_ZERO_SELF_SIGNED_CERT"
+  },
+  {
+    "domain": "seattlegummy.com",
+    "competitorId": "cmqcjvdowmt2jh7g8brwy2o7w",
+    "pageId": "cmqcjvdow6kc7ystxovuxr6to",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "seed.com",
+    "competitorId": "cmqcjuxjdip5ifvr2efk493p9",
+    "pageId": "cmqcjuxjdxr2vakzm0wc0ka8u",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "skinceuticals.com",
+    "competitorId": "cmqcjxm1f2nnxpz2xqexlrjsl",
+    "pageId": "cmqcjxm1ftfqbm8kosvnfu30z",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "smoothiebox.com",
+    "competitorId": "cmqcjv78d6nt5v1say1qe4zhk",
+    "pageId": "cmqcjv78dttc4guautx84ch9a",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "other",
+    "reason": "HTTP 402, frozen/unpaid Shopify store (defunct)"
+  },
+  {
+    "domain": "texsens.com",
+    "competitorId": "cmqck1t9vqcu22rdtnldjy8fp",
+    "pageId": "cmqck1t9vfn7sgj6sv6xgx2ra",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "thecandlelabcincy.com",
+    "competitorId": "cmqck026pwel6ryix38rrt3je",
+    "pageId": "cmqck026p3y3unv1sr0oz9546",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "thefarmersdog.com",
+    "competitorId": "cmqck2u3fmhkgza64n8fjzq47",
+    "pageId": "cmqck2u3fp9p0yh98jr1hgjag",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "hard_cf",
+    "reason": "flaky CF, returned 200 at least once; re-check after browser-UA/backoff"
+  },
+  {
+    "domain": "theory.com",
+    "competitorId": "cmqck3su0c8g3yhmdrrpp6wim",
+    "pageId": "cmqck3su0e4ky4i7s3ntq5ytm",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "thewhitecompany.com",
+    "competitorId": "cmqck0v5ckp5344k8puwm13cz",
+    "pageId": "cmqck0v5cv2fs8ml29vws1pk0",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "slow_timeout",
+    "reason": "slow/timeout; re-check after failure-backoff"
+  },
+  {
+    "domain": "tobecalm.com.au",
+    "competitorId": "cmqck0skbbnxyi89ljudm3i0g",
+    "pageId": "cmqck0skbtr2szp84lkutcf0d",
+    "team": "Outreach Research",
+    "action": "fix_url",
+    "bucket": "other",
+    "reason": "HTTP 404, live brand with wrong seeded homepage URL; re-derive URL"
+  },
+  {
+    "domain": "vilebrequin.com",
+    "competitorId": "cmqck52co65x92oqy5asgs5og",
+    "pageId": "cmqck52coqho2ammwtpyte7dy",
+    "team": "Outreach Research",
+    "action": "keep",
+    "bucket": "slow_timeout",
+    "reason": "slow/timeout; re-check after failure-backoff"
+  },
+  {
+    "domain": "yankeecandle.com",
+    "competitorId": "cmqck09thlnyh8nnbavku19gm",
+    "pageId": "cmqck09thm6hxgay8kmp168id",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "yesto.com",
+    "competitorId": "cmqcjwi5bt2gnx973a4as11sb",
+    "pageId": "cmqcjwi5bdsp1ki2ezpiowgtn",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  },
+  {
+    "domain": "youthtothepeople.com",
+    "competitorId": "cmqcjvwi8dl65kgh51101k7vu",
+    "pageId": "cmqcjvwi81bnshnmv5c7i3448",
+    "team": "Outreach Research",
+    "action": "deactivate",
+    "bucket": "hard_cf",
+    "reason": "walled WAF; browser blocked and no 200 returned"
+  }
+]
