@@ -107,16 +107,21 @@ async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult>
       // caller can descend the fallback ladder. A failure mid-pagination keeps
       // the pages already collected rather than discarding a partial catalog.
       if (page === 1) {
-        if (isBlockedStatus(res.status) || res.status === 404 || res.status === 410 || res.status === 500 || res.status === 503) {
-          throw new FeedUnusableError(res.status);
-        }
-        throw new Error(`Shopify feed returned ${res.status} for ${url}`);
+        throw new FeedUnusableError(res.status);
       }
       logger.warn({ service, domain, page, status: res.status }, 'Shopify feed pagination stopped early on error');
       return { products: allProducts, partial: true };
     }
 
-    const data = (await res.json()) as ShopifyProductsResponse;
+    let data: ShopifyProductsResponse;
+    try {
+      data = (await res.json()) as ShopifyProductsResponse;
+    } catch {
+      // Non-JSON body (HTML error page, CF challenge, WAF block returning 200) means the feed is unusable.
+      if (page === 1) throw new FeedUnusableError(res.status);
+      logger.warn({ service, domain, page }, 'Shopify feed pagination returned non-JSON; stopping early');
+      return { products: allProducts, partial: true };
+    }
     allProducts.push(...data.products);
 
     // A page shorter than the limit (including empty) is the last page.
