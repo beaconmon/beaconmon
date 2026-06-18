@@ -50,12 +50,13 @@ worker.on('failed', (job, err) => {
     { service: 'shopify-feed-worker', jobId: job?.id, competitorId: job?.data.competitorId, err },
     'Shopify feed job failed'
   );
-  Sentry.captureException(err, {
-    extra: { jobId: job?.id, competitorId: job?.data.competitorId, domain: job?.data.domain },
-  });
 
   const maxAttempts = job?.opts.attempts ?? 3;
+  // Only report to Sentry on the final attempt; all attempts are logged above.
   if (job && job.attemptsMade >= maxAttempts) {
+    Sentry.captureException(err, {
+      extra: { jobId: job?.id, competitorId: job?.data.competitorId, domain: job?.data.domain },
+    });
     const errorMessage = err instanceof Error ? err.message : String(err);
     updateCompetitorDiscoveryState(job.data.competitorId, {
       discoveryState: 'failed',

@@ -59,11 +59,12 @@ worker.on('failed', (job, err) => {
     { service: 'check-worker', jobId: job?.id, monitorId: job?.data.monitorId, err },
     'Check job failed'
   );
-  Sentry.captureException(err, {
-    extra: { jobId: job?.id, monitorId: job?.data.monitorId, type: job?.data.type },
-  });
   const maxAttempts = job?.opts.attempts ?? 3;
+  // Only report to Sentry on the final attempt; all attempts are logged above.
   if (job && job.attemptsMade >= maxAttempts) {
+    Sentry.captureException(err, {
+      extra: { jobId: job?.id, monitorId: job?.data.monitorId, type: job?.data.type },
+    });
     monitoringRunWorkerRepository.recordFailure({
       teamId: job.data.teamId,
       jobType: 'check',
