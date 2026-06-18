@@ -47,6 +47,18 @@ export function assertUrlOnDomain(rawUrl: string, domain: string): URL {
   return parsed;
 }
 
+// undici (Node.js native fetch) surfaces redirect loops as TypeError with this message.
+// The string is not part of any stability contract; if it changes, redirect loops will
+// resume retrying instead of fast-failing. Check undici release notes on Node.js upgrades.
+function isRedirectExceeded(err: unknown): boolean {
+  if (!(err instanceof TypeError)) return false;
+  const cause = (err as { cause?: unknown }).cause;
+  return (
+    err.message.includes('redirect count exceeded') ||
+    (cause instanceof Error && cause.message.includes('redirect count exceeded'))
+  );
+}
+
 export async function fetchWithRetry(
   url: string,
   opts: { maxAttempts?: number; timeoutMs?: number } = {}
@@ -62,6 +74,8 @@ export async function fetchWithRetry(
       return res;
     } catch (err) {
       lastErr = err;
+      // Redirect loops are permanent; retrying only wastes time
+      if (isRedirectExceeded(err)) throw err;
       if (attempt < maxAttempts) {
         await new Promise((r) => setTimeout(r, attempt * 1000));
       }

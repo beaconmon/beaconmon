@@ -48,11 +48,12 @@ worker.on('failed', (job, err) => {
     { service: 'competitor-page-worker', jobId: job?.id, competitorPageId: job?.data.competitorPageId, err },
     'Competitor page check job failed'
   );
-  Sentry.captureException(err, {
-    extra: { jobId: job?.id, competitorPageId: job?.data.competitorPageId, competitorId: job?.data.competitorId },
-  });
   const maxAttempts = job?.opts.attempts ?? 3;
+  // Only report to Sentry on the final attempt; all attempts are logged above.
   if (job && job.attemptsMade >= maxAttempts) {
+    Sentry.captureException(err, {
+      extra: { jobId: job?.id, competitorPageId: job?.data.competitorPageId, competitorId: job?.data.competitorId },
+    });
     monitoringRunWorkerRepository.recordFailure({
       teamId: job.data.teamId,
       jobType: 'competitor_page',

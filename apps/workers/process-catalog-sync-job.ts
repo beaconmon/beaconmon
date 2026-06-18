@@ -72,6 +72,10 @@ class FeedUnusableError extends Error {
   }
 }
 
+// Sentinel value for FeedUnusableError when the feed is unreachable due to a network
+// error (e.g. redirect loop) rather than an HTTP error response.
+const FEED_NETWORK_ERROR_STATUS = 0;
+
 // Max products per products.json page; also the public endpoint's hard ceiling.
 const PRODUCTS_PER_PAGE = 250;
 // Safety cap on pages so a misbehaving or unbounded catalog cannot loop forever.
@@ -100,7 +104,14 @@ async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult>
 
   for (let page = 1; page <= MAX_FEED_PAGES; page++) {
     const url = `https://${domain}/products.json?limit=${PRODUCTS_PER_PAGE}&page=${page}`;
-    const res = await fetchWithRetry(url);
+    let res: Response;
+    try {
+      res = await fetchWithRetry(url);
+    } catch {
+      if (page === 1) throw new FeedUnusableError(FEED_NETWORK_ERROR_STATUS);
+      logger.warn({ service, domain, page }, 'Shopify feed pagination stopped early on network error');
+      return { products: allProducts, partial: true };
+    }
 
     if (!res.ok) {
       // A failure on the first page means the feed itself is unusable, so the
@@ -406,7 +417,10 @@ export async function processCatalogSyncJob(
               trackedProductUrls: merged,
             });
           } else {
-            await markLimited(competitorId, `products.json returned ${err.status}, no usable sitemap`);
+            const reason = err.status === FEED_NETWORK_ERROR_STATUS
+              ? 'products.json unreachable (redirect loop), no usable sitemap'
+              : `products.json returned ${err.status}, no usable sitemap`;
+            await markLimited(competitorId, reason);
             return;
           }
         } else {
