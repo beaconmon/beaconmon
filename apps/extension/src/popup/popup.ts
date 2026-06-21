@@ -11,6 +11,7 @@ import type {
   TrackResult,
 } from '../lib/messages.js';
 import type { Snapshot, SnapshotProduct } from '../lib/snapshot.js';
+import { clearToken } from '../lib/auth.js';
 
 const root = document.getElementById('root')!;
 const authEl = document.getElementById('auth')!;
@@ -125,7 +126,9 @@ async function onTrack(snapshot: Snapshot, btn: HTMLButtonElement, note: HTMLEle
 
   if (result.ok) {
     note.className = 'note ok';
-    note.textContent = `Now watching ${snapshot.domain}. We'll alert you on price and promo changes.`;
+    note.textContent = result.alreadyTracking
+      ? `Already watching ${snapshot.domain}.`
+      : `Now watching ${snapshot.domain}. We'll alert you on price and promo changes.`;
     btn.textContent = 'Tracking ✓';
     return;
   }
@@ -140,9 +143,36 @@ async function onTrack(snapshot: Snapshot, btn: HTMLButtonElement, note: HTMLEle
     return;
   }
 
+  if (result.reason === 'limit') {
+    note.className = 'note err';
+    const link = el('a', 'note-link', 'Upgrade your plan') as HTMLAnchorElement;
+    link.href = 'https://beaconmon.com/billing';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    note.replaceChildren(document.createTextNode('Competitor limit reached. '), link);
+    btn.disabled = false;
+    return;
+  }
+
   note.className = 'note err';
   note.textContent = result.message;
   btn.disabled = false;
+}
+
+function renderAuthHeader(auth: AuthState): void {
+  if (!auth.connected) {
+    authEl.textContent = 'Not connected';
+    return;
+  }
+  const discBtn = el('button', 'disc-btn', 'Disconnect');
+  discBtn.addEventListener('click', () => {
+    void clearToken().then(() => { window.location.reload(); });
+  });
+  authEl.replaceChildren(
+    document.createTextNode(auth.teamName ?? 'Connected'),
+    document.createTextNode(' · '),
+    discBtn,
+  );
 }
 
 async function main(): Promise<void> {
@@ -153,7 +183,7 @@ async function main(): Promise<void> {
   }
 
   const auth = (await chrome.runtime.sendMessage({ type: 'GET_AUTH' } satisfies GetAuthMessage)) as AuthState;
-  authEl.textContent = auth.connected ? auth.teamName ?? 'Connected' : 'Not connected';
+  renderAuthHeader(auth);
 
   renderMessage('Reading catalog…');
   const state = (await chrome.runtime.sendMessage({

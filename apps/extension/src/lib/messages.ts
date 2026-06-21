@@ -62,5 +62,5 @@ export interface AuthState {
 }
 
 export type TrackResult =
-  | { ok: true }
+  | { ok: true; alreadyTracking?: boolean }
   | { ok: false; reason: 'unauthenticated' | 'limit' | 'error'; message: string };

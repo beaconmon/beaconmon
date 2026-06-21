@@ -151,11 +151,37 @@ body {
   margin: 0 0 5px;
 }
 
+/* Inline disconnect button in the auth header */
+.disc-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 11px;
+  color: var(--color-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disc-btn:hover {
+  color: var(--color-red);
+}
+
+/* Inline link inside error notes (e.g. plan-limit upgrade CTA) */
+.note-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* On-sale list */
 .list {
   list-style: none;
   margin: 0 0 var(--space-md);
   padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
 .list li {

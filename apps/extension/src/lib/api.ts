@@ -3,7 +3,7 @@
 // competitor monitor; free-tier footprint and plan-limit enforcement live on the
 // server (reusing PlanLimitError), so this layer just translates HTTP to intent.
 import { API_ORIGIN } from './config.js';
-import { getToken } from './auth.js';
+import { getToken, clearToken } from './auth.js';
 import type { TrackResult } from './messages.js';
 
 // Server contract (to be implemented on the web app):
@@ -39,6 +39,7 @@ export async function track(domain: string, name: string): Promise<TrackResult> 
   if (res.ok) return { ok: true };
 
   if (res.status === 401) {
+    await clearToken();
     return { ok: false, reason: 'unauthenticated', message: 'Your session expired. Reconnect to keep tracking.' };
   }
 
