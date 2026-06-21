@@ -60,3 +60,4 @@ next-env.d.ts
 
 # Local script output dumps (may contain prod data)
 scripts/_*_out.json
+scripts/_applied_*.json
