@@ -43,6 +43,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/website-change-detection`,             lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/homepage-monitoring`,                  lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
 
+    // ── Tier 4.6: Free tools ─────────────────────────────────────────────
+    { url: `${BASE_URL}/tools`,                              lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/shopify-competitor-snapshot`,  lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.7 },
+
     // ── Tier 5: Trust / informational ────────────────────────────────────
     { url: `${BASE_URL}/changelog`, lastModified: new Date('2026-05-24'), changeFrequency: 'weekly',  priority: 0.5 },
     { url: `${BASE_URL}/about`,     lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },

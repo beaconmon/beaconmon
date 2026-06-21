@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@beaconmon/ai": "workspace:*",
+    "@beaconmon/checker": "workspace:*",
     "@beaconmon/emails": "workspace:*",
     "@beaconmon/billing": "workspace:*",
     "@beaconmon/db": "workspace:*",

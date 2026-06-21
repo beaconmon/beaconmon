@@ -4,12 +4,20 @@ import type { Redis } from 'ioredis';
 import type { CatalogSyncJob, CompetitorNotifyJob } from '@beaconmon/queue';
 import {
   competitorEventRepository,
+  competitorProductRepository,
   getCompetitorSyncInfo,
   updateCompetitorDiscoveryState,
   updateCompetitorTier,
 } from '@beaconmon/db';
 import type { CompetitorSyncInfo } from '@beaconmon/db';
 import { scoreRuleBased } from '@beaconmon/ai';
+import {
+  fetchShopifyCatalog,
+  fetchStoreCurrency,
+  FeedUnusableError,
+  FEED_NETWORK_ERROR_STATUS,
+} from '@beaconmon/checker';
+import type { ShopifyProduct } from '@beaconmon/checker';
 import { logger } from './lib/logger.js';
 import {
   validateCompetitorDomain,
@@ -42,127 +50,6 @@ const LOCK_TTL_SECONDS = 900;
 const FALLBACK_TIME_BUDGET_MS = 600_000;
 // Max new sitemap URLs enriched per weekly rescan
 const MAX_RESCAN_ENRICHMENTS = 10;
-
-interface ShopifyVariant {
-  id: number;
-  price: string;
-  compare_at_price: string | null;
-  available: boolean;
-  sku: string | null;
-  title: string;
-}
-
-interface ShopifyProduct {
-  id: number;
-  title: string;
-  handle: string;
-  vendor: string;
-  product_type: string;
-  variants: ShopifyVariant[];
-}
-
-interface ShopifyProductsResponse {
-  products: ShopifyProduct[];
-}
-
-/** Thrown when products.json exists but is blocked or gone; triggers the fallback ladder instead of BullMQ retries */
-class FeedUnusableError extends Error {
-  constructor(public readonly status: number) {
-    super(`Shopify feed unusable: status ${status}`);
-  }
-}
-
-// Sentinel value for FeedUnusableError when the feed is unreachable due to a network
-// error (e.g. redirect loop) rather than an HTTP error response.
-const FEED_NETWORK_ERROR_STATUS = 0;
-
-// Max products per products.json page; also the public endpoint's hard ceiling.
-const PRODUCTS_PER_PAGE = 250;
-// Safety cap on pages so a misbehaving or unbounded catalog cannot loop forever.
-// 40 pages * 250 = 10k products, well beyond a typical tracked competitor.
-const MAX_FEED_PAGES = 40;
-
-/**
- * Paginate the public products.json feed.
- *
- * The public storefront endpoint does NOT emit rel="next" Link headers (that is
- * the authenticated Admin API); it paginates via ?page=N and returns a short or
- * empty page at the end. Relying on a Link header silently truncated every
- * catalog at 250 products, which then surfaced as false product_removed/stock
- * events when items shuffled in and out of the first page. We page until a page
- * shorter than the limit, with a hard cap.
- */
-interface FeedFetchResult {
-  products: ShopifyProduct[];
-  /** True when a mid-pagination error stopped the fetch early; callers must not
-   * mark missing products unavailable on a partial result set. */
-  partial: boolean;
-}
-
-async function fetchAllShopifyProducts(domain: string): Promise<FeedFetchResult> {
-  const allProducts: ShopifyProduct[] = [];
-
-  for (let page = 1; page <= MAX_FEED_PAGES; page++) {
-    const url = `https://${domain}/products.json?limit=${PRODUCTS_PER_PAGE}&page=${page}`;
-    let res: Response;
-    try {
-      res = await fetchWithRetry(url);
-    } catch {
-      if (page === 1) throw new FeedUnusableError(FEED_NETWORK_ERROR_STATUS);
-      logger.warn({ service, domain, page }, 'Shopify feed pagination stopped early on network error');
-      return { products: allProducts, partial: true };
-    }
-
-    if (!res.ok) {
-      // A failure on the first page means the feed itself is unusable, so the
-      // caller can descend the fallback ladder. A failure mid-pagination keeps
-      // the pages already collected rather than discarding a partial catalog.
-      if (page === 1) {
-        throw new FeedUnusableError(res.status);
-      }
-      logger.warn({ service, domain, page, status: res.status }, 'Shopify feed pagination stopped early on error');
-      return { products: allProducts, partial: true };
-    }
-
-    let data: ShopifyProductsResponse;
-    try {
-      data = (await res.json()) as ShopifyProductsResponse;
-    } catch {
-      // Non-JSON body (HTML error page, CF challenge, WAF block returning 200) means the feed is unusable.
-      if (page === 1) throw new FeedUnusableError(res.status);
-      logger.warn({ service, domain, page }, 'Shopify feed pagination returned non-JSON; stopping early');
-      return { products: allProducts, partial: true };
-    }
-    allProducts.push(...data.products);
-
-    // A page shorter than the limit (including empty) is the last page.
-    if (data.products.length < PRODUCTS_PER_PAGE) break;
-
-    // Be polite between sequential page fetches against one storefront IP.
-    await politeJitter();
-  }
-
-  return { products: allProducts, partial: false };
-}
-
-/**
- * Resolve a Shopify store's base currency. products.json carries no currency,
- * so prices would otherwise be mislabeled (a UK store's £49 reported as $49).
- * meta.json exposes it; fall back to USD when missing or unparseable.
- */
-async function fetchStoreCurrency(domain: string): Promise<string> {
-  try {
-    const res = await fetchWithRetry(`https://${domain}/meta.json`, { maxAttempts: 2, timeoutMs: 10_000 });
-    if (!res.ok) return 'USD';
-    const data = (await res.json()) as { currency?: unknown };
-    if (typeof data.currency === 'string' && /^[A-Z]{3}$/.test(data.currency)) {
-      return data.currency;
-    }
-    return 'USD';
-  } catch {
-    return 'USD';
-  }
-}
 
 function shopifyToExtracted(product: ShopifyProduct, currency: string): ExtractedProduct {
   const priceVariant =
@@ -285,6 +172,8 @@ async function rescanSitemap(
     }
   }
   await redis.sadd(seenKey, ...productUrls);
+  // Refresh TTL so deleted competitors' keys eventually expire
+  await redis.expire(seenKey, 90 * 24 * 60 * 60);
 
   if (isBaseline || newUrls.length === 0) {
     logger.info({ service, competitorId, urls: productUrls.length, isBaseline }, 'Sitemap rescan complete, no launches');
@@ -317,10 +206,14 @@ async function rescanSitemap(
         notifyQueue,
       });
 
+      const products = await competitorProductRepository.findByCompetitorId(competitorId, product.source);
+      const upsertedProduct = products.find((p: typeof products[0]) => p.externalId === product.externalId);
+
       const payload = { productHandle: product.handle, title: product.title, price: product.price, currency: product.currency };
       const event = await competitorEventRepository.createEvent({
         teamId,
         competitorId,
+        productId: upsertedProduct?.id,
         type: 'product_added',
         payload,
         significance: scoreRuleBased('product_added', payload),
@@ -401,7 +294,11 @@ export async function processCatalogSyncJob(
       let fetched: ShopifyProduct[];
       let feedPartial = false;
       try {
-        ({ products: fetched, partial: feedPartial } = await fetchAllShopifyProducts(domain));
+        ({ products: fetched, partial: feedPartial } = await fetchShopifyCatalog(domain, {
+          fetchWithRetry,
+          politeJitter,
+          logger,
+        }));
       } catch (err) {
         if (err instanceof FeedUnusableError) {
           // The feed is blocked or gone: descend the ladder instead of retrying
@@ -430,7 +327,7 @@ export async function processCatalogSyncJob(
       }
 
       if (tier === 'full_catalog') {
-        const currency = await fetchStoreCurrency(domain);
+        const currency = await fetchStoreCurrency(domain, { fetchWithRetry });
         const { productErrors } = await syncCatalog({
           competitorId,
           teamId,

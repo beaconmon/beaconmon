@@ -38,6 +38,9 @@ importers:
       '@beaconmon/billing':
         specifier: workspace:*
         version: link:../../packages/billing
+      '@beaconmon/checker':
+        specifier: workspace:*
+        version: link:../../packages/checker
       '@beaconmon/db':
         specifier: workspace:*
         version: link:../../packages/db

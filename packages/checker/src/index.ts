@@ -12,3 +12,18 @@ export type { EvaluationResult } from './evaluate.js';
 export type { CheckInput, CheckMonitorType } from './types.js';
 export { detectAnomaly, ANOMALY_MIN_SAMPLES, ANOMALY_Z_THRESHOLD, ANOMALY_COOLDOWN_MINUTES, ANOMALY_WINDOW_HOURS } from './anomaly.js';
 export type { AnomalyResult } from './anomaly.js';
+export {
+  fetchShopifyCatalog,
+  fetchStoreCurrency,
+  FeedUnusableError,
+  FEED_NETWORK_ERROR_STATUS,
+  PRODUCTS_PER_PAGE,
+  MAX_FEED_PAGES,
+} from './storefront.js';
+export type {
+  ShopifyVariant,
+  ShopifyProduct,
+  ShopifyProductsResponse,
+  ShopifyCatalogResult,
+  StorefrontFetchDeps,
+} from './storefront.js';

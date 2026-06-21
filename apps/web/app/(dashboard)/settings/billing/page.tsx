@@ -10,9 +10,11 @@ import { useMonitors } from '@/lib/hooks/use-monitors';
 import { useAlertChannels } from '@/lib/hooks/use-alert-channels';
 import { useStatusPages } from '@/lib/hooks/use-status-pages';
 import Script from 'next/script';
-import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { format } from 'date-fns';
 import { analytics } from '@/lib/analytics';
+import type { PlanTier, TeamRole } from '@beaconmon/types';
 
 type FreemiusCheckoutHandler = {
   open: (opts: {
@@ -68,12 +70,14 @@ function BillingPeriodToggle({
   return (
     <div className="flex items-center gap-1 rounded-lg border border-brand-line p-1 w-fit">
       <button
+        type="button"
         onClick={() => onPeriodChange('monthly')}
         className={`px-3 py-1.5 text-sm rounded-md transition-colors ${selectedPeriod === 'monthly' ? 'bg-brand-bg3 text-brand-text font-medium' : 'text-brand-muted hover:text-brand-dim'}`}
       >
         Monthly
       </button>
       <button
+        type="button"
         onClick={() => onPeriodChange('annual')}
         className={`px-3 py-1.5 text-sm rounded-md transition-colors flex items-center gap-1.5 ${selectedPeriod === 'annual' ? 'bg-brand-bg3 text-brand-text font-medium' : 'text-brand-muted hover:text-brand-dim'}`}
       >
@@ -82,6 +86,39 @@ function BillingPeriodToggle({
       </button>
     </div>
   );
+}
+
+function AutoOpenCheckout({
+  fsReady,
+  sessionData,
+  onUpgrade,
+}: {
+  fsReady: boolean;
+  sessionData: {
+    userId: string;
+    teamId: string;
+    plan: PlanTier;
+    role: TeamRole;
+    email: string | null;
+    teamName: string | null;
+    teamCreatedAt: string | null;
+    trialEndsAt: string | null;
+  } | undefined;
+  onUpgrade: (plan: 'starter' | 'growth' | 'scale') => void;
+}) {
+  const searchParams = useSearchParams();
+  const autoOpenedRef = useRef(false);
+
+  useEffect(() => {
+    if (autoOpenedRef.current) return;
+    if (!fsReady || !sessionData?.email) return;
+    const plan = searchParams.get('plan');
+    if (plan !== 'starter' && plan !== 'growth' && plan !== 'scale') return;
+    autoOpenedRef.current = true;
+    onUpgrade(plan);
+  }, [fsReady, sessionData?.email, searchParams, onUpgrade]);
+
+  return null;
 }
 
 function UsageStat({
@@ -198,6 +235,7 @@ export default function BillingPage() {
     });
   }
 
+
   async function handleManageSubscription() {
     try {
       const res = await fetch('/api/billing/portal', { method: 'POST' });
@@ -206,6 +244,10 @@ export default function BillingPage() {
         return;
       }
       const { url } = await res.json() as { url: string };
+      if (typeof url !== 'string') {
+        alert('Unable to open subscription management. Please try again.');
+        return;
+      }
       window.open(url, '_blank');
     } catch {
       alert('Unable to open subscription management. Please try again.');
@@ -248,6 +290,9 @@ export default function BillingPage() {
   return (
     <>
       <Script src="https://checkout.freemius.com/js/v1/" strategy="lazyOnload" onLoad={() => setFsReady(true)} />
+      <Suspense fallback={null}>
+        <AutoOpenCheckout fsReady={fsReady} sessionData={sessionQ.data} onUpgrade={handleUpgrade} />
+      </Suspense>
 
       <div className="max-w-xl space-y-6">
         <Card>
