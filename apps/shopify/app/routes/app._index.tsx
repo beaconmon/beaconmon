@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { authenticate } from "../shopify.server";
 import { prisma, checkResultRepository } from "@beaconmon/db";
 import { PLAN_LIMITS, type DailyUptimeStat } from "@beaconmon/types";
-import { getShopifyStatus, type ShopifyStatus } from "../lib/shopify-status.server";
+import { getShopifyStatus } from "../lib/shopify-status.server";
 import { UptimeBar, aggregateUptime } from "../components/UptimeBar";
 
 // Shopify-provisioned stores are on the free plan. The uptime bar honors the

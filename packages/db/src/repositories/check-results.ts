@@ -101,4 +101,42 @@ export const checkResultRepository = {
 
     return result;
   },
+
+  /**
+   * Latest responseTimeMs per monitor, looking back 24h so the query stays
+   * inside the recent check_results partitions (range-partitioned by month).
+   * Returns a Map of monitorId to ms, or null when the latest check had no
+   * timing. No teamId scoping: called with trusted monitorIds.
+   */
+  async getLatestResponseTimes(
+    monitorIds: string[]
+  ): Promise<Map<string, number | null>> {
+    const result = new Map<string, number | null>();
+    if (monitorIds.length === 0) return result;
+
+    const idList = Prisma.join(monitorIds.map((id) => Prisma.sql`${id}`));
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    interface Row {
+      monitor_id: string;
+      response_time_ms: number | null;
+    }
+
+    const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
+      SELECT DISTINCT ON (monitor_id) monitor_id, response_time_ms
+      FROM check_results
+      WHERE monitor_id IN (${idList})
+        AND checked_at >= ${since}
+      ORDER BY monitor_id, checked_at DESC
+    `);
+
+    for (const row of rows) {
+      result.set(
+        row.monitor_id,
+        row.response_time_ms === null ? null : Number(row.response_time_ms)
+      );
+    }
+
+    return result;
+  },
 };
