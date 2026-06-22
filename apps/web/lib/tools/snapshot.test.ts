@@ -92,6 +92,30 @@ describe('buildSnapshot', () => {
     expect(result).toEqual({ ok: false, reason: 'not_shopify' });
   });
 
+  it('sets countIsFloor when a mid-pagination error stops the catalog fetch early', async () => {
+    // Page 1 returns a full 250-product page, causing the fetcher to request page 2.
+    // Page 2 returns a 403, which triggers catalog.partial = true.
+    const fullPage = Array.from({ length: 250 }, (_, i) => product(i + 1, [variant()]));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/meta.json')) {
+          return { ok: true, json: async () => ({ currency: 'USD' }) } as unknown as Response;
+        }
+        if (url.includes('page=1')) {
+          return { ok: true, json: async () => ({ products: fullPage }) } as unknown as Response;
+        }
+        return { ok: false, status: 403 } as unknown as Response;
+      })
+    );
+
+    const result = await buildSnapshot('shop.example');
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.snapshot.countIsFloor).toBe(true);
+    expect(result.snapshot.productCount).toBe(250);
+  });
+
   it('returns unreachable when the network fetch rejects', async () => {
     vi.stubGlobal(
       'fetch',

@@ -13,7 +13,8 @@ async function isShopifyOutage(): Promise<boolean> {
       signal: AbortSignal.timeout(3000),
     });
     const data = await res.json() as { status?: { indicator?: string } };
-    return data.status?.indicator !== 'none';
+    const indicator = data.status?.indicator;
+    return typeof indicator === 'string' && indicator !== 'none';
   } catch {
     return false;
   }

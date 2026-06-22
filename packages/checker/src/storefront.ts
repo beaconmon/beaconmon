@@ -115,6 +115,12 @@ export async function fetchShopifyCatalog(
       logger?.warn({ domain, page }, 'Shopify feed pagination returned non-JSON; stopping early');
       return { products: allProducts, partial: true };
     }
+    if (!Array.isArray(data.products)) {
+      // Valid JSON but missing products array (e.g. rate-limit error body like {"errors":"..."}).
+      if (page === 1) throw new FeedUnusableError(res.status);
+      logger?.warn({ domain, page }, 'Shopify feed returned unexpected shape; stopping early');
+      return { products: allProducts, partial: true };
+    }
     allProducts.push(...data.products);
 
     // A page shorter than the limit (including empty) is the last page.

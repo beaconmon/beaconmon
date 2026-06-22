@@ -3,14 +3,13 @@
 # Local values here are the source of truth and are pushed on `shopify app deploy`
 # (see include_config_on_deploy under [build]).
 client_id = "abf2033a5ace4bcbc30b5e4058922e33"
-name = "Beaconmon"
+name = "Store Intel by Beaconmon"
 application_url = "https://shopify.beaconmon.com"
 embedded = true
-handle = "beaconmon"
+handle = "beaconmon-intel"
 
 [build]
 automatically_update_urls_on_dev = true
-include_config_on_deploy = true
 
 [webhooks]
 api_version = "2026-07"

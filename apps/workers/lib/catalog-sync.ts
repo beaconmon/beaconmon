@@ -69,7 +69,7 @@ export function isMaterialPriceMove(oldPrice: string, newPrice: string, minPct: 
  * competitor intelligence. A new one should update the product row but not
  * generate a product_added event. The list is intentionally small.
  */
-const NON_PRODUCT_PATTERNS = ['gift-card', 'gift card', 'e-gift', 'egift', 'sample', 'digital'];
+const NON_PRODUCT_PATTERNS = ['gift-card', 'gift card', 'e-gift', 'egift', 'sample', 'digital download', 'digital product'];
 
 export function isNonProductItem(parts: Array<string | undefined>): boolean {
   const haystack = parts.filter(Boolean).join(' ').toLowerCase();
@@ -186,6 +186,7 @@ export async function syncCatalog(opts: CatalogSyncOptions): Promise<CatalogSync
               await maybeEnqueueNotify(event.id);
             }
           } else {
+            // null means we never had a price baseline; no baseline = no change to report.
             const oldPrice = existingProduct.currentPrice?.toString() ?? null;
             const oldAvailable = existingProduct.isAvailable;
             // A currency change is a locale artifact (e.g. the crawler being
