@@ -1,5 +1,5 @@
 import { type LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "react-router";
+import { useLoaderData, Link as RouterLink } from "react-router";
 import {
   Page,
   Layout,
@@ -11,7 +11,6 @@ import {
   Banner,
   Box,
   Divider,
-  Link,
   type BoxProps,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
@@ -303,7 +302,7 @@ function ActivationChecklist({
                 </Text>
               </InlineStack>
               {!s.done && s.to && (
-                <Link url={s.to}>{s.action ?? "Set up"}</Link>
+                <RouterLink to={s.to}>{s.action ?? "Set up"}</RouterLink>
               )}
             </InlineStack>
           ))}

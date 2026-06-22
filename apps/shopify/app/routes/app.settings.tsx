@@ -16,6 +16,7 @@ import {
   Box,
   Divider,
   Badge,
+  Tooltip,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useState } from "react";
@@ -372,6 +373,9 @@ export default function Settings() {
       <Layout>
         <Layout.Section>
           <BlockStack gap="500">
+            {/* ── Notifications ── */}
+            <Text as="h2" variant="headingLg">Notifications</Text>
+
             {/* Alert Email */}
             <Card>
               <BlockStack gap="400">
@@ -425,15 +429,22 @@ export default function Settings() {
                     />
                   </Box>
                   <InlineStack gap="200" blockAlign="center">
-                    <Button
-                      onClick={() =>
-                        slackFetcher.submit({ _action: "save-slack", webhookUrl: slackUrl }, { method: "post" })
-                      }
-                      loading={slackFetcher.state !== "idle"}
-                      disabled={!slackUrl.trim()}
+                    <Tooltip
+                      content="Enter a webhook URL to enable"
+                      active={!slackUrl.trim() ? undefined : false}
                     >
-                      Save
-                    </Button>
+                      <span>
+                        <Button
+                          onClick={() =>
+                            slackFetcher.submit({ _action: "save-slack", webhookUrl: slackUrl }, { method: "post" })
+                          }
+                          loading={slackFetcher.state !== "idle"}
+                          disabled={!slackUrl.trim()}
+                        >
+                          Save
+                        </Button>
+                      </span>
+                    </Tooltip>
                     {data.slackChannelId && (
                       <Button
                         variant="plain"
@@ -453,13 +464,16 @@ export default function Settings() {
               </BlockStack>
             </Card>
 
-            {/* Additional pages */}
+            {/* ── Monitoring ── */}
+            <Text as="h2" variant="headingLg">Monitoring</Text>
+
+            {/* Your store pages */}
             <Card>
               <BlockStack gap="400">
                 <InlineStack align="space-between" blockAlign="start">
                   <SectionHeader
-                    title="Additional pages"
-                    description={`Monitor up to ${MAX_CUSTOM_PAGES} more pages on your store (e.g. a landing page or product page).`}
+                    title="Your store pages"
+                    description={`Monitor up to ${MAX_CUSTOM_PAGES} additional pages on your own store (e.g. a sale landing page or product page).`}
                   />
                   <Badge>{`${data.customPages.length}/${MAX_CUSTOM_PAGES}`}</Badge>
                 </InlineStack>
@@ -560,52 +574,56 @@ export default function Settings() {
                 )}
 
                 {data.oosMonitors.length < MAX_OOS_MONITORS && (
-                  <InlineStack gap="300" blockAlign="end">
-                    <Box minWidth="160px">
-                      <TextField
-                        label="Product name"
-                        value={oosName}
-                        onChange={setOosName}
-                        placeholder="Nike Air Max 90"
-                        autoComplete="off"
-                      />
-                    </Box>
-                    <Box minWidth="240px">
-                      <TextField
-                        label="Product page URL"
-                        value={oosUrl}
-                        onChange={setOosUrl}
-                        placeholder="https://competitor.com/products/..."
-                        autoComplete="off"
-                        error={oosFetcher.data && !oosFetcher.data.ok && (oosFetcher.data as { _action?: string })._action === "add-oos" ? (oosFetcher.data as { error?: string }).error : undefined}
-                      />
-                    </Box>
-                    <Box minWidth="160px">
-                      <TextField
-                        label="Out-of-stock text"
-                        value={oosText}
-                        onChange={setOosText}
-                        placeholder={DEFAULT_OOS_TEXT}
-                        helpText="Leave blank to use the default."
-                        autoComplete="off"
-                      />
-                    </Box>
-                    <Button
-                      onClick={() => {
-                        oosFetcher.submit(
-                          { _action: "add-oos", url: oosUrl, name: oosName, oosText },
-                          { method: "post" },
-                        );
-                        setOosUrl("");
-                        setOosName("");
-                        setOosText("");
-                      }}
-                      loading={oosFetcher.state !== "idle"}
-                      disabled={!oosUrl.trim()}
-                    >
-                      Add
-                    </Button>
-                  </InlineStack>
+                  <BlockStack gap="300">
+                    <InlineStack gap="300" blockAlign="end">
+                      <Box minWidth="180px">
+                        <TextField
+                          label="Product name"
+                          value={oosName}
+                          onChange={setOosName}
+                          placeholder="Nike Air Max 90"
+                          autoComplete="off"
+                        />
+                      </Box>
+                      <Box minWidth="280px">
+                        <TextField
+                          label="Product page URL"
+                          value={oosUrl}
+                          onChange={setOosUrl}
+                          placeholder="https://competitor.com/products/..."
+                          autoComplete="off"
+                          error={oosFetcher.data && !oosFetcher.data.ok && (oosFetcher.data as { _action?: string })._action === "add-oos" ? (oosFetcher.data as { error?: string }).error : undefined}
+                        />
+                      </Box>
+                    </InlineStack>
+                    <InlineStack gap="300" blockAlign="end">
+                      <Box minWidth="220px">
+                        <TextField
+                          label="Out-of-stock text"
+                          value={oosText}
+                          onChange={setOosText}
+                          placeholder={DEFAULT_OOS_TEXT}
+                          helpText={`Leave blank to use "${DEFAULT_OOS_TEXT}".`}
+                          autoComplete="off"
+                        />
+                      </Box>
+                      <Button
+                        onClick={() => {
+                          oosFetcher.submit(
+                            { _action: "add-oos", url: oosUrl, name: oosName, oosText },
+                            { method: "post" },
+                          );
+                          setOosUrl("");
+                          setOosName("");
+                          setOosText("");
+                        }}
+                        loading={oosFetcher.state !== "idle"}
+                        disabled={!oosUrl.trim()}
+                      >
+                        Add
+                      </Button>
+                    </InlineStack>
+                  </BlockStack>
                 )}
               </BlockStack>
             </Card>

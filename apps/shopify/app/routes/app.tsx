@@ -8,12 +8,18 @@ import {
 } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
+import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import { NavMenu } from "@shopify/app-bridge-react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
+import polarisTheme from "../polaris-theme.css?url";
+import enTranslations from "@shopify/polaris/locales/en.json";
 
 import { authenticate } from "../shopify.server";
 
-export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
+export const links = () => [
+  { rel: "stylesheet", href: polarisStyles },
+  { rel: "stylesheet", href: polarisTheme },
+];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
@@ -26,14 +32,16 @@ export default function App() {
 
   return (
     <AppProvider embedded apiKey={apiKey}>
-      <NavMenu>
-        <Link to="/app" rel="home">
-          Home
-        </Link>
-        <Link to="/app/competitors">Competitors</Link>
-        <Link to="/app/settings">Settings</Link>
-      </NavMenu>
-      <Outlet />
+      <PolarisProvider i18n={enTranslations}>
+        <NavMenu>
+          <Link to="/app" rel="home">
+            Home
+          </Link>
+          <Link to="/app/competitors">Competitors</Link>
+          <Link to="/app/settings">Settings</Link>
+        </NavMenu>
+        <Outlet />
+      </PolarisProvider>
     </AppProvider>
   );
 }

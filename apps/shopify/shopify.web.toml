@@ -1,0 +1,8 @@
+type = "frontend"
+
+auth_callback_path = "/auth/callback"
+webhooks_path = "/webhooks"
+
+[commands]
+dev = "pnpm dev"
+build = "pnpm build"
