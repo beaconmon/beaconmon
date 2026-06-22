@@ -14,6 +14,9 @@ vi.mock('@beaconmon/db', () => ({
     incident: {
       findUnique: vi.fn(),
     },
+    shopifyInstall: {
+      findUnique: vi.fn(),
+    },
     $disconnect: vi.fn(),
   },
   monitorRepository: {
@@ -120,6 +123,7 @@ describe('processAlertJob', () => {
 
     vi.mocked(monitorRepository.findById).mockResolvedValue(mockMonitor);
     vi.mocked(prisma.incident.findUnique).mockResolvedValue(mockIncident as never);
+    vi.mocked(prisma.shopifyInstall.findUnique).mockResolvedValue(null as never);
     vi.mocked(alertChannelRepository.findActiveByTeamId).mockResolvedValue([mockChannel]);
     vi.mocked(notificationRepository.existsRecent).mockResolvedValue(false);
     vi.mocked(notificationRepository.tryClaim).mockResolvedValue(mockClaim);
@@ -240,6 +244,68 @@ describe('processAlertJob', () => {
 
     expect(notificationRepository.tryClaim).toHaveBeenCalledWith(
       expect.objectContaining({ kind: 'up' })
+    );
+  });
+
+  it('appends a Shopify-outage note when the team has a ShopifyInstall and Shopify reports an incident', async () => {
+    vi.mocked(prisma.shopifyInstall.findUnique).mockResolvedValue({
+      shop: 'demo.myshopify.com',
+    } as never);
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({ status: { indicator: 'major' } }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      await processAlertJob(alertJob);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    const sender = vi.mocked(getChannelSender).mock.results[0]?.value;
+    expect(sender).toHaveBeenCalledWith(
+      mockChannel.config,
+      expect.objectContaining({ note: expect.stringContaining('Shopify') })
+    );
+  });
+
+  it('does not append a note when Shopify reports no incident', async () => {
+    vi.mocked(prisma.shopifyInstall.findUnique).mockResolvedValue({
+      shop: 'demo.myshopify.com',
+    } as never);
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({ status: { indicator: 'none' } }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      await processAlertJob(alertJob);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    const sender = vi.mocked(getChannelSender).mock.results[0]?.value;
+    expect(sender).toHaveBeenCalledWith(
+      mockChannel.config,
+      expect.objectContaining({ note: undefined })
+    );
+  });
+
+  it('does not look up Shopify status for teams without a ShopifyInstall', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      await processAlertJob(alertJob);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    const sender = vi.mocked(getChannelSender).mock.results[0]?.value;
+    expect(sender).toHaveBeenCalledWith(
+      mockChannel.config,
+      expect.objectContaining({ note: undefined })
     );
   });
 });

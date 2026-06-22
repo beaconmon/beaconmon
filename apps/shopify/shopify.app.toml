@@ -1,0 +1,39 @@
+# Beaconmon Shopify app configuration.
+# Linked to "beaconmon-app" (client_id below) via `shopify app config link`.
+# Local values here are the source of truth and are pushed on `shopify app deploy`
+# (see include_config_on_deploy under [build]).
+client_id = "abf2033a5ace4bcbc30b5e4058922e33"
+name = "Beaconmon"
+application_url = "https://shopify.beaconmon.com"
+embedded = true
+handle = "beaconmon"
+
+[access_scopes]
+# Minimal scopes. ZERO Protected Customer Data: never request orders or customers.
+scopes = "read_products,read_inventory"
+
+[auth]
+redirect_urls = [
+  "https://shopify.beaconmon.com/auth/callback",
+]
+
+[webhooks]
+api_version = "2026-01"
+
+  # App uninstall. Handled in Step 5 (app/routes/webhooks.app.uninstalled.tsx).
+  [[webhooks.subscriptions]]
+  topics = ["app/uninstalled"]
+  uri = "/webhooks/app/uninstalled"
+
+  # Mandatory GDPR compliance webhooks. Handled in Step 5. No PCD is held.
+  [[webhooks.subscriptions]]
+  compliance_topics = [
+    "customers/data_request",
+    "customers/redact",
+    "shop/redact",
+  ]
+  uri = "/webhooks/compliance"
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true

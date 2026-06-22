@@ -90,7 +90,7 @@ describe('syncCatalog price/product event gating', () => {
   });
 
   it('(a) sub-threshold price move does not emit price_changed but still updates the product', async () => {
-    // 100.00 -> 100.50 is a 0.5% move, below the 2% default.
+    // 100.00 -> 100.50 is a 0.5% move, below the 5% default.
     await run([existingRow({ currentPrice: '100.00' })], [product({ price: '100.50' })]);
 
     expect(upsertProduct).toHaveBeenCalledTimes(1);
@@ -99,7 +99,7 @@ describe('syncCatalog price/product event gating', () => {
   });
 
   it('(b) at/above threshold move emits price_changed', async () => {
-    // 100.00 -> 105.00 is a 5% move, above the 2% default.
+    // 100.00 -> 105.00 is a 5% move, at the 5% default threshold.
     await run([existingRow({ currentPrice: '100.00' })], [product({ price: '105.00' })]);
 
     expect(upsertProduct).toHaveBeenCalledTimes(1);
@@ -171,9 +171,9 @@ describe('priceEventMinPct', () => {
     delete process.env.PRICE_EVENT_MIN_PCT;
   });
 
-  it('defaults to 0.02', () => {
+  it('defaults to 0.05', () => {
     delete process.env.PRICE_EVENT_MIN_PCT;
-    expect(priceEventMinPct()).toBe(0.02);
+    expect(priceEventMinPct()).toBe(0.05);
   });
 
   it('reads a valid override from the env var', () => {
@@ -183,6 +183,6 @@ describe('priceEventMinPct', () => {
 
   it('falls back to the default on a bad value', () => {
     process.env.PRICE_EVENT_MIN_PCT = 'nonsense';
-    expect(priceEventMinPct()).toBe(0.02);
+    expect(priceEventMinPct()).toBe(0.05);
   });
 });

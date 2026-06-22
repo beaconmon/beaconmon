@@ -4,6 +4,21 @@ import type { AlertPayload } from './lib/channels/types.js';
 import { logger } from './lib/logger.js';
 import type { AlertJob } from '@beaconmon/queue';
 
+const SHOPIFY_OUTAGE_NOTE =
+  'Note: Shopify is also reporting a platform incident. This may be a Shopify-wide outage, not isolated to your store.';
+
+async function isShopifyOutage(): Promise<boolean> {
+  try {
+    const res = await fetch('https://status.shopify.com/api/v2/status.json', {
+      signal: AbortSignal.timeout(3000),
+    });
+    const data = await res.json() as { status?: { indicator?: string } };
+    return data.status?.indicator !== 'none';
+  } catch {
+    return false;
+  }
+}
+
 const IDEMPOTENCY_WINDOW_MINUTES = 5;
 
 export async function processAlertJob(data: AlertJob): Promise<void> {
@@ -36,8 +51,14 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     }
   }
 
-  // 4. Load active alert channels for this team
-  const channels = await alertChannelRepository.findActiveByTeamId(teamId);
+  // 4. Load active alert channels + check for a ShopifyInstall on this team (parallel).
+  //    The ShopifyInstall lookup is only needed for down alerts to correlate Shopify outages.
+  const [channels, shopifyInstall] = await Promise.all([
+    alertChannelRepository.findActiveByTeamId(teamId),
+    type === 'down'
+      ? prisma.shopifyInstall.findUnique({ where: { teamId }, select: { shop: true } })
+      : Promise.resolve(null),
+  ]);
 
   if (channels.length === 0) {
     logger.info(
@@ -45,6 +66,21 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
       'No active alert channels — nothing to send'
     );
     return;
+  }
+
+  // 4a. If this is a Shopify-installed team, check whether Shopify itself is having a
+  //     platform incident. Best-effort: isShopifyOutage() never throws (3 s timeout,
+  //     returns false on any error) so it cannot block or fail the alert.
+  let note: string | undefined;
+  if (shopifyInstall) {
+    const outage = await isShopifyOutage();
+    if (outage) {
+      note = SHOPIFY_OUTAGE_NOTE;
+      logger.info(
+        { service: 'alert-worker', teamId, incidentId, shop: shopifyInstall.shop },
+        'Shopify platform outage detected — appending note to alert'
+      );
+    }
   }
 
   const payload: AlertPayload = {
@@ -59,6 +95,7 @@ export async function processAlertJob(data: AlertJob): Promise<void> {
     },
     type,
     durationMs,
+    note,
   };
 
   // 5. Send to each channel with per-channel idempotency and error isolation.

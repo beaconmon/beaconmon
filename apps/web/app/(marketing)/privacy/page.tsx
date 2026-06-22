@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <section className="py-[80px] max-[640px]:py-12">
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5">
           <h1 className="text-[clamp(32px,4vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Privacy Policy</h1>
-          <p className="text-brand-muted text-[14px] mb-12">Last updated: May 2026</p>
+          <p className="text-brand-muted text-[14px] mb-12">Last updated: June 2026</p>
 
           <div className="prose-legal">
 
@@ -35,6 +35,7 @@ export default function PrivacyPage() {
               <li><strong>Usage data:</strong> Monitor configurations (URLs, check settings), check results, alert channel configurations, and status page settings you create.</li>
               <li><strong>Log data:</strong> Server logs including IP addresses, browser user agents, and request timestamps, retained for up to 30 days for security and debugging purposes.</li>
               <li><strong>Cookies:</strong> We use a single session cookie to keep you logged in. We do not use advertising or tracking cookies.</li>
+              <li><strong>Chrome extension data:</strong> If you install the Beaconmon Chrome extension, the extension reads DOM signals (HTML tags and asset URLs) on HTTPS pages you visit to detect Shopify storefronts. This detection happens entirely in your browser and the full content of pages you visit is never transmitted to our servers. Only the bare domain name (e.g. <em>example.com</em>) of a store you explicitly choose to track is sent to Beaconmon. A bearer token is stored in Chrome&apos;s local storage to authenticate your account; reconnecting the extension revokes the previous token.</li>
             </ul>
 
             <h2>3. How we use your data</h2>
@@ -55,6 +56,7 @@ export default function PrivacyPage() {
               <li><strong>Cloudflare</strong>: CDN, DDoS protection, and edge caching for status pages.</li>
               <li><strong>Neon</strong>: managed PostgreSQL database hosting (your monitor data, check results, and account data are stored here).</li>
               <li><strong>Sentry</strong>: error tracking. Error events may include request context but are stripped of payment or full authentication data.</li>
+              <li><strong>PostHog</strong>: product analytics. When you track a competitor via the Chrome extension or the web app, an event is sent to PostHog containing your anonymised team identifier and the competitor domain. No personal data (name, email, IP) is included in these events.</li>
             </ul>
 
             <h2>5. Data retention</h2>

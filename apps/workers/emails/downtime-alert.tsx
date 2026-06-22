@@ -21,6 +21,7 @@ export interface DowntimeAlertProps {
   incidentUrl?: string;
   acknowledgeUrl?: string;
   unsubscribeUrl?: string;
+  note?: string;
 }
 
 export function DowntimeAlert({
@@ -31,6 +32,7 @@ export function DowntimeAlert({
   incidentUrl,
   acknowledgeUrl,
   unsubscribeUrl,
+  note,
 }: DowntimeAlertProps) {
   const preview = `${monitorName} is down — incident detected at ${formatBriefDateTime(incidentStartedAt)}.`;
 
@@ -58,6 +60,8 @@ export function DowntimeAlert({
           { k: 'Incident', v: `#${incidentId}` },
         ]}
       />
+
+      {note && <Para>{note}</Para>}
 
       {(incidentUrl || acknowledgeUrl) && (
         <BtnRow>

@@ -146,7 +146,7 @@ async function onTrack(snapshot: Snapshot, btn: HTMLButtonElement, note: HTMLEle
   if (result.reason === 'limit') {
     note.className = 'note err';
     const link = el('a', 'note-link', 'Upgrade your plan') as HTMLAnchorElement;
-    link.href = 'https://beaconmon.com/billing';
+    link.href = 'https://beaconmon.com/settings/billing';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     note.replaceChildren(document.createTextNode('Competitor limit reached. '), link);

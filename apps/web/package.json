@@ -73,7 +73,7 @@
     "@beaconmon/tsconfig": "workspace:*",
     "@eslint/eslintrc": "^3.3.5",
     "@types/node": "^20.17.9",
-    "@types/react": "^19.2.14",
+    "@types/react": "19.2.17",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.20",
     "beasties": "^0.4.2",

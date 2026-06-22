@@ -37,6 +37,7 @@ export const emailSender: ChannelSender = async (rawConfig, payload) => {
             monitorUrl: monitor.url,
             incidentStartedAt: incident.startedAt,
             incidentId: incident.id,
+            note: payload.note,
           })
         )
       : await render(

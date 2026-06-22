@@ -35,13 +35,13 @@ export function toCents(price: string): number {
 
 /**
  * Minimum absolute percent move required before a price_changed event is
- * recorded. The default of 0.02 (2%) suppresses live spot-price repricing
+ * recorded. The default of 0.05 (5%) suppresses live spot-price repricing
  * storms (e.g. precious-metal sellers re-quoting every few minutes) while
- * still capturing real merchandising moves. A downstream read-time filter
- * hides sub-5% moves, but storage is gated here at the source. Override with
- * the PRICE_EVENT_MIN_PCT env var.
+ * still capturing real merchandising moves. Aligns with the downstream
+ * usable-event filter so sub-5% moves are neither stored nor surfaced.
+ * Override with the PRICE_EVENT_MIN_PCT env var.
  */
-const DEFAULT_PRICE_EVENT_MIN_PCT = 0.02;
+const DEFAULT_PRICE_EVENT_MIN_PCT = 0.05;
 
 export function priceEventMinPct(): number {
   const raw = process.env.PRICE_EVENT_MIN_PCT;

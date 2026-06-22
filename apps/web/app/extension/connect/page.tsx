@@ -64,10 +64,12 @@ function ConnectFlow(): ReactElement {
   const extId = searchParams.get('ext_id') ?? '';
   const extIdValid = EXT_ID_RE.test(extId);
 
-  const [phase, setPhase] = useState<Phase>('checking');
+  const [phase, setPhase] = useState<Phase>(() => (extIdValid ? 'checking' : 'error'));
   const [email, setEmail] = useState('');
   const [teamName, setTeamName] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() =>
+    extIdValid ? '' : 'This page must be opened from the Beaconmon extension.'
+  );
   const [loading, setLoading] = useState(false);
 
   // Mint a token for the signed-in user and hand it to the extension.
@@ -95,11 +97,7 @@ function ConnectFlow(): ReactElement {
   // for the magic link. After the user clicks the emailed link they return here
   // with a session and this effect completes the handoff.
   useEffect(() => {
-    if (!extIdValid) {
-      setPhase('error');
-      setError('This page must be opened from the Beaconmon extension.');
-      return;
-    }
+    if (!extIdValid) return;
     let cancelled = false;
     void authClient.getSession().then((session) => {
       if (cancelled) return;
