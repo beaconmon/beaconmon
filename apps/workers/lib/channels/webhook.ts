@@ -46,6 +46,7 @@ export const webhookSender: ChannelSender = async (rawConfig, payload) => {
     timestamp: new Date().toISOString(),
     incidentId: incident.id,
     ...(durationMs !== undefined ? { durationMs } : {}),
+    ...(payload.note !== undefined ? { note: payload.note } : {}),
   };
 
   const body = JSON.stringify(webhookPayload);

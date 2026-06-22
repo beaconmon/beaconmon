@@ -45,12 +45,16 @@ export const slackSender: ChannelSender = async (rawConfig, payload) => {
             { title: 'Incident ID', value: incident.id, short: true },
           ];
 
+  const allFields = payload.note
+    ? [...fields, { title: 'Note', value: payload.note, short: false }]
+    : fields;
+
   const slackPayload = {
     attachments: [
       {
         color,
         title,
-        fields,
+        fields: allFields,
         footer: 'Beaconmon',
         ts: Math.floor(Date.now() / 1000),
       },

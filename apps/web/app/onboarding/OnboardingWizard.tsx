@@ -68,6 +68,20 @@ function markComplete(teamId: string): void {
   }
 }
 
+// Reads the competitor stashed by the public snapshot tool, normalized to a bare
+// domain. Returns [] when absent or malformed. Pure read so it is safe to call
+// from a useState initializer (idempotent under StrictMode double-invoke).
+function readCompetitorSeed(): string[] {
+  try {
+    const seed = localStorage.getItem('beaconmon:competitor');
+    if (!seed) return [];
+    const domain = seed.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
+    return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain) ? [domain] : [];
+  } catch {
+    return [];
+  }
+}
+
 export function buildBundle(storeUrl: string, platform: PlatformType, productSlugs: string[]): BundleItem[] {
   const base = storeUrl.replace(/\/$/, '');
   const items = ONBOARDING_TEMPLATES[platform]
@@ -110,8 +124,7 @@ function discoverDescription(type: string): string {
 }
 
 function mapDiscoverToBundle(
-  suggestions: z.infer<typeof discoverResponseSchema>['suggestions'],
-  _storeUrl: string
+  suggestions: z.infer<typeof discoverResponseSchema>['suggestions']
 ): BundleItem[] {
   return suggestions.map((s, i): BundleItem => ({
     id: `discover-${i}`,
@@ -139,7 +152,11 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
   const [storeUrl, setStoreUrl] = useState('');
   const [platform, setPlatform] = useState<PlatformType | null>(null);
   const [bundle, setBundle] = useState<BundleItem[]>([]);
-  const [competitors, setCompetitors] = useState<string[]>([]);
+  // Seed a competitor stashed by the public snapshot tool ("Watch this store").
+  // Read in the initializer (idempotent) so it survives StrictMode; the key is
+  // cleared in an effect below. localStorage is used rather than a query param
+  // so the value survives the signup, social-auth, and /today hops.
+  const [competitors, setCompetitors] = useState<string[]>(() => readCompetitorSeed());
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [catalogPreviewLoading, setCatalogPreviewLoading] = useState(false);
@@ -167,6 +184,15 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       router.replace('/today');
     }
   }, [ready, router]);
+
+  // Clear the stashed competitor once seeded so a later onboarding does not reuse it.
+  useEffect(() => {
+    try {
+      localStorage.removeItem('beaconmon:competitor');
+    } catch {
+      // localStorage unavailable — nothing to clear.
+    }
+  }, []);
 
   function skip(): void {
     markComplete(teamId);
@@ -235,6 +261,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
 
     if (bundleCurrent) {
       setStep(3);
+      setDiscoverLoading(false);
       return;
     }
 
@@ -246,7 +273,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     if (isAiPlan && prefetchRef.current) {
       try {
         const discoverResult = await prefetchRef.current.discover;
-        const discovered = mapDiscoverToBundle(discoverResult.suggestions, storeUrl);
+        const discovered = mapDiscoverToBundle(discoverResult.suggestions);
         const filtered = currentPlatform === 'shopify'
           ? discovered.filter((b) => b.type !== 'ssl' && b.type !== 'domain')
           : discovered;

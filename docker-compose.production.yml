@@ -41,6 +41,18 @@ x-workers: &workers
       max-size: "10m"
       max-file: "3"
 
+x-shopify: &shopify
+  image: ghcr.io/${GHCR_OWNER}/beaconmon-shopify:latest
+  pull_policy: always
+  restart: unless-stopped
+  env_file: .env
+  stop_grace_period: 15s
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
 services:
   migrate:
     <<: *workers
@@ -56,6 +68,25 @@ services:
       - "3000"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # Shopify embedded app (shopify.beaconmon.com). Coolify routes the domain to
+  # this service's exposed port. Requires SHOPIFY_API_KEY / SHOPIFY_API_SECRET /
+  # SHOPIFY_APP_URL / SCOPES in .env.
+  shopify:
+    <<: *shopify
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
       interval: 30s
       timeout: 10s
       retries: 3

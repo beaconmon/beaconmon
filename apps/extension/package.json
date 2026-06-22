@@ -1,0 +1,27 @@
+{
+  "name": "@beaconmon/extension",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Beaconmon Competitor X-ray — Chrome MV3 extension that reads a Shopify storefront's live promo picture client-side and turns it into continuous monitoring in one click.",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@beaconmon/checker": "workspace:*"
+  },
+  "devDependencies": {
+    "@beaconmon/eslint-config": "workspace:*",
+    "@eslint/js": "^10.0.1",
+    "@types/chrome": "^0.0.287",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "esbuild": "^0.24.2",
+    "eslint": "^9.39.4",
+    "globals": "^17.6.0",
+    "typescript": "^5.7.3"
+  }
+}

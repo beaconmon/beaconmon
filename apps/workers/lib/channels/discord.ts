@@ -50,12 +50,16 @@ export const discordSender: ChannelSender = async (rawConfig, payload) => {
             { name: 'Incident ID', value: incident.id, inline: true },
           ];
 
+  const allFields = payload.note
+    ? [...fields, { name: 'Note', value: payload.note, inline: false }]
+    : fields;
+
   const discordPayload = {
     embeds: [
       {
         title,
         color,
-        fields,
+        fields: allFields,
         footer: { text: 'Beaconmon' },
         timestamp: new Date().toISOString(),
       },

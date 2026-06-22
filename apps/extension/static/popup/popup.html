@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./popup.css" />
+    <title>Beaconmon Competitor X-ray</title>
+  </head>
+  <body>
+    <header class="hd">
+      <svg class="hd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Beaconmon" width="22" height="22">
+        <rect fill="#0f172a" width="32" height="32" rx="7"/>
+        <path d="M4 22a12 12 0 0 0 24 0" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" opacity=".28"/>
+        <path d="M8 22a8 8 0 0 0 16 0" fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" opacity=".62"/>
+        <path d="M12 22a4 4 0 0 0 8 0" fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M16 24.5V28" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+        <circle cx="16" cy="22" r="2.5" fill="#06b6d4"/>
+      </svg>
+      <div class="hd-names">
+        <span class="hd-brand">Beaconmon</span>
+        <span class="hd-product">Competitor X-ray</span>
+      </div>
+      <span id="auth" class="auth"></span>
+    </header>
+    <main id="root" class="root" aria-live="polite">
+      <div class="muted">Loading…</div>
+    </main>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

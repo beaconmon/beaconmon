@@ -112,10 +112,10 @@ export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
       <div className="flex items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
         <span>
           <span className="font-semibold">{daysLeft} {daysLeft === 1 ? 'day' : 'days'} left</span> in your Growth trial.{' '}
-          <Link href="/pricing?plan=growth" className="font-medium underline hover:no-underline">
-            Convert to Growth
+          <Link href="/settings/billing?plan=growth" className="font-medium underline hover:no-underline">
+            Upgrade to Growth
           </Link>{' '}
-          to keep your monitors and intelligence running.
+          to keep your 100 monitors, AI insights, and daily intelligence. After the trial you move to Free Lite.
         </span>
         <button
           onClick={() => dismissBanner('inTrialCountdown')}
@@ -132,11 +132,11 @@ export function TrialBanner({ plan, trialEndsAt }: TrialBannerProps) {
     return (
       <div className="flex items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
         <span>
-          Your Growth trial has ended.{' '}
-          <Link href="/pricing?plan=growth" className="font-medium underline hover:no-underline">
-            Resume Growth
+          Your Growth trial has ended and you&apos;re now on Free Lite.{' '}
+          <Link href="/settings/billing?plan=growth" className="font-medium underline hover:no-underline">
+            Upgrade to Growth
           </Link>{' '}
-          to keep all your monitors running.
+          to restore your 100 monitors and AI insights.
         </span>
         <button
           onClick={() => dismissBanner('expired')}

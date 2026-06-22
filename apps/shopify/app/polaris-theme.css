@@ -1,0 +1,17 @@
+/* Override Polaris interactive tokens with brand green */
+:root,
+.p-theme-light {
+  /* Primary buttons */
+  --p-color-bg-fill-brand:          oklch(82% 0.22 152);
+  --p-color-bg-fill-brand-hover:    oklch(72% 0.20 152);
+  --p-color-bg-fill-brand-active:   oklch(68% 0.19 152);
+  --p-color-bg-fill-brand-selected: oklch(82% 0.22 152);
+
+  /* Links */
+  --p-color-text-link:        oklch(55% 0.18 152);
+  --p-color-text-link-hover:  oklch(45% 0.16 152);
+  --p-color-text-link-active: oklch(38% 0.14 152);
+
+  /* Focus ring */
+  --p-color-border-interactive-focus: oklch(82% 0.22 152);
+}

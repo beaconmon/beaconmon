@@ -15,7 +15,7 @@ import { assertPublicHttpUrl } from '@/lib/validations/public-url';
 
 const bulkCreateSchema = z.object({
   monitors: z.array(createMonitorSchema).min(1).max(50),
-  source: z.enum(['discovery', 'template', 'import', 'smart-setup']).optional(),
+  source: z.enum(['discovery', 'template', 'import', 'smart-setup', 'extension']).optional(),
 });
 
 export const POST = withAuth(async (req, { teamId, plan, role }) => {

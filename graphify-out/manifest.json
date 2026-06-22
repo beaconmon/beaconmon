@@ -60,7 +60,7 @@
     "semantic_hash": "97e6a5d858ebd7f3ca386efcdc39612b"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/alert-channels/page.tsx": {
-    "mtime": 1781599393.1024752,
+    "mtime": 1781642636.3348353,
     "ast_hash": "54d81126de4305eeba569617e30d7687",
     "semantic_hash": ""
   },
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/monitors/page.tsx": {
-    "mtime": 1781599300.890032,
-    "ast_hash": "baa8cd2c1c1990896acb2469a701949c",
+    "mtime": 1781642636.3353412,
+    "ast_hash": "3bedc04f3f27f498a1e2f7de175f067c",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/reports/page.tsx": {
@@ -115,8 +115,8 @@
     "semantic_hash": "4d7a59e3160eec8623968962274405f0"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/settings/billing/page.tsx": {
-    "mtime": 1781599337.248646,
-    "ast_hash": "9343617fc7ed345bbe024db83cfd73cd",
+    "mtime": 1782019548.6470966,
+    "ast_hash": "deee8b60a6dbbe24ed80a49854e22982",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/settings/general/page.tsx": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/changelog/page.tsx": {
-    "mtime": 1781525542.604415,
-    "ast_hash": "654d7af903e9e1548691ec4eff9dae97",
+    "mtime": 1781969475.7314641,
+    "ast_hash": "7228c0549a91616e070dc2760ddbf672",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/competitor-price-tracking/page.tsx": {
@@ -255,9 +255,9 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/privacy/page.tsx": {
-    "mtime": 1780132581.4954867,
-    "ast_hash": "0f9308431185220eb1c85cc176fb9631",
-    "semantic_hash": "0f9308431185220eb1c85cc176fb9631"
+    "mtime": 1782068696.7071187,
+    "ast_hash": "f8f6f9e5b7d2317fe67b9dc125d4a474",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/refund-policy/page.tsx": {
     "mtime": 1779570026.8120565,
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/monitors/bulk-create/route.ts": {
-    "mtime": 1781252888.1586056,
-    "ast_hash": "179b690a56cea72e1e6663c66cecd7c7",
+    "mtime": 1782052714.941817,
+    "ast_hash": "fe2d582bcb44dbbf5acc8421bc526544",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/monitors/bulk/route.ts": {
@@ -645,8 +645,8 @@
     "semantic_hash": "ee63a7cc947541d93646575f721a8425"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/onboarding/OnboardingWizard.tsx": {
-    "mtime": 1781271187.13306,
-    "ast_hash": "35d2512259c001ee2c8962d87054d7be",
+    "mtime": 1782019558.2157562,
+    "ast_hash": "d7d43490687f4ea7919037ef67eb8858",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/onboarding/page.tsx": {
@@ -660,8 +660,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/sitemap.ts": {
-    "mtime": 1780897931.884494,
-    "ast_hash": "3320548504be578fc7d3ebf1a6903796",
+    "mtime": 1781972219.9150534,
+    "ast_hash": "3ed2fa83e8985b5b86aafdcce274f545",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components.json": {
@@ -810,7 +810,7 @@
     "semantic_hash": "df42ad6dc0981acbe59a1f24b38ff292"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/monitors/monitor-form.tsx": {
-    "mtime": 1781599297.1713815,
+    "mtime": 1781642636.3374207,
     "ast_hash": "283c15d91225fbb8fd6fbce56c292916",
     "semantic_hash": ""
   },
@@ -995,8 +995,8 @@
     "semantic_hash": "85d30b3088cec0a31929176709b73383"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/ui/trial-banner.tsx": {
-    "mtime": 1780836621.6492617,
-    "ast_hash": "6a736663a3e361e44540afacf65a670c",
+    "mtime": 1781969475.73204,
+    "ast_hash": "11e9351afcd9c245898ef94828edcf74",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/ui/upgrade-prompt.tsx": {
@@ -1495,8 +1495,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/package.json": {
-    "mtime": 1780983558.046861,
-    "ast_hash": "d393fce132f395e423db3b59f1af1841",
+    "mtime": 1782067856.0658658,
+    "ast_hash": "16fdee8527e5572995a4dc39fb2315c5",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/postcss.config.js": {
@@ -1520,13 +1520,13 @@
     "semantic_hash": "4d6840953d838a06a9fc7de54686a091"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/vitest.config.ts": {
-    "mtime": 1776874971.352359,
-    "ast_hash": "7bb12d11a56a77425f61be70848429cf",
-    "semantic_hash": "7bb12d11a56a77425f61be70848429cf"
+    "mtime": 1781970973.9031794,
+    "ast_hash": "327f052a05b562e82ce6cd86aded6be5",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/alert-worker.test.ts": {
-    "mtime": 1780417434.0998394,
-    "ast_hash": "fea5f77a61174efafb1c44c086e6887f",
+    "mtime": 1782035696.7570121,
+    "ast_hash": "1021a2f42e87d0006763939c1fbc9525",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/alert-worker.ts": {
@@ -1540,13 +1540,13 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/check-worker.ts": {
-    "mtime": 1780666712.8823628,
-    "ast_hash": "6616fb88dc82c83575d97d1c2e3dc285",
+    "mtime": 1781772435.9775147,
+    "ast_hash": "a4925a93e823d99ac3e179ac91fa5c2c",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/content-worker.ts": {
-    "mtime": 1780666712.8830645,
-    "ast_hash": "854ad19bb739ca0f3b1d6af61acd6fef",
+    "mtime": 1781772435.978341,
+    "ast_hash": "3a0782f723919702891866b1ec9f665a",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/digest-worker.ts": {
@@ -1560,8 +1560,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/downtime-alert.tsx": {
-    "mtime": 1781247269.799576,
-    "ast_hash": "7dcae63b24890102746a7e2c00b71a90",
+    "mtime": 1782026256.6816251,
+    "ast_hash": "e5d7924968e0828c89b277bc4df34ad2",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/emails/intelligence-digest.tsx": {
@@ -1595,14 +1595,14 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/discord.ts": {
-    "mtime": 1779432919.4576867,
-    "ast_hash": "826cab7652e95dd61db077bf9350b493",
-    "semantic_hash": "826cab7652e95dd61db077bf9350b493"
+    "mtime": 1782026270.987281,
+    "ast_hash": "8f498e477239a593cc54c1d8912551ff",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/email.ts": {
-    "mtime": 1778150113.0696943,
-    "ast_hash": "eb77b83e461274ccae6910a67179d142",
-    "semantic_hash": "eb77b83e461274ccae6910a67179d142"
+    "mtime": 1782026261.1174517,
+    "ast_hash": "6dae2f86862e02fef73095989b503d59",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/index.ts": {
     "mtime": 1777388065.19912,
@@ -1610,9 +1610,9 @@
     "semantic_hash": "e732a51f4c5df87d69bc489df0d8dcbb"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/slack.ts": {
-    "mtime": 1779432919.4580293,
-    "ast_hash": "566e21730392258f70a56cee71c93302",
-    "semantic_hash": "566e21730392258f70a56cee71c93302"
+    "mtime": 1782026265.846366,
+    "ast_hash": "531373b7cfe7e3e7c78d77dfcb0f523d",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/sms.ts": {
     "mtime": 1776847091.4639533,
@@ -1620,14 +1620,14 @@
     "semantic_hash": "c7ade2f3d9c3fd778cd7b3ce75a16ac3"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/types.ts": {
-    "mtime": 1777388065.1996927,
-    "ast_hash": "3000af9cf50513b967981aa53bed75bf",
-    "semantic_hash": "3000af9cf50513b967981aa53bed75bf"
+    "mtime": 1782026215.0022242,
+    "ast_hash": "12e6a34e50057de0e7c64af082d4e74b",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/channels/webhook.ts": {
-    "mtime": 1778150111.9208052,
-    "ast_hash": "602d9032e0344a9c1bdf52565ac9ce52",
-    "semantic_hash": "602d9032e0344a9c1bdf52565ac9ce52"
+    "mtime": 1782026276.6985786,
+    "ast_hash": "4d3faddfc16373a8389620ea3d325933",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/content-change-notifier.ts": {
     "mtime": 1781356102.9866188,
@@ -1670,9 +1670,9 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/process-alert-job.ts": {
-    "mtime": 1777546135.9913545,
-    "ast_hash": "b1910f3037d215ce5f30d05998c33809",
-    "semantic_hash": "b1910f3037d215ce5f30d05998c33809"
+    "mtime": 1782026243.1703067,
+    "ast_hash": "f545bcfb13bcd9bf767323a5ff008381",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/process-check-job.ts": {
     "mtime": 1780942472.4435334,
@@ -1745,7 +1745,7 @@
     "semantic_hash": "41340177b013250d1bc3a4d2d775ae98"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/tasks/index.ts": {
-    "mtime": 1781619414.3967054,
+    "mtime": 1781642636.3390262,
     "ast_hash": "09d63b0a07f0abdc2c933823ffc352ee",
     "semantic_hash": ""
   },
@@ -1800,8 +1800,8 @@
     "semantic_hash": "3adb4af1ef7872a098d96293091de21f"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/package.json": {
-    "mtime": 1781525542.6459327,
-    "ast_hash": "99215b39eb6a36676d888784331b755d",
+    "mtime": 1782067845.3366652,
+    "ast_hash": "8edc954d4be0d24d2250dfd3d8fb6f53",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/ai/package.json": {
@@ -1935,13 +1935,13 @@
     "semantic_hash": "cc89abab5fefc42dc17e4a17a0d45f36"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/package.json": {
-    "mtime": 1777306361.9271026,
-    "ast_hash": "6dc35ac66fd374dbed2f6fbbc47c5b49",
-    "semantic_hash": "6dc35ac66fd374dbed2f6fbbc47c5b49"
+    "mtime": 1782051828.4250264,
+    "ast_hash": "b9937ffc852dc3320a309dd48387467e",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/content.ts": {
-    "mtime": 1781619345.148435,
-    "ast_hash": "65ef4062a3f7eaea66c31f88cda15fd3",
+    "mtime": 1781642636.3702796,
+    "ast_hash": "ac17c076640860879a02116b84595def",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/domain.ts": {
@@ -1970,8 +1970,8 @@
     "semantic_hash": "ca18a4516f7427f80f2786acefd7a8a6"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/index.ts": {
-    "mtime": 1780942472.4683084,
-    "ast_hash": "07553def4f002e59d764d2eec235e5b1",
+    "mtime": 1781970448.9783182,
+    "ast_hash": "3d3c28f6fd97cbce2381668ee2b341ab",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/ssl.ts": {
@@ -2025,9 +2025,9 @@
     "semantic_hash": "50159b30155465ccff24783678382fff"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/src/repositories/check-results.ts": {
-    "mtime": 1777388065.2043316,
-    "ast_hash": "808811e95944e9ac7bd97022170195ae",
-    "semantic_hash": "808811e95944e9ac7bd97022170195ae"
+    "mtime": 1782108327.7398498,
+    "ast_hash": "d147a393f9fa496c388a557e264b715c",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/src/repositories/content-snapshots.ts": {
     "mtime": 1781247269.840156,
@@ -2310,9 +2310,9 @@
     "semantic_hash": "8524b63da9e2d39accf23cfe7caaa879"
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/.github/workflows/ci.yml": {
-    "mtime": 1780132598.1573749,
-    "ast_hash": "e6485aa42a0e8342b968e367f726b600",
-    "semantic_hash": "e6485aa42a0e8342b968e367f726b600"
+    "mtime": 1782035820.3811686,
+    "ast_hash": "7183580fb4b17c2944622b5c2eddacce",
+    "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/CLAUDE.md": {
     "mtime": 1780409930.7817738,
@@ -2325,8 +2325,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/docker-compose.production.yml": {
-    "mtime": 1780942472.4465125,
-    "ast_hash": "85386511a5fb2b9c261a373fdf55af59",
+    "mtime": 1782035842.36046,
+    "ast_hash": "184584bf8b537a762d076b4639ba6585",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/docker-compose.yml": {
@@ -2395,8 +2395,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/competitor-page-worker.ts": {
-    "mtime": 1780942472.4409096,
-    "ast_hash": "74c96ae71f70a6b01c39d5066f3de73d",
+    "mtime": 1781772435.977945,
+    "ast_hash": "f808f19134c1de078532d02377b6b528",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/process-competitor-notify-job.ts": {
@@ -2405,13 +2405,13 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/process-competitor-page-check-job.ts": {
-    "mtime": 1781619468.2877085,
+    "mtime": 1781642636.3386407,
     "ast_hash": "e768d509924db9ec77b81d5378406345",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/shopify-feed-worker.ts": {
-    "mtime": 1781529131.4642859,
-    "ast_hash": "f76c7e331917db4ac9af5d60278698ef",
+    "mtime": 1781772435.9795508,
+    "ast_hash": "f31b3a8b31d784dbcb64ad945e3cb997",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/src/repositories/competitor-events.ts": {
@@ -2420,8 +2420,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/src/repositories/competitor-pages.ts": {
-    "mtime": 1781619454.2089841,
-    "ast_hash": "a22d5e7b21237213ce3b877264bcff2a",
+    "mtime": 1781642636.3711379,
+    "ast_hash": "27b303d7c7b1bcc6bc0b1d09225cfad6",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/src/repositories/competitor-products.ts": {
@@ -2675,7 +2675,7 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(dashboard)/today/TodayPageClient.tsx": {
-    "mtime": 1781599377.0278563,
+    "mtime": 1781642636.3365233,
     "ast_hash": "4de33f0e3895c8d265ea3d8c03da48cc",
     "semantic_hash": ""
   },
@@ -3115,8 +3115,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/catalog-sync.ts": {
-    "mtime": 1781253217.5445664,
-    "ast_hash": "4a413078e59c43ccc898772851205a6c",
+    "mtime": 1782026188.9825711,
+    "ast_hash": "194d73e15c746096472956764476825a",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/extract-jsonld.ts": {
@@ -3125,8 +3125,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/polite-fetch.ts": {
-    "mtime": 1781253217.5457177,
-    "ast_hash": "07d851d7f0264107b86c3d591e152263",
+    "mtime": 1781772435.9787545,
+    "ast_hash": "f0e8625a7d200768698e66570297b967",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/sitemap-discovery.ts": {
@@ -3135,8 +3135,8 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/process-catalog-sync-job.ts": {
-    "mtime": 1781373020.5291898,
-    "ast_hash": "93c76ff1fdb114ea5d1a186e73d86a8a",
+    "mtime": 1782019639.0234537,
+    "ast_hash": "ffe06913a1e05fa40dde7692519df3f6",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/prisma/migrations/0010_extraction_fallback_ladder/migration.sql": {
@@ -3195,28 +3195,28 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/dashboard/welcome-banner.tsx": {
-    "mtime": 1781599358.3397584,
-    "ast_hash": "eac3bcafd36e33b4814a17d25be15179",
+    "mtime": 1781642636.3369968,
+    "ast_hash": "4b355625a781684945c50ee59b05d777",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/scripts/competitor-data-audit.ts": {
-    "mtime": 1781614604.6809978,
-    "ast_hash": "579c0d0fa70ef9a88b44561b7d7c9ca4",
+    "mtime": 1781642636.3751366,
+    "ast_hash": "c9a9992324ff75a02eb87395a31db796",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/docs/strategy/competitor-data-quality-audit.md": {
-    "mtime": 1781614659.6644158,
+    "mtime": 1781642636.34002,
     "ast_hash": "ea8e18a99ac2c57eb661fb5d86579dca",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/competitor-page-backoff.test.ts": {
-    "mtime": 1781619484.0380976,
+    "mtime": 1781642636.3381178,
     "ast_hash": "0a73030b300143fe07a2e5457e6f06c3",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/tasks/stale-sync-watchdog.ts": {
-    "mtime": 1781619402.894858,
-    "ast_hash": "8377e19223ae95118e5b339e3e656f8d",
+    "mtime": 1781642636.3394463,
+    "ast_hash": "5bbf6df25a838e969abbbe41fa67fed3",
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_classifier_out.json": {
@@ -3225,8 +3225,448 @@
     "semantic_hash": ""
   },
   "/Users/haimanotgetu/repos/personal/beaconmon/scripts/competitor-page-failure-classifier.ts": {
-    "mtime": 1781619416.7342722,
+    "mtime": 1781642636.375687,
     "ast_hash": "6435c22f3846171848f37eadd14405bf",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/workers/lib/catalog-sync.test.ts": {
+    "mtime": 1782026459.606857,
+    "ast_hash": "e2288ec5f8dbc416b302e32364c0c29f",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_applied_better_pages.json": {
+    "mtime": 1781623120.2807505,
+    "ast_hash": "ec2bbea4f1f2667fedff97b8a2022936",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_applied_deactivations.json": {
+    "mtime": 1781621878.1283696,
+    "ast_hash": "3b3c68287b3e1dca9a211f40c5b0949e",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_applied_deactivations_fix_url.json": {
+    "mtime": 1781641791.958064,
+    "ast_hash": "5da791c62888e57d1ed4c54bb2f69042",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_applied_full_catalog.json": {
+    "mtime": 1781641845.7469904,
+    "ast_hash": "3cfbe24b3ecb1b5aa416dfa116f60d37",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_fc_remeasure.ts": {
+    "mtime": 1781680948.335778,
+    "ast_hash": "564a908d740bbf7310ef3aab81fa3c3d",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/_remediation_plan.json": {
+    "mtime": 1781642636.371652,
+    "ast_hash": "ee6c8112724f7af1a3a5c73ec02fa2a3",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/apply-better-pages.ts": {
+    "mtime": 1781622575.613046,
+    "ast_hash": "901b5af7623ae85673f8483be3d0625b",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/apply-deactivations.ts": {
+    "mtime": 1781642636.3732438,
+    "ast_hash": "df3651c1736fe265857043260c19a566",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/apply-full-catalog-prototype.ts": {
+    "mtime": 1781693394.5594168,
+    "ast_hash": "85583ff905c85216c233140a6e5bb933",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/build-remediation-plan.ts": {
+    "mtime": 1781642636.3737495,
+    "ast_hash": "8dac524ebdaf243827d90b5b811763cc",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/competitor-signal-yield.ts": {
+    "mtime": 1781642636.3760712,
+    "ast_hash": "ed6a4970332661af4d9f382fde9ad4fb",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/deactivate-fix-url-brands.ts": {
+    "mtime": 1781640933.0925956,
+    "ast_hash": "018671f88e18f49f026eedda0a8581f5",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/promote-shopify-batch.ts": {
+    "mtime": 1781693390.9727347,
+    "ast_hash": "0b6cfddbd60aac0f4275956f5c617a43",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/scripts/test-freemius-e2e.ts": {
+    "mtime": 1781775013.6962395,
+    "ast_hash": "ab1d801110a68fcb6b6ed443a2371d7b",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/storefront.test.ts": {
+    "mtime": 1781970808.3741875,
+    "ast_hash": "e7959c731c6e55650d0b911b8e67206c",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/checker/src/storefront.ts": {
+    "mtime": 1781970800.9542434,
+    "ast_hash": "13c5e2ef772f61ca81b278b8c76bfbcc",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/tools/snapshot/route.ts": {
+    "mtime": 1781972752.2950368,
+    "ast_hash": "e1ce5f17a71c5dad15747d3e049142fb",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/tools/snapshot.test.ts": {
+    "mtime": 1781970994.1822045,
+    "ast_hash": "6fb13f23e4053cbcf4890f5b083ca9d2",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/tools/snapshot.ts": {
+    "mtime": 1782020506.8700702,
+    "ast_hash": "8f531c3fdf49af3a277ae79d69100eb2",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/test/stubs/server-only.ts": {
+    "mtime": 1781970969.9119275,
+    "ast_hash": "24da7a99ddda9eb88b1fe2a8596220c3",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/.hallmark/log.json": {
+    "mtime": 1781971642.68121,
+    "ast_hash": "ac17a5366c6601bb176bf6a03a9842aa",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/tools/page.tsx": {
+    "mtime": 1781971562.3830338,
+    "ast_hash": "ce9683027b3ac791a036384122c44096",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/(marketing)/tools/shopify-competitor-snapshot/page.tsx": {
+    "mtime": 1781973915.4812918,
+    "ast_hash": "0528dcc2dd46a5917a90d4b14ea22115",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/components/tools/SnapshotTool.tsx": {
+    "mtime": 1782020505.8463979,
+    "ast_hash": "a0dd7d43a2d20d83f154883c6c8502a5",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/prisma/migrations/0013_shopify_install/migration.sql": {
+    "mtime": 1782022894.1814184,
+    "ast_hash": "1d0d2514bf4184382ed923122a61776d",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/+future.ts": {
+    "mtime": 1782111412.5623484,
+    "ast_hash": "946cbf41ce33d02a825b720a9698d07a",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/+routes.ts": {
+    "mtime": 1782111412.562464,
+    "ast_hash": "2009d12ee0b632ec23c62a04ff89d5a8",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/+server-build.d.ts": {
+    "mtime": 1782111412.5624099,
+    "ast_hash": "feb059bd8a13e59965da5ed7f19ac4ff",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/+types/root.ts": {
+    "mtime": 1782111412.5626976,
+    "ast_hash": "be2dbb5fac580743e65bc9134fe35a71",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/_index.ts": {
+    "mtime": 1782111412.5632703,
+    "ast_hash": "262e163c6d98c403167844956cec2f21",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/app._index.ts": {
+    "mtime": 1782111412.5628269,
+    "ast_hash": "677d274dbf7b4027f5aa2465387f5c54",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/app.ts": {
+    "mtime": 1782111412.5633252,
+    "ast_hash": "878a5cefdf56158d759efb49cf322f3c",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/auth.$.ts": {
+    "mtime": 1782111412.5632904,
+    "ast_hash": "e7768dda79196b2fe9f9c49feaa00cfa",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/db.server.ts": {
+    "mtime": 1782023648.7525015,
+    "ast_hash": "af79ce898569dc8891fbd818455b063f",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/entry.server.tsx": {
+    "mtime": 1782023771.8846316,
+    "ast_hash": "a10bc93cdf77b3fb2014eb862deccead",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/lib/session-storage.server.ts": {
+    "mtime": 1782024867.2511463,
+    "ast_hash": "d9cd8df54767ea0119dd42110c12eeff",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/root.tsx": {
+    "mtime": 1782023676.8251019,
+    "ast_hash": "c97a5d027135ae128c2a0975edb252a0",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes.ts": {
+    "mtime": 1782023680.522303,
+    "ast_hash": "7aea3a7d97593f76caff632db7b9bfa6",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/_index.tsx": {
+    "mtime": 1782023686.9864006,
+    "ast_hash": "9b1468497fddb95521e67f8714065dc0",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/app._index.tsx": {
+    "mtime": 1782110807.419648,
+    "ast_hash": "c4ad5042d5b95aad4740d50d31eba894",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/app.tsx": {
+    "mtime": 1782025826.7120996,
+    "ast_hash": "1a02f57049eac602ea9000ad3f69fc2c",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/auth.$.tsx": {
+    "mtime": 1782023691.6722531,
+    "ast_hash": "2a84dc980e4916704fea1a42502ca879",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/shopify.server.ts": {
+    "mtime": 1782111382.579312,
+    "ast_hash": "ce1deb319e29f34ba31f0a6e1855c8ac",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/package.json": {
+    "mtime": 1782068136.024909,
+    "ast_hash": "36acbd711eb8b73177e5f501e16bbbde",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/react-router.config.ts": {
+    "mtime": 1782023609.531374,
+    "ast_hash": "88a3527af127530fc6c789dc58056471",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/tsconfig.json": {
+    "mtime": 1782023625.1402526,
+    "ast_hash": "3cf2c0377a04b20d178ef2a3680c521a",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/vite.config.ts": {
+    "mtime": 1782023618.7942271,
+    "ast_hash": "940a6198d924fb884d69aa12c368ff8f",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/prisma/migrations/0014_shopify_install_nullable_team/migration.sql": {
+    "mtime": 1782024840.9528153,
+    "ast_hash": "54c847e84e18299f75044a3f5f665aff",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/lib/provision.server.ts": {
+    "mtime": 1782111407.5464756,
+    "ast_hash": "f7ea13df9a79c397de4cfe7a86d77965",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/app.competitors.ts": {
+    "mtime": 1782111412.5629747,
+    "ast_hash": "9ec304411f72f48a97045ceeaa73b29a",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/app.settings.ts": {
+    "mtime": 1782111412.5627692,
+    "ast_hash": "b4c0bff881b9ae432a93829d4124d4a1",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/webhooks.app.uninstalled.ts": {
+    "mtime": 1782111412.5632167,
+    "ast_hash": "50548d116f4075e6a9cd79625e46920d",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/.react-router/types/app/routes/+types/webhooks.compliance.ts": {
+    "mtime": 1782111412.5631819,
+    "ast_hash": "adabf5f7114819766761cf19d68d2006",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/app.competitors.tsx": {
+    "mtime": 1782111379.5416768,
+    "ast_hash": "a0ba8ae731ac18856ce45ce56af271be",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/app.settings.tsx": {
+    "mtime": 1782111397.4271472,
+    "ast_hash": "0bb283f1e37c89d96629095a67555131",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/webhooks.app.uninstalled.tsx": {
+    "mtime": 1782025596.783459,
+    "ast_hash": "c04e58972dab1ec1984962163ef3e35e",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/routes/webhooks.compliance.tsx": {
+    "mtime": 1782035637.0404782,
+    "ast_hash": "3e8126eec00554e6a9f683a010159d59",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/build.mjs": {
+    "mtime": 1782055109.1805897,
+    "ast_hash": "1b17a8c1831fc1f95b022037d5d87ad3",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/package.json": {
+    "mtime": 1782068130.026797,
+    "ast_hash": "9b5d0cedae806c9041a275b5b307e9c5",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/background/service-worker.ts": {
+    "mtime": 1782055122.5808306,
+    "ast_hash": "685702af587010cdedc1595f8392dc37",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/content/detect.ts": {
+    "mtime": 1782051965.6303315,
+    "ast_hash": "82ddf1865e8fddfcade04af32c9550ed",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/api.ts": {
+    "mtime": 1782067395.7389793,
+    "ast_hash": "8954e26654ebaf35a1182978886dba28",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/auth.ts": {
+    "mtime": 1782055118.105407,
+    "ast_hash": "8c69afaef8e4951d37d64dcb30a7dfd6",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/config.ts": {
+    "mtime": 1782051874.738817,
+    "ast_hash": "c3a2b8d4577f9a0491b1cc76795df0bd",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/messages.ts": {
+    "mtime": 1782067399.31197,
+    "ast_hash": "7e7c262712a5a72e23f1b125178735b4",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/snapshot.ts": {
+    "mtime": 1782051914.6648073,
+    "ast_hash": "04b88e131602b4fecc65b49362489cbb",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/lib/transport.ts": {
+    "mtime": 1782051895.949599,
+    "ast_hash": "8b51bb3445c3636387b6d6769907edc7",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/src/popup/popup.ts": {
+    "mtime": 1782068583.8809347,
+    "ast_hash": "503c2d10f3ca8b297aa934d1fb976e15",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/static/manifest.json": {
+    "mtime": 1782067374.879369,
+    "ast_hash": "ccb7ed4663dfe59a351ce7b1924d35e5",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/tsconfig.json": {
+    "mtime": 1782051840.41683,
+    "ast_hash": "5452076352e732fa8a17b667bc601ca9",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/README.md": {
+    "mtime": 1782052074.103904,
+    "ast_hash": "3a7d19c81dfaca82c8246f9151888a8c",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/static/popup/popup.html": {
+    "mtime": 1782054122.308783,
+    "ast_hash": "2e8899d311cdf1a7fc52428fd5872809",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/docs/chrome-extension-mvp.md": {
+    "mtime": 1782054246.8913171,
+    "ast_hash": "9adab5997f0d7d76ca50ac1e2c155ee0",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/extension/token/route.ts": {
+    "mtime": 1782052688.9153988,
+    "ast_hash": "9fc7d4b4a353f511067b279df32eb63d",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/api/extension/track/route.ts": {
+    "mtime": 1782052709.3247287,
+    "ast_hash": "f7dbe023c6ea62332994f7813c39c871",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/app/extension/connect/page.tsx": {
+    "mtime": 1782068268.550682,
+    "ast_hash": "c8403a66bf5aa3abfe2c849cd09fe1cb",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/api/with-extension-auth.ts": {
+    "mtime": 1782052627.3034158,
+    "ast_hash": "7b532bff3c42036287cc8149f75e35b4",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/web/lib/extension/adopt.ts": {
+    "mtime": 1782055126.5484488,
+    "ast_hash": "9d8dd66fa63777f9e522fbd3f0d2f8c4",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/db/prisma/migrations/0015_extension_tokens/migration.sql": {
+    "mtime": 1782052587.2660117,
+    "ast_hash": "e693dc24e0c064a5a8ccb1446158f159",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/eslint.config.mjs": {
+    "mtime": 1782068121.6453786,
+    "ast_hash": "227051267e35bb6182b0699f3532dd6d",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/eslint.config.mjs": {
+    "mtime": 1782068124.555829,
+    "ast_hash": "48616b084d02108d8aa19827bf6c1a78",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/eslint-config/base.js": {
+    "mtime": 1782068113.6974857,
+    "ast_hash": "3311de82ad719de43adeff1dc3029f3c",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/eslint-config/package.json": {
+    "mtime": 1782068107.0941641,
+    "ast_hash": "5f8ec2d3a3b91941f61e595e6516d99a",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/packages/eslint-config/react.js": {
+    "mtime": 1782068116.8093061,
+    "ast_hash": "8a378e37fe0f5c15e479670d7d86bcda",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/extension/static/icon.svg": {
+    "mtime": 1782054682.812009,
+    "ast_hash": "d4ce0a398acb33064943f3ad88be6108",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/components/UptimeBar.tsx": {
+    "mtime": 1782108346.6731079,
+    "ast_hash": "f6cb1f1f168154baa3ead9e82f967d33",
+    "semantic_hash": ""
+  },
+  "/Users/haimanotgetu/repos/personal/beaconmon/apps/shopify/app/lib/shopify-status.server.ts": {
+    "mtime": 1782108336.6685214,
+    "ast_hash": "990f0c3f4ec43d656ae138a5cd124750",
     "semantic_hash": ""
   }
 }
