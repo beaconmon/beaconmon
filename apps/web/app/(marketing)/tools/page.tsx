@@ -20,6 +20,13 @@ const TOOLS = [
       'Paste a store URL to instantly see its product count, what is on sale right now, and a sample of the catalog.',
     tag: 'Shopify',
   },
+  {
+    href: '/tools/shopify-competitor-changes',
+    name: 'Shopify Competitor Change Checker',
+    blurb:
+      'Check if a competitor recently dropped prices, launched a sale, or added products. See their change history in seconds.',
+    tag: 'Shopify',
+  },
 ];
 
 export default function ToolsHubPage() {
