@@ -28,7 +28,6 @@
     "start:worker:shopify": "pnpm --filter @beaconmon/workers run start:shopify",
     "start:worker:competitor-page": "pnpm --filter @beaconmon/workers run start:competitor-page",
     "start:worker:competitor-notify": "pnpm --filter @beaconmon/workers run start:competitor-notify",
-    "start:worker:lifecycle-email": "pnpm --filter @beaconmon/workers run start:lifecycle-email",
     "start:scheduler": "pnpm --filter @beaconmon/workers run start:scheduler",
     "smoke-test": "tsx scripts/smoke-test.ts",
     "frame-screenshot": "tsx apps/web/scripts/frame-screenshot.ts",

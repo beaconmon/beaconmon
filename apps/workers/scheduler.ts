@@ -4,12 +4,15 @@ initSentry('scheduler'); // must be before other imports
 
 import { env } from './lib/env.js';
 import { logger } from './lib/logger.js';
+import { Worker } from 'bullmq';
 import {
   prisma,
   checkResultRepository,
   incidentRepository,
   monitorRepository,
 } from '@beaconmon/db';
+import { QUEUE_NAMES } from '@beaconmon/queue';
+import type { LifecycleEmailJob } from '@beaconmon/queue';
 import {
   connection,
   checkQueue,
@@ -18,8 +21,8 @@ import {
   intelligenceDigestQueue,
   shopifyFeedQueue,
   competitorPageCheckQueue,
-  lifecycleEmailQueue,
 } from './lib/redis.js';
+import { processLifecycleEmailJob } from './process-lifecycle-email-job.js';
 import { PLAN_LIMITS, REGIONS } from '@beaconmon/types';
 import { getEffectivePlan } from '@beaconmon/billing';
 import { evaluateCheckResult } from '@beaconmon/checker';
@@ -379,6 +382,22 @@ async function scheduleChecks(): Promise<void> {
   }
 }
 
+// ─── Inline lifecycle email worker ────────────────────────────────────────────
+// Web API routes enqueue lifecycle emails to this BullMQ queue. Rather than a
+// dedicated process, the scheduler hosts the worker so we save the extra ~30 MB.
+const lifecycleEmailWorker = new Worker<LifecycleEmailJob>(
+  QUEUE_NAMES.LIFECYCLE_EMAIL,
+  async (job) => {
+    await processLifecycleEmailJob(job.data, connection);
+  },
+  { connection, concurrency: 2 }
+);
+
+lifecycleEmailWorker.on('failed', (job, err) => {
+  logger.error({ service: 'scheduler', jobId: job?.id, emailType: job?.data.emailType, err }, 'Lifecycle email job failed');
+  Sentry.captureException(err, { extra: { jobId: job?.id, emailType: job?.data.emailType } });
+});
+
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   const usingPooled = !!process.env['DATABASE_URL_POOLED'];
@@ -437,7 +456,7 @@ const shutdown = async (signal: string) => {
   await intelligenceDigestQueue.close();
   await shopifyFeedQueue.close();
   await competitorPageCheckQueue.close();
-  await lifecycleEmailQueue.close();
+  await lifecycleEmailWorker.close();
   await prisma.$disconnect();
   await connection.quit();
 

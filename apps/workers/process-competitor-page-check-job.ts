@@ -7,10 +7,11 @@ import {
 } from '@beaconmon/db';
 import { runContentCheck } from '@beaconmon/checker';
 import { createAiProvider, scoreSiteChange, scoreRuleBased } from '@beaconmon/ai';
-import type { CompetitorPageCheckJob, CompetitorNotifyJob, LifecycleEmailJob } from '@beaconmon/queue';
+import type { CompetitorPageCheckJob, CompetitorNotifyJob } from '@beaconmon/queue';
 import type { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import { logger } from './lib/logger.js';
+import { processLifecycleEmailJob } from './process-lifecycle-email-job.js';
 import { env } from './lib/env.js';
 import { runAiAnalysisIfEligible } from './lib/ai-content-diff.js';
 
@@ -32,8 +33,7 @@ function computeNextCheckAt(now: Date, intervalSeconds: number): Date {
 export async function processCompetitorPageCheckJob(
   data: CompetitorPageCheckJob,
   redis: Redis,
-  notifyQueue: Queue<CompetitorNotifyJob>,
-  lifecycleEmailQueue?: Queue<LifecycleEmailJob>
+  notifyQueue: Queue<CompetitorNotifyJob>
 ): Promise<void> {
   const { competitorPageId } = data;
   const startedAt = Date.now();
@@ -110,7 +110,6 @@ export async function processCompetitorPageCheckJob(
       teamSubscriptionStatus: page.teamSubscriptionStatus,
       redis,
       notifyQueue,
-      lifecycleEmailQueue,
       startedAt,
     });
   } finally {
@@ -172,14 +171,13 @@ interface ChangeArgs {
   teamSubscriptionStatus: string | null;
   redis: Redis;
   notifyQueue: Queue<CompetitorNotifyJob>;
-  lifecycleEmailQueue?: Queue<LifecycleEmailJob>;
   startedAt: number;
 }
 
 async function handleContentChange(args: ChangeArgs): Promise<void> {
   const {
     competitorPageId, teamId, competitorId, url, content, contentHash,
-    checkedAt, now, intervalSeconds, redis, notifyQueue, lifecycleEmailQueue, startedAt,
+    checkedAt, now, intervalSeconds, redis, notifyQueue, startedAt,
   } = args;
 
   // Guard against concurrent workers double-processing the same new hash
@@ -316,35 +314,31 @@ async function handleContentChange(args: ChangeArgs): Promise<void> {
     }
   
     // Send first-competitor-change lifecycle email if this is the team's first event
-    if (lifecycleEmailQueue) {
-      const eventCount = await prisma.competitorEvent.count({ where: { teamId } });
-      if (eventCount === 1) {
-        const owner = await prisma.teamMember.findFirst({
-          where: { teamId, role: 'owner' },
-          select: { user: { select: { email: true } } },
-        });
-        const ownerEmail = owner?.user.email;
-        if (ownerEmail) {
-          const dedupKey = `first:competitor:change:${teamId}`;
-          await lifecycleEmailQueue
-            .add(
-              `lifecycle:first-competitor-change:${teamId}`,
-              {
-                teamId,
-                emailType: 'first-competitor-change',
-                payload: { pageUrl: url, diffSummary: aiResult?.summary ?? null, competitorEventId: eventId },
-                dedupKey,
-                ownerEmail,
-              },
-              { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
-            )
-            .then(() => {
-              logger.info({ service, competitorPageId, teamId }, 'First competitor change lifecycle email enqueued');
-            })
-            .catch((err) => {
-              logger.warn({ service, competitorPageId, err }, 'Failed to enqueue first-competitor-change lifecycle email');
-            });
-        }
+    const eventCount = await prisma.competitorEvent.count({ where: { teamId } });
+    if (eventCount === 1) {
+      const owner = await prisma.teamMember.findFirst({
+        where: { teamId, role: 'owner' },
+        select: { user: { select: { email: true } } },
+      });
+      const ownerEmail = owner?.user.email;
+      if (ownerEmail) {
+        const dedupKey = `first:competitor:change:${teamId}`;
+        processLifecycleEmailJob(
+          {
+            teamId,
+            emailType: 'first-competitor-change',
+            payload: { pageUrl: url, diffSummary: aiResult?.summary ?? null, competitorEventId: eventId },
+            dedupKey,
+            ownerEmail,
+          },
+          redis
+        )
+          .then(() => {
+            logger.info({ service, competitorPageId, teamId }, 'First competitor change lifecycle email sent');
+          })
+          .catch((err) => {
+            logger.warn({ service, competitorPageId, err }, 'Failed to send first-competitor-change lifecycle email');
+          });
       }
     }
   

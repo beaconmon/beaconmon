@@ -10,6 +10,7 @@ import { monitoringRunPruneTask } from './monitoring-run-prune.js';
 import { lifecycleEmailsTask } from './lifecycle-emails.js';
 import { trialEndEnforceTask } from './trial-end-enforce.js';
 import { staleSyncWatchdogTask } from './stale-sync-watchdog.js';
+import { toolReportSweepTask } from './tool-report-sweep.js';
 import type { SchedulerTask } from './types.js';
 
 export const tasks: SchedulerTask[] = [
@@ -25,4 +26,5 @@ export const tasks: SchedulerTask[] = [
   lifecycleEmailsTask,
   trialEndEnforceTask,
   staleSyncWatchdogTask,
+  toolReportSweepTask,
 ];

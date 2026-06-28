@@ -911,3 +911,23 @@ model ExtensionToken {
   @@index([teamId])
   @@map("extension_tokens")
 }
+
+// ─── Free Tool Reports ────────────────────────────────────────────────────────
+// One row per free 7-day competitor intelligence report requested via the
+// /tools/competitor-intelligence-report public tool. initial_snapshot stores
+// the Shopify catalog state captured at request time so the report job can diff
+// it against the live catalog when report_due_at arrives.
+model ToolReport {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String
+  domain          String
+  requestedAt     DateTime  @default(now()) @map("requested_at") @db.Timestamptz(3)
+  reportDueAt     DateTime  @map("report_due_at") @db.Timestamptz(3)
+  status          String    @default("pending")
+  sentAt          DateTime? @map("sent_at") @db.Timestamptz(3)
+  initialSnapshot Json?     @map("initial_snapshot")
+
+  @@unique([email, domain, status])
+  @@index([status, reportDueAt])
+  @@map("tool_reports")
+}

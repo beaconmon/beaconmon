@@ -160,3 +160,4 @@ export function createLifecycleEmailQueue(connection: Redis): Queue<LifecycleEma
     },
   });
 }
+

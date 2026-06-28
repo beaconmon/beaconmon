@@ -46,6 +46,13 @@ const TOOLS = [
     blurb: 'Run a free technical check before Black Friday. Score your store on uptime, SSL, speed, redirects, and monitoring coverage.',
     tag: 'BFCM',
   },
+  {
+    href: '/tools/competitor-intelligence-report',
+    name: 'Free 7-Day Competitor Intelligence Report',
+    blurb:
+      "Enter a competitor's Shopify URL and get a 7-day report of every price drop, promo, and product change delivered to your email.",
+    tag: 'Report',
+  },
 ];
 
 export default function ToolsHubPage() {

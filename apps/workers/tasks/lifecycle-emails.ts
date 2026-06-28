@@ -1,7 +1,8 @@
 import { prisma } from '@beaconmon/db';
 import { logger } from '../lib/logger.js';
 import { Sentry } from '../lib/sentry.js';
-import { connection, lifecycleEmailQueue } from '../lib/redis.js';
+import { connection } from '../lib/redis.js';
+import { processLifecycleEmailJob } from '../process-lifecycle-email-job.js';
 import { lifecycleEmailRegistry } from '../lib/lifecycle/registry.js';
 import type { SchedulerTask } from './types.js';
 
@@ -101,22 +102,15 @@ export const lifecycleEmailsTask: SchedulerTask = {
           }
 
           try {
-            await lifecycleEmailQueue.add(
-              `lifecycle:${config.type}:${team.id}`,
-              {
-                teamId: team.id,
-                emailType: config.type,
-                payload,
-                dedupKey,
-                ownerEmail,
-              },
-              { jobId: `lc_${dedupKey.replace(/:/g, '_')}` }
+            await processLifecycleEmailJob(
+              { teamId: team.id, emailType: config.type, payload, dedupKey, ownerEmail },
+              connection
             );
             enqueued++;
           } catch (enqueueErr) {
             logger.error(
               { service: 'scheduler', teamId: team.id, emailType: config.type, err: enqueueErr },
-              'Failed to enqueue lifecycle email job, continuing'
+              'Failed to send lifecycle email, continuing'
             );
             Sentry.captureException(enqueueErr);
           }
@@ -126,7 +120,7 @@ export const lifecycleEmailsTask: SchedulerTask = {
       await connection.set(LAST_RUN_KEY, todayKey, 'EX', 60 * 60 * 48);
 
       if (enqueued > 0) {
-        logger.info({ service: 'scheduler', enqueued }, 'Lifecycle email jobs enqueued');
+        logger.info({ service: 'scheduler', enqueued }, 'Lifecycle emails sent');
       }
     } catch (err) {
       logger.error({ service: 'scheduler', err }, 'Lifecycle emails task failed');

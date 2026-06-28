@@ -1,6 +1,7 @@
 import { prisma } from '@beaconmon/db';
 import { PLAN_LIMITS } from '@beaconmon/types';
-import { lifecycleEmailQueue } from '../lib/redis.js';
+import { connection } from '../lib/redis.js';
+import { processLifecycleEmailJob } from '../process-lifecycle-email-job.js';
 import { logger } from '../lib/logger.js';
 import { Sentry } from '../lib/sentry.js';
 import type { SchedulerTask } from './types.js';
@@ -90,8 +91,7 @@ async function runEnforcementPass(now: Date): Promise<void> {
     if (ownerEmail && toPause.length > 0) {
       const dedupKey = `lifecycle:day14:paused:${team.id}`;
       try {
-        await lifecycleEmailQueue.add(
-          `lifecycle:day14-paused:${team.id}`,
+        await processLifecycleEmailJob(
           {
             teamId: team.id,
             emailType: 'day14-paused',
@@ -101,10 +101,10 @@ async function runEnforcementPass(now: Date): Promise<void> {
             dedupKey,
             ownerEmail,
           },
-          { jobId: `lc_${dedupKey.replace(/:/g, '_')}` },
+          connection,
         );
       } catch (err) {
-        logger.error({ service: 'scheduler', teamId: team.id, err }, 'Failed to enqueue day14-paused email');
+        logger.error({ service: 'scheduler', teamId: team.id, err }, 'Failed to send day14-paused email');
         Sentry.captureException(err);
       }
     }
