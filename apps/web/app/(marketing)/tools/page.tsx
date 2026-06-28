@@ -27,6 +27,25 @@ const TOOLS = [
       'Check if a competitor recently dropped prices, launched a sale, or added products. See their change history in seconds.',
     tag: 'Shopify',
   },
+  {
+    href: '/tools/downtime-detection-calculator',
+    name: 'Downtime Detection Speed Calculator',
+    blurb:
+      'How long would it take you to find out your store went down? Calculate your real detection time and what it costs.',
+    tag: 'Calculator',
+  },
+  {
+    href: '/tools/shopify-uptime-test',
+    name: 'Shopify Uptime Tester',
+    blurb: 'Instant uptime check for any Shopify store. See response time, SSL status, and redirect health in seconds.',
+    tag: 'Uptime',
+  },
+  {
+    href: '/tools/bfcm-readiness',
+    name: 'BFCM Store Readiness Scorer',
+    blurb: 'Run a free technical check before Black Friday. Score your store on uptime, SSL, speed, redirects, and monitoring coverage.',
+    tag: 'BFCM',
+  },
 ];
 
 export default function ToolsHubPage() {
