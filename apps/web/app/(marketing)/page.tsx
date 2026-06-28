@@ -99,6 +99,33 @@ const HERO_EVENTS = [
   },
 ];
 
+const FAQ_ITEMS = [
+  {
+    q: 'Does this work with any Shopify competitor store?',
+    a: "Beaconmon monitors public-facing pages, so it works on any publicly accessible Shopify or WooCommerce store. It doesn't need credentials or API access for competitor stores.",
+  },
+  {
+    q: 'How accurate is the price data?',
+    a: 'We scan the actual product pages your customers see, so you get the live displayed price. Sale prices and compare-at prices are both captured when they appear on the page.',
+  },
+  {
+    q: 'Does Beaconmon need access to my Shopify admin?',
+    a: 'No. Monitoring your own store only needs your public URL. We auto-detect your product pages, cart, and checkout from there. No Shopify credentials required.',
+  },
+  {
+    q: "What's the difference between a price drop and a flash sale?",
+    a: 'When a compare-at price appears alongside a lower sale price, we classify it as a promotion. A straight price reduction with no compare-at is logged as a permanent drop. Growth and Scale plans get the breakdown in plain language in the brief.',
+  },
+  {
+    q: 'What if a competitor uses Cloudflare or restricts scraping?',
+    a: 'Beaconmon uses HTML monitoring on public pages. Most product listing pages and homepages are accessible. Login-gated pages and stores with aggressive bot-blocking are not supported.',
+  },
+  {
+    q: 'Can I cancel anytime?',
+    a: 'Yes. No contracts, no cancellation fees. Cancel from your account settings and your plan stays active until the end of the billing period.',
+  },
+];
+
 export default function LandingPage() {
   return (
     <>
@@ -130,7 +157,7 @@ export default function LandingPage() {
                 <span className="text-brand-green-ink">before it costs you sales.</span>
               </h1>
               <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mb-8">
-                Beaconmon tracks every Shopify competitor&apos;s price changes, launches, and promos, then delivers one brief every morning at 8am. No dashboard required.
+                Every price drop, product launch, and promo from your Shopify competitors lands in one email at 8am. No dashboard. No tab-checking.
               </p>
 
               <CtaForm />
@@ -141,13 +168,13 @@ export default function LandingPage() {
                 See how it works →
               </Link>
               <p className="mt-[14px] text-[13px] text-brand-muted">
-                14-day Growth trial included. No credit card required.
+                Free forever for 1 competitor. 14-day Growth trial. No credit card.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-x-6 gap-y-[10px] text-[13px] text-brand-dim">
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Monitors price, launches + content changes</span>
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Daily brief at 8am, no dashboard required</span>
-                <span className="inline-flex items-center gap-2"><CheckIcon /> Shopify-native, 5-minute setup</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> Tracks price drops, launches, and promos</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> One morning email, no dashboard to check</span>
+                <span className="inline-flex items-center gap-2"><CheckIcon /> Shopify setup in 5 minutes</span>
               </div>
             </div>
 
@@ -167,40 +194,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ====== LOGO STRIP ====== */}
-      <section className="border-t border-b border-brand-line-soft bg-brand-bg-section py-11">
+      {/* ====== STATS STRIP ====== */}
+      <section className="border-t border-b border-brand-line-soft bg-brand-bg-section py-10">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
-          <p className="text-center text-[12px] tracking-[0.08em] uppercase text-brand-muted mb-6">
-            Trusted by merchants on
-          </p>
-          <div className="flex justify-center items-center gap-12 flex-wrap">
-            <Link href="/for/shopify" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">Shopify</Link>
-            <Link href="/for/woocommerce" className="text-[16px] font-medium text-brand-muted opacity-60 hover:opacity-100 hover:text-brand-dim transition-all whitespace-nowrap">WooCommerce</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ====== WHAT IS BEACONMON ====== */}
-      <section className="py-[80px] border-t border-brand-line-soft">
-        <div className="max-w-[780px] mx-auto px-8 max-[640px]:px-5">
-          <h2 className="text-[clamp(24px,3vw,34px)] tracking-[-0.025em] font-extrabold mb-5">Competitor intelligence and store monitoring for Shopify and WooCommerce</h2>
-          <div className="text-brand-dim text-[16px] leading-[1.7] space-y-4">
-            <p>
-              Beaconmon is a competitor intelligence platform for Shopify and WooCommerce store owners. It tracks your competitors&apos; prices, product launches, and promotions around the clock and delivers a morning brief summarizing every move, before you lose a sale to a price change you didn&apos;t know about.
-            </p>
-            <p>
-              When a competitor drops a price or runs a flash sale, Beaconmon captures the change and includes it in your Intelligence Digest, a daily email or Slack message at 8am covering every competitor move from the previous day. Growth and Scale subscribers get AI summaries of what changed and why it matters.
-            </p>
-            <p>
-              Beaconmon also keeps an eye on your own store. If your checkout goes down or a key page changes unexpectedly, you hear about it before a customer does. No code changes or plugins required.
-            </p>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-green-ink hover:underline">Shopify competitor monitoring</Link>
-            <Link href="/competitor-price-tracking" className="text-brand-green-ink hover:underline">Competitor price tracking</Link>
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-green-ink hover:underline">Competitor intelligence guide</Link>
-            <Link href="/ecommerce-uptime-monitoring-guide" className="text-brand-green-ink hover:underline">Uptime monitoring for eCommerce</Link>
-            <Link href="/website-change-detection" className="text-brand-green-ink hover:underline">Website change detection</Link>
+          <div className="grid grid-cols-4 max-[640px]:grid-cols-2 gap-8 text-center">
+            {[
+              { stat: 'Hourly', label: 'competitor page checks' },
+              { stat: '8am', label: 'daily brief, every day' },
+              { stat: '5 min', label: 'to set up' },
+              { stat: 'Free', label: '1 competitor, forever' },
+            ].map(({ stat, label }) => (
+              <div key={stat} className="flex flex-col gap-1">
+                <span className="text-[28px] font-extrabold tracking-[-0.03em] text-brand-text">{stat}</span>
+                <span className="text-[13px] text-brand-muted">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -218,7 +226,7 @@ export default function LandingPage() {
             </p>
             <span className="text-brand-green-ink text-[15px] font-semibold inline-flex items-center gap-[10px]">
               <span aria-hidden className="block w-6 h-px bg-brand-green" />
-              One pane, both sides of the fence
+              One place. Your store and theirs.
             </span>
           </div>
         </div>
@@ -256,7 +264,7 @@ export default function LandingPage() {
                 body: 'We snapshot their content, prices, and homepage hero every check. Any change lands in your feed and your digest automatically.',
               },
               {
-                num: '03. Read your morning digest',
+                num: '03. Read your morning brief',
                 icon: (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -264,7 +272,7 @@ export default function LandingPage() {
                   </svg>
                 ),
                 heading: 'Every morning at 8am.',
-                body: 'Outages, content edits, pricing changes, SEO moves. In your inbox, Slack, or webhook of choice. No dashboard required.',
+                body: 'Price moves, new launches, content edits, and your own store status. In your inbox, Slack, or webhook of choice. No dashboard required.',
               },
             ].map(({ num, icon, heading, body }) => (
               <div key={num} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px]">
@@ -282,38 +290,37 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ====== DETECT, CLASSIFY, BRIEF ====== */}
+      {/* ====== WHAT'S IN YOUR BRIEF ====== */}
       <section className="py-[100px]" id="features">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">How Beaconmon works</span>
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">
-              Detect. Classify. Brief.
+              Your brief. Delivered at 8am.
             </h2>
-            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">Three stages, one morning email, no manual checking.</p>
+            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">Competitor price moves, new launches, and your own store status. One email covers all three.</p>
           </div>
           <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-4">
             {[
               {
                 step: '01',
-                label: 'Detect',
+                label: 'Prices + promos',
                 labelColor: 'text-amber-500',
-                heading: 'We crawl your competitors while you sleep.',
-                body: 'Add competitor URLs and Beaconmon snapshots their product pages, price pages, and hero sections every hour. Any change is captured and timestamped.',
+                heading: 'Price moves, caught overnight.',
+                body: 'Every price drop and flash sale your competitors ran since your last brief. You see the old price, the new price, and when it changed.',
               },
               {
                 step: '02',
-                label: 'Classify',
+                label: 'Launches + changes',
                 labelColor: 'text-brand-green-ink',
-                heading: 'Every change is labeled, not just logged.',
-                body: 'Price drop, new product launch, stockout, copy change, SEO edit. Each event is classified so your brief is scannable, not a dump of raw diffs.',
+                heading: 'New products and copy edits.',
+                body: 'New SKUs, restocks, colorways, and homepage copy changes. Each one labeled as a drop, launch, stockout, or edit so your brief scans in two minutes.',
               },
               {
                 step: '03',
-                label: 'Brief',
+                label: 'Your store',
                 labelColor: 'text-blue-400',
-                heading: 'Your morning brief, at 8am sharp.',
-                body: 'A daily brief, automatically compiled from your competitor moves. Like having a research analyst watching 10 competitors full-time.',
+                heading: 'Your own store, watched too.',
+                body: 'Checkout down? Key page changed unexpectedly? You hear before a customer does. Both sides of the market, one morning email.',
               },
             ].map(({ step, label, labelColor, heading, body }) => (
               <div key={step} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px] flex flex-col">
@@ -329,15 +336,17 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ====== TESTIMONIALS — placeholder removed; add real quotes when available ====== */}
+
       {/* ====== COMPARISON ====== */}
-      <section className="py-[100px] border-t border-brand-line-soft">
+      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
-            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">How Beaconmon compares to generic uptime and competitor monitoring tools</h2>
-            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">A quick side-by-side with the alternatives.</p>
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">How Beaconmon compares</h2>
+            <p className="text-brand-dim text-[17px] max-w-[540px] mx-auto">Side by side with the tools Shopify merchants usually try first.</p>
           </div>
-          <div className="reveal max-w-[920px] mx-auto overflow-x-auto border border-brand-line rounded-[14px] bg-brand-bg1">
-            <table className="w-full border-collapse min-w-[620px]">
+          <div className="reveal max-w-[1060px] mx-auto overflow-x-auto border border-brand-line rounded-[14px] bg-brand-bg1">
+            <table className="w-full border-collapse min-w-[760px]">
               <thead>
                 <tr>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
@@ -346,6 +355,7 @@ export default function LandingPage() {
                     <Link href="/vs/visualping" className="hover:text-brand-dim transition-colors">Visualping</Link>
                   </th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Prisync</th>
+                  <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Manual</th>
                 </tr>
               </thead>
               <tbody>
@@ -355,55 +365,64 @@ export default function LandingPage() {
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted text-[12px]">Pages only</span>,
                     ps: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    mn: <span className="text-brand-muted text-[12px]">Tab by tab</span>,
                   },
                   {
-                    feat: 'Daily intelligence digest',
+                    feat: 'Daily morning brief',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted">—</span>,
+                    mn: <span className="text-brand-muted">—</span>,
                   },
                   {
-                    feat: 'Event classification',
+                    feat: 'Change labels (drop / sale / launch)',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted text-[12px]">Pricing only</span>,
+                    mn: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Shopify-native setup',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted">—</span>,
+                    mn: <span className="text-brand-muted">—</span>,
                   },
                   {
                     feat: 'Uptime monitoring (30s)',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted">—</span>,
+                    mn: <span className="text-brand-muted text-[12px]">Customer complaint</span>,
                   },
                   {
                     feat: 'Status pages included',
                     bm: <span className="text-brand-green-ink font-semibold">✓</span>,
                     vp: <span className="text-brand-muted">—</span>,
                     ps: <span className="text-brand-muted">—</span>,
+                    mn: <span className="text-brand-muted">—</span>,
                   },
                   {
-                    feat: 'HTML-first monitoring',
-                    bm: <span className="text-brand-green-ink font-semibold text-[12px]">✓ faster checks</span>,
-                    vp: <span className="text-brand-muted text-[12px]">JS renderer</span>,
+                    feat: 'No code or plugins needed',
+                    bm: <span className="text-brand-green-ink font-semibold">✓</span>,
+                    vp: <span className="text-brand-muted text-[12px]">JS renderer required</span>,
                     ps: <span className="text-brand-muted">—</span>,
+                    mn: <span className="text-brand-green-ink font-semibold">✓</span>,
                   },
                   {
                     feat: 'Starts at',
                     bm: <span className="font-mono">$0</span>,
                     vp: <span className="font-mono">$0</span>,
                     ps: <span className="font-mono">$99/mo</span>,
+                    mn: <span className="text-brand-muted text-[12px]">Your time</span>,
                   },
-                ].map(({ feat, bm, vp, ps }, i, arr) => (
+                ].map(({ feat, bm, vp, ps, mn }, i, arr) => (
                   <tr key={feat}>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{feat}</td>
                     <td className={`p-4 text-[14px] bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)] ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{bm}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{vp}</td>
                     <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{ps}</td>
+                    <td className={`p-4 text-[14px] text-brand-dim ${i < arr.length - 1 ? 'border-b border-brand-line-soft' : ''}`}>{mn}</td>
                   </tr>
                 ))}
               </tbody>
@@ -412,17 +431,71 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ====== FREE TOOL CALLOUT ====== */}
+      <section className="py-14 border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal flex flex-col sm:flex-row items-center justify-between gap-6 bg-brand-bg1 border border-brand-line-soft rounded-[14px] px-8 py-6">
+            <div>
+              <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-1">Free tool</p>
+              <p className="text-[17px] font-semibold tracking-[-0.01em] m-0">Not ready to sign up? Try the Shopify Competitor Snapshot.</p>
+              <p className="text-[14px] text-brand-dim mt-1">Paste any Shopify store URL and get a free instant snapshot of their prices, products, and promotions.</p>
+            </div>
+            <Link
+              href="/tools/shopify-competitor-snapshot"
+              className="shrink-0 inline-flex items-center justify-center h-10 px-5 text-[14px] font-semibold rounded-lg bg-brand-bg2 text-brand-text border border-brand-line hover:bg-brand-bg3 hover:border-brand-muted transition-all whitespace-nowrap"
+            >
+              Try it free →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ====== PRICING ====== */}
-      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section" id="pricing">
+      <section className="py-[100px] border-t border-brand-line-soft" id="pricing">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Simple pricing. No surprises.</h2>
             <p className="text-brand-dim text-[17px]">Start free. Upgrade when you need more.</p>
+            <p className="text-brand-muted text-[14px] mt-3">One missed competitor flash sale typically costs more than a year of Growth.</p>
           </div>
           <PricingToggle />
           <p className="text-center mt-8 text-brand-muted text-[13px] max-w-[600px] mx-auto leading-[1.6]">
             Shopify catalog tracking on your competitors, plus uptime monitoring, daily briefings, and status pages. Annual billing saves 20%. No contracts. Cancel anytime.
           </p>
+        </div>
+      </section>
+
+      {/* ====== FAQ ====== */}
+      <section className="py-[100px] border-t border-brand-line-soft bg-brand-bg-section">
+        <div className="max-w-[780px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-14">
+            <h2 className="text-[clamp(32px,3.8vw,48px)] tracking-[-0.03em] font-extrabold mb-3">Common questions</h2>
+          </div>
+          <div className="divide-y divide-brand-line-soft">
+            {FAQ_ITEMS.map(({ q, a }) => (
+              <details key={q} className="reveal group py-6 cursor-pointer">
+                <summary className="flex items-start justify-between gap-4 text-[17px] font-semibold tracking-[-0.01em] list-none marker:hidden [&::-webkit-details-marker]:hidden">
+                  <span>{q}</span>
+                  <span className="text-brand-muted text-[22px] leading-none shrink-0 mt-[2px] group-open:rotate-45 transition-transform duration-200">+</span>
+                </summary>
+                <p className="mt-4 text-brand-dim text-[15px] leading-[1.65] pb-1">{a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====== GUIDES (SEO internal links) ====== */}
+      <section className="py-14 border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <p className="text-center text-[12px] font-semibold tracking-[0.1em] uppercase text-brand-muted mb-7">Further reading</p>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+            <Link href="/shopify-competitor-monitoring" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Shopify competitor monitoring</Link>
+            <Link href="/competitor-price-tracking" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Competitor price tracking</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Competitor intelligence guide</Link>
+            <Link href="/ecommerce-uptime-monitoring-guide" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Uptime monitoring for eCommerce</Link>
+            <Link href="/website-change-detection" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Website change detection</Link>
+          </div>
         </div>
       </section>
 
@@ -432,9 +505,9 @@ export default function LandingPage() {
           <h2 className="text-[clamp(36px,4.6vw,60px)] tracking-[-0.035em] leading-[1.08] font-extrabold mb-[18px]">
             Stop being the last to know.<br />About your store. About theirs.
           </h2>
-          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. Add competitors when you&apos;re ready. Set up in five minutes.</p>
+          <p className="text-brand-dim text-[17px] mb-8">Track 1 competitor free, forever. Add more when you need them. Set up in five minutes.</p>
           <CtaForm className="mx-auto mb-4" />
-          <p className="text-[13px] text-brand-muted">14-day Growth trial included. No credit card required.</p>
+          <p className="text-[13px] text-brand-muted">Free forever for 1 competitor. 14-day Growth trial. No credit card.</p>
         </div>
       </section>
 

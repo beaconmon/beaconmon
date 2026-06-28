@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import LogoMark from './LogoMark';
 
@@ -20,6 +19,7 @@ const FOR_LINKS: [string, string][] = [
 
 const TOOLS_LINKS: [string, string][] = [
   ['/tools/shopify-competitor-snapshot', 'Shopify Snapshot'],
+  ['/tools/shopify-competitor-changes', 'Competitor Changes'],
   ['/tools', 'All free tools'],
 ];
 
@@ -158,38 +158,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-brand-line-soft py-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="border-t border-brand-line-soft py-6">
           <p className="text-[12px] text-brand-muted">© 2026 Beaconmon. Made for ecommerce.</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="https://launchigniter.com/product/beaconmon?ref=badge-beaconmon"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block opacity-75 hover:opacity-100 transition-opacity duration-150"
-            >
-              <Image
-                src="https://launchigniter.com/api/badge/beaconmon?theme=neutral"
-                alt="Featured on LaunchIgniter"
-                width={180}
-                height={47}
-                unoptimized
-              />
-            </a>
-            <a
-              href="https://postyourstartup.co/startup/beaconmon?ref=badge"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block opacity-75 hover:opacity-100 transition-opacity duration-150"
-            >
-              <Image
-                src="https://postyourstartup.co/api/badge/beaconmon?theme=light"
-                alt="Featured on PostYourStartup"
-                width={180}
-                height={47}
-                unoptimized
-              />
-            </a>
-          </div>
         </div>
 
       </div>

@@ -55,7 +55,7 @@ export default function Post() {
       title="Shopify Competitor Sales Last Less Than 24 Hours: What the Data Shows"
       description="The median Shopify competitor sale lasts 0.7 days, less than 17 hours. If you are running a daily monitoring digest, most competitor flash sales are over before you read about them."
       slug={SLUG}
-      publishedAt="2026-06-30"
+      publishedAt="2026-06-27"
       dateModified="2026-06-27"
       readingTime={6}
       tag="Data & Research"

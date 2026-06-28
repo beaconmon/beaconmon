@@ -21,7 +21,7 @@ export default function CtaForm({ className = '' }: { className?: string }) {
     >
       <input
         type="email"
-        placeholder="you@company.com"
+        placeholder="you@example.com"
         aria-label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -31,7 +31,7 @@ export default function CtaForm({ className = '' }: { className?: string }) {
         type="submit"
         className="inline-flex items-center justify-center h-[48px] px-4 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] hover:scale-[1.02] hover:bg-[#00ff8a] transition-all duration-[120ms] whitespace-nowrap"
       >
-        Start monitoring free →
+        Track competitors free →
       </button>
     </form>
   );

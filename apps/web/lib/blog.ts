@@ -107,7 +107,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Two Tribes: 46% of DTC Brands Never Discount, 18% Never Stop',
     description:
       'Across 489 tracked Shopify competitors, two pricing philosophies dominate with almost no middle ground. The split has real implications for how you set your pricing and what your monitoring should watch for.',
-    publishedAt: '2026-06-29',
+    publishedAt: '2026-06-28',
     tags: ['Data & Research'],
     readingTime: 7,
   },
@@ -116,7 +116,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Shopify Competitor Sales Last Less Than 24 Hours: What the Data Shows',
     description:
       'The median Shopify competitor sale lasts 0.7 days -- roughly 17 hours. If you are running a daily monitoring digest, most competitor flash sales are over before you read about them.',
-    publishedAt: '2026-06-30',
+    publishedAt: '2026-06-27',
     tags: ['Data & Research'],
     readingTime: 6,
   },
@@ -125,7 +125,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: '99% of Shopify Price Changes Are Automated, Not Decisions',
     description:
       '98.9% of all price-changed SKUs belong to catalog-wide moves of 50+ products on the same day. Before you respond to a competitor price alert, ask yourself: was this a decision?',
-    publishedAt: '2026-07-01',
+    publishedAt: '2026-06-26',
     tags: ['Data & Research'],
     readingTime: 7,
   },
@@ -134,7 +134,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'One in 14 Shopify Product Launches Gets Pulled Within Weeks: The Data',
     description:
       'In 15 days of monitoring, 9,372 new products were added to competitor catalogs. 664 of them -- 7.1% -- were removed before the window closed. Here is what fast-kill patterns tell you about competitor strategy.',
-    publishedAt: '2026-07-02',
+    publishedAt: '2026-06-25',
     tags: ['Data & Research'],
     readingTime: 7,
   },
@@ -143,7 +143,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Competitor Price Increases Outnumber Cuts 55% to 45% on Shopify',
     description:
       'Most merchants configure competitor monitoring to catch price cuts. Our data across 468,451 events shows prices go up more than they go down -- and increases are just as important to catch.',
-    publishedAt: '2026-07-03',
+    publishedAt: '2026-06-24',
     tags: ['Data & Research'],
     readingTime: 6,
   },
@@ -152,7 +152,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: "23% of Shopify Products Are Permanently 'On Sale': What the Data Shows",
     description:
       "Across 178,623 tracked products, 23% have a compare_at_price set right now. For 18% of brands we track, more than a third of their catalog is permanently framed as discounted -- not a promotion, a strategy.",
-    publishedAt: '2026-07-04',
+    publishedAt: '2026-06-23',
     tags: ['Data & Research'],
     readingTime: 6,
   },

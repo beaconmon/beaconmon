@@ -8,8 +8,8 @@ const MONTHLY_TIERS: PricingTier[] = [
     tagline: '1 competitor, forever free.',
     features: [
       '1 competitor monitor',
-      'Weekly intelligence digest',
-      'Template Smart Setup',
+      'Weekly morning brief',
+      'Guided 5-min setup',
     ],
     alsoIncludes: '10 monitors, email alerts, 1 status page, SSL checks, 7-day history',
     ctaLabel: 'Start free — no card needed',
@@ -18,11 +18,11 @@ const MONTHLY_TIERS: PricingTier[] = [
   {
     tier: 'Starter',
     price: `$${PRICING.starter.monthly}`,
-    tagline: '5 competitors with weekly digests.',
+    tagline: '5 competitors with weekly briefs.',
     features: [
       '5 competitor monitors',
-      'Weekly intelligence digest',
-      'Template Smart Setup',
+      'Weekly morning brief',
+      'Guided 5-min setup',
     ],
     alsoIncludes: '25 monitors, 1-min checks, content monitoring, Slack + webhook alerts, 3 status pages, 30-day history',
     ctaLabel: 'Start 14-day trial',
@@ -34,10 +34,10 @@ const MONTHLY_TIERS: PricingTier[] = [
     tagline: '25 competitors with AI-powered insights.',
     features: [
       '25 competitor monitors',
-      'Daily + weekly intelligence digest',
-      'AI change summaries, Smart Alerts, AI Smart Setup',
+      'Daily + weekly morning brief',
+      'AI change summaries + smart price alerts',
     ],
-    alsoIncludes: '100 monitors, 5-region checks, 90-day history',
+    alsoIncludes: '100 monitors, multi-location checks, 90-day history',
     ctaLabel: 'Start 14-day trial',
     ctaHref: PLAN_CTAS.growth,
     highlighted: true,
@@ -50,7 +50,7 @@ const MONTHLY_TIERS: PricingTier[] = [
     tagline: 'Unlimited competitors, unlimited scale.',
     features: [
       'Unlimited competitor monitors',
-      'Daily + weekly intelligence digest',
+      'Daily + weekly morning brief',
       'All AI features included',
     ],
     alsoIncludes: 'Unlimited monitors, 30-sec checks, 365-day history, priority support',

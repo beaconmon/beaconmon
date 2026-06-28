@@ -55,7 +55,7 @@ export default function Post() {
       title="Two Tribes: 46% of DTC Brands Never Discount, 18% Never Stop"
       description="Across 489 tracked Shopify competitors, two pricing philosophies dominate with almost no middle ground. The split has real implications for how you set your own pricing and what your monitoring should watch for."
       slug={SLUG}
-      publishedAt="2026-06-29"
+      publishedAt="2026-06-28"
       dateModified="2026-06-28"
       readingTime={7}
       tag="Data & Research"

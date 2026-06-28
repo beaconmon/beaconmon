@@ -55,7 +55,7 @@ export default function Post() {
       title="23% of Shopify Products Are Permanently 'On Sale': What the Data Shows"
       description="Across 178,623 tracked products, 23.23% have a compare_at_price set right now. For 18% of the brands we track, more than a third of their catalog is permanently framed as discounted: not a promotion, a pricing strategy."
       slug={SLUG}
-      publishedAt="2026-07-04"
+      publishedAt="2026-06-23"
       dateModified="2026-06-28"
       readingTime={6}
       tag="Data & Research"

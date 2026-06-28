@@ -55,7 +55,7 @@ export default function Post() {
       title="Competitor Price Increases Outnumber Cuts 55% to 45% on Shopify"
       description="Most merchants configure competitor monitoring to catch price cuts. Our data across 468,451 price change events shows prices are going up more often than down, and increases are just as strategically important to catch."
       slug={SLUG}
-      publishedAt="2026-07-03"
+      publishedAt="2026-06-24"
       dateModified="2026-06-27"
       readingTime={6}
       tag="Data & Research"

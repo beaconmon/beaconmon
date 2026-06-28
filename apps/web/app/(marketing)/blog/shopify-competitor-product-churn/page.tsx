@@ -55,7 +55,7 @@ export default function Post() {
       title="One in 14 Shopify Product Launches Gets Pulled Within Weeks: The Data"
       description="In 15 days of monitoring across 511 Shopify stores, 9,372 new products were added to competitor catalogs. 664 of them, 7.1%, were removed within the same window. Here is what fast-kill patterns tell you about competitor strategy."
       slug={SLUG}
-      publishedAt="2026-07-02"
+      publishedAt="2026-06-25"
       dateModified="2026-06-27"
       readingTime={7}
       tag="Data & Research"

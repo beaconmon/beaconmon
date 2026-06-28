@@ -55,7 +55,7 @@ export default function Post() {
       title="99% of Shopify Price Changes Are Automated, Not Decisions"
       description="In our dataset, 98.9% of all price-changed SKUs belong to catalog-wide moves of 50 or more products on the same day. Before you respond to a competitor price alert, ask yourself: was this a decision?"
       slug={SLUG}
-      publishedAt="2026-07-01"
+      publishedAt="2026-06-26"
       dateModified="2026-06-28"
       readingTime={7}
       tag="Data & Research"
