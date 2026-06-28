@@ -158,6 +158,18 @@ async function sendEmailNotification(
   }
 }
 
+function escapeSlackMrkdwn(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+type SlackBlock =
+  | { type: 'section'; text: { type: 'mrkdwn' | 'plain_text'; text: string } }
+  | { type: 'context'; elements: Array<{ type: 'mrkdwn'; text: string }> }
+  | { type: 'actions'; elements: Array<{ type: 'button'; text: { type: 'plain_text'; text: string }; url: string }> };
+
 async function sendSlackNotification(
   rawConfig: unknown,
   monitorName: string,
@@ -166,31 +178,46 @@ async function sendSlackNotification(
   summary?: string,
   classification?: string,
   diffUrl?: string,
-  subject?: string
+  _subject?: string
 ): Promise<void> {
   const config = SlackChannelConfig.parse(rawConfig);
 
-  const slackFields: Array<{ title: string; value: string; short: boolean }> = [
-    { title: 'URL', value: monitorUrl, short: false },
-    { title: 'Detected at', value: changedAt.toUTCString(), short: true },
+  const hostname = new URL(monitorUrl).hostname;
+  const time = changedAt.toUTCString();
+
+  const blocks: SlackBlock[] = [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*${escapeSlackMrkdwn(monitorName)}* — ${summary ?? 'Competitor change detected'}`,
+      },
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `<${escapeSlackMrkdwn(monitorUrl)}|${escapeSlackMrkdwn(hostname)}> · ${time}`,
+        },
+      ],
+    },
   ];
-  if (classification) {
-    slackFields.unshift({ title: 'Classification', value: classification, short: true });
+
+  if (diffUrl) {
+    blocks.push({
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: { type: 'plain_text', text: 'Review change' },
+          url: diffUrl,
+        },
+      ],
+    });
   }
 
-  const slackPayload = {
-    attachments: [
-      {
-        color: '#2563eb',
-        title: subject ?? `Competitor Changed: ${monitorName}`,
-        title_link: diffUrl,
-        text: summary,
-        fields: slackFields,
-        footer: 'Beaconmon',
-        ts: Math.floor(changedAt.getTime() / 1000),
-      },
-    ],
-  };
+  const slackPayload = { blocks };
 
   if (env.ALERT_DRY_RUN) {
     logger.info(

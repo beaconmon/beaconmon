@@ -1,4 +1,4 @@
-import { formatBriefDateTime } from '@beaconmon/emails';
+import { formatBriefDate, formatRelativeAgo } from '@beaconmon/emails';
 import { formatCoverageLine } from './intelligence-digest.js';
 import type {
   DigestIncidentItem,
@@ -16,6 +16,13 @@ type DigestSections = {
   expiry?: DigestExpiryItem[];
 };
 
+type SlackBlock =
+  | { type: 'header'; text: { type: 'plain_text'; text: string } }
+  | { type: 'section'; text: { type: 'mrkdwn' | 'plain_text'; text: string } }
+  | { type: 'context'; elements: Array<{ type: 'mrkdwn'; text: string }> }
+  | { type: 'actions'; elements: Array<{ type: 'button'; text: { type: 'plain_text'; text: string }; url: string; style?: string }> }
+  | { type: 'divider' };
+
 const SLACK_MRKDWN_LIMIT = 3000;
 
 function escapeSlackMrkdwn(text: string): string {
@@ -25,8 +32,8 @@ function escapeSlackMrkdwn(text: string): string {
     .replace(/>/g, '&gt;');
 }
 
-function splitIntoMrkdwnBlocks(header: string, itemLines: string[]): object[] {
-  const blocks: object[] = [];
+function splitIntoMrkdwnBlocks(header: string, itemLines: string[]): SlackBlock[] {
+  const blocks: SlackBlock[] = [];
   let currentText = header;
 
   for (const line of itemLines) {
@@ -54,29 +61,71 @@ export function buildSlackPayload(
   sections: DigestSections,
   timezone = 'UTC',
   coverage?: DigestCoverage
-): object {
-  const label = frequency === 'daily' ? 'Daily' : 'Weekly';
-  const dateRange = `${formatBriefDateTime(windowStart, timezone)} to ${formatBriefDateTime(windowEnd, timezone)}`;
+): { blocks: SlackBlock[] } {
+  const label = frequency === 'daily' ? 'Daily Briefing' : 'Weekly Briefing';
+  const totalEvents =
+    (sections.incidents?.length ?? 0) +
+    (sections.smartAlerts?.length ?? 0) +
+    (sections.expiry?.length ?? 0) +
+    (sections.competitors?.length ?? 0) +
+    (sections.ownContent?.length ?? 0);
 
-  const blocks: object[] = [
+  const blocks: SlackBlock[] = [
     {
       type: 'header',
-      text: { type: 'plain_text', text: `${label} Intelligence Digest` },
+      text: { type: 'plain_text', text: `${label} · ${formatBriefDate(windowStart, timezone)}` },
     },
     {
       type: 'section',
-      text: { type: 'mrkdwn', text: `*Period:* ${dateRange}` },
+      text: {
+        type: 'mrkdwn',
+        text: `*${totalEvents} ${totalEvents === 1 ? 'change' : 'changes'}* ${frequency === 'daily' ? 'overnight' : 'this week'}`,
+      },
     },
     { type: 'divider' },
   ];
 
   if (sections.incidents && sections.incidents.length > 0) {
+    const ongoingIncident = sections.incidents.find((i) => !i.resolvedAt);
+    if (ongoingIncident) {
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `:red_circle: *${escapeSlackMrkdwn(ongoingIncident.monitorName)}* still down · failing since ${formatRelativeAgo(ongoingIncident.startedAt)}`,
+        },
+      });
+    }
     blocks.push(
       ...splitIntoMrkdwnBlocks(
-        `*Incidents (${sections.incidents.length})*`,
+        `Uptime & incidents (${sections.incidents.length})`,
         sections.incidents.map(
           (inc) =>
-            `• *${escapeSlackMrkdwn(inc.monitorName)}* — started ${formatBriefDateTime(inc.startedAt, timezone)}${inc.resolvedAt ? `, resolved ${formatBriefDateTime(inc.resolvedAt, timezone)}` : ' (ongoing)'}`
+            `• *${escapeSlackMrkdwn(inc.monitorName)}* · ${inc.resolvedAt ? 'recovered' : 'down'} ${formatRelativeAgo(inc.startedAt)}`
+        )
+      )
+    );
+  }
+
+  if (sections.competitors && sections.competitors.length > 0) {
+    const highPriority = sections.competitors.find((c) =>
+      c.classification === 'out_of_stock' || c.classification === 'sale_started' || c.classification === 'price_changed'
+    );
+    if (highPriority) {
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `:yellow_circle: *${escapeSlackMrkdwn(highPriority.monitorName)}* — ${escapeSlackMrkdwn(highPriority.diffSummary ?? 'change detected')} · ${formatRelativeAgo(highPriority.capturedAt)}`,
+        },
+      });
+    }
+    blocks.push(
+      ...splitIntoMrkdwnBlocks(
+        `Competitor changes (${sections.competitors.length})`,
+        sections.competitors.map(
+          (c) =>
+            `• <${escapeSlackMrkdwn(c.dashboardUrl)}|${escapeSlackMrkdwn(c.monitorName)}> · ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')} · ${formatRelativeAgo(c.capturedAt)}`
         )
       )
     );
@@ -85,9 +134,9 @@ export function buildSlackPayload(
   if (sections.smartAlerts && sections.smartAlerts.length > 0) {
     blocks.push(
       ...splitIntoMrkdwnBlocks(
-        `*Smart Alerts (${sections.smartAlerts.length})*`,
+        `Performance alerts (${sections.smartAlerts.length})`,
         sections.smartAlerts.map(
-          (a) => `• *${escapeSlackMrkdwn(a.monitorName)}* — ${a.responseTimeMs}ms response time`
+          (a) => `• *${escapeSlackMrkdwn(a.monitorName)}* · ${a.responseTimeMs}ms · ${formatRelativeAgo(a.checkedAt)}`
         )
       )
     );
@@ -96,20 +145,9 @@ export function buildSlackPayload(
   if (sections.expiry && sections.expiry.length > 0) {
     blocks.push(
       ...splitIntoMrkdwnBlocks(
-        `*SSL and Domain Expiry (${sections.expiry.length})*`,
+        `SSL & domain expiry (${sections.expiry.length})`,
         sections.expiry.map(
-          (e) => `• *${escapeSlackMrkdwn(e.monitorName)}* — ${e.type.toUpperCase()} expires in ${e.daysRemaining} days`
-        )
-      )
-    );
-  }
-
-  if (sections.competitors && sections.competitors.length > 0) {
-    blocks.push(
-      ...splitIntoMrkdwnBlocks(
-        `*Competitor Changes (${sections.competitors.length})*`,
-        sections.competitors.map(
-          (c) => `• *<${c.dashboardUrl}|${escapeSlackMrkdwn(c.monitorName)}>* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+          (e) => `• *${escapeSlackMrkdwn(e.monitorName)}* · ${e.type.toUpperCase()} expires in ${e.daysRemaining} day${e.daysRemaining !== 1 ? 's' : ''}`
         )
       )
     );
@@ -118,9 +156,10 @@ export function buildSlackPayload(
   if (sections.ownContent && sections.ownContent.length > 0) {
     blocks.push(
       ...splitIntoMrkdwnBlocks(
-        `*Own Content Changes (${sections.ownContent.length})*`,
+        `Your content changes (${sections.ownContent.length})`,
         sections.ownContent.map(
-          (c) => `• *<${c.dashboardUrl}|${escapeSlackMrkdwn(c.monitorName)}>* — ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')}`
+          (c) =>
+            `• <${escapeSlackMrkdwn(c.dashboardUrl)}|${escapeSlackMrkdwn(c.monitorName)}> · ${escapeSlackMrkdwn(c.diffSummary ?? 'content changed')} · ${formatRelativeAgo(c.capturedAt)}`
         )
       )
     );
@@ -138,7 +177,7 @@ export function buildSlackPayload(
     elements: [
       {
         type: 'button',
-        text: { type: 'plain_text', text: 'Open Intelligence Dashboard' },
+        text: { type: 'plain_text', text: 'Open Dashboard' },
         url: dashboardUrl,
         style: 'primary',
       },

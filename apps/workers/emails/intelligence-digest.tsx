@@ -111,7 +111,7 @@ export interface DigestCoverage {
 export function formatCoverageLine(coverage: DigestCoverage): string {
   const base = `${coverage.fullCount} of ${coverage.totalCount} competitor${coverage.totalCount !== 1 ? 's' : ''} fully tracked.`;
   if (coverage.fullCount >= coverage.totalCount) return base;
-  return `${base} The rest sync from selected product pages or have limited access.`;
+  return `${base} Other competitors sync from selected product pages or have limited access.`;
 }
 
 export interface IntelligenceDigestEmailProps {
@@ -142,7 +142,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections'], tz: s
   if (ongoingIncident) {
     return {
       title: `${ongoingIncident.monitorName} is still down`,
-      body: `Failing since ${formatBriefDateTime(ongoingIncident.startedAt, tz)}. Open the incident to triage.`,
+      body: `Failing since ${formatBriefDateTime(ongoingIncident.startedAt, tz)}. View the incident for details.`,
       sev: 'critical',
     };
   }
@@ -155,7 +155,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections'], tz: s
   if (highSig) {
     return {
       title: `${highSig.monitorName}: ${highSig.diffSummary ?? 'competitor change detected'}`,
-      body: `Detected ${formatRelativeAgo(highSig.capturedAt)}. Open the diff to see what changed.`,
+      body: `Detected ${formatRelativeAgo(highSig.capturedAt)}. View the diff to review.`,
       sev: 'warning',
     };
   }
@@ -173,7 +173,7 @@ function pickTopSignal(sections: IntelligenceDigestEmailProps['sections'], tz: s
   if (expiry) {
     return {
       title: `${expiry.monitorName} ${expiry.type.toUpperCase()} expires in ${expiry.daysRemaining} days`,
-      body: 'Renew before it lapses to avoid customer-visible breakage.',
+      body: 'Renew before it expires or your services stop.',
       sev: 'warning',
     };
   }
@@ -223,7 +223,7 @@ export function IntelligenceDigestEmail({
         {frequency === 'daily' ? 'overnight' : 'this week'}
       </H1>
       <Para style={{ margin: '0 0 22px' }}>
-        Here is everything that moved across the monitors you track.
+        Here's what changed on your monitors.
       </Para>
 
       {top && (
@@ -261,7 +261,7 @@ export function IntelligenceDigestEmail({
                 color: EP.muted,
               }}
             >
-              + {sections.competitors.length - 3} more in the Wire
+              + {sections.competitors.length - 3} more in your digest
             </Para>
           )}
         </DigestSection>
@@ -283,7 +283,7 @@ export function IntelligenceDigestEmail({
               summary={
                 inc.resolvedAt
                   ? 'Down briefly, recovered automatically.'
-                  : 'Currently down, investigating.'
+                  : 'Currently down.'
               }
               time={formatRelativeAgo(inc.startedAt)}
             />
@@ -361,8 +361,8 @@ export function IntelligenceDigestEmail({
       <EmailFooter
         reason={
           frequency === 'daily'
-            ? 'You receive this because you configured a Daily Intelligence Digest. Change frequency or turn it off in your digest settings.'
-            : 'You receive this because you configured a Weekly Intelligence Digest. Change frequency or turn it off in your digest settings.'
+            ? 'You receive this because you configured a Daily Intelligence Digest. Adjust frequency or disable in digest settings.'
+            : 'You receive this because you configured a Weekly Intelligence Digest. Adjust frequency or disable in digest settings.'
         }
         manageLabel="Digest settings"
         manageUrl={dashboardUrl}

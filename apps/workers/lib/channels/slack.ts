@@ -14,51 +14,80 @@ function formatDuration(ms: number): string {
   return `${seconds}s`;
 }
 
+function escapeSlackMrkdwn(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+type SlackBlock =
+  | { type: 'section'; text: { type: 'mrkdwn' | 'plain_text'; text: string } }
+  | { type: 'context'; elements: Array<{ type: 'mrkdwn'; text: string }> };
+
+type SlackPayload = {
+  blocks: SlackBlock[];
+  metadata: {
+    event_type: 'monitor_down' | 'monitor_slow' | 'monitor_recovered';
+    event_payload: { monitorId: string; incidentId: string };
+  };
+};
+
 export const slackSender: ChannelSender = async (rawConfig, payload) => {
   const config = slackChannelConfigSchema.parse(rawConfig);
   const { monitor, incident, type, durationMs } = payload;
 
-  const color = type === 'down' ? '#dc2626' : type === 'slow' ? '#d97706' : '#16a34a';
-  const title =
+  const emoji = type === 'down' ? ':red_circle:' : type === 'slow' ? ':yellow_circle:' : ':green_circle:';
+  const heading =
     type === 'down'
-      ? `Monitor Down: ${monitor.name}`
+      ? 'Down'
       : type === 'slow'
-        ? `Smart Alert: ${monitor.name}`
-        : `Monitor Recovered: ${monitor.name}`;
+        ? 'Slow'
+        : 'Recovered';
 
-  const fields =
+  const details =
     type === 'down'
-      ? [
-          { title: 'URL', value: monitor.url, short: false },
-          { title: 'Detected at', value: incident.startedAt.toUTCString(), short: true },
-          { title: 'Incident ID', value: incident.id, short: true },
-        ]
+      ? `Response time ${durationMs ?? 0}ms — failing since ${new Date(incident.startedAt).toUTCString()}`
       : type === 'slow'
-        ? [
-            { title: 'URL', value: monitor.url, short: false },
-            { title: 'Response time', value: `${durationMs ?? 0}ms`, short: true },
-            { title: 'Detected at', value: incident.startedAt.toUTCString(), short: true },
-          ]
-        : [
-            { title: 'URL', value: monitor.url, short: false },
-            { title: 'Downtime', value: formatDuration(durationMs ?? 0), short: true },
-            { title: 'Incident ID', value: incident.id, short: true },
-          ];
+        ? `Response time elevated to ${durationMs ?? 0}ms`
+        : `Down for ${formatDuration(durationMs ?? 0)}`;
 
-  const allFields = payload.note
-    ? [...fields, { title: 'Note', value: payload.note, short: false }]
-    : fields;
-
-  const slackPayload = {
-    attachments: [
-      {
-        color,
-        title,
-        fields: allFields,
-        footer: 'Beaconmon',
-        ts: Math.floor(Date.now() / 1000),
+  const blocks: SlackBlock[] = [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `${emoji} *${escapeSlackMrkdwn(monitor.name)}* — ${heading}`,
       },
-    ],
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `${escapeSlackMrkdwn(details)}\n<${escapeSlackMrkdwn(monitor.url)}|${escapeSlackMrkdwn(new URL(monitor.url).hostname)}>`,
+      },
+    },
+  ];
+
+  if (payload.note) {
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*Note:* ${escapeSlackMrkdwn(payload.note)}`,
+      },
+    });
+  }
+
+  const slackPayload: SlackPayload = {
+    blocks,
+    metadata: {
+      event_type: type === 'down' ? 'monitor_down' : type === 'slow' ? 'monitor_slow' : 'monitor_recovered',
+      event_payload: {
+        monitorId: monitor.id,
+        incidentId: incident.id,
+      },
+    },
   };
 
   if (env.ALERT_DRY_RUN) {

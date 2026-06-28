@@ -1,11 +1,12 @@
 import type { MetadataRoute } from 'next';
+import { BLOG_POSTS } from '@/lib/blog';
 
 const BASE_URL = 'https://beaconmon.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     // ── Tier 1: Homepage ─────────────────────────────────────────────────
-    { url: `${BASE_URL}`, lastModified: new Date('2026-05-10'), changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${BASE_URL}`, lastModified: new Date('2026-06-27'), changeFrequency: 'weekly', priority: 1.0 },
 
     // ── Tier 2: Core marketing ────────────────────────────────────────────
     { url: `${BASE_URL}/features`,              lastModified: new Date('2026-05-10'), changeFrequency: 'weekly',  priority: 0.8 },
@@ -40,6 +41,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/competitor-product-launch-tracking`,   lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/ecommerce-competitor-intelligence`,    lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/ecommerce-uptime-monitoring-guide`,    lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/ecommerce-website-monitoring`,         lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/pricing-change-alerts`,                lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/website-change-detection`,             lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/homepage-monitoring`,                  lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
 
@@ -47,8 +50,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/tools`,                              lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/tools/shopify-competitor-snapshot`,  lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.7 },
 
+    // ── Tier 4.7: Blog (derived from BLOG_POSTS) ─────────────────────────
+    { url: `${BASE_URL}/blog`, lastModified: new Date('2026-06-27'), changeFrequency: 'weekly', priority: 0.7 },
+    ...BLOG_POSTS.map((post) => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt ?? post.publishedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+
     // ── Tier 5: Trust / informational ────────────────────────────────────
-    { url: `${BASE_URL}/changelog`, lastModified: new Date('2026-05-24'), changeFrequency: 'weekly',  priority: 0.5 },
+    { url: `${BASE_URL}/changelog`, lastModified: new Date('2026-06-27'), changeFrequency: 'weekly',  priority: 0.5 },
     { url: `${BASE_URL}/about`,     lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
     { url: `${BASE_URL}/contact`,   lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
     { url: `${BASE_URL}/security`,  lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },

@@ -47,7 +47,7 @@ const brandRule: React.CSSProperties = {
 };
 
 const innerStyle: React.CSSProperties = {
-  padding: '36px',
+  padding: '40px',
 };
 
 export function EmailLayout({ preview, context, children }: EmailLayoutProps) {
@@ -74,8 +74,8 @@ export function EmailLayout({ preview, context, children }: EmailLayoutProps) {
 // ───────── Masthead ─────────
 
 const mastheadOuter: React.CSSProperties = {
-  paddingBottom: '22px',
-  marginBottom: '24px',
+  paddingBottom: '24px',
+  marginBottom: '28px',
   borderBottom: `1px solid ${EP.line}`,
 };
 
@@ -165,29 +165,29 @@ export function EmailFooter({
     <Section
       style={{
         borderTop: `1px solid ${EP.line}`,
-        marginTop: '8px',
-        paddingTop: '22px',
+        marginTop: '10px',
+        paddingTop: '24px',
       }}
     >
-      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ marginBottom: '10px' }}>
+      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ marginBottom: '12px' }}>
         <tbody>
           <tr>
             <td style={{ verticalAlign: 'middle' }}>
               <BeaconMark size={15} />
             </td>
-            <td style={{ verticalAlign: 'middle', paddingLeft: '7px' }}>
-              <span style={{ fontSize: '12.5px', fontWeight: 650, color: EP.body }}>Beaconmon</span>
-              <span style={{ fontSize: '12px', color: EP.faint, marginLeft: '6px' }}>
+            <td style={{ verticalAlign: 'middle', paddingLeft: '8px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 600, color: EP.ink }}>Beaconmon</span>
+              <span style={{ fontSize: '11.5px', color: EP.faint, marginLeft: '7px' }}>
                 · Competitor intelligence for eCommerce
               </span>
             </td>
           </tr>
         </tbody>
       </table>
-      <Text style={{ margin: '0 0 8px', fontSize: '11.5px', lineHeight: 1.55, color: EP.muted }}>
+      <Text style={{ margin: '0 0 9px', fontSize: '11.5px', lineHeight: 1.58, color: EP.muted }}>
         {reason}
       </Text>
-      <Text style={{ margin: 0, fontSize: '11.5px', color: EP.muted }}>
+      <Text style={{ margin: 0, fontSize: '11.5px', lineHeight: 1.5, color: EP.muted }}>
         {manageUrl && (
           <Link
             href={manageUrl}

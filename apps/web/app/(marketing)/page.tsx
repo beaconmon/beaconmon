@@ -12,7 +12,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Competitor Intelligence & Uptime Monitoring for eCommerce | Beaconmon',
   description:
-    'Beaconmon monitors your Shopify competitors and delivers a daily brief of every price drop, new launch, and content change. Set up in five minutes. Free to start.',
+    "Beaconmon tracks your Shopify competitors' prices, launches, and promos. Daily brief at 8am. Set up in five minutes. Free to start.",
   alternates: { canonical: 'https://beaconmon.com' },
   openGraph: { url: 'https://beaconmon.com' },
 };

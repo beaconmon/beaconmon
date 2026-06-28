@@ -12,12 +12,12 @@ export function Eyebrow({
   return (
     <Text
       style={{
-        margin: '0 0 9px',
+        margin: '0 0 12px',
         fontFamily: MONO,
-        fontSize: '11px',
+        fontSize: '10.5px',
         fontWeight: 600,
         textTransform: 'uppercase',
-        letterSpacing: '0.12em',
+        letterSpacing: '0.13em',
         color,
       }}
     >
@@ -36,11 +36,11 @@ export function H1({
   return (
     <Text
       style={{
-        margin: '0 0 14px',
-        fontSize: '25px',
-        lineHeight: 1.22,
+        margin: '0 0 18px',
+        fontSize: '28px',
+        lineHeight: 1.25,
         fontWeight: 700,
-        letterSpacing: '-0.02em',
+        letterSpacing: '-0.025em',
         color: EP.ink,
         ...style,
       }}
@@ -60,9 +60,9 @@ export function Para({
   return (
     <Text
       style={{
-        margin: '0 0 16px',
+        margin: '0 0 18px',
         fontSize: '15px',
-        lineHeight: 1.62,
+        lineHeight: 1.65,
         color: EP.body,
         ...style,
       }}

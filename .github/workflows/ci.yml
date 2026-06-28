@@ -12,15 +12,85 @@ on:
       - "docs/**"
       - "*.md"
       - ".gitignore"
+  workflow_dispatch:
+    inputs:
+      skip_verify:
+        description: "Skip typecheck/lint/tests and go straight to build+deploy"
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  verify:
+  lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    if: |
+      github.event_name != 'push' &&
+      github.event.inputs.skip_verify != 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: |
+      github.event_name != 'push' &&
+      github.event.inputs.skip_verify != 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @beaconmon/db exec prisma generate
+      - run: pnpm run typecheck
+
+  test-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: |
+      github.event_name != 'push' &&
+      github.event.inputs.skip_verify != 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @beaconmon/db exec prisma generate
+      - run: pnpm run test
+
+  test-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes]
+    if: |
+      github.event_name != 'push' &&
+      github.event.inputs.skip_verify != 'true' &&
+      needs.changes.outputs.workers == 'true'
 
     services:
       postgres:
@@ -55,35 +125,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
         with:
           version: 10.25.0
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-
       - run: pnpm install --frozen-lockfile
-
       - run: pnpm --filter @beaconmon/db exec prisma generate
-
       - run: pnpm --filter @beaconmon/db exec prisma migrate deploy
-
-      - run: pnpm run typecheck
-
-      - run: pnpm run lint
-
-      - run: pnpm run test
-
       - run: pnpm --filter @beaconmon/workers run test:integration
 
-  # Detect which service areas changed. Only runs on push to main.
-  # Docker builds are gated on these outputs so unchanged images are skipped.
+  # Detect which service areas changed. Runs on push, dispatch, and PR.
+  # Docker builds are gated on these outputs (push only) so unchanged images are skipped.
+  # PRs use outputs to skip integration tests when no worker files changed.
   changes:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     outputs:
       web: ${{ steps.filter.outputs.web }}
       workers: ${{ steps.filter.outputs.workers }}
@@ -113,8 +172,13 @@ jobs:
   # Build the web image (Next.js standalone).
   # Pushes to GHCR only on push to main; skipped if no web/packages files changed.
   build-web:
-    needs: [verify, changes]
-    if: github.event_name == 'push' && needs.changes.outputs.web == 'true'
+    needs: [lint, typecheck, test-unit, test-integration, changes]
+    if: |
+      always() &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -155,8 +219,13 @@ jobs:
 
   # Build the workers image. Skipped if no workers/packages files changed.
   build-workers:
-    needs: [verify, changes]
-    if: github.event_name == 'push' && needs.changes.outputs.workers == 'true'
+    needs: [lint, typecheck, test-unit, test-integration, changes]
+    if: |
+      always() &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      needs.changes.outputs.workers == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -186,8 +255,13 @@ jobs:
 
   # Build the Shopify embedded app image. Skipped if no shopify/packages files changed.
   build-shopify:
-    needs: [verify, changes]
-    if: github.event_name == 'push' && needs.changes.outputs.shopify == 'true'
+    needs: [lint, typecheck, test-unit, test-integration, changes]
+    if: |
+      always() &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      needs.changes.outputs.shopify == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

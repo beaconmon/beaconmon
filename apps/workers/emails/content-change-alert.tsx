@@ -45,7 +45,7 @@ function deriveBannerCopy(classification: string | undefined, monitorName: strin
         sev: 'warning',
         label: 'Price drop detected',
         badge: 'priceDown',
-        headline: `${host} just changed a price you track`,
+        headline: `${host} changed a price you're monitoring`,
       };
     case 'sale_started':
       return {
@@ -66,21 +66,21 @@ function deriveBannerCopy(classification: string | undefined, monitorName: strin
         sev: 'critical',
         label: 'Product went out of stock',
         badge: 'stockout',
-        headline: `${host} just sold out of a product you track`,
+        headline: `${host} sold out of a tracked product`,
       };
     case 'back_in_stock':
       return {
         sev: 'positive',
         label: 'Back in stock',
         badge: 'restock',
-        headline: `${host} restocked a product you track`,
+        headline: `${host} restocked a tracked product`,
       };
     case 'product_added':
       return {
         sev: 'info',
         label: 'New product listed',
         badge: 'newProduct',
-        headline: `${host} added a new product`,
+        headline: `${host} added a product`,
       };
     case 'product_removed':
       return {
@@ -94,7 +94,7 @@ function deriveBannerCopy(classification: string | undefined, monitorName: strin
         sev: 'warning',
         label: 'Promotion detected',
         badge: 'promo',
-        headline: `${host} pushed a new promotion`,
+        headline: `${host} launched a promotion`,
       };
     default:
       return {
@@ -140,7 +140,7 @@ export function ContentChangeAlert({
       <H1>{copy.headline}</H1>
 
       <Para>
-        Beaconmon detected a change on <Strong>{monitorName}</Strong>
+        A change was detected on <Strong>{monitorName}</Strong>
         {classification === 'price_changed' && summary ? <>: {summary}.</> : '.'}
       </Para>
 
@@ -173,7 +173,7 @@ export function ContentChangeAlert({
       )}
 
       <EmailFooter
-        reason="You receive this because you have alerts enabled for this monitor. Switch to a daily roll-up any time."
+        reason="You get these alerts because they're on. Switch to a daily digest anytime."
         unsubscribeUrl={unsubscribeUrl}
       />
     </EmailLayout>

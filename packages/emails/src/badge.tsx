@@ -37,15 +37,15 @@ export function Badge({ kind, text }: { kind: BadgeKind; text?: string }) {
     <span
       style={{
         display: 'inline-block',
-        padding: '3px 9px',
+        padding: '4px 10px',
         borderRadius: '999px',
         backgroundColor: s.soft,
         border: `1px solid ${s.c}33`,
         fontFamily: MONO,
-        fontSize: '10px',
+        fontSize: '9.5px',
         fontWeight: 700,
         textTransform: 'uppercase',
-        letterSpacing: '0.05em',
+        letterSpacing: '0.07em',
         color: s.ink,
         whiteSpace: 'nowrap',
       }}

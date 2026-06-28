@@ -20,10 +20,10 @@ export function AlertBanner({
     <Section
       style={{
         backgroundColor: s.soft,
-        borderRadius: '9px',
-        borderLeft: `3px solid ${s.c}`,
-        padding: '12px 15px',
-        marginBottom: '22px',
+        borderRadius: '10px',
+        borderLeft: `4px solid ${s.c}`,
+        padding: '14px 16px',
+        marginBottom: '24px',
       }}
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
@@ -86,10 +86,10 @@ export function EventCard({
       style={{
         backgroundColor: EP.surface,
         border: `1px solid ${EP.line}`,
-        borderLeft: accent ? `3px solid ${accent}` : `1px solid ${EP.line}`,
-        borderRadius: '9px',
-        padding: '13px 15px',
-        marginBottom: '9px',
+        borderLeft: accent ? `4px solid ${accent}` : `1px solid ${EP.line}`,
+        borderRadius: '10px',
+        padding: '14px 16px',
+        marginBottom: '11px',
       }}
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
@@ -113,11 +113,11 @@ export function EventCard({
                 {initial}
               </div>
             </td>
-            <td style={{ paddingLeft: '10px', verticalAlign: 'top' }}>
+            <td style={{ paddingLeft: '11px', verticalAlign: 'top' }}>
               <Text
                 style={{
                   margin: 0,
-                  fontSize: '14px',
+                  fontSize: '14.5px',
                   fontWeight: 600,
                   color: EP.ink,
                 }}
@@ -126,7 +126,7 @@ export function EventCard({
               </Text>
               <Text
                 style={{
-                  margin: '1px 0 0',
+                  margin: '2px 0 0',
                   fontFamily: MONO,
                   fontSize: '11px',
                   color: EP.muted,
@@ -144,14 +144,14 @@ export function EventCard({
           </tr>
           {summary && (
             <tr>
-              <td colSpan={badge ? 3 : 2} style={{ paddingTop: '8px' }}>
+              <td colSpan={badge ? 3 : 2} style={{ paddingTop: '10px' }}>
                 <Text
                   style={{
                     margin: 0,
                     fontSize: '13.5px',
-                    lineHeight: 1.5,
+                    lineHeight: 1.55,
                     color: EP.body,
-                    paddingLeft: '40px',
+                    paddingLeft: '41px',
                   }}
                 >
                   {summary}
@@ -222,8 +222,8 @@ export function DigestSection({
 }) {
   const col = tone === 'crit' ? EP.crit : tone === 'pos' ? EP.brandDeep : EP.muted;
   return (
-    <Section style={{ marginBottom: '22px' }}>
-      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%', marginBottom: '11px' }}>
+    <Section style={{ marginBottom: '26px' }}>
+      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%', marginBottom: '13px' }}>
         <tbody>
           <tr>
             <td style={{ width: '14px', verticalAlign: 'middle' }}>
@@ -236,14 +236,14 @@ export function DigestSection({
                 }}
               />
             </td>
-            <td style={{ paddingLeft: '6px', verticalAlign: 'middle' }}>
+            <td style={{ paddingLeft: '7px', verticalAlign: 'middle' }}>
               <span
                 style={{
                   fontFamily: MONO,
-                  fontSize: '11px',
+                  fontSize: '10.5px',
                   fontWeight: 700,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.12em',
                   color: EP.ink,
                 }}
               >
@@ -252,13 +252,13 @@ export function DigestSection({
               {count != null && (
                 <span
                   style={{
-                    marginLeft: '8px',
+                    marginLeft: '9px',
                     fontFamily: MONO,
-                    fontSize: '10.5px',
+                    fontSize: '10px',
                     fontWeight: 700,
                     color: EP.muted,
                     backgroundColor: EP.surface2,
-                    padding: '1px 7px',
+                    padding: '2px 8px',
                     borderRadius: '999px',
                   }}
                 >
@@ -268,7 +268,7 @@ export function DigestSection({
             </td>
             <td
               style={{
-                paddingLeft: '8px',
+                paddingLeft: '10px',
                 verticalAlign: 'middle',
               }}
             >
@@ -301,20 +301,20 @@ export function TopSignal({
       style={{
         backgroundColor: EP.surface,
         border: `1px solid ${EP.line}`,
-        borderLeft: `3px solid ${s.c}`,
-        borderRadius: '9px',
-        padding: '15px 16px',
-        marginBottom: '26px',
+        borderLeft: `4px solid ${s.c}`,
+        borderRadius: '10px',
+        padding: '16px 17px',
+        marginBottom: '28px',
       }}
     >
       <Text
         style={{
-          margin: '0 0 7px',
+          margin: '0 0 8px',
           fontFamily: MONO,
-          fontSize: '10.5px',
+          fontSize: '10px',
           fontWeight: 700,
           textTransform: 'uppercase',
-          letterSpacing: '0.1em',
+          letterSpacing: '0.12em',
           color: s.ink,
         }}
       >
@@ -322,15 +322,15 @@ export function TopSignal({
       </Text>
       <Text
         style={{
-          margin: '0 0 4px',
-          fontSize: '15px',
+          margin: '0 0 5px',
+          fontSize: '15.5px',
           fontWeight: 600,
           color: EP.ink,
         }}
       >
         {title}
       </Text>
-      <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.55, color: EP.body }}>
+      <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}>
         {body}
       </Text>
     </Section>
@@ -353,9 +353,9 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
       style={{
         backgroundColor: EP.surface,
         border: `1px solid ${EP.line}`,
-        borderRadius: '9px',
-        padding: '6px 16px',
-        marginBottom: '22px',
+        borderRadius: '10px',
+        padding: '8px 17px',
+        marginBottom: '24px',
       }}
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
@@ -364,7 +364,7 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
             <tr key={i}>
               <td
                 style={{
-                  padding: '9px 0',
+                  padding: '11px 0',
                   borderTop: i ? `1px solid ${EP.line}` : 'none',
                   fontSize: '12.5px',
                   color: EP.muted,
@@ -375,7 +375,7 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
               </td>
               <td
                 style={{
-                  padding: '9px 0',
+                  padding: '11px 0',
                   borderTop: i ? `1px solid ${EP.line}` : 'none',
                   fontFamily: r.mono === false ? SANS : MONO,
                   fontSize: '12.5px',
@@ -421,7 +421,7 @@ export function EBtn({
       style={{
         display: 'inline-block',
         textAlign: 'center',
-        padding: '13px 26px',
+        padding: '12px 28px',
         borderRadius: '8px',
         fontSize: '14px',
         fontWeight: 600,
@@ -437,12 +437,12 @@ export function EBtn({
 
 export function BtnRow({ children }: { children: React.ReactNode }) {
   return (
-    <Section style={{ margin: '4px 0 24px' }}>
+    <Section style={{ margin: '6px 0 26px' }}>
       <table role="presentation" cellPadding={0} cellSpacing={0}>
         <tbody>
           <tr>
             {React.Children.map(children, (child, i) => (
-              <td key={i} style={{ paddingRight: '10px', verticalAlign: 'middle' }}>
+              <td key={i} style={{ paddingRight: '11px', verticalAlign: 'middle' }}>
                 {child}
               </td>
             ))}
@@ -471,34 +471,34 @@ export function StepRow({
       role="presentation"
       cellPadding={0}
       cellSpacing={0}
-      style={{ width: '100%', marginBottom: last ? 0 : '16px' }}
+      style={{ width: '100%', marginBottom: last ? 0 : '18px' }}
     >
       <tbody>
         <tr>
-          <td style={{ width: '26px', verticalAlign: 'top', paddingTop: '1px' }}>
+          <td style={{ width: '28px', verticalAlign: 'top', paddingTop: '1px' }}>
             <div
               style={{
-                width: '26px',
-                height: '26px',
+                width: '28px',
+                height: '28px',
                 borderRadius: '999px',
                 backgroundColor: EP.surface2,
                 border: `1px solid ${EP.line2}`,
                 fontFamily: MONO,
-                fontSize: '12px',
+                fontSize: '12.5px',
                 fontWeight: 700,
                 color: EP.brandDeep,
                 textAlign: 'center',
-                lineHeight: '24px',
+                lineHeight: '26px',
               }}
             >
               {n}
             </div>
           </td>
-          <td style={{ paddingLeft: '13px', verticalAlign: 'top' }}>
-            <Text style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 600, color: EP.ink }}>
+          <td style={{ paddingLeft: '14px', verticalAlign: 'top' }}>
+            <Text style={{ margin: '0 0 3px', fontSize: '14.5px', fontWeight: 600, color: EP.ink }}>
               {title}
             </Text>
-            <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.55, color: EP.body }}>
+            <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}>
               {body}
             </Text>
           </td>
@@ -518,7 +518,7 @@ export interface Stat {
 export function StatStrip({ stats }: { stats: Stat[] }) {
   const w = stats.length > 0 ? `${Math.floor(100 / stats.length)}%` : '100%';
   return (
-    <Section style={{ marginBottom: '24px' }}>
+    <Section style={{ marginBottom: '26px' }}>
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
         <tbody>
           <tr>
@@ -527,7 +527,7 @@ export function StatStrip({ stats }: { stats: Stat[] }) {
                 key={i}
                 style={{
                   width: w,
-                  padding: i === stats.length - 1 ? 0 : '0 10px 0 0',
+                  padding: i === stats.length - 1 ? 0 : '0 11px 0 0',
                   verticalAlign: 'top',
                 }}
               >
@@ -535,23 +535,23 @@ export function StatStrip({ stats }: { stats: Stat[] }) {
                   style={{
                     backgroundColor: EP.surface,
                     border: `1px solid ${EP.line}`,
-                    borderRadius: '9px',
-                    padding: '14px 12px',
+                    borderRadius: '10px',
+                    padding: '16px 13px',
                     textAlign: 'center',
                   }}
                 >
                   <Text
                     style={{
-                      margin: '0 0 3px',
+                      margin: '0 0 4px',
                       fontFamily: MONO,
-                      fontSize: '22px',
+                      fontSize: '23px',
                       fontWeight: 700,
                       color: EP.ink,
                     }}
                   >
                     {s.n}
                   </Text>
-                  <Text style={{ margin: 0, fontSize: '11px', lineHeight: 1.3, color: EP.muted }}>
+                  <Text style={{ margin: 0, fontSize: '11px', lineHeight: 1.4, color: EP.muted }}>
                     {s.label}
                   </Text>
                 </div>
@@ -574,18 +574,18 @@ export function DurationBox({ duration, label }: { duration: string; label: stri
         backgroundColor: EP.posSoft,
         border: `1px solid ${EP.pos}33`,
         borderRadius: '10px',
-        padding: '20px 16px',
-        marginBottom: '22px',
+        padding: '22px 17px',
+        marginBottom: '24px',
       }}
     >
       <Text
         style={{
-          margin: '0 0 4px',
+          margin: '0 0 5px',
           fontFamily: MONO,
-          fontSize: '32px',
+          fontSize: '33px',
           fontWeight: 700,
           color: EP.posInk,
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.025em',
         }}
       >
         {duration}
@@ -594,9 +594,9 @@ export function DurationBox({ duration, label }: { duration: string; label: stri
         style={{
           margin: 0,
           fontFamily: MONO,
-          fontSize: '10.5px',
+          fontSize: '10px',
           textTransform: 'uppercase',
-          letterSpacing: '0.1em',
+          letterSpacing: '0.12em',
           color: EP.muted,
         }}
       >

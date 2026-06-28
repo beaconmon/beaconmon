@@ -53,36 +53,36 @@ All plans include a 14-day Growth trial with no credit card required.
 
 ## Key pages
 
-- Homepage: https://beaconmon.com
-- Features: https://beaconmon.com/features
-- Intelligence Digest: https://beaconmon.com/features/intelligence
-- Pricing: https://beaconmon.com/pricing
-- For Shopify stores: https://beaconmon.com/for/shopify
-- For WooCommerce stores: https://beaconmon.com/for/woocommerce
-- About: https://beaconmon.com/about
-- Shopify competitor monitoring: https://beaconmon.com/shopify-competitor-monitoring
-- WooCommerce competitor monitoring: https://beaconmon.com/woocommerce-competitor-monitoring
-- Competitor price tracking: https://beaconmon.com/competitor-price-tracking
-- Competitor collections monitoring: https://beaconmon.com/competitor-collections-monitoring
-- Competitor stock monitoring: https://beaconmon.com/competitor-stock-monitoring
-- Competitor promotion monitoring: https://beaconmon.com/competitor-promotion-monitoring
-- Competitor product launch tracking: https://beaconmon.com/competitor-product-launch-tracking
-- Ecommerce competitor intelligence: https://beaconmon.com/ecommerce-competitor-intelligence
-- Ecommerce uptime monitoring guide: https://beaconmon.com/ecommerce-uptime-monitoring-guide
-- Website change detection: https://beaconmon.com/website-change-detection
-- Homepage monitoring: https://beaconmon.com/homepage-monitoring
-- vs UptimeRobot: https://beaconmon.com/vs/uptimerobot
-- vs Pingdom: https://beaconmon.com/vs/pingdom
-- vs Better Uptime: https://beaconmon.com/vs/better-uptime
-- vs StatusCake: https://beaconmon.com/vs/statuscake
-- vs Distill: https://beaconmon.com/vs/distill
-- vs Hexowatch: https://beaconmon.com/vs/hexowatch
-- vs Prisync: https://beaconmon.com/vs/prisync
-- vs Visualping: https://beaconmon.com/vs/visualping
-- Sign up: https://beaconmon.com/sign-up
-- Privacy Policy: https://beaconmon.com/privacy
-- Terms of Service: https://beaconmon.com/terms
-- Security: https://beaconmon.com/security
+- [Homepage](https://beaconmon.com): product overview and primary value proposition
+- [Features](https://beaconmon.com/features): full feature list across competitor intelligence and uptime
+- [Intelligence Digest](https://beaconmon.com/features/intelligence): the daily competitor brief
+- [Pricing](https://beaconmon.com/pricing): plan tiers and what each includes
+- [For Shopify stores](https://beaconmon.com/for/shopify): Shopify-specific use case
+- [For WooCommerce stores](https://beaconmon.com/for/woocommerce): WooCommerce-specific use case
+- [About](https://beaconmon.com/about): company and founder background
+- [Shopify competitor monitoring](https://beaconmon.com/shopify-competitor-monitoring): how Shopify catalog tracking works
+- [WooCommerce competitor monitoring](https://beaconmon.com/woocommerce-competitor-monitoring): how WooCommerce tracking works
+- [Competitor price tracking](https://beaconmon.com/competitor-price-tracking): price drop detection and alerting
+- [Competitor collections monitoring](https://beaconmon.com/competitor-collections-monitoring): collection and assortment changes
+- [Competitor stock monitoring](https://beaconmon.com/competitor-stock-monitoring): stockout detection
+- [Competitor promotion monitoring](https://beaconmon.com/competitor-promotion-monitoring): sale banner and promo copy detection
+- [Competitor product launch tracking](https://beaconmon.com/competitor-product-launch-tracking): new SKU and collection detection
+- [Ecommerce competitor intelligence](https://beaconmon.com/ecommerce-competitor-intelligence): the broader competitor intelligence overview
+- [Ecommerce uptime monitoring guide](https://beaconmon.com/ecommerce-uptime-monitoring-guide): uptime guide for merchants
+- [Website change detection](https://beaconmon.com/website-change-detection): content change monitoring
+- [Homepage monitoring](https://beaconmon.com/homepage-monitoring): monitoring a competitor or your own homepage
+- [vs UptimeRobot](https://beaconmon.com/vs/uptimerobot): comparison with UptimeRobot
+- [vs Pingdom](https://beaconmon.com/vs/pingdom): comparison with Pingdom
+- [vs Better Uptime](https://beaconmon.com/vs/better-uptime): comparison with Better Uptime
+- [vs StatusCake](https://beaconmon.com/vs/statuscake): comparison with StatusCake
+- [vs Distill](https://beaconmon.com/vs/distill): comparison with Distill
+- [vs Hexowatch](https://beaconmon.com/vs/hexowatch): comparison with Hexowatch
+- [vs Prisync](https://beaconmon.com/vs/prisync): comparison with Prisync
+- [vs Visualping](https://beaconmon.com/vs/visualping): comparison with Visualping
+- [Sign up](https://beaconmon.com/sign-up): create an account
+- [Privacy Policy](https://beaconmon.com/privacy): privacy policy
+- [Terms of Service](https://beaconmon.com/terms): terms of service
+- [Security](https://beaconmon.com/security): security practices
 
 ## How Beaconmon compares to alternatives
 
@@ -116,4 +116,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-06-14
+2026-06-23
