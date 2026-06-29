@@ -25,6 +25,13 @@ import { UptimeBar, aggregateUptime } from "../components/UptimeBar";
 // free-plan history retention window rather than special-casing it.
 const UPTIME_DAYS = PLAN_LIMITS.free.historyDays;
 
+function isBFCMWeek(): boolean {
+  const now = new Date();
+  const month = now.getMonth(); // 0-indexed: November = 10, December = 11
+  const day = now.getDate();
+  return (month === 10 && day >= 25) || (month === 11 && day <= 3);
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
   const { shop } = session;
@@ -40,6 +47,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       monitors: [] as MonitorView[],
       incidentCount: 0,
       shopifyStatus,
+      avgHourlyRevenue: 0,
+      incidentStartedAt: null as string | null,
+      isBFCM: isBFCMWeek(),
       checklist: {
         watching: false,
         email: false,
@@ -52,9 +62,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const teamId = install.teamId;
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const competitorIntent = (install.competitorIntent as string[]) ?? [];
 
-  const [rawMonitors, incidentCount, emailChannel, slackChannel, keyPageCount] =
+  const [rawMonitors, incidentCount, emailChannel, slackChannel, keyPageCount, competitorCount] =
     await Promise.all([
       prisma.monitor.findMany({
         where: { teamId, deletedAt: null },
@@ -88,37 +97,83 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           tags: { has: "shopify-page" },
         },
       }),
+      prisma.competitor.count({
+        where: { teamId, isActive: true, deletedAt: null },
+      }),
     ]);
 
   const monitorIds = rawMonitors.map((m) => m.id);
-  const [dailyStatsMap, responseTimes] = await Promise.all([
+  const downMonitorIds = rawMonitors
+    .filter((m) => m.isActive && m.currentStatus === "down")
+    .map((m) => m.id);
+
+  const [dailyStatsMap, responseTimeStats, earliestOpenIncident, latestSslAlert] = await Promise.all([
     checkResultRepository.getDailyUptimeStats(monitorIds, UPTIME_DAYS),
-    checkResultRepository.getLatestResponseTimes(monitorIds),
+    checkResultRepository.getResponseTimeStats(monitorIds, 24),
+    downMonitorIds.length > 0
+      ? prisma.incident.findFirst({
+          where: { monitorId: { in: downMonitorIds }, resolvedAt: null },
+          orderBy: { startedAt: "asc" },
+          select: { startedAt: true },
+        })
+      : Promise.resolve(null),
+    prisma.expiryAlert.findFirst({
+      where: { teamId, type: "ssl" },
+      orderBy: { createdAt: "desc" },
+      select: { monitorId: true, daysRemaining: true, sentAt: true },
+    }),
   ]);
 
-  const monitors: MonitorView[] = rawMonitors.map((m) => ({
-    id: m.id,
-    name: m.name,
-    url: m.url,
-    currentStatus: m.currentStatus,
-    isActive: m.isActive,
-    lastCheckedAt: m.lastCheckedAt?.toISOString() ?? null,
-    nextCheckAt: m.nextCheckAt?.toISOString() ?? null,
-    dailyStats: dailyStatsMap.get(m.id) ?? [],
-    responseTimeMs: responseTimes.get(m.id) ?? null,
-  }));
+  const settings = (install.settings as Record<string, unknown>) ?? {};
+  const avgHourlyRevenue =
+    typeof settings.avgHourlyRevenue === "number" ? settings.avgHourlyRevenue : 0;
+
+  const monitors: MonitorView[] = rawMonitors.map((m) => {
+    const stats = responseTimeStats.get(m.id) ?? null;
+    return {
+      id: m.id,
+      name: m.name,
+      url: m.url,
+      currentStatus: m.currentStatus,
+      isActive: m.isActive,
+      lastCheckedAt: m.lastCheckedAt?.toISOString() ?? null,
+      nextCheckAt: m.nextCheckAt?.toISOString() ?? null,
+      dailyStats: dailyStatsMap.get(m.id) ?? [],
+      responseTimeAvg: stats?.avg ?? null,
+      responseTimeMin: stats?.min ?? null,
+      responseTimeMax: stats?.max ?? null,
+    };
+  });
+
+  // Approximate current days remaining: stored daysRemaining minus days elapsed since alert.
+  let sslWarning: { monitorName: string; daysRemaining: number } | null = null;
+  if (latestSslAlert) {
+    const daysSinceSent = Math.floor(
+      (Date.now() - new Date(latestSslAlert.sentAt).getTime()) / 86_400_000
+    );
+    const approxDays = latestSslAlert.daysRemaining - daysSinceSent;
+    if (approxDays >= 0 && approxDays <= 30) {
+      const monitorName =
+        rawMonitors.find((m) => m.id === latestSslAlert.monitorId)?.name ?? "your store";
+      sslWarning = { monitorName, daysRemaining: Math.max(0, approxDays) };
+    }
+  }
 
   return {
     shop,
     monitors,
     incidentCount,
     shopifyStatus,
+    avgHourlyRevenue,
+    incidentStartedAt: earliestOpenIncident?.startedAt?.toISOString() ?? null,
+    isBFCM: isBFCMWeek(),
+    sslWarning,
     checklist: {
       watching: rawMonitors.some((m) => m.isActive),
       email: !!emailChannel,
       slack: !!slackChannel,
       keyPage: keyPageCount > 0,
-      competitor: competitorIntent.length > 0,
+      competitor: competitorCount > 0,
     },
   };
 };
@@ -132,7 +187,9 @@ type MonitorView = {
   lastCheckedAt: string | null;
   nextCheckAt: string | null;
   dailyStats: DailyUptimeStat[];
-  responseTimeMs: number | null;
+  responseTimeAvg: number | null;
+  responseTimeMin: number | null;
+  responseTimeMax: number | null;
 };
 
 function statusBadge(monitor: MonitorView) {
@@ -169,10 +226,16 @@ function formatNextCheck(iso: string | null, now: number): string | null {
   return `next check in ${min}m`;
 }
 
-// One subdued line under each monitor: latency, next check, and last check.
+// One subdued line under each monitor: latency stats, next check, and last check.
 function metaLine(m: MonitorView, now: number): string {
   const parts: string[] = [];
-  if (m.responseTimeMs !== null) parts.push(`${m.responseTimeMs}ms`);
+  if (m.responseTimeAvg !== null) {
+    const rtPart =
+      m.responseTimeMin !== null && m.responseTimeMax !== null
+        ? `avg ${m.responseTimeAvg}ms (${m.responseTimeMin} to ${m.responseTimeMax}ms)`
+        : `${m.responseTimeAvg}ms avg`;
+    parts.push(rtPart);
+  }
   if (m.isActive) {
     const next = formatNextCheck(m.nextCheckAt, now);
     if (next) parts.push(next);
@@ -313,7 +376,7 @@ function ActivationChecklist({
 }
 
 export default function StatusHome() {
-  const { shop, monitors, incidentCount, shopifyStatus, checklist } =
+  const { shop, monitors, incidentCount, shopifyStatus, checklist, avgHourlyRevenue, incidentStartedAt, isBFCM, sslWarning } =
     useLoaderData<typeof loader>();
 
   // Re-render every 30s so the "next check in Nm" countdown stays fresh.
@@ -329,9 +392,17 @@ export default function StatusHome() {
   ).length;
   const allGreen = activeMonitors.length > 0 && downCount === 0;
 
+  const revenueBanner = (() => {
+    if (downCount === 0 || avgHourlyRevenue <= 0 || !incidentStartedAt) return null;
+    const downtimeMins = Math.floor((now - new Date(incidentStartedAt).getTime()) / 60_000);
+    if (downtimeMins <= 0) return null;
+    const impact = Math.round((downtimeMins / 60) * avgHourlyRevenue);
+    return { downtimeMins, impact };
+  })();
+
   const bannerTone = allGreen ? "success" : downCount > 0 ? "critical" : "info";
   const bannerTitle = allGreen
-    ? `${shop} — all clear`
+    ? `${shop} is all clear`
     : downCount > 0
       ? `${downCount} monitor${downCount > 1 ? "s" : ""} down`
       : "Setting up monitoring...";
@@ -341,7 +412,7 @@ export default function StatusHome() {
       ? "Check the monitors below for details."
       : "Your monitors will appear here once the first checks run.";
   const shopifyIncidentNote = shopifyStatus
-    ? ` Note: Shopify is reporting a platform incident — ${shopifyStatus.description.replace(/\.$/, "")}. If your store looks down, it may be related.`
+    ? ` Note: Shopify is reporting a platform incident: ${shopifyStatus.description.replace(/\.$/, "")}. If your store looks down, it may be related.`
     : "";
 
   return (
@@ -355,6 +426,30 @@ export default function StatusHome() {
                 {bannerBody}{shopifyIncidentNote}
               </Text>
             </Banner>
+
+            {revenueBanner && (
+              <Banner tone="warning" title="Revenue at risk">
+                <Text as="p" variant="bodyMd">
+                  Your store has been down for {revenueBanner.downtimeMins} minutes. Estimated revenue impact: ~${revenueBanner.impact.toLocaleString()}.
+                </Text>
+              </Banner>
+            )}
+
+            {isBFCM && activeMonitors.length > 0 && (
+              <Banner tone="info" title="BFCM protection active">
+                <Text as="p" variant="bodyMd">
+                  Checking every 60 seconds through Cyber Monday so you catch outages the moment they happen.
+                </Text>
+              </Banner>
+            )}
+
+            {sslWarning && (
+              <Banner tone="warning" title="SSL certificate expiring soon">
+                <Text as="p" variant="bodyMd">
+                  The SSL certificate for {sslWarning.monitorName} expires in approximately {sslWarning.daysRemaining} day{sslWarning.daysRemaining !== 1 ? "s" : ""}. Renew it before it lapses to avoid browser warnings for your customers.
+                </Text>
+              </Banner>
+            )}
 
             <ActivationChecklist checklist={checklist} />
 

@@ -38,6 +38,7 @@ export default function App() {
             Home
           </Link>
           <Link to="/app/competitors">Competitors</Link>
+          <Link to="/app/history">History</Link>
           <Link to="/app/settings">Settings</Link>
         </NavMenu>
         <Outlet />

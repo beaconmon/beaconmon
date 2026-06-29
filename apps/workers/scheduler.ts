@@ -34,6 +34,22 @@ const SENTRY_MONITOR_SLUG = process.env['SENTRY_MONITOR_SLUG'] ?? 'beaconmon-sch
 let running = true;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
 
+/** Nov 25 through Dec 3 inclusive — the BFCM high-stakes window. */
+function isBFCMWeek(now: Date = new Date()): boolean {
+  const month = now.getMonth(); // 0-indexed: November = 10, December = 11
+  const day = now.getDate();
+  return (month === 10 && day >= 25) || (month === 11 && day <= 3);
+}
+
+/**
+ * During BFCM week, cap Shopify-team uptime monitor intervals at 60s so checks
+ * tighten automatically without requiring merchants to change their settings.
+ * Applied at scheduler read time only; intervalSeconds in the DB is unchanged.
+ */
+function getEffectiveInterval(intervalSeconds: number, bfcmShopify: boolean): number {
+  return bfcmShopify ? Math.min(intervalSeconds, 60) : intervalSeconds;
+}
+
 /**
  * Returns the set of monitor IDs that are currently in an active maintenance window
  * for the given team. An empty monitor list on a window means all monitors are covered.
@@ -160,6 +176,20 @@ async function evaluateHeartbeatMonitor(
  */
 async function scheduleChecks(): Promise<void> {
   const now = new Date();
+  const bfcm = isBFCMWeek(now);
+  const shopifyTeamCache = new Map<string, boolean>();
+
+  const isShopifyTeam = async (teamId: string): Promise<boolean> => {
+    if (!bfcm) return false;
+    if (shopifyTeamCache.has(teamId)) return shopifyTeamCache.get(teamId)!;
+    const result = await prisma.shopifyInstall.count({ where: { teamId, uninstalledAt: null } }) > 0;
+    shopifyTeamCache.set(teamId, result);
+    return result;
+  };
+
+  if (bfcm) {
+    logger.info({ service: 'scheduler' }, 'BFCM week active — Shopify-team intervals capped at 60s');
+  }
 
   const checkInId = env.SENTRY_DSN
     ? Sentry.captureCheckIn(
@@ -229,7 +259,9 @@ async function scheduleChecks(): Promise<void> {
       const teamMaintenance = maintenanceByTeam.get(monitor.teamId)!;
       const inMaintenance = teamMaintenance === 'all' || teamMaintenance.has(monitor.id);
 
-      const nextCheckAt = new Date(now.getTime() + monitor.intervalSeconds * 1000);
+      const shopifyTeam = await isShopifyTeam(monitor.teamId);
+      const effectiveInterval = getEffectiveInterval(monitor.intervalSeconds, shopifyTeam);
+      const nextCheckAt = new Date(now.getTime() + effectiveInterval * 1000);
 
       await prisma.monitor.update({
         where: { id: monitor.id },
@@ -241,7 +273,7 @@ async function scheduleChecks(): Promise<void> {
           {
             id: monitor.id,
             teamId: monitor.teamId,
-            intervalSeconds: monitor.intervalSeconds,
+            intervalSeconds: effectiveInterval,
             config: monitor.config as Record<string, unknown>,
             currentStatus: monitor.currentStatus,
             consecutiveFailures: monitor.consecutiveFailures,
@@ -256,7 +288,7 @@ async function scheduleChecks(): Promise<void> {
           monitorId: monitor.id,
           teamId: monitor.teamId,
           url: monitor.url,
-          intervalSeconds: monitor.intervalSeconds,
+          intervalSeconds: effectiveInterval,
           selector: (monitor.config as Record<string, unknown>)['selector'] as string | undefined,
           inMaintenance,
         });
@@ -270,7 +302,7 @@ async function scheduleChecks(): Promise<void> {
           teamId: monitor.teamId,
           url: monitor.url,
           type: monitor.type as 'http' | 'ssl' | 'domain' | 'tcp' | 'keyword',
-          intervalSeconds: monitor.intervalSeconds,
+          intervalSeconds: effectiveInterval,
           timeoutMs: monitor.timeoutMs,
           regions: isHttpOrKeyword ? enabledRegions : undefined,
           ...(monitor.type === 'keyword' && {

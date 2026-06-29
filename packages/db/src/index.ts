@@ -1,5 +1,6 @@
 import { PrismaClient } from '../generated/prisma/client/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+export * from './errors.js';
 
 declare global {
   // Allow a single PrismaClient instance to be reused across hot-reloads in dev

@@ -882,6 +882,7 @@ model ShopifyInstall {
   // Captured competitor-tracking intent from the in-app teaser ("notify me").
   // Stored as an array of competitor domains/names. This is the v1 intent-capture metric.
   competitorIntent Json   @default("[]") @map("competitor_intent")
+  settings      Json      @default("{}") @map("settings")
   installedAt   DateTime  @default(now()) @map("installed_at")
   uninstalledAt DateTime? @map("uninstalled_at")
 

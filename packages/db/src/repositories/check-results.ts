@@ -139,4 +139,50 @@ export const checkResultRepository = {
 
     return result;
   },
+
+  /**
+   * Avg/min/max response time per monitor over the last N hours, staying
+   * within the recent check_results partitions (range-partitioned by month).
+   * No teamId scoping: called with trusted monitorIds.
+   */
+  async getResponseTimeStats(
+    monitorIds: string[],
+    hours = 24
+  ): Promise<Map<string, { avg: number | null; min: number | null; max: number | null }>> {
+    const result = new Map<string, { avg: number | null; min: number | null; max: number | null }>();
+    if (monitorIds.length === 0) return result;
+
+    const since = new Date(Date.now() - hours * 60 * 60 * 1000);
+    const idList = Prisma.join(monitorIds.map((id) => Prisma.sql`${id}`));
+
+    interface Row {
+      monitor_id: string;
+      avg_ms: string | null;
+      min_ms: number | null;
+      max_ms: number | null;
+    }
+
+    const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
+      SELECT
+        monitor_id,
+        ROUND(AVG(response_time_ms))::text AS avg_ms,
+        MIN(response_time_ms) AS min_ms,
+        MAX(response_time_ms) AS max_ms
+      FROM check_results
+      WHERE monitor_id IN (${idList})
+        AND checked_at >= ${since}
+        AND response_time_ms IS NOT NULL
+      GROUP BY monitor_id
+    `);
+
+    for (const row of rows) {
+      result.set(row.monitor_id, {
+        avg: row.avg_ms !== null ? Number(row.avg_ms) : null,
+        min: row.min_ms !== null ? Number(row.min_ms) : null,
+        max: row.max_ms !== null ? Number(row.max_ms) : null,
+      });
+    }
+
+    return result;
+  },
 };

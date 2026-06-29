@@ -25,8 +25,10 @@ import { prisma } from "@beaconmon/db";
 import {
   emailChannelConfigSchema,
   slackChannelConfigSchema,
+  discordChannelConfigSchema,
 } from "@beaconmon/types";
 
+const MAX_EMAIL_RECIPIENTS = 3;
 const MAX_CUSTOM_PAGES = 3;
 const MAX_OOS_MONITORS = 10;
 const DEFAULT_OOS_TEXT = "Sold out";
@@ -40,17 +42,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return {
       shop,
       teamId: null,
-      emailRecipient: "",
+      emailRecipients: [] as string[],
       slackWebhookUrl: "",
       slackChannelId: null,
+      discordWebhookUrl: "",
+      discordChannelId: null,
       customPages: [],
       oosMonitors: [],
+      avgHourlyRevenue: 0,
+      statusPageUrl: null as string | null,
     };
   }
 
   const teamId = install.teamId;
 
-  const [emailChannel, slackChannel, customPages, oosMonitors] =
+  const [emailChannel, slackChannel, discordChannel, customPages, oosMonitors, statusPage] =
     await Promise.all([
       prisma.alertChannel.findFirst({
         where: { teamId, type: "email", isActive: true },
@@ -58,6 +64,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }),
       prisma.alertChannel.findFirst({
         where: { teamId, type: "slack", isActive: true },
+        select: { id: true, config: true },
+      }),
+      prisma.alertChannel.findFirst({
+        where: { teamId, type: "discord", isActive: true },
         select: { id: true, config: true },
       }),
       prisma.monitor.findMany({
@@ -80,19 +90,28 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         select: { id: true, name: true, url: true },
         take: MAX_OOS_MONITORS,
       }),
+      prisma.statusPage.findFirst({ where: { teamId }, select: { slug: true } }),
     ]);
 
   const emailCfg = emailChannel?.config as { recipients?: string[] } | null;
   const slackCfg = slackChannel?.config as { webhookUrl?: string } | null;
+  const discordCfg = discordChannel?.config as { webhookUrl?: string } | null;
+  const settings = (install.settings as Record<string, unknown>) ?? {};
+  const avgHourlyRevenue =
+    typeof settings.avgHourlyRevenue === "number" ? settings.avgHourlyRevenue : 0;
 
   return {
     shop,
     teamId,
-    emailRecipient: emailCfg?.recipients?.[0] ?? "",
+    emailRecipients: emailCfg?.recipients ?? [],
     slackWebhookUrl: slackCfg?.webhookUrl ?? "",
     slackChannelId: slackChannel?.id ?? null,
+    discordWebhookUrl: discordCfg?.webhookUrl ?? "",
+    discordChannelId: discordChannel?.id ?? null,
     customPages,
     oosMonitors,
+    avgHourlyRevenue,
+    statusPageUrl: statusPage ? `https://beaconmon.com/status/${statusPage.slug}` : null,
   };
 };
 
@@ -109,7 +128,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
   const teamId = install.teamId;
 
-  if (_action === "save-email") {
+  if (_action === "save-revenue") {
+    const raw = (formData.get("avgHourlyRevenue") as string | null)?.trim() ?? "";
+    const value = parseFloat(raw);
+    if (isNaN(value) || value < 0) {
+      return { ok: false, _action, error: "Enter a valid amount (0 or more)." };
+    }
+    const currentSettings = (install.settings as Record<string, unknown>) ?? {};
+    await prisma.shopifyInstall.update({
+      where: { shop },
+      data: { settings: { ...currentSettings, avgHourlyRevenue: value } },
+    });
+    return { ok: true, _action };
+  }
+
+  if (_action === "add-email-recipient") {
     const email = (formData.get("email") as string | null)?.trim() ?? "";
     const parsed = emailChannelConfigSchema.safeParse({ recipients: [email] });
     if (!parsed.success) {
@@ -118,19 +151,44 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const existing = await prisma.alertChannel.findFirst({
       where: { teamId, type: "email" },
     });
+    const current = (existing?.config as { recipients?: string[] } | null)?.recipients ?? [];
+    if (current.includes(email)) {
+      return { ok: true, _action };
+    }
+    if (current.length >= MAX_EMAIL_RECIPIENTS) {
+      return { ok: false, _action, error: `Up to ${MAX_EMAIL_RECIPIENTS} email addresses allowed.` };
+    }
+    const recipients = [...current, email];
     if (existing) {
       await prisma.alertChannel.update({
         where: { id: existing.id },
-        data: { config: parsed.data, isActive: true },
+        data: { config: { recipients }, isActive: true },
       });
     } else {
       await prisma.alertChannel.create({
-        data: {
-          teamId,
-          name: "Store owner email",
-          type: "email",
-          config: parsed.data,
-        },
+        data: { teamId, name: "Alert email", type: "email", config: { recipients } },
+      });
+    }
+    return { ok: true, _action };
+  }
+
+  if (_action === "remove-email-recipient") {
+    const email = (formData.get("email") as string | null)?.trim() ?? "";
+    const existing = await prisma.alertChannel.findFirst({
+      where: { teamId, type: "email" },
+    });
+    if (!existing) return { ok: true, _action };
+    const current = (existing.config as { recipients?: string[] } | null)?.recipients ?? [];
+    const recipients = current.filter((r) => r !== email);
+    if (recipients.length === 0) {
+      await prisma.alertChannel.update({
+        where: { id: existing.id },
+        data: { isActive: false },
+      });
+    } else {
+      await prisma.alertChannel.update({
+        where: { id: existing.id },
+        data: { config: { recipients } },
       });
     }
     return { ok: true, _action };
@@ -167,6 +225,37 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (_action === "remove-slack") {
     await prisma.alertChannel.updateMany({
       where: { teamId, type: "slack" },
+      data: { isActive: false },
+    });
+    return { ok: true, _action };
+  }
+
+  if (_action === "save-discord") {
+    const webhookUrl =
+      (formData.get("webhookUrl") as string | null)?.trim() ?? "";
+    const parsed = discordChannelConfigSchema.safeParse({ webhookUrl });
+    if (!parsed.success) {
+      return { ok: false, _action, error: "Enter a valid Discord webhook URL." };
+    }
+    const existing = await prisma.alertChannel.findFirst({
+      where: { teamId, type: "discord" },
+    });
+    if (existing) {
+      await prisma.alertChannel.update({
+        where: { id: existing.id },
+        data: { config: parsed.data, isActive: true },
+      });
+    } else {
+      await prisma.alertChannel.create({
+        data: { teamId, name: "Discord", type: "discord", config: parsed.data },
+      });
+    }
+    return { ok: true, _action };
+  }
+
+  if (_action === "remove-discord") {
+    await prisma.alertChannel.updateMany({
+      where: { teamId, type: "discord" },
       data: { isActive: false },
     });
     return { ok: true, _action };
@@ -335,16 +424,23 @@ export default function Settings() {
   const data = useLoaderData<typeof loader>();
   const emailFetcher = useFetcher<typeof action>();
   const slackFetcher = useFetcher<typeof action>();
+  const discordFetcher = useFetcher<typeof action>();
   const pagesFetcher = useFetcher<typeof action>();
   const oosFetcher = useFetcher<typeof action>();
+  const revenueFetcher = useFetcher<typeof action>();
 
-  const [email, setEmail] = useState(data.emailRecipient);
+  const [newEmail, setNewEmail] = useState("");
   const [slackUrl, setSlackUrl] = useState(data.slackWebhookUrl);
+  const [discordUrl, setDiscordUrl] = useState(data.discordWebhookUrl ?? "");
   const [pageUrl, setPageUrl] = useState("");
   const [pageName, setPageName] = useState("");
   const [oosUrl, setOosUrl] = useState("");
   const [oosName, setOosName] = useState("");
   const [oosText, setOosText] = useState("");
+  const [avgHourlyRevenue, setAvgHourlyRevenue] = useState(
+    data.avgHourlyRevenue > 0 ? String(data.avgHourlyRevenue) : "",
+  );
+  const [statusCopied, setStatusCopied] = useState(false);
 
   function removeMonitor(monitorId: string) {
     pagesFetcher.submit({ _action: "remove-monitor", monitorId }, { method: "post" });
@@ -379,34 +475,79 @@ export default function Settings() {
             {/* Alert Email */}
             <Card>
               <BlockStack gap="400">
-                <SectionHeader
-                  title="Alert email"
-                  description="We will send downtime alerts to this address."
-                />
-                <InlineStack gap="300" blockAlign="end">
-                  <Box minWidth="280px">
-                    <TextField
-                      label="Email address"
-                      type="email"
-                      value={email}
-                      onChange={setEmail}
-                      autoComplete="email"
-                      error={emailFetcher.data && !emailFetcher.data.ok ? (emailFetcher.data as { error?: string }).error : undefined}
-                    />
-                  </Box>
-                  <InlineStack gap="200" blockAlign="center">
-                    <Button
-                      onClick={() =>
-                        emailFetcher.submit({ _action: "save-email", email }, { method: "post" })
-                      }
-                      loading={emailFetcher.state !== "idle"}
-                      disabled={!email.trim()}
-                    >
-                      Save
-                    </Button>
-                    {emailFetcher.data?.ok && <SavedBadge />}
-                  </InlineStack>
+                <InlineStack align="space-between" blockAlign="start">
+                  <SectionHeader
+                    title="Alert emails"
+                    description={`We will send downtime alerts to these addresses. Up to ${MAX_EMAIL_RECIPIENTS} recipients.`}
+                  />
+                  <Badge>{`${(data.emailRecipients as string[]).length}/${MAX_EMAIL_RECIPIENTS}`}</Badge>
                 </InlineStack>
+
+                {(data.emailRecipients as string[]).length > 0 && (
+                  <>
+                    <BlockStack gap="200">
+                      {(data.emailRecipients as string[]).map((r, i) => (
+                        <Box key={r}>
+                          {i > 0 && <Divider />}
+                          <Box paddingBlockStart={i > 0 ? "200" : "0"}>
+                            <InlineStack align="space-between" blockAlign="center">
+                              <Text as="span" variant="bodyMd">{r}</Text>
+                              <Button
+                                variant="plain"
+                                tone="critical"
+                                onClick={() =>
+                                  emailFetcher.submit(
+                                    { _action: "remove-email-recipient", email: r },
+                                    { method: "post" }
+                                  )
+                                }
+                                loading={emailFetcher.state !== "idle"}
+                              >
+                                Remove
+                              </Button>
+                            </InlineStack>
+                          </Box>
+                        </Box>
+                      ))}
+                    </BlockStack>
+                    <Divider />
+                  </>
+                )}
+
+                {(data.emailRecipients as string[]).length < MAX_EMAIL_RECIPIENTS && (
+                  <InlineStack gap="300" blockAlign="end">
+                    <Box minWidth="280px">
+                      <TextField
+                        label="Add email address"
+                        type="email"
+                        value={newEmail}
+                        onChange={setNewEmail}
+                        autoComplete="email"
+                        error={
+                          emailFetcher.data && !emailFetcher.data.ok
+                            ? (emailFetcher.data as { error?: string }).error
+                            : undefined
+                        }
+                      />
+                    </Box>
+                    <InlineStack gap="200" blockAlign="center">
+                      <Button
+                        onClick={() => {
+                          emailFetcher.submit(
+                            { _action: "add-email-recipient", email: newEmail },
+                            { method: "post" }
+                          );
+                          setNewEmail("");
+                        }}
+                        loading={emailFetcher.state !== "idle"}
+                        disabled={!newEmail.trim()}
+                      >
+                        Add
+                      </Button>
+                      {emailFetcher.data?.ok && <SavedBadge />}
+                    </InlineStack>
+                  </InlineStack>
+                )}
               </BlockStack>
             </Card>
 
@@ -459,6 +600,60 @@ export default function Settings() {
                       </Button>
                     )}
                     {slackFetcher.data?.ok && <SavedBadge />}
+                  </InlineStack>
+                </InlineStack>
+              </BlockStack>
+            </Card>
+
+            {/* Discord */}
+            <Card>
+              <BlockStack gap="400">
+                <SectionHeader
+                  title="Discord alerts"
+                  description="Paste an incoming webhook URL to get alerts in a Discord channel."
+                />
+                <InlineStack gap="300" blockAlign="end">
+                  <Box minWidth="320px">
+                    <TextField
+                      label="Webhook URL"
+                      value={discordUrl}
+                      onChange={setDiscordUrl}
+                      placeholder="https://discord.com/api/webhooks/..."
+                      autoComplete="off"
+                      error={discordFetcher.data && !discordFetcher.data.ok ? (discordFetcher.data as { error?: string }).error : undefined}
+                    />
+                  </Box>
+                  <InlineStack gap="200" blockAlign="center">
+                    <Tooltip
+                      content="Enter a webhook URL to enable"
+                      active={!discordUrl.trim() ? undefined : false}
+                    >
+                      <span>
+                        <Button
+                          onClick={() =>
+                            discordFetcher.submit({ _action: "save-discord", webhookUrl: discordUrl }, { method: "post" })
+                          }
+                          loading={discordFetcher.state !== "idle"}
+                          disabled={!discordUrl.trim()}
+                        >
+                          Save
+                        </Button>
+                      </span>
+                    </Tooltip>
+                    {data.discordChannelId && (
+                      <Button
+                        variant="plain"
+                        tone="critical"
+                        onClick={() => {
+                          setDiscordUrl("");
+                          discordFetcher.submit({ _action: "remove-discord" }, { method: "post" });
+                        }}
+                        loading={discordFetcher.state !== "idle"}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                    {discordFetcher.data?.ok && <SavedBadge />}
                   </InlineStack>
                 </InlineStack>
               </BlockStack>
@@ -627,6 +822,84 @@ export default function Settings() {
                 )}
               </BlockStack>
             </Card>
+
+            {/* ── Integrations ── */}
+            <Text as="h2" variant="headingLg">Integrations</Text>
+
+            {/* Revenue tracking */}
+            <Card>
+              <BlockStack gap="400">
+                <SectionHeader
+                  title="Revenue tracking"
+                  description="Set your average hourly revenue so Beaconmon can estimate revenue impact during downtime. Shown on the home screen when your store is down."
+                />
+                <InlineStack gap="300" blockAlign="end">
+                  <Box minWidth="200px">
+                    <TextField
+                      label="Average hourly revenue ($)"
+                      type="number"
+                      value={avgHourlyRevenue}
+                      onChange={setAvgHourlyRevenue}
+                      placeholder="e.g. 500"
+                      min={0}
+                      autoComplete="off"
+                      error={
+                        revenueFetcher.data && !revenueFetcher.data.ok
+                          ? (revenueFetcher.data as { error?: string }).error
+                          : undefined
+                      }
+                    />
+                  </Box>
+                  <InlineStack gap="200" blockAlign="center">
+                    <Button
+                      onClick={() =>
+                        revenueFetcher.submit(
+                          { _action: "save-revenue", avgHourlyRevenue },
+                          { method: "post" },
+                        )
+                      }
+                      loading={revenueFetcher.state !== "idle"}
+                      disabled={!avgHourlyRevenue.trim()}
+                    >
+                      Save
+                    </Button>
+                    {revenueFetcher.data?.ok && <SavedBadge />}
+                  </InlineStack>
+                </InlineStack>
+              </BlockStack>
+            </Card>
+
+            {/* Status page */}
+            {data.statusPageUrl && (
+              <Card>
+                <BlockStack gap="400">
+                  <SectionHeader
+                    title="Public status page"
+                    description="Share this URL with your customers so they can check your store status directly."
+                  />
+                  <InlineStack gap="300" blockAlign="end">
+                    <Box minWidth="320px">
+                      <TextField
+                        label="Status page URL"
+                        value={data.statusPageUrl}
+                        onChange={() => {}}
+                        autoComplete="off"
+                        readOnly
+                      />
+                    </Box>
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(data.statusPageUrl!);
+                        setStatusCopied(true);
+                        setTimeout(() => setStatusCopied(false), 2000);
+                      }}
+                    >
+                      {statusCopied ? "Copied" : "Copy"}
+                    </Button>
+                  </InlineStack>
+                </BlockStack>
+              </Card>
+            )}
           </BlockStack>
         </Layout.Section>
       </Layout>
