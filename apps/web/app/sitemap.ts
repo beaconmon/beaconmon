@@ -47,8 +47,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/homepage-monitoring`,                  lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
 
     // ── Tier 4.6: Free tools ─────────────────────────────────────────────
-    { url: `${BASE_URL}/tools`,                              lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE_URL}/tools/shopify-competitor-snapshot`,  lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/tools`,                                        lastModified: new Date('2026-06-29'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/shopify-competitor-snapshot`,            lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/tools/shopify-competitor-changes`,             lastModified: new Date('2026-06-20'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/tools/shopify-uptime-test`,                    lastModified: new Date('2026-06-27'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/tools/woocommerce-uptime-test`,                lastModified: new Date('2026-06-27'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/bfcm-readiness`,                         lastModified: new Date('2026-06-27'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/downtime-detection-calculator`,          lastModified: new Date('2026-06-27'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/competitor-intelligence-report`,         lastModified: new Date('2026-06-29'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/tools/competitor-intelligence-roi`,            lastModified: new Date('2026-06-29'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/monitoring-coverage`,                    lastModified: new Date('2026-06-29'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/tools/ssl-checker`,                            lastModified: new Date('2026-06-29'), changeFrequency: 'monthly', priority: 0.6 },
 
     // ── Tier 4.7: Blog (derived from BLOG_POSTS) ─────────────────────────
     { url: `${BASE_URL}/blog`, lastModified: new Date('2026-06-27'), changeFrequency: 'weekly', priority: 0.7 },

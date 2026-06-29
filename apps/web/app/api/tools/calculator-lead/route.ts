@@ -4,10 +4,9 @@ import { AppError, ValidationError } from '@/lib/api/errors';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { logger } from '@/lib/logger';
 import { clientIp } from '@/lib/api/client-ip';
+import { prisma, Prisma } from '@beaconmon/db';
+import { sendCalculatorLeadEmail } from '@/lib/email/send-calculator-lead';
 
-// Public, unauthenticated soft lead capture from the free calculators. There is
-// no network egress here, so SSRF/Redis caching do not apply, but we still
-// rate-limit per IP so the endpoint cannot be used to spam our logs.
 export const runtime = 'nodejs';
 
 const bodySchema = z.object({
@@ -48,11 +47,30 @@ async function handleCalculatorLead(req: Request): Promise<Response> {
   if (!parsed.success) throw new ValidationError('Enter a valid email address', parsed.error.issues);
 
   const { email, tool, result, inputs } = parsed.data;
+  const resultStr = result != null ? String(result) : null;
 
-  // TODO: Persist to an email_leads table once one exists in the Prisma schema.
-  // Schema changes are out of scope for this build, so for now we log the lead
-  // so it is captured in app logs and can be backfilled when the table lands.
-  logger.info({ service: 'web', tool, email, result, inputs }, 'Calculator lead captured');
+  // Upsert so re-submissions update the stored result without resending.
+  const lead = await prisma.emailLead.upsert({
+    where: { email_tool: { email, tool } },
+    create: { email, tool, result: resultStr, inputs: inputs as Prisma.InputJsonValue | undefined, emailSent: false },
+    update: { result: resultStr, inputs: inputs as Prisma.InputJsonValue | undefined },
+    select: { id: true, emailSent: true },
+  });
+
+  if (!lead.emailSent) {
+    try {
+      const sent = await sendCalculatorLeadEmail({ email, tool, result: resultStr });
+      if (sent) {
+        await prisma.emailLead.update({
+          where: { id: lead.id },
+          data: { emailSent: true },
+        });
+      }
+    } catch (err) {
+      // Log but don't fail the request; the lead is persisted regardless.
+      logger.error({ service: 'web', tool, err }, 'Calculator lead email failed, lead still saved');
+    }
+  }
 
   return Response.json({ ok: true });
 }

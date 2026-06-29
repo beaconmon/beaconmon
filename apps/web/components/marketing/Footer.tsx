@@ -20,6 +20,12 @@ const FOR_LINKS: [string, string][] = [
 const TOOLS_LINKS: [string, string][] = [
   ['/tools/shopify-competitor-snapshot', 'Shopify Snapshot'],
   ['/tools/shopify-competitor-changes', 'Competitor Changes'],
+  ['/tools/competitor-intelligence-report', 'Intel Report'],
+  ['/tools/competitor-intelligence-roi', 'ROI Calculator'],
+  ['/tools/monitoring-coverage', 'Coverage Auditor'],
+  ['/tools/bfcm-readiness', 'BFCM Readiness'],
+  ['/tools/downtime-detection-calculator', 'Downtime Calculator'],
+  ['/tools/shopify-uptime-test', 'Shopify Uptime Test'],
   ['/tools', 'All free tools'],
 ];
 

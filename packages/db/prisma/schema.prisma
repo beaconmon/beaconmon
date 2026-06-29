@@ -931,3 +931,20 @@ model ToolReport {
   @@index([status, reportDueAt])
   @@map("tool_reports")
 }
+
+// One row per unique (email, tool) pair from the free calculator lead forms.
+// emailSent tracks whether the follow-up was dispatched so re-submissions don't
+// trigger duplicate emails.
+model EmailLead {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String
+  tool      String
+  result    String?
+  inputs    Json?
+  emailSent Boolean  @default(false) @map("email_sent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@unique([email, tool])
+  @@index([createdAt])
+  @@map("email_leads")
+}
