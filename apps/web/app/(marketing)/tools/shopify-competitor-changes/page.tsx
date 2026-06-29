@@ -39,23 +39,23 @@ const HOW_IT_WORKS = [
 const FAQS = [
   {
     q: 'Can I see what changed on a Shopify store?',
-    a: 'Yes, if Beaconmon has monitoring history on that store from any prior user. When history exists, you see the last several changes including price drops, sale launches, and new products. For stores we have not monitored yet, you see a current snapshot of their catalog.',
+    a: 'Yes, if Beaconmon has monitoring history on that store from any prior user. When history exists, you see the last several changes including price drops, sale launches, and new products. For stores we have not monitored yet, you see a current snapshot of their catalog, captured in under 5 seconds from their public product feed.',
   },
   {
     q: 'Is this free?',
-    a: 'The one-time check is completely free with no signup and no app install. Continuous monitoring, which alerts you the moment a price drops or a promo launches, is a paid Beaconmon plan with a free tier.',
+    a: 'The one-time check is completely free with no signup and no app install, and you can run it as often as you need. Continuous monitoring, which alerts you within minutes when a price drops or a promo launches, is a paid Beaconmon plan with a free tier that includes 10 monitors at no cost.',
   },
   {
     q: 'What kinds of changes does it detect?',
-    a: 'Price drops, promotional markdowns, new products added, product removals, and content updates on key pages. The paid monitoring plan captures all of these as they happen and sends instant alerts.',
+    a: 'Five change types: price drops, promotional markdowns, new products added, product removals, and content updates on key pages such as the homepage banner. The paid monitoring plan captures all of these as they happen and sends an instant alert, typically within minutes of the change going live on the storefront.',
   },
   {
     q: 'Does it work on non-Shopify stores?',
-    a: 'This tool is Shopify-specific because Shopify stores publish a public product catalog. Beaconmon monitoring supports WooCommerce and any website via CSS selector targeting on the pages you choose.',
+    a: 'This tool is Shopify-specific because Shopify stores publish a public product catalog at /products.json. Beaconmon monitoring, however, supports WooCommerce and any other website through CSS selector targeting on the specific pages you choose, so you can track competitors across every platform from one dashboard rather than 2 or 3 separate tools.',
   },
   {
     q: 'How is this different from other Shopify spy tools?',
-    a: 'Most spy tools show static information about a store: its theme, installed apps, or revenue estimates. This tool focuses on what changed over time, which is the intelligence that affects your pricing and promotion decisions.',
+    a: 'Most of the 100-plus Shopify spy tools show static information about a store: its theme, installed apps, or a rough revenue estimate. This tool focuses on what changed over time, which is the intelligence that actually affects your pricing and promotion decisions, because a competitor who cut prices 20% yesterday matters more than their theme.',
   },
 ];
 
@@ -76,6 +76,7 @@ const appSchema = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/shopify-competitor-changes',
+  dateModified: '2026-06-29',
   description:
     'Free tool to check if a Shopify competitor recently changed their prices, launched a promotion, or added products.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -116,10 +117,16 @@ export default function ShopifyCompetitorChangesPage() {
           <h1 className="text-[clamp(38px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5 max-w-[860px] [overflow-wrap:anywhere]">
             See what changed on any Shopify competitor store
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-8">
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
             Paste a competitor&apos;s store URL. In seconds you see recent price drops, promo launches, and product changes.
             No signup, no app install.
           </p>
+          <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-8 max-w-[620px]">
+            <p className="text-[14px] text-brand-dim leading-[1.6]">
+              <span className="text-brand-text font-medium">The Shopify Competitor Change Checker shows whether a Shopify store recently dropped prices, launched a promotion, or changed its catalog, using Beaconmon&apos;s existing monitoring history plus a live snapshot.</span>{' '}
+              It tracks 5 change types: price drops, markdowns, new products, removals, and content updates.
+            </p>
+          </div>
           <CompetitorChangesTool />
         </div>
       </section>

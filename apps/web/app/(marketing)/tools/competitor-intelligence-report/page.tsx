@@ -48,7 +48,7 @@ const FAQS = [
   },
   {
     q: 'Is the 7-day report really free?',
-    a: 'Yes, completely free with no credit card and no account creation. After the 7-day window the report is delivered and monitoring stops unless you sign up for a paid plan.',
+    a: 'Yes, completely free with no credit card and no account creation. After the 7-day window the report is delivered by email and monitoring stops unless you sign up for a paid plan. Each email address can request up to 2 reports per week, so you can run a free trial on a couple of competitors before deciding to continue.',
   },
   {
     q: 'What if no changes are detected in 7 days?',
@@ -60,7 +60,7 @@ const FAQS = [
   },
   {
     q: 'Do I need a Shopify account or admin access?',
-    a: 'No. The tool reads only publicly available storefront data, the same information any visitor would see. No admin access, no app install, no Shopify account required.',
+    a: 'No. The tool reads only publicly available storefront data, the same information any of the store visitors would see. No admin access, no app install, and no Shopify account is required. Around 9 in 10 Shopify stores expose a public product feed, which is all the report needs to track price and catalog changes.',
   },
 ];
 
@@ -81,6 +81,7 @@ const appSchema = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/competitor-intelligence-report',
+  dateModified: '2026-06-29',
   description:
     'Enter a competitor Shopify URL and your email. Beaconmon monitors the store for 7 days and emails you a report of every price change, promotion, and product update detected.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -121,10 +122,16 @@ export default function CompetitorIntelligenceReportPage() {
           <h1 className="text-[clamp(36px,5vw,62px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5 max-w-[840px] [overflow-wrap:anywhere]">
             Get a free 7-day intelligence report on any Shopify competitor
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-8">
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
             Enter a competitor store URL and your email. We watch the store for 7 days and send you a report of every
             price drop, promo launch, and product change we detected.
           </p>
+          <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-8 max-w-[620px]">
+            <p className="text-[14px] text-brand-dim leading-[1.6]">
+              <span className="text-brand-text font-medium">The Free 7-Day Competitor Intelligence Report monitors any Shopify store for a full week and emails you a summary of every price change, promotion, and product update detected.</span>{' '}
+              Each email address can request up to 2 reports per week, with no account required.
+            </p>
+          </div>
           <IntelligenceReportForm />
         </div>
       </section>

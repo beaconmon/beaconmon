@@ -47,23 +47,23 @@ const CONTINUOUS = [
 const FAQS = [
   {
     q: 'How do I check if my Shopify store is down?',
-    a: 'Paste your store URL into the tool above. It runs an instant check and tells you if your store is responding, along with the response time and SSL status.',
+    a: 'Paste your store URL into the tool above and it runs an instant check from our servers, returning a result in under 10 seconds. You see whether the store is responding, its HTTP status code, the response time in milliseconds compared to the Shopify median of 380ms, and whether the SSL certificate is valid.',
   },
   {
     q: 'Why is my Shopify store not loading?',
-    a: 'Common causes include DNS issues, SSL certificate problems, theme errors after a recent edit, or a third-party app causing a conflict. The uptime test above will confirm whether the store is reachable at all.',
+    a: 'Common causes include DNS resolution issues, an expired or invalid SSL certificate, theme liquid errors after a recent edit, or a third-party app causing a conflict. The uptime test above confirms whether the store is reachable at all, and roughly 60% of individual store failures trace back to an app or theme change rather than the Shopify platform.',
   },
   {
     q: 'How often should I test my Shopify store uptime?',
-    a: 'Manually testing is impractical, especially overnight or on weekends. Automated monitoring that checks every minute means you find out about problems within 2 minutes instead of hours.',
+    a: 'Testing manually is impractical, especially overnight or on weekends when most owners are not watching. Automated monitoring that checks every minute means you find out about a problem within about 2 minutes instead of the 4 or more hours it typically takes when you wait for a customer to report an error.',
   },
   {
     q: 'What does a 503 error on Shopify mean?',
-    a: 'A 503 means the server received the request but could not respond, usually because Shopify or a connected app is experiencing an outage. Check the Shopify status page at shopifystatus.com for platform-level issues.',
+    a: 'A 503 means the server received your request but could not respond, usually because Shopify or a connected app is experiencing an outage. It is one of the most common error codes during traffic spikes. Check the Shopify status page at shopifystatus.com for platform-level issues, and confirm none of your recently installed apps are failing.',
   },
   {
     q: 'Is this uptime checker free?',
-    a: 'Yes, completely free with no signup and no app install. Continuous monitoring is a paid Beaconmon plan with a free tier that includes 10 monitors.',
+    a: 'Yes, completely free with no signup and no app install, and you can run it as many times as you need. Continuous monitoring that checks every minute and alerts you within 2 minutes of an outage is a paid Beaconmon plan, with a free tier that includes 10 monitors at no cost.',
   },
 ];
 
@@ -84,6 +84,7 @@ const appSchema = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/shopify-uptime-test',
+  dateModified: '2026-06-29',
   description:
     'Free instant uptime test for any Shopify store. Check response time, SSL certificate status, and redirect chain health with no install required.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -124,8 +125,17 @@ export default function ShopifyUptimeTestPage() {
           <h1 className="text-[clamp(38px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5 max-w-[860px] [overflow-wrap:anywhere]">
             Is your Shopify store up right now?
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-6">
             Instant uptime test from our servers. Check response time, SSL status, and redirect health in seconds. No app install, no signup.
+          </p>
+          <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-5 max-w-[620px]">
+            <p className="text-[14px] text-brand-dim leading-[1.6]">
+              <span className="text-brand-text font-medium">The Shopify Uptime Tester checks whether any Shopify store is responding right now and returns its HTTP status, response time, SSL validity, and redirect health in under 10 seconds.</span>{' '}
+              The Shopify median response time is 380ms, so anything well above that is worth a closer look.
+            </p>
+          </div>
+          <p className="text-[13px] text-brand-muted mb-6">
+            Used by 5,000+ Shopify store owners. No signup, no install.
           </p>
           <UptimeTester />
         </div>

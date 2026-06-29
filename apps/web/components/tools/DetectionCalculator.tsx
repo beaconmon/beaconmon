@@ -1,10 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import CalculatorLeadCapture from '@/components/tools/CalculatorLeadCapture';
 
 type MonitoringSetup = 'none' | 'manual' | 'generic_tool' | 'beaconmon';
 type CheckInterval = 1 | 5 | 15 | 60;
 type TeamCoverage = '247' | 'business_hours' | 'solo';
+
+const VALID_SETUP: MonitoringSetup[] = ['none', 'manual', 'generic_tool', 'beaconmon'];
+const VALID_INTERVAL: CheckInterval[] = [1, 5, 15, 60];
+const VALID_TEAM: TeamCoverage[] = ['247', 'business_hours', 'solo'];
 
 interface CalcInputs {
   monitoringSetup: MonitoringSetup | '';
@@ -67,6 +72,51 @@ export default function DetectionCalculator() {
     teamCoverage: '',
   });
   const [revenueDisplay, setRevenueDisplay] = useState('');
+  const [copied, setCopied] = useState(false);
+  const isFirstRender = useRef(true);
+
+  // Read initial state from the URL once on mount so shared links restore inputs.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const setup = params.get('setup');
+    const interval = Number(params.get('interval'));
+    const revenue = Number(params.get('revenue'));
+    const team = params.get('team');
+    setInputs((p) => ({
+      monitoringSetup: VALID_SETUP.includes(setup as MonitoringSetup) ? (setup as MonitoringSetup) : p.monitoringSetup,
+      checkInterval: VALID_INTERVAL.includes(interval as CheckInterval) ? (interval as CheckInterval) : p.checkInterval,
+      monthlyRevenue: Number.isFinite(revenue) && revenue > 0 ? revenue : p.monthlyRevenue,
+      teamCoverage: VALID_TEAM.includes(team as TeamCoverage) ? (team as TeamCoverage) : p.teamCoverage,
+    }));
+    if (Number.isFinite(revenue) && revenue > 0) setRevenueDisplay(revenue.toLocaleString());
+  }, []);
+
+  // Sync inputs back into the URL (replaceState, no navigation) after hydration.
+  // Skip the first execution: it runs before the mount effect's setInputs takes
+  // effect, so inputs still hold defaults and would overwrite incoming URL params.
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const params = new URLSearchParams();
+    if (inputs.monitoringSetup) params.set('setup', inputs.monitoringSetup);
+    if (inputs.monitoringSetup === 'generic_tool') params.set('interval', String(inputs.checkInterval));
+    if (inputs.monthlyRevenue > 0) params.set('revenue', String(inputs.monthlyRevenue));
+    if (inputs.teamCoverage) params.set('team', inputs.teamCoverage);
+    const qs = params.toString();
+    window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+  }, [inputs]);
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable (insecure context or denied permission) -- ignore.
+    }
+  }
 
   const ready = isComplete(inputs);
   const mttdMinutes = ready ? computeMttd(inputs) : 0;
@@ -180,6 +230,7 @@ export default function DetectionCalculator() {
 
       {/* Results */}
       {ready && (
+        <>
         <div className="snap-in mt-5 bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
           {/* Headline stats */}
           <div className="grid grid-cols-3 max-[520px]:grid-cols-1 divide-x max-[520px]:divide-x-0 max-[520px]:divide-y divide-brand-line-soft">
@@ -238,6 +289,36 @@ export default function DetectionCalculator() {
             </div>
           </div>
         </div>
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={copyLink}
+            className="inline-flex items-center gap-2 h-[36px] px-4 text-[13px] font-semibold rounded-lg border border-brand-line text-brand-dim hover:text-brand-text hover:border-brand-green-border-25 transition-colors"
+          >
+            {copied ? (
+              <>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                  <path d="M3 7.5l2.5 2.5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Copied
+              </>
+            ) : (
+              'Copy link to these results'
+            )}
+          </button>
+        </div>
+        <CalculatorLeadCapture
+          tool="downtime-detection-calculator"
+          result={formatMinutes(mttdMinutes)}
+          inputs={{
+            monitoringSetup: inputs.monitoringSetup,
+            checkInterval: inputs.checkInterval,
+            monthlyRevenue: inputs.monthlyRevenue,
+            teamCoverage: inputs.teamCoverage,
+          }}
+          prompt="Save your result. We'll also send you a one-time tip on reducing your detection window."
+        />
+        </>
       )}
     </div>
   );

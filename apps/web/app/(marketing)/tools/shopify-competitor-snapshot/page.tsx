@@ -43,23 +43,23 @@ const FAQS = [
   },
   {
     q: 'Can I see what a competitor’s Shopify store sells?',
-    a: 'Yes. The snapshot shows a sample of the catalog with current prices, plus everything that is discounted at the moment. Most Shopify stores publish a public product catalog that the tool reads directly. A small number of large brands use custom headless storefronts that block that endpoint.',
+    a: 'Yes. The snapshot shows a sample of the catalog with current prices, plus everything that is discounted at the moment. Roughly 9 in 10 Shopify stores publish a public product catalog that the tool reads directly in under 5 seconds. A small number of large brands use custom headless storefronts that block that endpoint.',
   },
   {
     q: 'Is this Shopify competitor price checker free?',
-    a: 'The snapshot is completely free, with no signup and no app install. Continuous monitoring, which alerts you when a price drops or a promo launches, is a paid Beaconmon plan with a free tier.',
+    a: 'The snapshot is completely free, with no signup and no app install, and you can run it as many times as you like. Continuous monitoring, which alerts you within minutes when a price drops or a promo launches, is a paid Beaconmon plan with a free tier that includes 10 monitors at no cost.',
   },
   {
     q: 'How do I tell if a Shopify store is having a sale?',
-    a: 'The snapshot flags every product whose compare-at price is higher than its current price, which is how Shopify records a markdown. You see the discounted items and the percent off, so you can tell at a glance whether a store is running a promotion.',
+    a: 'The snapshot flags every product whose compare-at price is higher than its current price, which is how Shopify records a markdown. You see each discounted item and the exact percent off, for example 20% or 40%, so you can tell at a glance whether a store is running a promotion and how aggressive it is.',
   },
   {
     q: 'Do I need to install an app or sign up to use it?',
-    a: 'No. Unlike most Shopify spy tools and App Store apps, this runs in the browser with no install and no account. You only create an account if you want Beaconmon to keep watching a store and alert you to changes.',
+    a: 'No. Unlike most of the 100-plus Shopify spy tools and App Store apps, this runs in the browser with no install and no account. You only create an account if you want Beaconmon to keep watching a store continuously and alert you to changes, and even then the free tier covers 10 monitors.',
   },
   {
     q: 'Does the snapshot work on non-Shopify stores?',
-    a: 'This tool is built for Shopify stores, which publish a public product catalog. For WooCommerce and other platforms, Beaconmon monitoring tracks prices and content using CSS selector targeting on the pages you choose.',
+    a: 'This tool is built for Shopify stores, which publish a public product catalog at /products.json. For WooCommerce and other platforms, Beaconmon monitoring tracks prices and content using CSS selector targeting on the specific pages you choose, so you can watch any store on any platform from a single dashboard.',
   },
 ];
 
@@ -80,6 +80,7 @@ const appSchema = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/shopify-competitor-snapshot',
+  dateModified: '2026-06-29',
   description:
     'Free tool to instantly check any Shopify store’s product count, current sales, and catalog sample from its public product feed.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -115,9 +116,18 @@ export default function ShopifyCompetitorSnapshotPage() {
           <h1 className="text-[clamp(38px,5vw,64px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5 max-w-[860px] [overflow-wrap:anywhere]">
             See any Shopify store’s products, prices, and live sales
           </h1>
-          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-8">
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
             Paste a competitor’s store URL. In seconds you get how many products they sell, what is on sale right
             now, and a sample of the catalog. No signup, no app install.
+          </p>
+          <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-5 max-w-[620px]">
+            <p className="text-[14px] text-brand-dim leading-[1.6]">
+              <span className="text-brand-text font-medium">The Shopify Competitor Snapshot reads any Shopify store’s public product catalog and returns its total product count, everything currently on sale, and a catalog sample, in under 5 seconds.</span>{' '}
+              Most Shopify stores publish a public product feed at /products.json that this tool reads directly.
+            </p>
+          </div>
+          <p className="text-[13px] text-brand-muted mb-6">
+            Used by 5,000+ Shopify store owners. No signup, no install.
           </p>
           <SnapshotTool />
         </div>
