@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api-fetch';
 import type { ChangeType, RecentChange } from '@/lib/tools/competitor-changes';
 
@@ -78,6 +78,17 @@ function daysSince(iso: string): string {
 export default function CompetitorChangesTool() {
   const [url, setUrl] = useState('');
   const [state, setState] = useState<UiState>({ status: 'idle' });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('url');
+    if (q) {
+      setUrl(q);
+      runCheck(q);
+    }
+    // Only run on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function runCheck(input: string) {
     const trimmed = input.trim();

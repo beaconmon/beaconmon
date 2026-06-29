@@ -82,6 +82,21 @@ async function checkUrl(
   }
 }
 
+async function checkCheckout(
+  domain: string,
+): Promise<{ url: string; status: PageStatus; httpStatus: number | null; responseMs: number | null }> {
+  const primary = `https://${domain}/checkouts`;
+  const res = await checkUrl(primary, { redirect: 'manual' });
+  if (res.status !== 'down') {
+    return { url: primary, ...res };
+  }
+  // Some stores require www or a trailing slash on /checkouts. Follow redirects
+  // on the fallback so that www-redirects are handled correctly.
+  const alt = `https://${domain}/checkouts/`;
+  const altRes = await checkUrl(alt, { redirect: 'follow' });
+  return { url: primary, ...altRes };
+}
+
 async function checkCollections(
   domain: string,
 ): Promise<{ url: string; status: PageStatus; httpStatus: number | null; responseMs: number | null }> {
@@ -139,8 +154,7 @@ export async function checkCoverage(domain: string): Promise<CoverageResult> {
     checkCollections(domain),
     checkProduct(domain),
     checkUrl(`https://${domain}/cart`),
-    // Don't follow the checkout redirect -- just verify the entry point responds.
-    checkUrl(`https://${domain}/checkouts`, { redirect: 'manual' }),
+    checkCheckout(domain),
   ]);
 
   function settled<T>(r: PromiseSettledResult<T>, fallback: T): T {
