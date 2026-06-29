@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import CalculatorLeadCapture from '@/components/tools/CalculatorLeadCapture';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 type MonitoringSetup = 'none' | 'manual' | 'generic_tool' | 'beaconmon';
 type CheckInterval = 1 | 5 | 15 | 60;
@@ -72,7 +74,6 @@ export default function DetectionCalculator() {
     teamCoverage: '',
   });
   const [revenueDisplay, setRevenueDisplay] = useState('');
-  const [copied, setCopied] = useState(false);
   const isFirstRender = useRef(true);
 
   // Read initial state from the URL once on mount so shared links restore inputs.
@@ -82,6 +83,7 @@ export default function DetectionCalculator() {
     const interval = Number(params.get('interval'));
     const revenue = Number(params.get('revenue'));
     const team = params.get('team');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputs((p) => ({
       monitoringSetup: VALID_SETUP.includes(setup as MonitoringSetup) ? (setup as MonitoringSetup) : p.monitoringSetup,
       checkInterval: VALID_INTERVAL.includes(interval as CheckInterval) ? (interval as CheckInterval) : p.checkInterval,
@@ -107,16 +109,6 @@ export default function DetectionCalculator() {
     const qs = params.toString();
     window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
   }, [inputs]);
-
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard unavailable (insecure context or denied permission) -- ignore.
-    }
-  }
 
   const ready = isComplete(inputs);
   const mttdMinutes = ready ? computeMttd(inputs) : 0;
@@ -280,33 +272,18 @@ export default function DetectionCalculator() {
               <p className="text-[14px] text-brand-dim max-w-[400px] leading-[1.55]">
                 Beaconmon checks your store every minute and alerts you within 2 minutes of any outage, any hour of the day.
               </p>
-              <a
+              <Link
                 href="/sign-up?ref=downtime-detection-calculator"
                 className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
               >
                 Start monitoring free &rarr;
-              </a>
+              </Link>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={copyLink}
-            className="inline-flex items-center gap-2 h-[36px] px-4 text-[13px] font-semibold rounded-lg border border-brand-line text-brand-dim hover:text-brand-text hover:border-brand-green-border-25 transition-colors"
-          >
-            {copied ? (
-              <>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <path d="M3 7.5l2.5 2.5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Copied
-              </>
-            ) : (
-              'Copy link to these results'
-            )}
-          </button>
-        </div>
+        <ShareButtons
+          tweetText={`My Shopify store would take ${mttdMinutes}m to detect an outage. Free calculator by @beaconmon:`}
+        />
         <CalculatorLeadCapture
           tool="downtime-detection-calculator"
           result={formatMinutes(mttdMinutes)}
@@ -316,7 +293,7 @@ export default function DetectionCalculator() {
             monthlyRevenue: inputs.monthlyRevenue,
             teamCoverage: inputs.teamCoverage,
           }}
-          prompt="Save your result. We'll also send you a one-time tip on reducing your detection window."
+          prompt="Save your result and get one tip on cutting your detection window."
         />
         </>
       )}

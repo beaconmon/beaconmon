@@ -49,7 +49,7 @@ export default function IntelligenceReportForm() {
     const trimmedUrl = url.trim();
 
     // Optimistic domain extraction for the loading message
-    let displayDomain = trimmedUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0] ?? trimmedUrl;
+    const displayDomain = trimmedUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0] ?? trimmedUrl;
     setState({ status: 'loading', domain: displayDomain });
 
     try {

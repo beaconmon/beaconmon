@@ -150,7 +150,7 @@ export default function BfcmReadinessPage() {
             Is your Shopify store ready for your next peak sale event?
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
-            Run a free technical check on your store's uptime, SSL, speed, and redirect health before your next peak sale
+            Run a free technical check on your store&apos;s uptime, SSL, speed, and redirect health before your next peak sale
             event (BFCM, Prime Day, flash sales). No app install, no signup.
           </p>
           <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-8 max-w-[620px]">

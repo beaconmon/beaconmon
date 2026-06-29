@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { apiFetch } from '@/lib/api-fetch';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 interface SslInfo {
   valid: boolean;
@@ -163,6 +165,14 @@ export default function SslChecker() {
         )}
         {state.status === 'success' && <SslResult data={state.data} />}
       </div>
+      {state.status === 'success' && state.data.ssl && (
+        <ShareButtons
+          tweetText={state.data.ssl.daysRemaining < 0
+              ? `${state.data.domain} SSL cert expired ${Math.abs(state.data.ssl.daysRemaining)} days ago (${formatDate(state.data.ssl.expiresAt)}). Checked with @beaconmon:`
+              : `${state.data.domain} SSL cert expires in ${state.data.ssl.daysRemaining} days (${formatDate(state.data.ssl.expiresAt)}). Checked with @beaconmon:`
+            }
+        />
+      )}
     </div>
   );
 }
@@ -183,8 +193,7 @@ function SslResult({ data }: { data: SslApiResponse }) {
             No certificate found
           </div>
           <p className="mt-4 text-[14px] text-brand-dim leading-[1.6] max-w-[520px]">
-            We could not complete a TLS handshake on port 443. The domain may not serve HTTPS, may be unreachable, or may
-            not resolve. Double check the domain and that the store is live.
+            No TLS handshake on port 443. Either the domain does not serve HTTPS, is unreachable, or DNS is not resolving. Verify the domain and try again.
           </p>
         </div>
       </div>
@@ -256,15 +265,14 @@ function SslResult({ data }: { data: SslApiResponse }) {
       <div className="px-6 py-5 bg-brand-bg-section">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="text-[14px] text-brand-dim max-w-[420px] leading-[1.55]">
-            Beaconmon watches your SSL certificate for you and alerts you well before it expires, so you never get caught
-            by a lapsed cert.
+            Beaconmon tracks your SSL certificate and alerts you 30 days before it expires, so customers never see a security warning.
           </p>
-          <a
+          <Link
             href="/sign-up?ref=ssl-checker"
             className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
           >
             Monitor SSL expiry &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </div>

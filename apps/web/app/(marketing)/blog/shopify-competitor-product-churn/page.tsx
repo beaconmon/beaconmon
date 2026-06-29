@@ -6,7 +6,6 @@ import BlogPostLayout, {
   UL,
   LI,
   A,
-  Strong,
   Callout,
   Stat,
   StatGrid,

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { apiFetch } from '@/lib/api-fetch';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 interface BfcmCheckItem {
   pass: boolean;
@@ -157,6 +159,11 @@ export default function BfcmReadiness() {
         )}
         {state.status === 'success' && <ResultView data={state.data} />}
       </div>
+      {state.status === 'success' && (
+        <ShareButtons
+          tweetText={`${state.data.domain} scored ${state.data.score}/100 on peak sale readiness. Free check by @beaconmon:`}
+        />
+      )}
     </div>
   );
 }
@@ -199,10 +206,10 @@ function ResultView({ data }: { data: BfcmApiResponse }) {
             </div>
             <p className="text-[13px] text-brand-muted">
               {grade === 'A' || grade === 'B'
-                ? 'Your store looks solid for peak traffic.'
+                ? 'Your store is ready for BFCM traffic.'
                 : grade === 'C'
                 ? 'A few gaps to fix before BFCM.'
-                : 'Your store has issues that need attention before Black Friday.'}
+                : 'Fix these before Black Friday.'}
             </p>
           </div>
         </div>
@@ -254,15 +261,15 @@ function ResultView({ data }: { data: BfcmApiResponse }) {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="text-[14px] text-brand-dim max-w-[440px] leading-[1.55]">
             {totalScore < 80
-              ? 'Your store has gaps that could cause problems during BFCM. Fix them before the rush.'
-              : 'Your store looks solid. The last thing to add is continuous monitoring so you know instantly if anything breaks during peak traffic.'}
+              ? 'These gaps will cost you during BFCM. Fix them before traffic peaks.'
+              : 'Your store is ready. Add continuous monitoring so you know the moment anything breaks during peak traffic.'}
           </p>
-          <a
+          <Link
             href="/sign-up?ref=bfcm-readiness"
             className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
           >
             Set up monitoring in 2 minutes &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -378,9 +385,9 @@ function MonitoringRow({
           {!checked && (
             <p className="mt-2 text-[13px] text-brand-dim">
               No monitoring?{' '}
-              <a href="/sign-up?ref=bfcm-readiness-monitoring" className="text-brand-green-ink hover:underline font-semibold">
+              <Link href="/sign-up?ref=bfcm-readiness-monitoring" className="text-brand-green-ink hover:underline font-semibold">
                 Beaconmon takes 2 minutes to set up.
-              </a>
+              </Link>
             </p>
           )}
         </div>

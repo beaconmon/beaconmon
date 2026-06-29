@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { apiFetch } from '@/lib/api-fetch';
 import type { CoverageResult, PageCheck, PageStatus } from '@/lib/tools/coverage-check';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 type ApiResponse = (CoverageResult & { cached?: boolean }) | { error: string };
 
@@ -124,6 +125,11 @@ export default function CoverageAuditor() {
         )}
         {state.status === 'result' && <CoverageResult data={state.data} />}
       </div>
+      {state.status === 'result' && (
+        <ShareButtons
+          tweetText={`${state.data.summary.up}/${state.data.summary.total} critical pages of ${state.data.domain} are healthy right now. Checked with @beaconmon:`}
+        />
+      )}
     </div>
   );
 }
@@ -151,7 +157,7 @@ function CoverageResult({ data }: { data: CoverageResult }) {
         <div className="px-6 py-3 bg-[oklch(30%_0.18_25)] border-b border-[oklch(55%_0.22_25_/_40%)] flex items-center gap-3">
           <span aria-hidden className="text-brand-red text-[16px]">!</span>
           <p className="text-[13px] font-semibold text-brand-text">
-            One or more pages returned an error. Your store may have an active issue.
+            At least one page is returning an error. Your store may be down right now.
           </p>
           <a
             href={signUpHref}
@@ -204,7 +210,7 @@ function CoverageResult({ data }: { data: CoverageResult }) {
       {/* Not-yet-monitored callout */}
       <div className="px-6 py-5 border-t border-brand-line bg-brand-bg-section">
         <p className="text-[14px] text-brand-dim leading-[1.55] mb-4">
-          These are the pages where your store can fail without you knowing. Add them to Beaconmon to get alerted within 2 minutes of any issue.
+          These pages go dark without warning. Beaconmon alerts you within 2 minutes of any failure.
         </p>
         <a
           href={signUpHref}

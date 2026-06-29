@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { apiFetch } from '@/lib/api-fetch';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 interface RegionCheck {
   region: string;
@@ -195,8 +197,18 @@ export default function UptimeTester() {
         )}
         {state.status === 'success' && <UptimeResult data={state.data} />}
       </div>
+      {state.status === 'success' && (
+        <ShareButtons tweetText={buildUptimeTweet(state.data)} />
+      )}
     </div>
   );
+}
+
+function buildUptimeTweet(data: UptimeApiResponse): string {
+  const responseMs = data.checks[0]?.responseMs;
+  const sslStatus = data.ssl?.valid ? 'valid' : data.ssl ? 'invalid' : 'unknown';
+  const msPart = responseMs !== null && responseMs !== undefined ? `, ${responseMs}ms response` : '';
+  return `${data.domain} is ${data.status === 'up' ? 'UP' : 'DOWN'}${msPart}, SSL ${sslStatus}. Checked with @beaconmon:`;
 }
 
 function UptimeResult({ data }: { data: UptimeApiResponse }) {
@@ -316,26 +328,26 @@ function UptimeResult({ data }: { data: UptimeApiResponse }) {
         {isUp ? (
           <div className="flex flex-wrap items-center justify-between gap-4">
             <p className="text-[14px] text-brand-dim max-w-[420px] leading-[1.55]">
-              Your store is up right now, but you will not always be there to check. Beaconmon watches it every minute and alerts you the moment something breaks.
+              Your store is up right now. Beaconmon checks it every minute and alerts you the moment something breaks.
             </p>
-            <a
+            <Link
               href="/sign-up?ref=uptime-test-up"
               className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
             >
               Monitor this store &rarr;
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-4">
             <p className="text-[14px] text-brand-dim max-w-[420px] leading-[1.55]">
-              Get alerted the instant your store recovers, and find out immediately the next time it goes down.
+              Know the instant your store recovers, and when it next goes down.
             </p>
-            <a
+            <Link
               href="/sign-up?ref=uptime-test-down"
               className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
             >
               Get alerted when it recovers &rarr;
-            </a>
+            </Link>
           </div>
         )}
       </div>

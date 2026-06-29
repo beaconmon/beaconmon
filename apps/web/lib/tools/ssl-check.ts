@@ -27,7 +27,6 @@ export interface SslCheckResult {
 export async function checkSslCertificate(domain: string): Promise<SslCheckResult | null> {
   return new Promise((resolve) => {
     let settled = false;
-    let timer: ReturnType<typeof setTimeout>;
 
     const finish = (val: SslCheckResult | null) => {
       if (settled) return;
@@ -77,7 +76,7 @@ export async function checkSslCertificate(domain: string): Promise<SslCheckResul
       },
     );
 
-    timer = setTimeout(() => finish(null), SSL_TIMEOUT_MS);
+    const timer = setTimeout(() => finish(null), SSL_TIMEOUT_MS);
     socket.setTimeout(SSL_TIMEOUT_MS - 1_000);
     socket.on('error', () => finish(null));
     socket.on('timeout', () => finish(null));

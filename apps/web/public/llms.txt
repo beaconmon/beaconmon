@@ -30,6 +30,21 @@ Beaconmon is built for DTC brands ($50k-$1M/mo GMV) in commoditized niches, coff
 - **Uptime goals** — set uptime and response-time targets per monitor and track compliance over time; all paid plans (1 on Starter, unlimited on Growth and Scale)
 - **Global checks** — verify your site from 5 geographic regions simultaneously; Growth and Scale only
 
+## Free tools
+
+No account required. These tools are available to any Shopify or WooCommerce merchant.
+
+- **Shopify Competitor Snapshot** — enter any Shopify store URL and get a live snapshot of their product catalog, pricing, and top SKUs; useful for a first look before setting up ongoing monitoring
+- **Shopify Competitor Change Checker** — check what has changed on a Shopify competitor's store recently: price moves, new products, and promo copy updates
+- **Free 7-Day Competitor Intelligence Report** — enter a competitor's Shopify store URL and receive a 7-day email report covering price changes, new product launches, and promo activity
+- **Competitor Intelligence ROI Calculator** — estimates how much revenue a merchant is losing per month by reacting slowly to competitor price drops and promo launches; inputs are GMV, margin, and competitor count
+- **Peak Sale Readiness Checker (BFCM)** — scores a Shopify store's uptime, SSL, performance, and monitoring posture ahead of Black Friday, Prime Day, or any flash sale
+- **Downtime Detection Speed Calculator** — calculates how long a store is likely down before anyone notices, based on current check interval and traffic pattern
+- **Store Monitoring Coverage Auditor** — identifies which pages on a Shopify store are unmonitored (checkout, cart, product pages, APIs) and estimates the coverage gap
+- **Shopify Uptime Test** — instant uptime and response-time check for any Shopify store URL
+- **WooCommerce Uptime Test** — instant uptime and response-time check for any WooCommerce store URL
+- **SSL Certificate Checker** — checks SSL validity, expiry date, issuer, and certificate chain for any domain
+
 ## Alert channels
 
 Email, Slack, webhook. All paid plans support unlimited alert channels.
@@ -79,6 +94,16 @@ All plans include a 14-day Growth trial with no credit card required.
 - [vs Hexowatch](https://beaconmon.com/vs/hexowatch): comparison with Hexowatch
 - [vs Prisync](https://beaconmon.com/vs/prisync): comparison with Prisync
 - [vs Visualping](https://beaconmon.com/vs/visualping): comparison with Visualping
+- [Shopify Competitor Snapshot](https://beaconmon.com/tools/shopify-competitor-snapshot): free live snapshot of any Shopify store's catalog and pricing
+- [Shopify Competitor Changes](https://beaconmon.com/tools/shopify-competitor-changes): free recent change checker for any Shopify store
+- [Free Competitor Intelligence Report](https://beaconmon.com/tools/competitor-intelligence-report): 7-day email report on any Shopify competitor
+- [Competitor Intelligence ROI Calculator](https://beaconmon.com/tools/competitor-intelligence-roi): estimate monthly revenue lost to slow competitor response
+- [BFCM Readiness Checker](https://beaconmon.com/tools/bfcm-readiness): score your store's readiness for peak sale events
+- [Downtime Detection Calculator](https://beaconmon.com/tools/downtime-detection-calculator): how fast would you know if your store went down?
+- [Monitoring Coverage Auditor](https://beaconmon.com/tools/monitoring-coverage): which pages on your Shopify store are unmonitored?
+- [Shopify Uptime Test](https://beaconmon.com/tools/shopify-uptime-test): instant uptime check for any Shopify store
+- [WooCommerce Uptime Test](https://beaconmon.com/tools/woocommerce-uptime-test): instant uptime check for any WooCommerce store
+- [SSL Certificate Checker](https://beaconmon.com/tools/ssl-checker): check SSL validity and expiry for any domain
 - [Sign up](https://beaconmon.com/sign-up): create an account
 - [Privacy Policy](https://beaconmon.com/privacy): privacy policy
 - [Terms of Service](https://beaconmon.com/terms): terms of service
@@ -116,4 +141,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-06-23
+2026-06-29

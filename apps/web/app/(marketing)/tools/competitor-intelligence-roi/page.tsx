@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/json-ld';
 import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { TrendingDown, Truck, PackagePlus } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Competitor Intelligence ROI Calculator: How Much Revenue Are You Losing? | Beaconmon',
@@ -16,19 +17,19 @@ export const metadata: Metadata = {
 
 const MOVE_EXAMPLES = [
   {
-    icon: '📉',
+    icon: TrendingDown,
     heading: 'Competitor drops prices 20% for a flash sale',
     detail:
       'You find out 3 days later. Customers already converted to their offer. Your ads spent the whole weekend competing against a price you did not know existed.',
   },
   {
-    icon: '🚚',
+    icon: Truck,
     heading: 'Competitor launches free shipping for the weekend',
     detail:
       'You find out Monday. Your conversion rate dipped and you did not know why. The promotion ended before you had a chance to respond.',
   },
   {
-    icon: '📦',
+    icon: PackagePlus,
     heading: 'Competitor adds a new product in your category',
     detail:
       'You find out when a customer mentions it. You missed 2 weeks of comparison shopping traffic while they captured the early buyers.',
@@ -173,7 +174,9 @@ export default function CompetitorRoiPage() {
           <div className="grid grid-cols-3 max-[760px]:grid-cols-1 gap-5">
             {MOVE_EXAMPLES.map((ex) => (
               <div key={ex.heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-7">
-                <p className="text-[28px] mb-4">{ex.icon}</p>
+                <div className="mb-4 w-10 h-10 rounded-lg bg-brand-bg2 flex items-center justify-center">
+                  <ex.icon size={20} className="text-brand-dim" />
+                </div>
                 <h3 className="text-[16px] font-bold tracking-[-0.01em] mb-2">{ex.heading}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{ex.detail}</p>
               </div>

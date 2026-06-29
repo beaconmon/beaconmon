@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import CalculatorLeadCapture from '@/components/tools/CalculatorLeadCapture';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 type CompetitorCount = '1' | '2-3' | '4-6' | '7+';
 type Niche = 'commodity' | 'fashion' | 'specialty';
@@ -61,7 +63,6 @@ export default function CompetitorRoiCalculator() {
     reactionTime: '',
   });
   const [revenueDisplay, setRevenueDisplay] = useState('');
-  const [copied, setCopied] = useState(false);
   const isFirstRender = useRef(true);
 
   // Read initial state from the URL once on mount so shared links restore inputs.
@@ -71,6 +72,7 @@ export default function CompetitorRoiCalculator() {
     const niche = params.get('niche');
     const competitors = params.get('competitors');
     const reaction = params.get('reaction');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputs((p) => ({
       monthlyRevenue: Number.isFinite(revenue) && revenue > 0 ? revenue : p.monthlyRevenue,
       niche: VALID_NICHE.includes(niche as Niche) ? (niche as Niche) : p.niche,
@@ -96,16 +98,6 @@ export default function CompetitorRoiCalculator() {
     const qs = params.toString();
     window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
   }, [inputs]);
-
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard unavailable (insecure context or denied permission) -- ignore.
-    }
-  }
 
   const ready = isComplete(inputs);
 
@@ -248,12 +240,12 @@ export default function CompetitorRoiCalculator() {
                 The next step is making sure you never miss a move, even at 2am. Beaconmon watches every competitor 24/7
                 and alerts you within minutes.
               </p>
-              <a
+              <Link
                 href="/sign-up?ref=competitor-intelligence-roi"
                 className="inline-flex items-center justify-center mt-6 h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
               >
                 Watch competitors 24/7 &rarr;
-              </a>
+              </Link>
             </div>
           ) : (
             <>
@@ -321,8 +313,7 @@ export default function CompetitorRoiCalculator() {
                   </p>
                 )}
                 <p className="mt-3 text-[12px] text-brand-muted leading-[1.5]">
-                  Estimates are based on industry benchmarks for ecommerce competitor reaction rates and revenue sensitivity by
-                  category. Your results will vary.
+                  Based on ecommerce benchmarks for competitor reaction rates and revenue sensitivity by category. Your results will vary.
                 </p>
               </div>
 
@@ -332,35 +323,22 @@ export default function CompetitorRoiCalculator() {
                   <p className="text-[14px] text-brand-dim max-w-[400px] leading-[1.55]">
                     Beaconmon alerts you the moment a competitor drops prices or launches a sale. React the same day, every time.
                   </p>
-                  <a
+                  <Link
                     href="/sign-up?ref=competitor-intelligence-roi"
                     className="inline-flex items-center justify-center h-[44px] px-5 text-[14px] font-semibold rounded-lg bg-brand-green text-brand-green-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_0_1px_rgba(0,147,90,0.25),0_6px_16px_rgba(0,147,90,0.18)] transition-all duration-[120ms] whitespace-nowrap hover:scale-[1.02] hover:bg-[#00ff8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(0,147,90,0.6)] focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg"
                   >
                     Start monitoring free &rarr;
-                  </a>
+                  </Link>
                 </div>
               </div>
             </>
           )}
         </div>
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={copyLink}
-            className="inline-flex items-center gap-2 h-[36px] px-4 text-[13px] font-semibold rounded-lg border border-brand-line text-brand-dim hover:text-brand-text hover:border-brand-green-border-25 transition-colors"
-          >
-            {copied ? (
-              <>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <path d="M3 7.5l2.5 2.5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Copied
-              </>
-            ) : (
-              'Copy link to these results'
-            )}
-          </button>
-        </div>
+        {!alreadyFast && (
+          <ShareButtons
+            tweetText={`Slow competitor reactions cost us ~$${Math.round(annualOpportunity / 1000)}k/yr. Calculated with @beaconmon:`}
+          />
+        )}
         <CalculatorLeadCapture
           tool="competitor-intelligence-roi"
           result={formatMoney(annualOpportunity)}
@@ -370,7 +348,7 @@ export default function CompetitorRoiCalculator() {
             competitorCount: inputs.competitorCount,
             reactionTime: inputs.reactionTime,
           }}
-          prompt="Save your result. We'll also send you a one-time tip on reacting faster to competitor moves."
+          prompt="Save your result and get one tip on reacting faster to competitor moves."
         />
         </>
       )}

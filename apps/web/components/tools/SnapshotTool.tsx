@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { apiFetch } from '@/lib/api-fetch';
+import ShareButtons from '@/components/tools/ShareButtons';
 
 // Mirrors the /api/tools/snapshot response shape (see app/api/tools/snapshot/route.ts).
 interface SnapshotProduct {
@@ -74,7 +75,7 @@ export default function SnapshotTool() {
         body: JSON.stringify({ url: trimmed }),
       });
       if (res.status === 429) {
-        setState({ status: 'error', message: 'That is a lot of scans in a short window. Wait a minute, then try again.' });
+        setState({ status: 'error', message: 'Too many scans in a short window. Wait a minute, then try again.' });
         return;
       }
       const data = (await res.json()) as ApiResponse;
@@ -169,6 +170,11 @@ export default function SnapshotTool() {
         )}
         {state.status === 'success' && <SnapshotResult snapshot={state.snapshot} />}
       </div>
+      {state.status === 'success' && (
+        <ShareButtons
+          tweetText={`${state.snapshot.domain} has ${state.snapshot.countIsFloor ? `${state.snapshot.productCount.toLocaleString()}+` : state.snapshot.productCount.toLocaleString()} products, ${state.snapshot.onSaleCount} currently on sale. Via @beaconmon free snapshot:`}
+        />
+      )}
     </div>
   );
 }
