@@ -58,11 +58,12 @@ export async function provisionShopifyInstall({
   const email = await fetchShopEmail(admin);
 
   await prisma.$transaction(async (tx) => {
-    // Re-check inside the transaction to guard against concurrent installs.
-    // NOTE: Prisma uses READ COMMITTED by default, so two simultaneous first-installs
-    // could both pass this check and each create a Team. The second upsert below
-    // will overwrite teamId (last writer wins), leaving the first team orphaned.
-    // Acceptable at current VPS scale; fix with SERIALIZABLE isolation if needed.
+    // Lock the row to serialize concurrent installs. At READ COMMITTED, two
+    // simultaneous first-installs could both pass the findUnique check and each
+    // create a Team, orphaning the first one. SELECT FOR UPDATE blocks the
+    // second transaction until the first commits.
+    await tx.$queryRawUnsafe(`SELECT id FROM "shopify_installs" WHERE "shop" = $1 FOR UPDATE`, shop);
+
     const current = await tx.shopifyInstall.findUnique({ where: { shop } });
     if (current?.teamId) return;
 

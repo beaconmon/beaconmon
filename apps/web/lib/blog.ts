@@ -20,6 +20,25 @@ export function createFAQSchema(faqs: { q: string; a: string }[]) {
   };
 }
 
+export function createHowToSchema(opts: {
+  name: string;
+  description: string;
+  steps: { name: string; text: string }[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: opts.name,
+    description: opts.description,
+    step: opts.steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
 export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'how-to-monitor-competitor-prices-shopify',
@@ -154,6 +173,42 @@ export const BLOG_POSTS: BlogPost[] = [
       "Across 178,623 tracked products, 23% have a compare_at_price set right now. For 18% of brands we track, more than a third of their catalog is permanently framed as discounted -- not a promotion, a strategy.",
     publishedAt: '2026-06-23',
     tags: ['Data & Research'],
+    readingTime: 6,
+  },
+  {
+    slug: 'best-shopify-competitor-monitoring-apps-2026',
+    title: 'Best Shopify Competitor Monitoring Apps in 2026 (Price, Changes, and Uptime)',
+    description:
+      'The 7 best tools Shopify stores use to track competitor prices, promotions, and page changes in 2026. Includes free options. Honest about what each tool does and does not do.',
+    publishedAt: '2026-06-30',
+    tags: ['Competitor Monitoring'],
+    readingTime: 7,
+  },
+  {
+    slug: 'how-to-get-alerted-shopify-competitor-flash-sale',
+    title: 'How to Get Alerted When a Shopify Competitor Runs a Flash Sale (2026)',
+    description:
+      'Step-by-step guide to monitoring competitor promotional banners, sale prices, and countdown timers on Shopify stores. Get a Slack alert the moment a competitor launches a campaign.',
+    publishedAt: '2026-06-30',
+    tags: ['Competitor Monitoring'],
+    readingTime: 7,
+  },
+  {
+    slug: 'how-to-monitor-competitor-shopify-store-for-changes',
+    title: "How to Monitor a Competitor's Shopify Store for Changes (2026 Guide)",
+    description:
+      'Step-by-step guide to setting up ongoing competitor monitoring for Shopify stores. Track price changes, new products, promotions, and page updates automatically, with Slack alerts.',
+    publishedAt: '2026-06-30',
+    tags: ['Competitor Monitoring'],
+    readingTime: 7,
+  },
+  {
+    slug: 'shopify-uptime-monitoring-vs-checkout-testing',
+    title: 'Shopify Uptime Monitoring vs Checkout Flow Testing: Which Do You Need? (2026)',
+    description:
+      'Two different tools solve two different Shopify monitoring problems. HTTP uptime monitoring catches outages. Synthetic checkout testing catches silent failures. Here is how to choose.',
+    publishedAt: '2026-06-30',
+    tags: ['Uptime Monitoring'],
     readingTime: 6,
   },
 ];

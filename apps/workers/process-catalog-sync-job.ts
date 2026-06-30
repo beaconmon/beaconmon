@@ -327,7 +327,7 @@ export async function processCatalogSyncJob(
       }
 
       if (tier === 'full_catalog') {
-        const currency = await fetchStoreCurrency(domain, { fetchWithRetry });
+        const currency = await fetchStoreCurrency(domain, { fetchWithRetry, logger });
         const { productErrors } = await syncCatalog({
           competitorId,
           teamId,

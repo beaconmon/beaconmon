@@ -9,6 +9,8 @@ import {
   type ShopifyVariant,
 } from '@beaconmon/checker';
 
+const EMPTY_LOGGER = { warn: (_obj: unknown, _msg: string) => {} };
+
 // Public tool: bound per-request cost. Five pages (up to 1,250 products) is a
 // strong snapshot while keeping outbound fetches and latency in check. A larger
 // catalog reports its count as a floor ("1250+") rather than fetching the rest.
@@ -120,7 +122,7 @@ export async function buildSnapshot(domain: string): Promise<SnapshotResult> {
     return { ok: false, reason: 'unreachable' };
   }
 
-  const currency = await fetchStoreCurrency(domain, { fetchWithRetry: toolFetch });
+  const currency = await fetchStoreCurrency(domain, { fetchWithRetry: toolFetch, logger: EMPTY_LOGGER });
   const products = catalog.products.map((p) => toSnapshotProduct(domain, p));
 
   const onSale = products.filter((p) => p.onSale);

@@ -140,17 +140,23 @@ export async function fetchShopifyCatalog(
  */
 export async function fetchStoreCurrency(
   domain: string,
-  deps: Pick<StorefrontFetchDeps, 'fetchWithRetry'>
+  deps: Pick<StorefrontFetchDeps, 'fetchWithRetry' | 'logger'>
 ): Promise<string> {
+  const logger = deps.logger;
   try {
     const res = await deps.fetchWithRetry(`https://${domain}/meta.json`, { maxAttempts: 2, timeoutMs: 10_000 });
-    if (!res.ok) return 'USD';
+    if (!res.ok) {
+      logger?.warn({ domain, status: res.status }, 'Currency fetch returned non-OK, falling back to USD');
+      return 'USD';
+    }
     const data = (await res.json()) as { currency?: unknown };
     if (typeof data.currency === 'string' && /^[A-Z]{3}$/.test(data.currency)) {
       return data.currency;
     }
+    logger?.warn({ domain, currency: data.currency }, 'Currency fetch returned unexpected shape, falling back to USD');
     return 'USD';
-  } catch {
+  } catch (err) {
+    logger?.warn({ domain, err }, 'Currency fetch failed, falling back to USD');
     return 'USD';
   }
 }

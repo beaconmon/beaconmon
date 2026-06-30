@@ -176,7 +176,7 @@ export async function checkCoverage(domain: string): Promise<CoverageResult> {
     note: null,
   });
   const cart = settled(cartRes, { status: 'error' as PageStatus, httpStatus: null, responseMs: null });
-  const checkout = settled(checkoutRes, { status: 'error' as PageStatus, httpStatus: null, responseMs: null });
+  const checkout = settled(checkoutRes, { url: `https://${domain}/checkouts`, status: 'error' as PageStatus, httpStatus: null, responseMs: null });
 
   const isShopify = product.status !== 'skipped';
 

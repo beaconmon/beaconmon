@@ -1,3 +1,4 @@
+import { partitionCreateTask } from './partition-create.js';
 import { partitionPurgeTask } from './partition-purge.js';
 import { retentionCleanupTask } from './retention-cleanup.js';
 import { contentSnapshotRetentionTask } from './content-snapshot-retention.js';
@@ -14,6 +15,7 @@ import { toolReportSweepTask } from './tool-report-sweep.js';
 import type { SchedulerTask } from './types.js';
 
 export const tasks: SchedulerTask[] = [
+  partitionCreateTask,
   partitionPurgeTask,
   retentionCleanupTask,
   contentSnapshotRetentionTask,

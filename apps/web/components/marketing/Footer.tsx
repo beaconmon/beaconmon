@@ -29,11 +29,34 @@ const TOOLS_LINKS: [string, string][] = [
   ['/tools', 'All free tools'],
 ];
 
+const ALTERNATIVES_LINKS: [string, string][] = [
+  ['/alternatives', 'All alternatives'],
+  ['/alternatives/betterstack', 'BetterStack'],
+  ['/alternatives/distill', 'Distill'],
+  ['/alternatives/hexowatch', 'Hexowatch'],
+  ['/alternatives/intelis', 'Intelis'],
+  ['/alternatives/pagecrawl', 'PageCrawl'],
+  ['/alternatives/panoramata', 'Panoramata'],
+  ['/alternatives/price2spy', 'Price2Spy'],
+  ['/alternatives/prisync', 'Prisync'],
+  ['/alternatives/rivalert', 'Rivalert'],
+  ['/alternatives/uptimerobot', 'UptimeRobot'],
+  ['/alternatives/visualping', 'Visualping'],
+  ['/alternatives/wachete', 'Wachete'],
+];
+
 const COMPARE_LINKS: [string, string][] = [
   ['/vs', 'All comparisons'],
+  ['/vs/better-uptime', 'vs BetterStack'],
   ['/vs/distill', 'vs Distill'],
   ['/vs/hexowatch', 'vs Hexowatch'],
+  ['/vs/intelis', 'vs Intelis'],
+  ['/vs/panoramata', 'vs Panoramata'],
+  ['/vs/pingdom', 'vs Pingdom'],
   ['/vs/prisync', 'vs Prisync'],
+  ['/vs/rivalert', 'vs Rivalert'],
+  ['/vs/statuscake', 'vs StatusCake'],
+  ['/vs/uptimerobot', 'vs UptimeRobot'],
   ['/vs/visualping', 'vs Visualping'],
 ];
 
@@ -91,7 +114,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-5 max-[700px]:grid-cols-3 max-[460px]:grid-cols-2 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-6 max-[900px]:grid-cols-3 max-[460px]:grid-cols-2 gap-x-6 gap-y-10">
 
             {/* Product + For */}
             <div>
@@ -126,6 +149,16 @@ export default function Footer() {
                     Chrome Extension
                   </a>
                 </li>
+              </ul>
+            </div>
+
+            {/* Alternatives */}
+            <div>
+              <ColHead>Alternatives</ColHead>
+              <ul>
+                {ALTERNATIVES_LINKS.map(([href, label]) => (
+                  <FooterLink key={label} href={href}>{label}</FooterLink>
+                ))}
               </ul>
             </div>
 

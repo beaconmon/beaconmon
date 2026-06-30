@@ -1,0 +1,326 @@
+import NavBar from '@/components/marketing/NavBar';
+import CtaForm from '@/components/marketing/CtaForm';
+import CheckIcon from '@/components/marketing/CheckIcon';
+import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Free Alternative to PageCrawl.io for Shopify Stores (2026)',
+  description:
+    'PageCrawl is a budget change monitoring tool with no ecommerce focus. Beaconmon offers free competitor monitoring for Shopify stores, with preset selectors, uptime, and a weekly Digest.',
+  alternates: { canonical: 'https://beaconmon.com/alternatives/pagecrawl' },
+};
+
+const TOOL_FACTS = [
+  { label: 'Free plan', value: '6 monitors, 220 checks/month, 60-min minimum frequency' },
+  { label: 'Paid from', value: '$8/mo' },
+  { label: 'JavaScript rendering', value: 'Yes, cloud-based full browser' },
+  { label: 'Uptime monitoring', value: 'No' },
+  { label: 'Shopify preset selectors', value: 'No' },
+  { label: 'Ecommerce features', value: 'None' },
+  { label: 'REST API', value: 'Every paid plan' },
+  { label: 'AI summaries', value: 'Paid plans only (10 AI credits/month on free)' },
+];
+
+const REASONS_TO_SWITCH = [
+  {
+    heading: 'No Shopify preset selectors.',
+    body: 'Every monitor requires manual CSS selector setup. Beaconmon ships with presets for Shopify product price, stock status, and promotional copy so setup takes under 2 minutes.',
+  },
+  {
+    heading: 'No uptime monitoring.',
+    body: 'PageCrawl only tracks content changes. Uptime, SSL expiry, and domain expiry require a separate paid tool. Beaconmon includes all three on every plan.',
+  },
+  {
+    heading: 'Free plan is tighter than it looks.',
+    body: 'Six monitors and 220 checks per month with a 60-minute minimum check interval. Beaconmon free gives you 10 monitors and 1 competitor with no check count cap.',
+  },
+  {
+    heading: 'No ecommerce workflow.',
+    body: 'PageCrawl is a generic page-change tool. There is no onboarding for Shopify stores, no competitor setup wizard, and no concept of tracking price versus promo copy separately.',
+  },
+  {
+    heading: 'No Intelligence Digest.',
+    body: 'PageCrawl sends individual alerts per change. Beaconmon groups all competitor changes from the week into a single Slack or email digest on Starter and above.',
+  },
+];
+
+const BEACONMON_WINS = [
+  { point: '10 monitors free, vs PageCrawl\'s 6' },
+  { point: 'Shopify and WooCommerce preset selectors, zero manual CSS work' },
+  { point: 'Uptime, SSL, and domain expiry alerts on every plan' },
+  { point: 'Intelligence Digest on Starter ($29/mo)' },
+  { point: 'Ecommerce-native onboarding wizard' },
+  { point: 'AI significance scoring on Growth (classifies changes as clearance push, margin test, etc.)' },
+];
+
+const WHERE_PAGECRAWL_WINS = [
+  {
+    heading: 'JavaScript rendering.',
+    body: 'PageCrawl runs a full browser engine. If a competitor uses a headless frontend that loads prices or inventory client-side, PageCrawl catches those changes. Beaconmon is HTML-only and will miss content that is not in the initial server-rendered response.',
+  },
+  {
+    heading: 'Lower entry price for paid plans.',
+    body: 'PageCrawl paid starts at $8/mo versus Beaconmon Starter at $29/mo. For basic change monitoring of non-ecommerce pages where uptime and the Digest are not needed, PageCrawl is more affordable.',
+  },
+  {
+    heading: 'REST API on every paid plan.',
+    body: 'PageCrawl exposes a REST API to all paid subscribers. If you need to programmatically query monitoring data or pipe alerts into a custom system, this is a real advantage.',
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "How does Beaconmon's free plan compare to PageCrawl's?",
+    a: "PageCrawl free gives you 6 monitors, 220 checks per month, and a 60-minute minimum check interval. Beaconmon free gives you 10 monitors, 1 competitor, and no check count cap within the scheduled frequency. Beaconmon also includes uptime monitoring and SSL alerts on the free plan.",
+  },
+  {
+    q: 'Does PageCrawl support Shopify stores?',
+    a: 'PageCrawl can monitor any public web page, including Shopify stores. It does not have Shopify-specific preset selectors or ecommerce-native features. Beaconmon provides presets for Shopify product price, stock status, and promotional copy so there is no manual CSS selector work.',
+  },
+  {
+    q: 'Is PageCrawl cheaper than Beaconmon?',
+    a: 'PageCrawl paid plans start at $8/mo versus Beaconmon Starter at $29/mo. If budget is the primary concern and you do not need uptime monitoring, Shopify presets, or the Intelligence Digest, PageCrawl is cheaper. For Shopify store owners who want competitor monitoring and uptime in one tool, Beaconmon covers both.',
+  },
+];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      url: 'https://beaconmon.com/alternatives/pagecrawl',
+      name: 'Free Alternative to PageCrawl.io for Shopify Stores (2026)',
+      dateModified: '2026-06-30',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'PageCrawl.io',
+      applicationCategory: 'BusinessApplication',
+      description: 'Web page change monitoring service that tracks content, price, and availability changes across any public web page.',
+      url: 'https://pagecrawl.io',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://beaconmon.com' },
+        { '@type': 'ListItem', position: 2, name: 'Alternatives', item: 'https://beaconmon.com/alternatives' },
+        { '@type': 'ListItem', position: 3, name: 'PageCrawl alternative', item: 'https://beaconmon.com/alternatives/pagecrawl' },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    },
+  ],
+};
+
+export default function PageCrawlAlternativePage() {
+  return (
+    <>
+      <JsonLd data={schemaData} />
+      <NavBar />
+
+      <section className="relative py-[100px] max-[640px]:py-16 overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            top: '-30%',
+            right: '-10%',
+            width: 700,
+            height: 700,
+            background: 'radial-gradient(circle, rgba(0,229,122,0.15), transparent 60%)',
+            filter: 'blur(40px)',
+          }}
+        />
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">
+            Free Alternative
+          </span>
+          <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
+            Free alternative to PageCrawl.io for Shopify stores.
+          </h1>
+          <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto mb-4">
+            PageCrawl monitors pages for changes. Beaconmon monitors competitors with Shopify-native presets, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan includes 10 monitors.
+          </p>
+          <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
+        </div>
+      </section>
+
+      <section className="py-[60px] border-t border-brand-line-soft">
+        <div className="max-w-[900px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-6">
+            <div className="bg-brand-bg1 border border-brand-line-soft rounded-2xl p-8">
+              <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-muted mb-3 block">PageCrawl.io</span>
+              <p className="text-[28px] font-extrabold tracking-[-0.025em] mb-1">$8<span className="text-[16px] font-normal text-brand-dim">/mo</span></p>
+              <p className="text-brand-dim text-[14px] mb-5">Free plan: 6 monitors, 220 checks/month</p>
+              <ul className="space-y-2">
+                {TOOL_FACTS.map(({ label, value }) => (
+                  <li key={label} className="flex gap-3 text-[13px] text-brand-dim">
+                    <span className="text-brand-muted shrink-0 w-[140px]">{label}</span>
+                    <span>{value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-[rgba(0,229,122,0.04)] border border-[rgba(0,229,122,0.2)] rounded-2xl p-8">
+              <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Beaconmon</span>
+              <p className="text-[28px] font-extrabold tracking-[-0.025em] mb-1">Free<span className="text-[16px] font-normal text-brand-dim"> forever</span></p>
+              <p className="text-brand-dim text-[14px] mb-5">10 monitors, 1 competitor, uptime included</p>
+              <ul className="space-y-2">
+                {[
+                  { label: 'Shopify presets', value: 'Yes, price, stock, promo copy' },
+                  { label: 'Uptime monitoring', value: 'Included on all plans' },
+                  { label: 'SSL + domain alerts', value: 'Included on all plans' },
+                  { label: 'Intelligence Digest', value: 'Starter ($29/mo) and above' },
+                  { label: 'AI scoring', value: 'Growth and above' },
+                  { label: 'Free trial', value: '14-day Growth trial, no card' },
+                ].map(({ label, value }) => (
+                  <li key={label} className="flex gap-3 text-[13px] text-brand-dim">
+                    <span className="text-brand-muted shrink-0 w-[140px]">{label}</span>
+                    <span>{value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[900px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-3">
+              Why Shopify stores look for PageCrawl alternatives
+            </h2>
+            <p className="text-brand-dim text-[16px] max-w-[520px] mx-auto">
+              PageCrawl is a general-purpose change detection tool. For Shopify stores tracking competitors, the gaps add up quickly.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {REASONS_TO_SWITCH.map(({ heading, body }) => (
+              <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 flex gap-5">
+                <div className="mt-1 shrink-0">
+                  <CheckIcon />
+                </div>
+                <div>
+                  <h3 className="text-[16px] font-bold tracking-[-0.015em] mb-1">{heading}</h3>
+                  <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[900px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-3">
+              What Beaconmon covers instead
+            </h2>
+            <p className="text-brand-dim text-[16px] max-w-[520px] mx-auto">
+              Built for Shopify store owners who want competitor intelligence and uptime in one tool.
+            </p>
+          </div>
+          <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-4">
+            {BEACONMON_WINS.map(({ point }) => (
+              <div
+                key={point}
+                className="flex items-start gap-3 bg-[rgba(0,229,122,0.04)] border border-[rgba(0,229,122,0.15)] rounded-xl p-5"
+              >
+                <CheckIcon />
+                <p className="text-[14px] text-brand-dim leading-[1.55]">{point}</p>
+              </div>
+            ))}
+          </div>
+          <p className="reveal text-brand-muted text-[13px] text-center mt-6">
+            Need the full feature breakdown?{' '}
+            <Link href="/pricing" className="text-brand-green-ink hover:underline">
+              See pricing
+            </Link>{' '}
+            or{' '}
+            <Link href="/shopify-competitor-monitoring" className="text-brand-green-ink hover:underline">
+              learn about competitor monitoring for Shopify stores.
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[900px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-3">
+              Where PageCrawl still wins
+            </h2>
+            <p className="text-brand-dim text-[16px] max-w-[520px] mx-auto">
+              Beaconmon is not the right tool for every use case. Here is where PageCrawl has a genuine edge.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {WHERE_PAGECRAWL_WINS.map(({ heading, body }) => (
+              <div key={heading} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6">
+                <h3 className="text-[16px] font-bold tracking-[-0.015em] mb-2 text-brand-text">{heading}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-3">
+              Common questions
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {FAQ_ITEMS.map(({ q, a }) => (
+              <div key={q} className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6">
+                <h3 className="text-[16px] font-bold tracking-[-0.015em] mb-3">{q}</h3>
+                <p className="text-brand-dim text-[14px] leading-[1.65]">{a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-[120px] border-t border-brand-line-soft relative overflow-hidden">
+        <div aria-hidden className="absolute pointer-events-none" style={{ bottom: '-40%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 500, background: 'radial-gradient(ellipse, rgba(0,229,122,0.15), transparent 60%)', filter: 'blur(40px)' }} />
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center relative">
+          <h2 className="text-[clamp(32px,4vw,52px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.1]">Try Beaconmon free.</h2>
+          <p className="text-brand-dim text-[17px] mb-8">10 monitors free forever. 14-day Growth trial, no card required.</p>
+          <CtaForm className="mx-auto mb-5" />
+          <p className="text-brand-dim text-[15px] mt-4">
+            Running a Shopify store?{' '}
+            <Link href="/for/shopify" className="text-brand-green-ink hover:underline">See the Shopify-specific setup →</Link>
+          </p>
+        </div>
+      </section>
+
+      <section className="py-12 border-t border-brand-line-soft">
+        <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
+          <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
+          <div className="flex flex-wrap justify-center gap-4 text-[14px]">
+            <Link href="/alternatives/visualping" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Visualping</Link>
+            <Link href="/alternatives/wachete" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Wachete</Link>
+            <Link href="/alternatives/distill" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Distill</Link>
+            <Link href="/alternatives" className="text-brand-dim hover:text-brand-text transition-colors">All alternatives</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
+          </div>
+        </div>
+      </section>
+
+      <RevealObserver />
+    </>
+  );
+}

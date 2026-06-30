@@ -104,24 +104,26 @@ describe('fetchShopifyCatalog', () => {
 });
 
 describe('fetchStoreCurrency', () => {
+  const silentLogger = { warn: vi.fn() };
+
   it('returns the currency from meta.json when valid', async () => {
     const fetchWithRetry = vi.fn().mockResolvedValue(okJson({ currency: 'GBP' }));
-    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry })).resolves.toBe('GBP');
+    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry, logger: silentLogger })).resolves.toBe('GBP');
     expect(fetchWithRetry).toHaveBeenCalledWith('https://shop.example/meta.json', { maxAttempts: 2, timeoutMs: 10_000 });
   });
 
   it('falls back to USD on a malformed currency value', async () => {
     const fetchWithRetry = vi.fn().mockResolvedValue(okJson({ currency: 'pounds' }));
-    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry })).resolves.toBe('USD');
+    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry, logger: silentLogger })).resolves.toBe('USD');
   });
 
   it('falls back to USD when meta.json is not ok', async () => {
     const fetchWithRetry = vi.fn().mockResolvedValue({ ok: false, status: 404 } as unknown as Response);
-    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry })).resolves.toBe('USD');
+    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry, logger: silentLogger })).resolves.toBe('USD');
   });
 
   it('falls back to USD when the fetch throws', async () => {
     const fetchWithRetry = vi.fn().mockRejectedValue(new Error('boom'));
-    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry })).resolves.toBe('USD');
+    await expect(fetchStoreCurrency('shop.example', { fetchWithRetry, logger: silentLogger })).resolves.toBe('USD');
   });
 });

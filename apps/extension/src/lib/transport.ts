@@ -25,4 +25,5 @@ const noJitter = (): Promise<void> => Promise.resolve();
 export const storefrontDeps: StorefrontFetchDeps = {
   fetchWithRetry: browserFetch,
   politeJitter: noJitter,
+  logger: { warn: (obj, msg) => console.warn(msg, obj) },
 };

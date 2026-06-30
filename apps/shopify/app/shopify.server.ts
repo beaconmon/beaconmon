@@ -26,6 +26,11 @@ const shopify = shopifyApp({
     // and backfill teamId. Idempotent (no-op once provisioned).
     afterAuth: async ({ session, admin }) => {
       await provisionShopifyInstall({ session, admin });
+      // Register app/uninstalled and GDPR compliance webhooks. Safe to call
+      // on every auth (idempotent at Shopify's end).
+      await shopify.registerWebhooks({ session }).catch((err) => {
+        console.error('Failed to register webhooks', err);
+      });
     },
   },
   ...(process.env.SHOP_CUSTOM_DOMAIN

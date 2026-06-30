@@ -457,7 +457,10 @@ async function main(): Promise<void> {
   schedulerInterval = setInterval(() => {
     if (!running) return;
 
-    void scheduleChecks();
+    void scheduleChecks().catch((err) => {
+      logger.error({ service: 'scheduler', err }, 'scheduleChecks failed');
+      Sentry.captureException(err);
+    });
 
     for (const task of tasks) {
       if (Date.now() - (lastRun.get(task.name) ?? 0) >= task.runIntervalMs) {
@@ -470,7 +473,12 @@ async function main(): Promise<void> {
     }
   }, 10_000);
 
-  await scheduleChecks();
+  try {
+    await scheduleChecks();
+  } catch (err) {
+    logger.error({ service: 'scheduler', err }, 'Initial scheduleChecks failed');
+    Sentry.captureException(err);
+  }
 }
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────

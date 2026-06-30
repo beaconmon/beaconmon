@@ -76,18 +76,21 @@ function daysSince(iso: string): string {
 }
 
 export default function CompetitorChangesTool() {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('url') || '';
+    } catch {
+      return '';
+    }
+  });
   const [state, setState] = useState<UiState>({ status: 'idle' });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const q = params.get('url');
     if (q) {
-      setUrl(q);
       runCheck(q);
     }
-    // Only run on mount.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function runCheck(input: string) {
