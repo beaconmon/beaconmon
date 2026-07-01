@@ -811,22 +811,13 @@ export default function Competitors() {
               <Card>
                 <BlockStack gap="200">
                   <Text as="h2" variant="headingMd">
-                    Track more competitors
+                    Competitor limit reached
                   </Text>
                   <Text as="p" variant="bodyMd" tone="subdued">
-                    The free plan includes 1 competitor. Upgrade to Growth or
-                    Scale to track up to 5 or 25 competitors and unlock AI
-                    significance scoring.
+                    You are tracking the maximum number of competitors on your
+                    current plan. Remove an existing competitor to add a new
+                    one.
                   </Text>
-                  <Box>
-                    <Button
-                      url="https://beaconmon.com/pricing"
-                      target="_blank"
-                      variant="primary"
-                    >
-                      Upgrade plan
-                    </Button>
-                  </Box>
                 </BlockStack>
               </Card>
             )}

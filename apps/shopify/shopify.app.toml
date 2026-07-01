@@ -4,7 +4,7 @@
 # (see include_config_on_deploy under [build]).
 client_id = "abf2033a5ace4bcbc30b5e4058922e33"
 name = "Store Intel by Beaconmon"
-application_url = "https://shopify.beaconmon.com"
+application_url = "https://store.beaconmon.com"
 embedded = true
 handle = "beaconmon-intel"
 
@@ -32,5 +32,5 @@ scopes = "read_products,read_inventory"
 
 [auth]
 redirect_urls = [
-  "https://shopify.beaconmon.com/auth/callback",
+  "https://store.beaconmon.com/auth/callback",
 ]
