@@ -15,9 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/integrations`,          lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.7 },
 
     // ── Tier 3: Solution pages ────────────────────────────────────────────
-    { url: `${BASE_URL}/for/shopify`,      lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/for/woocommerce`,  lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/for/dtc-brands`,   lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/for/shopify`,         lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/for/woocommerce`,     lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/for/dtc-brands`,      lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/for/dtc-fashion`,     lastModified: new Date('2026-07-09'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/for/beauty-skincare`, lastModified: new Date('2026-07-09'), changeFrequency: 'monthly', priority: 0.6 },
 
     // ── Tier 4: Comparison pages ──────────────────────────────────────────
     { url: `${BASE_URL}/vs`,              lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
@@ -88,6 +90,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/about`,     lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
     { url: `${BASE_URL}/contact`,   lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
     { url: `${BASE_URL}/security`,  lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
+    { url: `${BASE_URL}/research`,  lastModified: new Date('2026-07-09'), changeFrequency: 'weekly',  priority: 0.7 },
+    { url: `${BASE_URL}/methodology`, lastModified: new Date('2026-07-09'), changeFrequency: 'yearly', priority: 0.5 },
+    { url: `${BASE_URL}/glossary`,  lastModified: new Date('2026-07-09'), changeFrequency: 'monthly', priority: 0.5 },
 
     // ── Tier 6: Legal ─────────────────────────────────────────────────────
     { url: `${BASE_URL}/privacy`,       lastModified: new Date('2026-01-01'), changeFrequency: 'yearly', priority: 0.3 },
