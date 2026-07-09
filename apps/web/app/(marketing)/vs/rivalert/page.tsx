@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Rivalert vs Beaconmon: Shopify competitor price and product tracking compared. Beaconmon adds uptime monitoring, content/promo change alerts, and Intelligence Digest. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/rivalert' },
+  openGraph: { url: 'https://beaconmon.com/vs/rivalert' },
 };
 
 const TABLE_ROWS = [
@@ -146,29 +147,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Rivalert', item: 'https://beaconmon.com/vs/rivalert' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Rivalert',
-      applicationCategory: 'BusinessApplication',
-      description: 'Shopify-native competitor price, product, and stock tracker with 12-hour check frequency on the entry plan.',
-      offers: {
-        '@type': 'Offer',
-        price: '19',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

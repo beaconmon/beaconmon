@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   description:
     'In our dataset, 98.9% of all price-changed SKUs belong to catalog-wide moves of 50+ products on the same day. That is not a pricing decision. That is software running on a schedule.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -60,6 +61,7 @@ export default function Post() {
       readingTime={7}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         A competitor price alert fires. You see a product you sell dropped from $49.99 to $48.50.

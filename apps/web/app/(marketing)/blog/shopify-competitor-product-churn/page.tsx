@@ -20,10 +20,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-product-churn';
 
 export const metadata: Metadata = {
-  title: 'One in 14 Shopify Product Launches Gets Pulled Within Weeks: The Data | Beaconmon',
+  title: '1 in 14 Shopify Launches Gets Pulled Fast | Beaconmon',
   description:
     'In 15 days of data, we observed 9,372 new products added to competitor catalogs. 664 of them, 7% of the total, were removed before the window closed. Here is what fast-kill patterns signal about competitor strategy.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -59,6 +60,7 @@ export default function Post() {
       readingTime={7}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         Most competitor monitoring focuses on what competitors add: new products, lower prices,

@@ -20,10 +20,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-products-json-competitor-intelligence';
 
 export const metadata: Metadata = {
-  title: "What Shopify's products.json Actually Tells You About a Competitor | Beaconmon",
+  title: "What products.json Tells You About a Competitor | Beaconmon",
   description:
     "Shopify's /products.json is more than a price list. Each field reveals competitor strategy: pricing, positioning, and what they're planning next.",
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

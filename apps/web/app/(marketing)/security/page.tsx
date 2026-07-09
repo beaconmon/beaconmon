@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Security | Beaconmon',
   description: 'How Beaconmon handles your store and competitor data: infrastructure, HTML-only crawling, encryption, access controls, and GDPR.',
   alternates: { canonical: 'https://beaconmon.com/security' },
+  openGraph: { url: 'https://beaconmon.com/security' },
 };
 
 const SECTIONS = [

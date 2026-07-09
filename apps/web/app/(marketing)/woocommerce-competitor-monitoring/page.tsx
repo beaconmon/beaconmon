@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Monitor WooCommerce competitor prices, promotions, and content changes. CSS selector targeting on individual product and pricing pages, with Slack alerts and an Intelligence Digest. No product feed available; pages are added individually.',
   alternates: { canonical: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
 };
 
 const FEATURES = [

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Prisync starts at $99/month. Beaconmon tracks competitor prices, promotions, and page changes from $29/month, with uptime monitoring included. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/prisync' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/prisync' },
 };
 
 const REASONS_TO_SWITCH = [
@@ -88,14 +89,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/prisync',
       name: 'Cheaper Alternative to Prisync for Shopify Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Prisync',
-      applicationCategory: 'BusinessApplication',
-      description: 'SKU-level competitor price tracking and dynamic repricing platform for ecommerce businesses with large product catalogs.',
-      url: 'https://prisync.com',
-      offers: { '@type': 'Offer', price: '99', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

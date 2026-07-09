@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Free technical readiness check for any peak sale event. Score your store on uptime, SSL, speed, redirects, and monitoring coverage before BFCM, Prime Day, Valentine\'s, or any flash sale.',
   alternates: { canonical: 'https://beaconmon.com/tools/bfcm-readiness' },
+  openGraph: { url: 'https://beaconmon.com/tools/bfcm-readiness' },
 };
 
 const WHAT_IT_CHECKS = [

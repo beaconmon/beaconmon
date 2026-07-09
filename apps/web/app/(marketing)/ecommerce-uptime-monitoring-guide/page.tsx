@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'How to monitor your Shopify store for downtime, broken checkouts, and slow pages. Plus why the merchants gaining ground pair uptime monitoring with competitor price and promotion tracking.',
   alternates: { canonical: 'https://beaconmon.com/ecommerce-uptime-monitoring-guide' },
+  openGraph: { url: 'https://beaconmon.com/ecommerce-uptime-monitoring-guide' },
 };
 
 const articleSchema = {

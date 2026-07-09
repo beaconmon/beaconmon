@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Monitor competing Shopify stores across their full product feed. Track price drops, new product launches, and promo changes with AI-summarized diffs and a weekly Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/shopify-competitor-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/shopify-competitor-monitoring' },
 };
 
 const FEATURES = [

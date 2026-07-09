@@ -6,10 +6,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon as an Alternative to Visualping, Prisync, Distill, and Hexowatch (2026)',
+  title: 'Alternatives to Visualping, Prisync and More | Beaconmon',
   description:
     'Looking for an alternative to Visualping, Prisync, Distill.io, Hexowatch, UptimeRobot, BetterStack, or Rivalert? Beaconmon is built for Shopify and WooCommerce stores: competitor price tracking, uptime monitoring, and weekly Intelligence Digest. Try free.',
   alternates: { canonical: 'https://beaconmon.com/alternatives' },
+  openGraph: { url: 'https://beaconmon.com/alternatives' },
 };
 
 const ALTERNATIVES = [

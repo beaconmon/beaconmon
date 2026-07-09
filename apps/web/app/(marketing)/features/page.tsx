@@ -6,10 +6,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Intelligence Features: Daily Brief, AI Diff, Smart Alerts | Beaconmon',
+  title: 'Beaconmon Features: Daily Brief and Smart Alerts',
   description:
     'Track competitor prices and page changes with daily AI-powered digests. Plus HTTP uptime, SSL, domain expiry, and content monitoring built for Shopify and WooCommerce stores.',
   alternates: { canonical: 'https://beaconmon.com/features' },
+  openGraph: { url: 'https://beaconmon.com/features' },
 };
 
 const FEATURES_SCHEMA = [

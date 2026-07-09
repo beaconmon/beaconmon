@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Monitor competitor Shopify collection pages and category pages for assortment changes, featured product shifts, and catalog restructuring. HTML diff on any URL, no product feed required.',
   alternates: { canonical: 'https://beaconmon.com/competitor-collections-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/competitor-collections-monitoring' },
 };
 
 const FEATURES = [

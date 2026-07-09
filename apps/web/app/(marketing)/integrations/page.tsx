@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     'Beaconmon connects to Shopify product feeds for competitor price and inventory tracking, and sends alerts via email, Slack, and webhooks.',
   alternates: { canonical: 'https://beaconmon.com/integrations' },
+  openGraph: { url: 'https://beaconmon.com/integrations' },
 };
 
 const FAQ_SCHEMA = {

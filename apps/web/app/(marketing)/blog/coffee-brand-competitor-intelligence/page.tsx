@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   description:
     'DTC coffee brands compete on subscription pricing, roast depth, seasonal drops, and bundle tactics. Here\'s the intel stack that surfaces moves that matter.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

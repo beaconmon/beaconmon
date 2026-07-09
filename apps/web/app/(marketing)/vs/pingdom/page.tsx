@@ -7,10 +7,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Switch from Pingdom: Competitor Intelligence + Uptime for Shopify (2026)',
+  title: 'Beaconmon vs Pingdom for Shopify (2026)',
   description:
     'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, no competitor tracking, no Intelligence Digest. See what you are missing. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
+  openGraph: { url: 'https://beaconmon.com/vs/pingdom' },
 };
 
 const TABLE_ROWS = [
@@ -132,18 +133,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Pingdom', item: 'https://beaconmon.com/vs/pingdom' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

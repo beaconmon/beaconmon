@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   description:
     'We tracked 5,412 coffee products across competing Shopify stores. Coffee brands almost never formally discount, but when they move prices, they move 4x bigger than any other DTC category.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -64,6 +65,7 @@ export default function Post() {
       readingTime={8}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         Generic competitor monitoring advice treats all DTC categories the same. Set a 5% threshold.

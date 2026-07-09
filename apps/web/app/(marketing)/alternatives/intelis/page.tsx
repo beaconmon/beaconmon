@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Intelis starts at $49/month and focuses on repricing. If you want competitor monitoring and uptime without automated repricing, Beaconmon covers that from free. No card needed.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/intelis' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/intelis' },
 };
 
 const TOOL_FACTS = [
@@ -99,13 +100,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/intelis',
       name: 'Free Alternative to Intelis for Shopify Competitor Monitoring (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Intelis AI Dynamic Pricing',
-      applicationCategory: 'BusinessApplication',
-      description: 'Shopify app that monitors competitor prices on Google Shopping and automatically reprices your products using AI matching.',
-      offers: { '@type': 'Offer', price: '49', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

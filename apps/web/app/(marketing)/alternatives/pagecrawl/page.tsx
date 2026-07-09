@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'PageCrawl is a budget change monitoring tool with no ecommerce focus. Beaconmon offers free competitor monitoring for Shopify stores, with preset selectors, uptime, and a weekly Digest.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/pagecrawl' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/pagecrawl' },
 };
 
 const TOOL_FACTS = [
@@ -94,14 +95,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/pagecrawl',
       name: 'Free Alternative to PageCrawl.io for Shopify Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'PageCrawl.io',
-      applicationCategory: 'BusinessApplication',
-      description: 'Web page change monitoring service that tracks content, price, and availability changes across any public web page.',
-      url: 'https://pagecrawl.io',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

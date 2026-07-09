@@ -5,10 +5,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Beaconmon | Shopify Competitor Intelligence and Uptime Monitoring',
+  title: 'About Beaconmon | Shopify Store Monitoring',
   description:
     'Beaconmon is Shopify-first competitor intelligence and uptime monitoring. Built to help ecommerce store owners track competitor prices, promotions, and content changes without enterprise tooling.',
   alternates: { canonical: 'https://beaconmon.com/about' },
+  openGraph: { url: 'https://beaconmon.com/about' },
 };
 
 const ABOUT_SCHEMA = [

@@ -18,10 +18,11 @@ const SLUG = 'best-shopify-competitor-monitoring-apps-2026';
 
 export const metadata: Metadata = {
   title:
-    'Best Shopify Competitor Monitoring Apps in 2026 (Price, Changes, and Uptime) | Beaconmon',
+    'Best Shopify Competitor Monitoring Apps (2026) | Beaconmon',
   description:
     'The 7 best tools Shopify stores use to track competitor prices, promotions, and page changes in 2026. Includes free options. Honest about what each tool does and does not do.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

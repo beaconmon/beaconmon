@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Monitor your checkout and ad landing pages every 30 seconds. Get a daily digest of every competitor price change and promo update. Built for DTC brands running paid traffic.',
   alternates: { canonical: 'https://beaconmon.com/for/dtc-brands' },
+  openGraph: { url: 'https://beaconmon.com/for/dtc-brands' },
 };
 
 const TEMPLATE_MONITORS = [

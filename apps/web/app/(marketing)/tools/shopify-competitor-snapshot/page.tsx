@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Paste any Shopify store URL to instantly see how many products it sells, what is on sale right now, and a sample of its catalog. Free competitor price checker, no signup, no app install.',
   alternates: { canonical: 'https://beaconmon.com/tools/shopify-competitor-snapshot' },
+  openGraph: { url: 'https://beaconmon.com/tools/shopify-competitor-snapshot' },
 };
 
 // Snapshot (free, one-time) vs monitoring (paid, continuous) — the conversion seam.

@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Know the moment a competitor adds a new product to their Shopify store. Beaconmon monitors the public product feed and fires a structured alert with product name, variants, and starting price as soon as a new product appears.',
   alternates: { canonical: 'https://beaconmon.com/competitor-product-launch-tracking' },
+  openGraph: { url: 'https://beaconmon.com/competitor-product-launch-tracking' },
 };
 
 const FEATURES = [

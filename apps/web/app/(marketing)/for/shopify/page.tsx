@@ -8,10 +8,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon for Shopify Stores | Checkout Monitoring and Competitor Tracking',
+  title: 'Uptime & Competitor Monitoring for Shopify | Beaconmon',
   description:
     'Catch checkout failures in under a minute. Know when a competitor drops a price. Beaconmon monitors your Shopify store and your competitors so you can focus on running the business.',
   alternates: { canonical: 'https://beaconmon.com/for/shopify' },
+  openGraph: { url: 'https://beaconmon.com/for/shopify' },
 };
 
 const TEMPLATE_MONITORS = [

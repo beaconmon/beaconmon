@@ -4,8 +4,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Terms of Service | Beaconmon',
-  description: 'Terms and conditions for using the Beaconmon website monitoring service.',
+  description: "Terms and conditions for using Beaconmon's uptime, SSL, and competitor monitoring service, including billing, cancellation, and acceptable use.",
   alternates: { canonical: 'https://beaconmon.com/terms' },
+  openGraph: { url: 'https://beaconmon.com/terms' },
 };
 
 export default function TermsPage() {

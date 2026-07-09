@@ -9,10 +9,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Free 7-Day Competitor Intelligence Report for Any Shopify Store | Beaconmon',
+  title: 'Free Competitor Intelligence Report | Beaconmon',
   description:
     'Free 7-day competitor intelligence report for any Shopify store. Track price changes, promotions, and product launches. Report delivered by email, no signup required.',
   alternates: { canonical: 'https://beaconmon.com/tools/competitor-intelligence-report' },
+  openGraph: { url: 'https://beaconmon.com/tools/competitor-intelligence-report' },
 };
 
 const REPORT_INCLUDES = [

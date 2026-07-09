@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Looking for a free Visualping alternative? Beaconmon monitors competitor prices, promotions, and page changes with CSS-selector precision, plus uptime monitoring. Free plan, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/visualping' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/visualping' },
 };
 
 const TOOL_FACTS = [
@@ -102,14 +103,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/visualping',
       name: 'Free Alternative to Visualping for Shopify Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Visualping',
-      applicationCategory: 'BusinessApplication',
-      description: 'Visual screenshot-based web page change detection that alerts when a selected region of a page looks different.',
-      url: 'https://visualping.io',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

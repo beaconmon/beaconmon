@@ -7,10 +7,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Switch from Better Uptime: Competitor Intelligence + Uptime for Shopify (2026)',
+  title: 'Beaconmon vs Better Uptime for Shopify (2026)',
   description:
     "Better Uptime vs Beaconmon: honest comparison for ecommerce stores. Better Uptime has no competitor monitoring, no content tracking, no Intelligence Digest. Try Beaconmon free, no card needed.",
   alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
+  openGraph: { url: 'https://beaconmon.com/vs/better-uptime' },
 };
 
 const TABLE_ROWS = [
@@ -124,20 +125,6 @@ const FAQ_ITEMS = [
   },
 ];
 
-const softwareSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Beaconmon',
-  applicationCategory: 'BusinessApplication',
-  description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-  url: 'https://beaconmon.com',
-  offers: {
-    '@type': 'Offer',
-    price: '29',
-    priceCurrency: 'USD',
-  },
-};
-
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -164,7 +151,7 @@ const faqSchema = {
 export default function VsBetterUptimePage() {
   return (
     <>
-      <JsonLd data={[softwareSchema, breadcrumbSchema, faqSchema]} />
+      <JsonLd data={[breadcrumbSchema, faqSchema]} />
       <NavBar />
 
       {/* Hero */}

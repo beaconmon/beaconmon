@@ -7,10 +7,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Intelis for Shopify Stores (2026): Monitoring vs Repricing',
+  title: 'Beaconmon vs Intelis for Shopify (2026)',
   description:
     'Intelis AI Dynamic Pricing vs Beaconmon: automated repricing on Google Shopping vs competitor monitoring, uptime, and Intelligence Digest. Compare what each tool does.',
   alternates: { canonical: 'https://beaconmon.com/vs/intelis' },
+  openGraph: { url: 'https://beaconmon.com/vs/intelis' },
 };
 
 const TABLE_ROWS = [
@@ -123,7 +124,7 @@ const schemaData = {
     {
       '@type': 'WebPage',
       url: 'https://beaconmon.com/vs/intelis',
-      name: 'Beaconmon vs Intelis for Shopify Stores (2026): Monitoring vs Repricing',
+      name: 'Beaconmon vs Intelis for Shopify (2026)',
       dateModified: '2026-06-30',
     },
     {
@@ -133,29 +134,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Intelis', item: 'https://beaconmon.com/vs/intelis' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Intelis AI Dynamic Pricing',
-      applicationCategory: 'BusinessApplication',
-      description: 'Shopify app that monitors competitor prices on Google Shopping and direct product pages, then automatically reprices your products.',
-      offers: {
-        '@type': 'Offer',
-        price: '49',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

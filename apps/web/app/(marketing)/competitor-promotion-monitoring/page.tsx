@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Detect competitor promotions using two signals: Shopify feed price drops and HTML banner content changes. Catches server-rendered sale notices and feed-level discounts. JavaScript-injected promotions and countdown timers are outside scope.',
   alternates: { canonical: 'https://beaconmon.com/competitor-promotion-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/competitor-promotion-monitoring' },
 };
 
 const FEATURES = [

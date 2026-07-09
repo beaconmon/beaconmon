@@ -5,8 +5,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Changelog | Beaconmon',
-  description: 'What\'s new in Beaconmon. New features, improvements, and fixes, in reverse chronological order.',
+  description: "What's new in Beaconmon: new features, monitor improvements, and bug fixes, listed newest first so you can track exactly what shipped and when.",
   alternates: { canonical: 'https://beaconmon.com/changelog' },
+  openGraph: { url: 'https://beaconmon.com/changelog' },
 };
 
 type Tag = 'Feature' | 'Improvement' | 'Fix';

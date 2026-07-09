@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   description:
     "Your competitor's homepage is their highest-signal page. Here's how to automate monitoring it, decode what each change means, and act on it.",
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

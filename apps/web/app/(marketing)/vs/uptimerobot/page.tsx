@@ -7,10 +7,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Switch from UptimeRobot: Competitor Intelligence + Uptime for Shopify (2026)',
+  title: 'Beaconmon vs UptimeRobot for Shopify (2026)',
   description:
     'UptimeRobot vs Beaconmon: honest comparison for ecommerce stores. UptimeRobot has no competitor monitoring, no content tracking, no Intelligence Digest. See what you are missing. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/uptimerobot' },
+  openGraph: { url: 'https://beaconmon.com/vs/uptimerobot' },
 };
 
 const TABLE_ROWS = [
@@ -134,18 +135,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs UptimeRobot', item: 'https://beaconmon.com/vs/uptimerobot' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

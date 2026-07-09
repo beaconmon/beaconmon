@@ -18,10 +18,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-uptime-monitoring-vs-checkout-testing';
 
 export const metadata: Metadata = {
-  title: 'Shopify Uptime Monitoring vs Checkout Flow Testing: Which Do You Need? (2026)',
+  title: 'Uptime Monitoring vs Checkout Testing | Beaconmon',
   description:
     'Two different tools solve two different Shopify monitoring problems. HTTP uptime monitoring catches outages. Synthetic checkout testing catches silent failures. Here is how to choose.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

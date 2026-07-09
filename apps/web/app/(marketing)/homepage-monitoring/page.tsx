@@ -8,10 +8,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Competitor Homepage Monitoring: Track Promos and Messaging Changes | Beaconmon',
+  title: 'Competitor Homepage Monitoring | Beaconmon',
   description:
     'Know when competitors change their homepage hero, launch a sale banner, or update their pricing message. Beaconmon tracks competitor homepages and alerts your team the moment anything changes.',
   alternates: { canonical: 'https://beaconmon.com/homepage-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/homepage-monitoring' },
 };
 
 const faqSchema = {

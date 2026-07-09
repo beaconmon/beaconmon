@@ -20,10 +20,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'ignore-match-counter-leapfrog-framework';
 
 export const metadata: Metadata = {
-  title: 'Ignore, Match, Counter, or Leapfrog: How to Respond to a Competitor Price Drop | Beaconmon',
+  title: 'How to Respond to a Competitor Price Drop | Beaconmon',
   description:
     "When a competitor drops their price, here's the four-option framework to decide whether to ignore, match, counter, or leapfrog the move.",
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

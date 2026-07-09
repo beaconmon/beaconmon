@@ -3,9 +3,7 @@ import IntelligenceMockup from '@/components/marketing/IntelligenceMockup';
 import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import PricingToggle from '@/components/marketing/PricingToggle';
-import { PRICING } from '@/lib/pricing';
 import { RevealObserver } from '@/components/reveal-observer';
-import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -15,56 +13,6 @@ export const metadata: Metadata = {
     "Beaconmon tracks your Shopify competitors' prices, launches, and promos. Daily brief at 8am. Set up in five minutes. Free to start.",
   alternates: { canonical: 'https://beaconmon.com' },
   openGraph: { url: 'https://beaconmon.com' },
-};
-
-const SOFTWARE_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Beaconmon',
-  applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'Shopify Competitor Intelligence',
-  operatingSystem: 'Web',
-  url: 'https://beaconmon.com',
-  description:
-    'Shopify competitor intelligence and store monitoring. Tracks competitor pricing, product launches, and content changes. Delivers a daily brief with every competitor move. Includes uptime monitoring, SSL expiry, and domain expiry alerts.',
-  offers: [
-    {
-      '@type': 'Offer',
-      name: 'Free',
-      price: '0',
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      url: 'https://beaconmon.com/sign-up',
-      description: '10 monitors, 5-minute check interval, 1 competitor monitor, 1 status page',
-    },
-    {
-      '@type': 'Offer',
-      name: 'Starter',
-      price: String(PRICING.starter.monthly),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      url: 'https://beaconmon.com/sign-up',
-      description: '25 monitors, 1-minute check interval, 5 competitor monitors, 3 status pages',
-    },
-    {
-      '@type': 'Offer',
-      name: 'Growth',
-      price: String(PRICING.growth.monthly),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      url: 'https://beaconmon.com/sign-up',
-      description: '100 monitors, 25 competitor monitors, AI change summaries, multi-location checks',
-    },
-    {
-      '@type': 'Offer',
-      name: 'Scale',
-      price: String(PRICING.scale.monthly),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      url: 'https://beaconmon.com/sign-up',
-      description: 'Unlimited monitors, 30-second check interval, unlimited competitor monitors',
-    },
-  ],
 };
 
 const HERO_EVENTS = [
@@ -129,8 +77,6 @@ const FAQ_ITEMS = [
 export default function LandingPage() {
   return (
     <>
-      <JsonLd data={SOFTWARE_SCHEMA} />
-
       {/* ====== NAV ====== */}
       <NavBar />
 

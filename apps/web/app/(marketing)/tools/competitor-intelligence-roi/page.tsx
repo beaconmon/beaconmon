@@ -9,10 +9,11 @@ import type { Metadata } from 'next';
 import { TrendingDown, Truck, PackagePlus } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Competitor Intelligence ROI Calculator: How Much Revenue Are You Losing? | Beaconmon',
+  title: 'Competitor Intelligence ROI Calculator | Beaconmon',
   description:
     'Free ROI calculator for ecommerce competitor intelligence. See how much revenue you recover by reacting faster to competitor price drops and promotions.',
   alternates: { canonical: 'https://beaconmon.com/tools/competitor-intelligence-roi' },
+  openGraph: { url: 'https://beaconmon.com/tools/competitor-intelligence-roi' },
 };
 
 const MOVE_EXAMPLES = [

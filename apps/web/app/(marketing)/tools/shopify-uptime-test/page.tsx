@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Free instant uptime test for any Shopify store. Check if your store is up or down, see response time, SSL expiry, and redirect chain health. No install needed.',
   alternates: { canonical: 'https://beaconmon.com/tools/shopify-uptime-test' },
+  openGraph: { url: 'https://beaconmon.com/tools/shopify-uptime-test' },
 };
 
 const WHAT_IT_CHECKS = [

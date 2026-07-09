@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Visualping vs Beaconmon: pixel-diffing vs HTML-selector targeting, competitor price tracking, and Intelligence Digest compared side-by-side for ecommerce stores. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/visualping' },
+  openGraph: { url: 'https://beaconmon.com/vs/visualping' },
 };
 
 const TABLE_ROWS = [
@@ -128,18 +129,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Visualping', item: 'https://beaconmon.com/vs/visualping' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

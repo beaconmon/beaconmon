@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Prisync vs Beaconmon: price-database-only tracking vs price-plus-context with AI significance scoring. Competitor intelligence, uptime monitoring, and Intelligence Digest compared. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/prisync' },
+  openGraph: { url: 'https://beaconmon.com/vs/prisync' },
 };
 
 const TABLE_ROWS = [
@@ -128,18 +129,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Prisync', item: 'https://beaconmon.com/vs/prisync' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

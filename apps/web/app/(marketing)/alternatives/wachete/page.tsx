@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Wachete is a generic web monitoring tool with no ecommerce features. Beaconmon offers free competitor monitoring for Shopify stores, with Shopify preset selectors and uptime alerts.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/wachete' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/wachete' },
 };
 
 const REASONS_TO_SWITCH = [
@@ -72,14 +73,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/wachete',
       name: 'Free Alternative to Wachete for Ecommerce Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Wachete',
-      applicationCategory: 'BusinessApplication',
-      description: 'Web page change monitoring and alert service for tracking content, price, and availability changes on any website.',
-      url: 'https://www.wachete.com',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

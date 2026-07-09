@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Simple, transparent pricing for ecommerce website intelligence. 10 monitors free forever. Starter from $29/mo for competitor tracking, Growth at $79/mo for AI-powered insights, Scale at $199/mo for unlimited monitoring.',
   alternates: { canonical: 'https://beaconmon.com/pricing' },
+  openGraph: { url: 'https://beaconmon.com/pricing' },
 };
 
 type MatrixRow = { feature: string; free: string; starter: string; growth: string; scale: string };

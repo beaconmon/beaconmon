@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "UptimeRobot's free plan is now non-commercial. Shopify stores need a replacement. Beaconmon offers free uptime monitoring built for ecommerce, plus competitor tracking. No card needed.",
   alternates: { canonical: 'https://beaconmon.com/alternatives/uptimerobot' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/uptimerobot' },
 };
 
 const TOOL_FACTS = [
@@ -83,14 +84,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/uptimerobot',
       name: 'Free Alternative to UptimeRobot for Shopify Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'UptimeRobot',
-      applicationCategory: 'BusinessApplication',
-      description: 'General-purpose website uptime monitoring service. Free plan restricted to non-commercial use as of October 2024.',
-      url: 'https://uptimerobot.com',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

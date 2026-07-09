@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Panoramata starts at $89/month. If you mainly need competitor website change monitoring and uptime for your Shopify store, Beaconmon covers that from $29/month. Free plan available.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/panoramata' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/panoramata' },
 };
 
 const TOOL_FACTS = [
@@ -103,14 +104,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/panoramata',
       name: 'Cheaper Alternative to Panoramata for Ecommerce Brands (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Panoramata',
-      applicationCategory: 'BusinessApplication',
-      description: 'Competitive intelligence platform covering competitor email campaigns, ad creatives, and SMS across Facebook, TikTok, and Google.',
-      url: 'https://panoramata.com',
-      offers: { '@type': 'Offer', price: '89', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

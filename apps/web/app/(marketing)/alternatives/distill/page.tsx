@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Looking for a Distill.io alternative? Beaconmon monitors competitor prices and page changes for Shopify stores, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan, no card.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/distill' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/distill' },
 };
 
 const REASONS_TO_SWITCH = [
@@ -109,14 +110,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/distill',
       name: 'Free Alternative to Distill.io for Ecommerce Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Distill.io',
-      applicationCategory: 'BusinessApplication',
-      description: 'Browser extension and web app for manually watching web pages for changes, with alerts when content updates.',
-      url: 'https://distill.io',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

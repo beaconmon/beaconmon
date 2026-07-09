@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Check any website\'s SSL certificate instantly. See if the cert is valid, when it expires, and how many days remain. Free, no signup required.',
   alternates: { canonical: 'https://beaconmon.com/tools/ssl-checker' },
+  openGraph: { url: 'https://beaconmon.com/tools/ssl-checker' },
 };
 
 const WHAT_IT_CHECKS = [

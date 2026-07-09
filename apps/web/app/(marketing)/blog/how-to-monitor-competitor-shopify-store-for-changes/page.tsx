@@ -18,10 +18,11 @@ import { createFAQSchema, createHowToSchema } from '@/lib/blog';
 const SLUG = 'how-to-monitor-competitor-shopify-store-for-changes';
 
 export const metadata: Metadata = {
-  title: "How to Monitor a Competitor's Shopify Store for Changes (2026 Guide) | Beaconmon",
+  title: "How to Monitor a Competitor's Shopify Store | Beaconmon",
   description:
     'Step-by-step guide to setting up ongoing competitor monitoring for Shopify stores. Track price changes, new products, promotions, and page updates automatically, with Slack alerts.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

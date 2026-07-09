@@ -21,10 +21,11 @@ import { createFAQSchema, createHowToSchema } from '@/lib/blog';
 const SLUG = 'how-to-get-alerted-shopify-competitor-flash-sale';
 
 export const metadata: Metadata = {
-  title: 'How to Get Alerted When a Shopify Competitor Runs a Flash Sale (2026) | Beaconmon',
+  title: "Get Alerted to a Competitor's Flash Sale | Beaconmon",
   description:
     'Step-by-step guide to monitoring competitor promotional banners, sale prices, and countdown timers on Shopify stores. Get a Slack alert the moment a competitor launches a campaign.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Distill.io vs Beaconmon: JavaScript-rendering browser watcher vs HTML-only Shopify-native competitor intelligence. Full honest comparison including where Beaconmon falls short. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/distill' },
+  openGraph: { url: 'https://beaconmon.com/vs/distill' },
 };
 
 const TABLE_ROWS = [
@@ -128,18 +129,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Distill', item: 'https://beaconmon.com/vs/distill' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

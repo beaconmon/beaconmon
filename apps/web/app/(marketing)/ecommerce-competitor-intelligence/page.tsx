@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Track every price change, promotion, and content update across competing Shopify, WooCommerce, and DTC stores. CSS selector targeting, AI digest, and multi-competitor dashboards for ecommerce teams.',
   alternates: { canonical: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
+  openGraph: { url: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
 };
 
 const FEATURES = [

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Honest comparisons for ecommerce store owners. Beaconmon vs Visualping, Prisync, UptimeRobot, Pingdom, and more. Competitor intelligence and uptime monitoring built for Shopify stores.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
+  openGraph: { url: 'https://beaconmon.com/vs' },
 };
 
 const FAQ_ITEMS = [

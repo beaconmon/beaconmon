@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   description:
     'Shopify stores expose their full catalog at /products.json. Learn to track competitor prices automatically, filter noise, and act on changes that matter.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

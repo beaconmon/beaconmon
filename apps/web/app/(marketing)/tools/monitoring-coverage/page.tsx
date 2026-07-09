@@ -8,10 +8,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Store Monitoring Coverage Auditor: Which Shopify Pages Are You Missing? | Beaconmon',
+  title: 'Store Monitoring Coverage Auditor | Beaconmon',
   description:
     'Free monitoring coverage audit for Shopify stores. Check if your homepage, collections, product pages, cart, and checkout entry are healthy and see which pages need monitoring.',
   alternates: { canonical: 'https://beaconmon.com/tools/monitoring-coverage' },
+  openGraph: { url: 'https://beaconmon.com/tools/monitoring-coverage' },
 };
 
 const FAILURE_STORIES = [

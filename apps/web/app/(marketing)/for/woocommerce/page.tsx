@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Monitor your WooCommerce shop, cart, and checkout without installing a plugin. Catch failures in under a minute, track competitor prices page by page, and get a daily Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/for/woocommerce' },
+  openGraph: { url: 'https://beaconmon.com/for/woocommerce' },
 };
 
 const TEMPLATE_MONITORS = [

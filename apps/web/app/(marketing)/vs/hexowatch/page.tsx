@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Hexowatch vs Beaconmon: all-in-one web intelligence vs Shopify-native competitor tracking with uptime monitoring and Intelligence Digest. Full comparison. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/hexowatch' },
+  openGraph: { url: 'https://beaconmon.com/vs/hexowatch' },
 };
 
 const TABLE_ROWS = [
@@ -122,18 +123,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Hexowatch', item: 'https://beaconmon.com/vs/hexowatch' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

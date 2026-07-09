@@ -21,10 +21,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'track-competitor-new-product-launches-shopify';
 
 export const metadata: Metadata = {
-  title: 'How to Track a Competitor\'s New Product Launches on Shopify | Beaconmon',
+  title: "Track a Competitor's New Product Launches | Beaconmon",
   description:
     'Shopify stores broadcast every product launch in plain JSON. Learn to catch launches within minutes and turn competitor catalog moves into your advantage.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 

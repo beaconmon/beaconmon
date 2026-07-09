@@ -21,10 +21,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-dtc-two-tribes-discounting';
 
 export const metadata: Metadata = {
-  title: 'Two Tribes: 46% of DTC Brands Never Discount, 18% Never Stop | Beaconmon',
+  title: 'Two Tribes of DTC Discounting | Beaconmon',
   description:
     'Across 489 tracked Shopify competitors, two pricing philosophies dominate with almost no middle ground. 46% never use compare_at_price. 18% have 30%+ of their catalog permanently on sale.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -60,6 +61,7 @@ export default function Post() {
       readingTime={7}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         When you look at which Shopify competitors run sales, you might expect a spectrum: some

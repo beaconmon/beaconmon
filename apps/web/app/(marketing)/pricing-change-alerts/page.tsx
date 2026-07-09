@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Pricing Change Alerts for Ecommerce | Beaconmon',
   description: 'Get notified the moment a competitor changes their price. Intelligence Digest, Slack and email delivery, snapshot history, and diff view.',
   alternates: { canonical: 'https://beaconmon.com/pricing-change-alerts' },
+  openGraph: { url: 'https://beaconmon.com/pricing-change-alerts' },
 };
 
 const faqSchema = {

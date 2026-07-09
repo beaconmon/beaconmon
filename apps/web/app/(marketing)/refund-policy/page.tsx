@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Refund Policy | Beaconmon',
-  description: 'Beaconmon refund and cancellation policy for paid subscriptions.',
+  description: "Beaconmon's refund and cancellation policy for paid subscriptions, covering monthly and annual plans, prorated refunds, and how to cancel.",
   alternates: { canonical: 'https://beaconmon.com/refund-policy' },
+  openGraph: { url: 'https://beaconmon.com/refund-policy' },
 };
 
 export default function RefundPolicyPage() {

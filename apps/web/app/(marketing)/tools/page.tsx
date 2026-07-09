@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     'Free tools for ecommerce competitor research. Check any Shopify store’s products, prices, and live sales in seconds. No signup, no install.',
   alternates: { canonical: 'https://beaconmon.com/tools' },
+  openGraph: { url: 'https://beaconmon.com/tools' },
 };
 
 const TOOLS = [

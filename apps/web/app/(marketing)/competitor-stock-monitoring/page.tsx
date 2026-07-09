@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Track when competitor products go out of stock or restock. Beaconmon reads the isAvailable flag from the Shopify product feed and fires an alert the moment any variant flips, at the catalog level with no manual page tracking.',
   alternates: { canonical: 'https://beaconmon.com/competitor-stock-monitoring' },
+  openGraph: { url: 'https://beaconmon.com/competitor-stock-monitoring' },
 };
 
 const FEATURES = [

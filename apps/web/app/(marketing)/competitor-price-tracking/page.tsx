@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     'Track competitor prices from the Shopify product feed or via CSS selector targeting on any pricing page. Instant Slack alerts when a price drops. No code required.',
   alternates: { canonical: 'https://beaconmon.com/competitor-price-tracking' },
+  openGraph: { url: 'https://beaconmon.com/competitor-price-tracking' },
 };
 
 const FEATURES = [

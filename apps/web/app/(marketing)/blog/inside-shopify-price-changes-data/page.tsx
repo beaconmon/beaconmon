@@ -21,10 +21,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'inside-shopify-price-changes-data';
 
 export const metadata: Metadata = {
-  title: 'Inside 468,000 Shopify Price Changes: What the Data Actually Shows | Beaconmon',
+  title: 'Inside 468,000 Shopify Price Changes | Beaconmon',
   description:
     'We analyzed 468,451 price change events across 511 Shopify stores and 178,623 products. The findings contradict almost every assumption about how competitor pricing works.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -64,6 +65,7 @@ export default function Post() {
       readingTime={9}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         Most advice about competitor price monitoring is based on intuition: watch for price cuts,

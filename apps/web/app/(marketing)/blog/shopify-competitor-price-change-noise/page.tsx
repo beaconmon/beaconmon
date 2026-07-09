@@ -20,10 +20,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-price-change-noise';
 
 export const metadata: Metadata = {
-  title: "90.76% of Competitor Price Changes Are Noise. Here's the Filter That Matters. | Beaconmon",
+  title: "90.76% of Price Changes Are Noise | Beaconmon",
   description:
     "90.76% of competitor price changes are sub-1% noise. Here's how to configure your monitoring to filter it and only alert on moves that demand a response.",
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -63,6 +64,7 @@ export default function Post() {
       readingTime={7}
       tag="Competitor Monitoring"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         90.76% of raw competitor price changes require no action. They are sub-1% moves caused by

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     'Practical guides on Shopify competitor intelligence: price monitoring, competitive tactics, and turning competitor data into margin-protecting decisions.',
   alternates: { canonical: 'https://beaconmon.com/blog' },
+  openGraph: { url: 'https://beaconmon.com/blog' },
 };
 
 function formatDate(iso: string) {

@@ -18,10 +18,11 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-price-increases-data';
 
 export const metadata: Metadata = {
-  title: 'Competitor Price Increases Outnumber Cuts 55% to 45% on Shopify | Beaconmon',
+  title: 'Price Increases Outnumber Cuts on Shopify | Beaconmon',
   description:
     'Most merchants set up competitor monitoring to catch price cuts. Our data across 468,451 price change events shows prices are going up more often than down, and that most monitoring setups are looking in the wrong direction.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
+  openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
 };
 
@@ -57,6 +58,7 @@ export default function Post() {
       readingTime={6}
       tag="Data & Research"
       schemas={[faqSchema]}
+      showDatasetLink
     >
       <P>
         The standard mental model for competitor monitoring is defensive: a competitor cuts their

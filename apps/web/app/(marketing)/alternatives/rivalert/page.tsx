@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Rivalert has no free plan and checks only every 12 hours on its cheapest tier. Beaconmon offers a free competitor monitoring plan for Shopify stores, with uptime and a weekly Digest.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/rivalert' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/rivalert' },
 };
 
 const TOOL_FACTS = [
@@ -99,13 +100,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/rivalert',
       name: 'Free Alternative to Rivalert for Shopify Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Rivalert',
-      applicationCategory: 'BusinessApplication',
-      description: 'Shopify-native competitor price, product, and stock tracker with 12-hour check frequency on the entry plan.',
-      offers: { '@type': 'Offer', price: '19', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

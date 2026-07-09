@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Panoramata vs Beaconmon: email/ads/SMS competitive intelligence vs website change monitoring, competitor price tracking, and uptime. Compare features and pricing for ecommerce teams.',
   alternates: { canonical: 'https://beaconmon.com/vs/panoramata' },
+  openGraph: { url: 'https://beaconmon.com/vs/panoramata' },
 };
 
 const TABLE_ROWS = [
@@ -139,30 +140,6 @@ const schemaData = {
         { '@type': 'ListItem', position: 2, name: 'Comparisons', item: 'https://beaconmon.com/vs' },
         { '@type': 'ListItem', position: 3, name: 'Beaconmon vs Panoramata', item: 'https://beaconmon.com/vs/panoramata' },
       ],
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Beaconmon',
-      applicationCategory: 'BusinessApplication',
-      description: 'Ecommerce website and competitor intelligence platform for Shopify and WooCommerce stores.',
-      url: 'https://beaconmon.com',
-      offers: {
-        '@type': 'Offer',
-        price: '29',
-        priceCurrency: 'USD',
-      },
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Panoramata',
-      applicationCategory: 'BusinessApplication',
-      description: 'Competitive intelligence platform covering competitor email campaigns, ad creatives, and SMS across Facebook, TikTok, and Google.',
-      url: 'https://panoramata.com',
-      offers: {
-        '@type': 'Offer',
-        price: '89',
-        priceCurrency: 'USD',
-      },
     },
     {
       '@type': 'FAQPage',

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'Hexowatch starts at $29/month with no free plan. Beaconmon offers free competitor monitoring and uptime for Shopify stores, with CSS-selector precision and a weekly Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/hexowatch' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/hexowatch' },
 };
 
 const TOOL_FACTS = [
@@ -117,14 +118,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/hexowatch',
       name: 'Free Alternative to Hexowatch for Ecommerce Stores (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'Hexowatch',
-      applicationCategory: 'BusinessApplication',
-      description: 'Website monitoring platform that detects visual, content, source code, and technology changes across any web page.',
-      url: 'https://hexowatch.com',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

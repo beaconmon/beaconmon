@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Beaconmon',
-  description: 'How Beaconmon collects, uses, and protects your personal data.',
+  description: 'How Beaconmon collects, stores, and protects your personal data, including account details, monitoring data, and third-party integrations.',
   alternates: { canonical: 'https://beaconmon.com/privacy' },
+  openGraph: { url: 'https://beaconmon.com/privacy' },
 };
 
 export default function PrivacyPage() {

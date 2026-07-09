@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'BetterStack has expanded into log management and infrastructure monitoring. Shopify stores that just need uptime alerts and competitor tracking should consider Beaconmon. Free plan included.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/betterstack' },
+  openGraph: { url: 'https://beaconmon.com/alternatives/betterstack' },
 };
 
 const TOOL_FACTS = [
@@ -91,14 +92,6 @@ const schemaData = {
       url: 'https://beaconmon.com/alternatives/betterstack',
       name: 'Free Alternative to BetterStack Uptime Monitoring for Shopify (2026)',
       dateModified: '2026-06-30',
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: 'BetterStack',
-      applicationCategory: 'BusinessApplication',
-      description: 'Full-stack observability platform covering uptime monitoring, log management, distributed tracing, infrastructure metrics, and on-call scheduling.',
-      url: 'https://betterstack.com',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
     {
       '@type': 'BreadcrumbList',

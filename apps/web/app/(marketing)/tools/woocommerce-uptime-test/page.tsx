@@ -9,10 +9,11 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Free WooCommerce Uptime Checker: Test Any WooCommerce Store | Beaconmon',
+  title: 'Free WooCommerce Uptime Checker | Beaconmon',
   description:
     'Instant uptime check for any WooCommerce store. See response time, SSL status, redirect health, and whether the store is live right now. Free, no signup.',
   alternates: { canonical: 'https://beaconmon.com/tools/woocommerce-uptime-test' },
+  openGraph: { url: 'https://beaconmon.com/tools/woocommerce-uptime-test' },
 };
 
 const WHAT_IT_CHECKS = [
