@@ -28,6 +28,7 @@ type BlogPostLayoutProps = {
   readingTime: number;
   tag: string;
   schemas?: object[];
+  showDatasetLink?: boolean;
   children: React.ReactNode;
 };
 
@@ -231,6 +232,7 @@ export default function BlogPostLayout({
   readingTime,
   tag,
   schemas = [],
+  showDatasetLink = false,
   children,
 }: BlogPostLayoutProps) {
   const blogPostingSchema = {
@@ -348,6 +350,13 @@ export default function BlogPostLayout({
             Free for 10 monitors. No credit card required. Get your first alert in under 5 minutes.
           </p>
           <CtaForm className="mx-auto" />
+          {showDatasetLink && (
+            <p className="text-brand-dim text-[14px] mt-6">
+              <Link href="/research" className="text-brand-green-ink hover:underline">
+                See the full dataset →
+              </Link>
+            </p>
+          )}
         </div>
       </section>
     </>

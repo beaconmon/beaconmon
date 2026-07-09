@@ -74,6 +74,8 @@ All plans include a 14-day Growth trial with no credit card required.
 - [Pricing](https://beaconmon.com/pricing): plan tiers and what each includes
 - [For Shopify stores](https://beaconmon.com/for/shopify): Shopify-specific use case
 - [For WooCommerce stores](https://beaconmon.com/for/woocommerce): WooCommerce-specific use case
+- [For fashion and apparel brands](https://beaconmon.com/for/dtc-fashion): competitor markdown, drop, and restock monitoring for apparel
+- [For beauty and skincare brands](https://beaconmon.com/for/beauty-skincare): first-time-discount and launch alerting for skincare and beauty
 - [About](https://beaconmon.com/about): company and founder background
 - [Shopify competitor monitoring](https://beaconmon.com/shopify-competitor-monitoring): how Shopify catalog tracking works
 - [WooCommerce competitor monitoring](https://beaconmon.com/woocommerce-competitor-monitoring): how WooCommerce tracking works
@@ -86,6 +88,9 @@ All plans include a 14-day Growth trial with no credit card required.
 - [Ecommerce uptime monitoring guide](https://beaconmon.com/ecommerce-uptime-monitoring-guide): uptime guide for merchants
 - [Website change detection](https://beaconmon.com/website-change-detection): content change monitoring
 - [Homepage monitoring](https://beaconmon.com/homepage-monitoring): monitoring a competitor or your own homepage
+- [Research](https://beaconmon.com/research): index of every original statistic Beaconmon has published from its own monitoring data
+- [Glossary](https://beaconmon.com/glossary): plain-language definitions of competitor and uptime monitoring terms
+- [Methodology](https://beaconmon.com/methodology): how Beaconmon's competitor monitoring data is collected and its limitations
 - [vs UptimeRobot](https://beaconmon.com/vs/uptimerobot): comparison with UptimeRobot
 - [vs Pingdom](https://beaconmon.com/vs/pingdom): comparison with Pingdom
 - [vs Better Uptime](https://beaconmon.com/vs/better-uptime): comparison with Better Uptime
@@ -115,6 +120,13 @@ All plans include a 14-day Growth trial with no credit card required.
 - [How to get alerted when a competitor runs a flash sale](https://beaconmon.com/blog/how-to-get-alerted-shopify-competitor-flash-sale): step-by-step guide to monitoring competitor promotional banners and getting Slack alerts when a flash sale launches
 - [How to monitor a competitor's Shopify store for changes](https://beaconmon.com/blog/how-to-monitor-competitor-shopify-store-for-changes): step-by-step guide to setting up ongoing competitor monitoring for Shopify stores
 - [Shopify uptime monitoring vs checkout flow testing](https://beaconmon.com/blog/shopify-uptime-monitoring-vs-checkout-testing): comparison of HTTP uptime monitoring and synthetic checkout testing for Shopify merchants
+- [Shopify competitor price change timing](https://beaconmon.com/blog/shopify-competitor-price-change-timing): data post on when competitors change prices; Wednesday and Thursday account for 65.67% of all price changes
+- [Shopify competitor restock speed data](https://beaconmon.com/blog/shopify-competitor-restock-speed-data): data post on how fast competitors restock out-of-stock products; median 22 hours, average 45 hours
+- [Shopify homepage change anatomy data](https://beaconmon.com/blog/shopify-homepage-change-anatomy-data): data post classifying 2,666 competitor homepage changes; copy edits outnumber layout changes 6 to 1
+- [DTC fashion brand pricing data](https://beaconmon.com/blog/dtc-fashion-brand-pricing-data): data post on apparel discounting; 39.01% of tracked products are on sale at any moment, averaging 53% off
+- [DTC skincare brand pricing data](https://beaconmon.com/blog/dtc-skincare-brand-pricing-data): data post on skincare and beauty discounting; only 9.04% of tracked products are ever on sale
+- [Anatomy of a Shopify flash sale](https://beaconmon.com/blog/anatomy-of-a-shopify-flash-sale): data post on the six distinct shapes competitor promo events take
+- [Shopify competitor event significance data](https://beaconmon.com/blog/shopify-competitor-event-significance-data): data post on AI significance scoring; only 5.32% of all competitor events are flagged high-significance
 - [Shopify Competitor Snapshot](https://beaconmon.com/tools/shopify-competitor-snapshot): free live snapshot of any Shopify store's catalog and pricing
 - [Shopify Competitor Changes](https://beaconmon.com/tools/shopify-competitor-changes): free recent change checker for any Shopify store
 - [Free Competitor Intelligence Report](https://beaconmon.com/tools/competitor-intelligence-report): 7-day email report on any Shopify competitor
@@ -168,4 +180,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-06-30
+2026-07-09

@@ -11,6 +11,9 @@ const eslintConfig = [
     // genuinely-unrecoverable boot-time errors and client-side dev warnings,
     // where Pino isn't available (browser) or hasn't initialized yet.
     rules: {
+      // Blog/marketing prose uses natural apostrophes and quotes; escaping every
+      // one in JSX text would make the source unreadable without changing output.
+      'react/no-unescaped-entities': 'off',
       'no-console': ['error', { allow: ['warn', 'error'] }],
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },

@@ -211,4 +211,67 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ['Uptime Monitoring'],
     readingTime: 6,
   },
+  {
+    slug: 'shopify-competitor-price-change-timing',
+    title: 'Shopify Competitors Change Prices Wednesday and Thursday, Almost Never on Weekends',
+    description:
+      'We broke down 472,712 competitor price changes by day of week and hour of day. 65.67% happen on Wednesday or Thursday alone. Weekends are almost silent.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 7,
+  },
+  {
+    slug: 'shopify-competitor-restock-speed-data',
+    title: 'Shopify Competitor Restocks: Median 22 Hours, Average 45 Hours',
+    description:
+      'We matched 1,556 out-of-stock to back-in-stock events across tracked Shopify competitors. The median restock takes about 22 hours. The average takes 45.34, so the gap between the two is the real finding.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 7,
+  },
+  {
+    slug: 'shopify-homepage-change-anatomy-data',
+    title: 'What 2,666 Shopify Homepage Changes Actually Look Like',
+    description:
+      'We classified 2,666 detected competitor homepage changes across our tracked stores. 47.79% are copy edits, not redesigns. Here is the full breakdown.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 7,
+  },
+  {
+    slug: 'dtc-fashion-brand-pricing-data',
+    title: 'DTC Fashion Brand Pricing: Why 39% of Products Are Always on Sale',
+    description:
+      'We tracked 33,049 products across 68 DTC apparel brands on Shopify. Nearly 2 in 5 are on sale at any given moment, and the average discount runs 53% off.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 8,
+  },
+  {
+    slug: 'dtc-skincare-brand-pricing-data',
+    title: 'DTC Skincare Brand Pricing Data: Why Only 9% of Products Are Ever on Sale',
+    description:
+      'We looked at a sample of 2,146 tracked skincare and beauty SKUs across 87 brands. Only 9.04% carry a compare-at-price at any given time, and the average discount when they do is 24.01% off, about half the depth of apparel.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 7,
+  },
+  {
+    slug: 'anatomy-of-a-shopify-flash-sale',
+    title: 'Anatomy of a Shopify Flash Sale: The 6 Shapes of 956 Competitor Promos',
+    description:
+      'We classified 956 competitor promo events with 96.01% average AI confidence. Here are the six distinct shapes a Shopify flash sale actually takes, including two that price-only monitoring never sees.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 8,
+  },
+  {
+    slug: 'shopify-competitor-event-significance-data',
+    title: 'Only 5.32% of Competitor Events Are High-Significance',
+    description:
+      'We ran the AI significance classifier across 504,500 competitor events, every type Beaconmon tracks, not just price changes. Only 5.32% came back high-significance. Here is what the other 94.68% actually is.',
+    publishedAt: '2026-07-09',
+    tags: ['Data & Research'],
+    readingTime: 7,
+  },
 ];
