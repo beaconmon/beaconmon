@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact Beaconmon | Support, Billing & Feature Requests',
-  description: 'Questions about your monitors, billing, or a feature request? Email the Beaconmon team at hello@beaconmon.com. We read every message and respond within one business day.',
+  description: 'Questions about monitors, billing, or a feature request? Email hello@beaconmon.com. We read every message and respond within one business day.',
   alternates: { canonical: 'https://beaconmon.com/contact' },
   openGraph: { url: 'https://beaconmon.com/contact' },
 };

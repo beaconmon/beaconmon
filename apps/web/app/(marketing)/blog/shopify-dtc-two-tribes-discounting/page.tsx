@@ -23,7 +23,7 @@ const SLUG = 'shopify-dtc-two-tribes-discounting';
 export const metadata: Metadata = {
   title: 'Two Tribes of DTC Discounting | Beaconmon',
   description:
-    'Across 489 tracked Shopify competitors, two pricing philosophies dominate with almost no middle ground. 46% never use compare_at_price. 18% have 30%+ of their catalog permanently on sale.',
+    'Across 489 tracked Shopify competitors, two pricing philosophies dominate. 46% never use compare_at_price. 18% keep 30%+ of their catalog on sale.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

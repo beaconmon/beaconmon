@@ -17,6 +17,8 @@ const SOLUTIONS_LINKS = [
   { href: '/for/shopify', label: 'For Shopify', desc: 'Monitor your Shopify store and track competitors' },
   { href: '/for/woocommerce', label: 'For WooCommerce', desc: 'WooCommerce uptime and change detection' },
   { href: '/for/dtc-brands', label: 'For DTC Brands', desc: 'Stay ahead of direct-to-consumer competitors' },
+  { href: '/for/dtc-fashion', label: 'For Fashion Brands', desc: 'Track competitor sales and price drops' },
+  { href: '/for/beauty-skincare', label: 'For Beauty & Skincare', desc: 'Track competitor launches and pricing' },
 ];
 
 type NavItem = { href: string; label: string; desc: string };
@@ -41,23 +43,25 @@ function NavDropdown({ label, items, open, onToggle, onClose }: NavDropdownProps
         {label}
         <ChevronDown className={`w-3 h-3 opacity-60 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
-      {open && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-          <div className="bg-brand-bg1 border border-brand-line-soft rounded-[10px] py-2 min-w-[240px] shadow-lg">
-            {items.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex flex-col px-4 py-2 hover:bg-brand-bg2 transition-colors"
-                onClick={onClose}
-              >
-                <span className="font-medium text-sm text-brand-text">{item.label}</span>
-                <span className="text-xs text-muted-foreground">{item.desc}</span>
-              </Link>
-            ))}
-          </div>
+      <div
+        className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 ${open ? '' : 'hidden'}`}
+        aria-hidden={!open}
+      >
+        <div className="bg-brand-bg1 border border-brand-line-soft rounded-[10px] py-2 min-w-[240px] shadow-lg">
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex flex-col px-4 py-2 hover:bg-brand-bg2 transition-colors"
+              onClick={onClose}
+              tabIndex={open ? undefined : -1}
+            >
+              <span className="font-medium text-sm text-brand-text">{item.label}</span>
+              <span className="text-xs text-muted-foreground">{item.desc}</span>
+            </Link>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

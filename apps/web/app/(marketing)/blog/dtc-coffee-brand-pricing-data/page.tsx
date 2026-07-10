@@ -23,7 +23,7 @@ const SLUG = 'dtc-coffee-brand-pricing-data';
 export const metadata: Metadata = {
   title: 'DTC Coffee Brand Pricing: What 5,400 Products Tell Us | Beaconmon',
   description:
-    'We tracked 5,412 coffee products across competing Shopify stores. Coffee brands almost never formally discount, but when they move prices, they move 4x bigger than any other DTC category.',
+    'We tracked 5,412 coffee products across competing Shopify stores. Coffee brands rarely discount, but when prices move, they move 4x bigger than others.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
@@ -271,6 +271,14 @@ export default function Post() {
           guide to monitoring competitor homepages
         </A>{' '}
         for setup details.
+      </P>
+
+      <P>
+        For the full set of coffee-specific signals and the intel stack to track them, see our{' '}
+        <A href="/blog/coffee-brand-competitor-intelligence">
+          coffee brand competitor intelligence field guide
+        </A>
+        .
       </P>
 
       <FAQ items={FAQS} />

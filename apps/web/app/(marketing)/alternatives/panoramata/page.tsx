@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Cheaper Alternative to Panoramata for Ecommerce Brands (2026)',
   description:
-    'Panoramata starts at $89/month. If you mainly need competitor website change monitoring and uptime for your Shopify store, Beaconmon covers that from $29/month. Free plan available.',
+    'Panoramata starts at $89 per month. For competitor website monitoring and uptime, Beaconmon covers that from $29 per month, with a free plan available.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/panoramata' },
   openGraph: { url: 'https://beaconmon.com/alternatives/panoramata' },
 };

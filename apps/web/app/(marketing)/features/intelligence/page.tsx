@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Shopify Competitor Intelligence Features | Beaconmon',
   description:
-    'Track competitor prices, promotions, and product launches on any Shopify store. Get a daily AI-powered digest with plain-English summaries of every change. Built for ecommerce brands.',
+    'Track competitor prices, promotions, and product launches on any Shopify store. Get a daily AI digest with plain-English summaries of every change.',
   alternates: { canonical: 'https://beaconmon.com/features/intelligence' },
   openGraph: { url: 'https://beaconmon.com/features/intelligence' },
 };

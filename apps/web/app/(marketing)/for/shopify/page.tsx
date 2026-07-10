@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uptime & Competitor Monitoring for Shopify | Beaconmon',
   description:
-    'Catch checkout failures in under a minute. Know when a competitor drops a price. Beaconmon monitors your Shopify store and your competitors so you can focus on running the business.',
+    'Catch checkout failures in under a minute and know when a competitor drops a price. Beaconmon monitors your Shopify store and your competitors.',
   alternates: { canonical: 'https://beaconmon.com/for/shopify' },
   openGraph: { url: 'https://beaconmon.com/for/shopify' },
 };
@@ -289,6 +289,7 @@ export default function ForShopifyPage() {
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">Related guides</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence (deep dive)</Link>
+            <Link href="/blog/how-to-monitor-competitor-shopify-store-for-changes" className="text-brand-dim hover:text-brand-text transition-colors">How to monitor a competitor&apos;s Shopify store</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking guide</Link>
             <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>

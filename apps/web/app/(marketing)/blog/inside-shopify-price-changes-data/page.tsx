@@ -23,7 +23,7 @@ const SLUG = 'inside-shopify-price-changes-data';
 export const metadata: Metadata = {
   title: 'Inside 468,000 Shopify Price Changes | Beaconmon',
   description:
-    'We analyzed 468,451 price change events across 511 Shopify stores and 178,623 products. The findings contradict almost every assumption about how competitor pricing works.',
+    'We analyzed 468,451 price change events across 511 Shopify stores and 178,623 products. The findings contradict most assumptions about competitor pricing.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
@@ -76,7 +76,8 @@ export default function Post() {
       <P>
         Over a 15-day window, Beaconmon processed 468,451 price change events across 511 Shopify
         stores and 178,623 products. The results change how you should think about competitor
-        monitoring.
+        monitoring. See our <A href="/methodology">methodology</A> for how this data is collected
+        and what it does and does not represent.
       </P>
 
       <KeyTakeaways>
@@ -181,6 +182,15 @@ export default function Post() {
         only to alert on price cuts is watching the wrong direction for the majority of competitive
         price activity. Configure alerts for both directions with the same 5% threshold.
       </SummaryStatement>
+
+      <P>
+        For the full breakdown of why this matters and how to configure alerts on both sides of
+        the ledger, see{' '}
+        <A href="/blog/shopify-competitor-price-increases-data">
+          our dedicated look at why competitor price increases outnumber cuts on Shopify
+        </A>
+        .
+      </P>
 
       <H2>Finding 3: Almost every price change is automated, not a decision</H2>
 

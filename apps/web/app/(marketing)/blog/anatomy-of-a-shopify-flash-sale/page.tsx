@@ -19,9 +19,9 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'anatomy-of-a-shopify-flash-sale';
 
 export const metadata: Metadata = {
-  title: 'Anatomy of a Shopify Flash Sale: The 6 Shapes of 956 Competitor Promos | Beaconmon',
+  title: 'Anatomy of a Shopify Flash Sale: 6 Shapes, 956 Promos',
   description:
-    'We classified 956 competitor promo events with 96.01% average AI confidence. Here are the six distinct shapes a Shopify flash sale actually takes, including two that price-only monitoring never sees.',
+    'We classified 956 competitor promo events with 96.01% AI confidence. Six distinct shapes a flash sale takes, two of which price-only monitoring never sees.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

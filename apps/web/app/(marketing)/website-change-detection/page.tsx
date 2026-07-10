@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Website Change Detection for Ecommerce Teams | Beaconmon',
   description:
-    'Track competitor prices, promotions, and page changes across any ecommerce site. Built for teams, not personal use. AI summaries, CSS selectors, and daily digests. A focused alternative to Visualping and Distill.',
+    'Track price, promotion, and page changes across ecommerce sites. AI summaries, CSS selectors, daily digests. Alternative to Visualping and Distill.',
   alternates: { canonical: 'https://beaconmon.com/website-change-detection' },
   openGraph: { url: 'https://beaconmon.com/website-change-detection' },
 };

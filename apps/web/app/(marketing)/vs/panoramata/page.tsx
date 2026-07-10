@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Panoramata for Ecommerce Brands (2026): Honest Comparison',
   description:
-    'Panoramata vs Beaconmon: email/ads/SMS competitive intelligence vs website change monitoring, competitor price tracking, and uptime. Compare features and pricing for ecommerce teams.',
+    'Panoramata vs Beaconmon: email/ads/SMS competitive intelligence vs website change monitoring, competitor price tracking, and uptime for ecommerce teams.',
   alternates: { canonical: 'https://beaconmon.com/vs/panoramata' },
   openGraph: { url: 'https://beaconmon.com/vs/panoramata' },
 };

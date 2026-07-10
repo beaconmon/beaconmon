@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Ecommerce Competitor Intelligence Glossary | Beaconmon',
   description:
-    'Plain-language definitions of the terms used in competitor and uptime monitoring for Shopify and WooCommerce stores: compare-at price, price change noise, significance scoring, and more.',
+    'Plain-language definitions for Shopify and WooCommerce monitoring terms: compare-at price, price change noise, significance scoring, and more.',
   alternates: { canonical: 'https://beaconmon.com/glossary' },
   openGraph: { url: 'https://beaconmon.com/glossary' },
 };

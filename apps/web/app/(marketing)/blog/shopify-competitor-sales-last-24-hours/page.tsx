@@ -22,7 +22,7 @@ const SLUG = 'shopify-competitor-sales-last-24-hours';
 export const metadata: Metadata = {
   title: 'Shopify Competitor Sales in the Last 24 Hours | Beaconmon',
   description:
-    'The median Shopify competitor sale lasts 0.7 days, less than 17 hours. If you are running a daily monitoring digest, most competitor flash sales are over before you read about them.',
+    'The median Shopify competitor sale lasts 0.7 days, less than 17 hours. With a daily digest, most flash sales are over before you read about them.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

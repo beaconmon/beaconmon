@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon Features: Daily Brief and Smart Alerts',
   description:
-    'Track competitor prices and page changes with daily AI-powered digests. Plus HTTP uptime, SSL, domain expiry, and content monitoring built for Shopify and WooCommerce stores.',
+    'Track competitor prices and page changes with daily AI digests. Plus HTTP uptime, SSL, domain expiry, and content monitoring for Shopify and WooCommerce.',
   alternates: { canonical: 'https://beaconmon.com/features' },
   openGraph: { url: 'https://beaconmon.com/features' },
 };

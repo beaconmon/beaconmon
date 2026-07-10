@@ -51,6 +51,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // ── Tier 4.5: SEO content pages ──────────────────────────────────────
     { url: `${BASE_URL}/shopify-competitor-monitoring`,        lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/woocommerce-competitor-monitoring`,    lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/shopify-store-monitoring`,             lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/woocommerce-store-monitoring`,         lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/competitor-price-tracking`,            lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/competitor-collections-monitoring`,    lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/competitor-stock-monitoring`,          lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
@@ -58,8 +60,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/competitor-product-launch-tracking`,   lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/ecommerce-competitor-intelligence`,    lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/ecommerce-uptime-monitoring-guide`,    lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/ecommerce-website-monitoring`,         lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE_URL}/pricing-change-alerts`,                lastModified: new Date('2026-06-07'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/website-change-detection`,             lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/homepage-monitoring`,                  lastModified: new Date('2026-05-23'), changeFrequency: 'monthly', priority: 0.6 },
 
@@ -87,16 +87,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // ── Tier 5: Trust / informational ────────────────────────────────────
     { url: `${BASE_URL}/changelog`, lastModified: new Date('2026-06-27'), changeFrequency: 'weekly',  priority: 0.5 },
-    { url: `${BASE_URL}/about`,     lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
-    { url: `${BASE_URL}/contact`,   lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
-    { url: `${BASE_URL}/security`,  lastModified: new Date('2026-01-01'), changeFrequency: 'yearly',  priority: 0.4 },
+    { url: `${BASE_URL}/about`,     lastModified: new Date('2026-06-07'), changeFrequency: 'yearly',  priority: 0.4 },
+    { url: `${BASE_URL}/contact`,   lastModified: new Date('2026-05-30'), changeFrequency: 'yearly',  priority: 0.4 },
+    { url: `${BASE_URL}/security`,  lastModified: new Date('2026-06-07'), changeFrequency: 'yearly',  priority: 0.4 },
     { url: `${BASE_URL}/research`,  lastModified: new Date('2026-07-09'), changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${BASE_URL}/methodology`, lastModified: new Date('2026-07-09'), changeFrequency: 'yearly', priority: 0.5 },
     { url: `${BASE_URL}/glossary`,  lastModified: new Date('2026-07-09'), changeFrequency: 'monthly', priority: 0.5 },
 
     // ── Tier 6: Legal ─────────────────────────────────────────────────────
-    { url: `${BASE_URL}/privacy`,       lastModified: new Date('2026-01-01'), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${BASE_URL}/terms`,         lastModified: new Date('2026-01-01'), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${BASE_URL}/refund-policy`, lastModified: new Date('2026-01-01'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE_URL}/privacy`,       lastModified: new Date('2026-06-22'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE_URL}/terms`,         lastModified: new Date('2026-05-30'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE_URL}/refund-policy`, lastModified: new Date('2026-05-24'), changeFrequency: 'yearly', priority: 0.3 },
   ];
 }

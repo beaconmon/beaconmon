@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to Rivalert for Shopify Stores (2026)',
   description:
-    'Rivalert has no free plan and checks only every 12 hours on its cheapest tier. Beaconmon offers a free competitor monitoring plan for Shopify stores, with uptime and a weekly Digest.',
+    'Rivalert has no free plan and checks only every 12 hours on its cheapest tier. Beaconmon offers a free competitor plan with uptime and a weekly digest.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/rivalert' },
   openGraph: { url: 'https://beaconmon.com/alternatives/rivalert' },
 };

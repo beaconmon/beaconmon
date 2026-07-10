@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Store Monitoring Coverage Auditor | Beaconmon',
   description:
-    'Free monitoring coverage audit for Shopify stores. Check if your homepage, collections, product pages, cart, and checkout entry are healthy and see which pages need monitoring.',
+    'Free monitoring coverage audit for Shopify stores. Check if your homepage, collections, product, cart, and checkout are healthy and what needs monitoring.',
   alternates: { canonical: 'https://beaconmon.com/tools/monitoring-coverage' },
   openGraph: { url: 'https://beaconmon.com/tools/monitoring-coverage' },
 };

@@ -141,6 +141,10 @@ export default function SecurityPage() {
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[580px]">
             A plain-English overview of the infrastructure, crawling approach, encryption, and practices behind Beaconmon. No marketing fluff. Just what we actually do.
           </p>
+          <p className="text-brand-dim text-[14px] mt-4">
+            Want to check a certificate right now? Try the{' '}
+            <Link href="/tools/ssl-checker" className="text-brand-green-ink hover:underline">free SSL certificate checker</Link>.
+          </p>
         </div>
       </section>
 

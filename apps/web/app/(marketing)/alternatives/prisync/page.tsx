@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Cheaper Alternative to Prisync for Shopify Stores (2026)',
   description:
-    'Prisync starts at $99/month. Beaconmon tracks competitor prices, promotions, and page changes from $29/month, with uptime monitoring included. Try free, no card needed.',
+    'Prisync starts at $99 per month. Beaconmon tracks competitor prices, promotions, and page changes from $29 per month, with uptime monitoring. Try free.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/prisync' },
   openGraph: { url: 'https://beaconmon.com/alternatives/prisync' },
 };

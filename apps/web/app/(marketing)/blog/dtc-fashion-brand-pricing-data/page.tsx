@@ -19,7 +19,7 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'dtc-fashion-brand-pricing-data';
 
 export const metadata: Metadata = {
-  title: 'DTC Fashion Brand Pricing: Why 39% of Products Are Always on Sale | Beaconmon',
+  title: 'DTC Fashion Pricing: Why 39% of Products Are Always on Sale',
   description:
     'We tracked 33,049 products across 68 DTC apparel brands on Shopify. Nearly 2 in 5 are on sale at any given moment, and the average discount runs 53% off.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },

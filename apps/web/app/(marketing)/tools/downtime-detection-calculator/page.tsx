@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Downtime Detection Speed Calculator | Beaconmon',
   description:
-    'Free calculator: how long would it take you to detect a Shopify store outage? Enter your revenue and current monitoring setup to see your real mean time to detect.',
+    'Free calculator, how long would it take to detect a Shopify store outage? Enter your revenue and monitoring setup to see your real mean time to detect.',
   alternates: { canonical: 'https://beaconmon.com/tools/downtime-detection-calculator' },
   openGraph: { url: 'https://beaconmon.com/tools/downtime-detection-calculator' },
 };

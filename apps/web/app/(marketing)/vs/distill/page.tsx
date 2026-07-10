@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Distill.io for Shopify Stores (2026): Honest Comparison',
   description:
-    'Distill.io vs Beaconmon: JavaScript-rendering browser watcher vs HTML-only Shopify-native competitor intelligence. Full honest comparison including where Beaconmon falls short. Try free.',
+    'Distill.io vs Beaconmon: JS browser watcher vs HTML-only Shopify-native competitor intelligence. Honest comparison, including where Beaconmon falls short.',
   alternates: { canonical: 'https://beaconmon.com/vs/distill' },
   openGraph: { url: 'https://beaconmon.com/vs/distill' },
 };

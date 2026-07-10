@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon for DTC Brands | Checkout and Competitor Monitoring',
   description:
-    'Monitor your checkout and ad landing pages every 30 seconds. Get a daily digest of every competitor price change and promo update. Built for DTC brands running paid traffic.',
+    'Monitor your checkout and ad landing pages every 30 seconds. Get a daily digest of competitor price changes and promo updates for DTC brands.',
   alternates: { canonical: 'https://beaconmon.com/for/dtc-brands' },
   openGraph: { url: 'https://beaconmon.com/for/dtc-brands' },
 };

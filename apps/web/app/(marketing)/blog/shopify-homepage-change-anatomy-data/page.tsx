@@ -73,7 +73,9 @@ export default function Post() {
         track, each run through an AI classifier that sorts the change into a category. The
         results do not match the redesign picture at all. Homepage changes are overwhelmingly
         small and text-based, and a tool built to catch the rare redesign is poorly matched to
-        what is actually happening most of the time.
+        what is actually happening most of the time. See our{' '}
+        <A href="/methodology">methodology</A> for how this classification is produced and its
+        limitations.
       </P>
 
       <KeyTakeaways>
@@ -224,7 +226,8 @@ export default function Post() {
         , or read more on{' '}
         <A href="/website-change-detection">how content-based change detection works</A>. For
         the broader competitor monitoring picture, see{' '}
-        <A href="/shopify-competitor-monitoring">Shopify competitor monitoring</A> and{' '}
+        <A href="/shopify-competitor-monitoring">Shopify competitor monitoring</A>,{' '}
+        <A href="/homepage-monitoring">competitor homepage monitoring</A>, and{' '}
         <A href="/pricing">Beaconmon pricing</A>.
       </P>
 

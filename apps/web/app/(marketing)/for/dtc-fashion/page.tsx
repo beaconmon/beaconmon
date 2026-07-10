@@ -7,9 +7,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon for Fashion and Apparel Brands | Competitor Sale and Price Monitoring',
+  title: 'Beaconmon for Fashion and Apparel Brands | Sale Monitoring',
   description:
-    "Fashion competitors run deep, frequent sales, our data shows 39% of tracked apparel products are discounted at any moment, averaging 53% off. Track competitor markdowns and new drops automatically.",
+    "Fashion competitors run deep, frequent sales, data shows 39% of tracked apparel are discounted, averaging 53% off. Track markdowns and new drops.",
   alternates: { canonical: 'https://beaconmon.com/for/dtc-fashion' },
   openGraph: { url: 'https://beaconmon.com/for/dtc-fashion' },
 };

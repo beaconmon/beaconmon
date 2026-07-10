@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to PageCrawl.io for Shopify Stores (2026)',
   description:
-    'PageCrawl is a budget change monitoring tool with no ecommerce focus. Beaconmon offers free competitor monitoring for Shopify stores, with preset selectors, uptime, and a weekly Digest.',
+    'PageCrawl is a budget monitoring tool with no ecommerce focus. Beaconmon offers free competitor monitoring for Shopify stores, with presets and uptime.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/pagecrawl' },
   openGraph: { url: 'https://beaconmon.com/alternatives/pagecrawl' },
 };

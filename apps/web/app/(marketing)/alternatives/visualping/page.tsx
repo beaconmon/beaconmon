@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to Visualping for Shopify Stores (2026)',
   description:
-    'Looking for a free Visualping alternative? Beaconmon monitors competitor prices, promotions, and page changes with CSS-selector precision, plus uptime monitoring. Free plan, no card needed.',
+    'Beaconmon monitors competitor prices, promotions, and page changes with CSS selector precision, plus uptime monitoring. Free plan, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/visualping' },
   openGraph: { url: 'https://beaconmon.com/alternatives/visualping' },
 };

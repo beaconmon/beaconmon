@@ -22,7 +22,7 @@ const SLUG = 'shopify-competitor-product-churn';
 export const metadata: Metadata = {
   title: '1 in 14 Shopify Launches Gets Pulled Fast | Beaconmon',
   description:
-    'In 15 days of data, we observed 9,372 new products added to competitor catalogs. 664 of them, 7% of the total, were removed before the window closed. Here is what fast-kill patterns signal about competitor strategy.',
+    'In 15 days, competitors added 9,372 new products. 664, 7% of the total, were pulled before the window closed. This signals fast-kill patterns.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

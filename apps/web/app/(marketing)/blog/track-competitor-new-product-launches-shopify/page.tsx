@@ -182,7 +182,12 @@ export default function Post() {
       <P>
         For your purposes: check which collection they added it to. A coffee brand adding a product
         to a &quot;Brewing Equipment&quot; collection they did not have before is a larger strategic signal
-        than adding a new bag of beans to an existing roast collection.
+        than adding a new bag of beans to an existing roast collection. For more signals specific
+        to that vertical, see our{' '}
+        <A href="/blog/coffee-brand-competitor-intelligence">
+          coffee brand competitor intelligence field guide
+        </A>
+        .
       </P>
 
       <H3>The hero launch</H3>

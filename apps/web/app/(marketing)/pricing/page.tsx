@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pricing — Beaconmon Store & Competitor Monitoring',
   description:
-    'Simple, transparent pricing for ecommerce website intelligence. 10 monitors free forever. Starter from $29/mo for competitor tracking, Growth at $79/mo for AI-powered insights, Scale at $199/mo for unlimited monitoring.',
+    'Simple pricing for ecommerce website intelligence. 10 monitors free forever. Starter $29/mo, Growth $79/mo AI insights, Scale $199/mo unlimited monitoring.',
   alternates: { canonical: 'https://beaconmon.com/pricing' },
   openGraph: { url: 'https://beaconmon.com/pricing' },
 };

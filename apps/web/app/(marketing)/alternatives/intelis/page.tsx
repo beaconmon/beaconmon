@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to Intelis for Shopify Competitor Monitoring (2026)',
   description:
-    'Intelis starts at $49/month and focuses on repricing. If you want competitor monitoring and uptime without automated repricing, Beaconmon covers that from free. No card needed.',
+    'Intelis starts at $49 per month and focuses on repricing. Beaconmon covers monitoring and uptime without repricing, free to start, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/intelis' },
   openGraph: { url: 'https://beaconmon.com/alternatives/intelis' },
 };

@@ -243,6 +243,12 @@ export default function Post() {
 
       <H2>Setting up homepage monitoring on Beaconmon</H2>
 
+      <P>
+        Beaconmon&apos;s{' '}
+        <A href="/homepage-monitoring">competitor homepage monitoring</A> is built around exactly
+        this workflow. Here is how to set it up.
+      </P>
+
       <OL>
         <LI>
           Go to Monitors and click &quot;Add monitor.&quot; Select &quot;Content monitor&quot; and paste the

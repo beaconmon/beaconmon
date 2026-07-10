@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Ecommerce Competitor Intelligence | Beaconmon',
   description:
-    'Track every price change, promotion, and content update across competing Shopify, WooCommerce, and DTC stores. CSS selector targeting, AI digest, and multi-competitor dashboards for ecommerce teams.',
+    'Track price, promotion, and content changes across Shopify, WooCommerce, and DTC stores. CSS selectors, AI digest, and multi-competitor dashboards.',
   alternates: { canonical: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
   openGraph: { url: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
 };

@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Shopify Uptime Monitoring Guide | Beaconmon',
   description:
-    'How to monitor your Shopify store for downtime, broken checkouts, and slow pages. Plus why the merchants gaining ground pair uptime monitoring with competitor price and promotion tracking.',
+    'How to monitor your Shopify store for downtime, broken checkouts, and slow pages, plus why top merchants pair uptime with competitor price tracking.',
   alternates: { canonical: 'https://beaconmon.com/ecommerce-uptime-monitoring-guide' },
   openGraph: { url: 'https://beaconmon.com/ecommerce-uptime-monitoring-guide' },
 };
@@ -183,7 +183,11 @@ export default function EcommerceUptimeMonitoringGuidePage() {
                 Effective Shopify uptime monitoring treats your homepage, product pages, cart, and checkout as four distinct systems. Any one of them can fail independently. A broken deploy might leave your homepage serving normally while the checkout returns an error page that still returns 200 OK.
               </p>
               <p>
-                The tools that catch these failures are HTTP checks with keyword verification, run at short intervals, across multiple geographic regions. That is the core of what this guide covers.
+                The tools that catch these failures are HTTP checks with keyword verification, run at short intervals, across multiple geographic regions. That is the core of what this guide covers. For how this compares to simulating a full checkout flow, see{' '}
+                <Link href="/blog/shopify-uptime-monitoring-vs-checkout-testing" className="text-brand-green-ink hover:underline">
+                  uptime monitoring vs checkout testing
+                </Link>
+                .
               </p>
             </div>
           </div>

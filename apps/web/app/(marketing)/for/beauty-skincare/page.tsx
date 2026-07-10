@@ -7,9 +7,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon for Skincare and Beauty Brands | Competitor Price and Launch Monitoring',
+  title: 'Beaconmon for Skincare and Beauty Brands | Price Monitoring',
   description:
-    'Skincare brands rarely discount, our data shows under 1 in 10 tracked products are on sale at any moment. When a competitor breaks that pattern, it is a signal worth catching immediately.',
+    "Skincare brands rarely discount, data shows under 1 in 10 tracked products are on sale at once. When a competitor breaks that pattern, it's worth catching.",
   alternates: { canonical: 'https://beaconmon.com/for/beauty-skincare' },
   openGraph: { url: 'https://beaconmon.com/for/beauty-skincare' },
 };

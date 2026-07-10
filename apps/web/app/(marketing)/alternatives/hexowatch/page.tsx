@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to Hexowatch for Ecommerce Stores (2026)',
   description:
-    'Hexowatch starts at $29/month with no free plan. Beaconmon offers free competitor monitoring and uptime for Shopify stores, with CSS-selector precision and a weekly Intelligence Digest.',
+    'Hexowatch starts at $29 per month with no free plan. Beaconmon offers free monitoring and uptime for Shopify stores, with CSS selector precision.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/hexowatch' },
   openGraph: { url: 'https://beaconmon.com/alternatives/hexowatch' },
 };

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsl xmlns="https://rslstandard.org/rsl" max-age="30">
+  <content url="https://beaconmon.com/*">
+    <license>
+      <permits type="usage">search ai-input</permits>
+      <prohibits type="usage">ai-train</prohibits>
+      <payment type="free"/>
+    </license>
+    <license>
+      <permits type="usage">ai-train</permits>
+      <payment type="training">
+        <custom>mailto:hello@beaconmon.com</custom>
+      </payment>
+      <legal type="contact">mailto:hello@beaconmon.com</legal>
+    </license>
+    <copyright type="organization" contactUrl="https://beaconmon.com/about">Beaconmon</copyright>
+  </content>
+</rsl>

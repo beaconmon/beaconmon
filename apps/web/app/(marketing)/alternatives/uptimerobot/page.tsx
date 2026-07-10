@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to UptimeRobot for Shopify Stores (2026)',
   description:
-    "UptimeRobot's free plan is now non-commercial. Shopify stores need a replacement. Beaconmon offers free uptime monitoring built for ecommerce, plus competitor tracking. No card needed.",
+    "UptimeRobot's free plan is now non-commercial. Beaconmon offers free uptime monitoring built for ecommerce, plus competitor tracking, no card needed.",
   alternates: { canonical: 'https://beaconmon.com/alternatives/uptimerobot' },
   openGraph: { url: 'https://beaconmon.com/alternatives/uptimerobot' },
 };

@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Alternatives: Competitor Intelligence for Shopify Stores',
   description:
-    'Honest comparisons for ecommerce store owners. Beaconmon vs Visualping, Prisync, UptimeRobot, Pingdom, and more. Competitor intelligence and uptime monitoring built for Shopify stores.',
+    'Honest comparisons for ecommerce store owners. Beaconmon vs Visualping, Prisync, UptimeRobot, Pingdom, and more, built for Shopify stores.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
   openGraph: { url: 'https://beaconmon.com/vs' },
 };

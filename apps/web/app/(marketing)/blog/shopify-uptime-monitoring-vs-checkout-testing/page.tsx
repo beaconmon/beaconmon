@@ -20,7 +20,7 @@ const SLUG = 'shopify-uptime-monitoring-vs-checkout-testing';
 export const metadata: Metadata = {
   title: 'Uptime Monitoring vs Checkout Testing | Beaconmon',
   description:
-    'Two different tools solve two different Shopify monitoring problems. HTTP uptime monitoring catches outages. Synthetic checkout testing catches silent failures. Here is how to choose.',
+    'Two tools solve two different Shopify monitoring problems. HTTP uptime monitoring catches outages, synthetic checkout testing catches silent failures.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
@@ -106,7 +106,8 @@ export default function Post() {
         </LI>
         <LI>
           <Strong>SSL certificate problems:</Strong> expired or misconfigured certificates that
-          cause browsers to block access
+          cause browsers to block access. Check any domain right now with the{' '}
+          <A href="/tools/ssl-checker">free SSL certificate checker</A>.
         </LI>
         <LI>
           <Strong>Domain expiry:</Strong> a lapsed domain registration that takes the store

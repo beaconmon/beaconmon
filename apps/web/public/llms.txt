@@ -79,6 +79,8 @@ All plans include a 14-day Growth trial with no credit card required.
 - [About](https://beaconmon.com/about): company and founder background
 - [Shopify competitor monitoring](https://beaconmon.com/shopify-competitor-monitoring): how Shopify catalog tracking works
 - [WooCommerce competitor monitoring](https://beaconmon.com/woocommerce-competitor-monitoring): how WooCommerce tracking works
+- [Shopify store monitoring](https://beaconmon.com/shopify-store-monitoring): uptime, SSL, and checkout monitoring for your own Shopify store
+- [WooCommerce store monitoring](https://beaconmon.com/woocommerce-store-monitoring): uptime, SSL, and checkout monitoring for your own WooCommerce store
 - [Competitor price tracking](https://beaconmon.com/competitor-price-tracking): price drop detection and alerting
 - [Competitor collections monitoring](https://beaconmon.com/competitor-collections-monitoring): collection and assortment changes
 - [Competitor stock monitoring](https://beaconmon.com/competitor-stock-monitoring): stockout detection
@@ -170,6 +172,8 @@ All plans include a 14-day Growth trial with no credit card required.
 
 Content available for AI citation and summarization. Commercial training requires written permission. Contact: hello@beaconmon.com
 
+Machine-readable license: https://beaconmon.com/rsl.xml (RSL 1.0)
+
 ## Contact
 
 hello@beaconmon.com
@@ -180,4 +184,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-07-09
+2026-07-10

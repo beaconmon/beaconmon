@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Cheaper Alternative to Price2Spy for Small Shopify Stores (2026)',
   description:
-    'Price2Spy starts at $157/month. Beaconmon tracks competitor prices and page changes for Shopify stores from $29/month, with uptime monitoring included. Free plan available.',
+    'Price2Spy starts at $157 per month. Beaconmon tracks competitor prices and page changes for Shopify stores from $29 per month, with uptime monitoring.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/price2spy' },
   openGraph: { url: 'https://beaconmon.com/alternatives/price2spy' },
 };

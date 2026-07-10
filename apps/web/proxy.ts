@@ -108,8 +108,7 @@ export default async function proxy(req: NextRequest) {
     // with trailing slashes, and a 301 on a POST causes browsers to re-issue as GET,
     // silently dropping the event body.
     if (pathname !== '/' && pathname.endsWith('/') && !pathname.startsWith('/ingest/')) {
-      const url = req.nextUrl.clone();
-      url.pathname = pathname.slice(0, -1);
+      const url = new URL(pathname.slice(0, -1) + req.nextUrl.search, req.url);
       return NextResponse.redirect(url, 301);
     }
 

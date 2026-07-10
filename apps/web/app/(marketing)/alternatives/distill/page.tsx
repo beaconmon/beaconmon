@@ -9,7 +9,7 @@ import CheckIcon from '@/components/marketing/CheckIcon';
 export const metadata: Metadata = {
   title: 'Free Alternative to Distill.io for Ecommerce Stores (2026)',
   description:
-    'Looking for a Distill.io alternative? Beaconmon monitors competitor prices and page changes for Shopify stores, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan, no card.',
+    'Beaconmon monitors competitor prices and page changes for Shopify stores, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/distill' },
   openGraph: { url: 'https://beaconmon.com/alternatives/distill' },
 };

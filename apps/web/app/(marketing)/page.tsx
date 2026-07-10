@@ -4,6 +4,7 @@ import CtaForm from '@/components/marketing/CtaForm';
 import CheckIcon from '@/components/marketing/CheckIcon';
 import PricingToggle from '@/components/marketing/PricingToggle';
 import { RevealObserver } from '@/components/reveal-observer';
+import { JsonLd } from '@/components/json-ld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -74,9 +75,24 @@ const FAQ_ITEMS = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: a,
+    },
+  })),
+};
+
 export default function LandingPage() {
   return (
     <>
+      <JsonLd data={faqSchema} />
+
       {/* ====== NAV ====== */}
       <NavBar />
 

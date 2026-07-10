@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Shopify Competitor Change Checker | Beaconmon',
   description:
-    'Free tool to check if a Shopify competitor changed their prices, launched a promotion, or added products. See their change history in seconds. No signup, no app install.',
+    'Free tool to check if a Shopify competitor changed prices, launched a promo, or added products. See their change history in seconds, no signup, no install.',
   alternates: { canonical: 'https://beaconmon.com/tools/shopify-competitor-changes' },
   openGraph: { url: 'https://beaconmon.com/tools/shopify-competitor-changes' },
 };

@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Competitor Stock Monitoring for Shopify Stores | Beaconmon',
   description:
-    'Track when competitor products go out of stock or restock. Beaconmon reads the isAvailable flag from the Shopify product feed and fires an alert the moment any variant flips, at the catalog level with no manual page tracking.',
+    'Track when competitor products go out of stock or restock. Beaconmon reads the isAvailable flag from the Shopify feed and alerts when a variant flips.',
   alternates: { canonical: 'https://beaconmon.com/competitor-stock-monitoring' },
   openGraph: { url: 'https://beaconmon.com/competitor-stock-monitoring' },
 };

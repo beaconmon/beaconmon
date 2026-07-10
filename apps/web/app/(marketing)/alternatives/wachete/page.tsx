@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to Wachete for Ecommerce Stores (2026)',
   description:
-    'Wachete is a generic web monitoring tool with no ecommerce features. Beaconmon offers free competitor monitoring for Shopify stores, with Shopify preset selectors and uptime alerts.',
+    'Wachete is a generic monitoring tool with no ecommerce features. Beaconmon offers free competitor monitoring for Shopify stores, with presets and uptime.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/wachete' },
   openGraph: { url: 'https://beaconmon.com/alternatives/wachete' },
 };

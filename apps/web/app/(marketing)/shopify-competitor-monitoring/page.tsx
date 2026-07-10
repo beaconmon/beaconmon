@@ -9,9 +9,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Intelligence | Beaconmon',
+  title: 'Shopify Competitor Monitoring | Beaconmon',
   description:
-    'Monitor competing Shopify stores across their full product feed. Track price drops, new product launches, and promo changes with AI-summarized diffs and a weekly Intelligence Digest.',
+    'Monitor competing Shopify stores across their product feed. Track price drops, launches, and promo changes with AI-summarized diffs and a weekly Digest.',
   alternates: { canonical: 'https://beaconmon.com/shopify-competitor-monitoring' },
   openGraph: { url: 'https://beaconmon.com/shopify-competitor-monitoring' },
 };
@@ -106,11 +106,19 @@ export default function ShopifyCompetitorMonitoringPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Shopify Competitor Intelligence</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Shopify Competitor Intelligence:<br />
+            Shopify Competitor Monitoring:<br />
             <span className="text-brand-green-ink">Track the Full Product Feed, Not Just One Price</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Every public Shopify store exposes its product catalog. Beaconmon monitors that feed alongside individual product and pricing pages, so you catch price drops, new product launches, and promo changes across your entire competitor set.
+            Every public Shopify store exposes its product catalog. Beaconmon monitors that feed alongside individual product and pricing pages, so you catch price drops, new product launches, and promo changes across your entire competitor set, or{' '}
+            <Link href="/competitor-price-tracking" className="text-brand-green-ink hover:underline">
+              see price tracking on its own
+            </Link>
+            . Curious what each field in that feed actually reveals? See{' '}
+            <Link href="/blog/shopify-products-json-competitor-intelligence" className="text-brand-green-ink hover:underline">
+              what products.json tells you about a competitor
+            </Link>
+            .
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -207,8 +215,10 @@ export default function ShopifyCompetitorMonitoringPage() {
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
-            <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
+            <Link href="/pricing-change-alerts" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">Shopify monitoring</Link>
+            <Link href="/blog/how-to-monitor-competitor-shopify-store-for-changes" className="text-brand-dim hover:text-brand-text transition-colors">How to monitor a competitor&apos;s Shopify store</Link>
+            <Link href="/blog/best-shopify-competitor-monitoring-apps-2026" className="text-brand-dim hover:text-brand-text transition-colors">Best Shopify competitor monitoring apps</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
           </div>
         </div>

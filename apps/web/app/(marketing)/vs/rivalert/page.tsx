@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Rivalert for Shopify Stores (2026): Honest Comparison',
   description:
-    'Rivalert vs Beaconmon: Shopify competitor price and product tracking compared. Beaconmon adds uptime monitoring, content/promo change alerts, and Intelligence Digest. Try free.',
+    'Rivalert vs Beaconmon: Shopify competitor price and product tracking compared. Beaconmon adds uptime, content and promo alerts, and Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/vs/rivalert' },
   openGraph: { url: 'https://beaconmon.com/vs/rivalert' },
 };

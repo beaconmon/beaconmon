@@ -7,9 +7,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Intelligence Research: Original Data and Statistics | Beaconmon',
+  title: 'Shopify Competitor Research and Statistics | Beaconmon',
   description:
-    'Original statistics from analyzing hundreds of thousands of competitor price, stock, and content-change events across Shopify stores. Updated as our dataset grows.',
+    'Original stats from analyzing hundreds of thousands of competitor price, stock, and content change events on Shopify stores. Updated as our dataset grows.',
   alternates: { canonical: 'https://beaconmon.com/research' },
   openGraph: { url: 'https://beaconmon.com/research' },
 };
@@ -109,6 +109,12 @@ const FINDINGS = [
     label: 'of competitor events are flagged high-significance',
     body: 'The AI classifier marks only about 1 in 19 detected events as high-significance. Most changes are routine and do not warrant an immediate reaction.',
     href: '/blog/shopify-competitor-event-significance-data',
+  },
+  {
+    stat: '6',
+    label: 'distinct shapes a competitor flash sale actually takes',
+    body: 'Across 956 classified promo events, two of the six patterns involve no price change at all, including a free-gift-with-purchase offer that price-only monitoring never sees.',
+    href: '/blog/anatomy-of-a-shopify-flash-sale',
   },
 ];
 

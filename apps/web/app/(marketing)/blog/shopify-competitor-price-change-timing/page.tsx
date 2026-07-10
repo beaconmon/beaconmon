@@ -21,9 +21,9 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-price-change-timing';
 
 export const metadata: Metadata = {
-  title: 'We Analyzed 472,712 Price Changes: Wednesday and Thursday Dominate, Weekends Are Silent | Beaconmon',
+  title: '472,712 Price Changes: Wednesday and Thursday Dominate',
   description:
-    'We broke down 472,712 e-commerce competitor price changes by day of week and hour of day. 65.67% happen on Wednesday or Thursday alone. Weekends are almost silent.',
+    'We broke down 472,712 competitor price changes by day and hour. 65.67% happen on Wednesday or Thursday alone. Weekends are almost silent.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

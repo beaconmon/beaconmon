@@ -23,7 +23,7 @@ const SLUG = 'shopify-price-changes-automated';
 export const metadata: Metadata = {
   title: '99% of Shopify Price Changes Are Automated, Not Decisions | Beaconmon',
   description:
-    'In our dataset, 98.9% of all price-changed SKUs belong to catalog-wide moves of 50+ products on the same day. That is not a pricing decision. That is software running on a schedule.',
+    'In our dataset, 98.9% of price-changed SKUs belong to catalog-wide moves of 50+ products in a day. That is software running on a schedule, not a decision.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
@@ -291,6 +291,14 @@ export default function Post() {
         dataset and the most likely to represent a real decision. Treat isolated single-SKU changes
         with more weight than catalog-wide moves, even if the percentage is smaller.
       </SummaryStatement>
+
+      <P>
+        Direction matters too, not just scope. See{' '}
+        <A href="/blog/shopify-competitor-price-increases-data">
+          our look at why competitor price increases outnumber cuts on Shopify
+        </A>{' '}
+        for how to configure monitoring on both sides of a price move, not just the cuts.
+      </P>
 
       <FAQ items={FAQS} />
     </BlogPostLayout>

@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Peak Sale Readiness Checker: BFCM, Prime Day, Flash Sales | Beaconmon',
   description:
-    'Free technical readiness check for any peak sale event. Score your store on uptime, SSL, speed, redirects, and monitoring coverage before BFCM, Prime Day, Valentine\'s, or any flash sale.',
+    'Free technical readiness check for any peak sale event. Score your store on uptime, SSL, speed, redirects, and monitoring before BFCM or any flash sale.',
   alternates: { canonical: 'https://beaconmon.com/tools/bfcm-readiness' },
   openGraph: { url: 'https://beaconmon.com/tools/bfcm-readiness' },
 };

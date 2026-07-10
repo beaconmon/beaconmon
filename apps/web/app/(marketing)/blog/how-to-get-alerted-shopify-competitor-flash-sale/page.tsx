@@ -23,7 +23,7 @@ const SLUG = 'how-to-get-alerted-shopify-competitor-flash-sale';
 export const metadata: Metadata = {
   title: "Get Alerted to a Competitor's Flash Sale | Beaconmon",
   description:
-    'Step-by-step guide to monitoring competitor promotional banners, sale prices, and countdown timers on Shopify stores. Get a Slack alert the moment a competitor launches a campaign.',
+    'Step-by-step guide to monitoring competitor promo banners, sale prices, and countdown timers on Shopify stores. Get a Slack alert when a campaign launches.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],
@@ -150,6 +150,14 @@ export default function Post() {
         A flash sale is a coordinated set of HTML changes. Monitoring the right elements means
         you see the sale the moment it goes live, not after it ends.
       </SummaryStatement>
+
+      <P>
+        For the data behind these patterns across 956 real competitor promo events, see{' '}
+        <A href="/blog/anatomy-of-a-shopify-flash-sale">
+          our breakdown of what a Shopify flash sale actually looks like
+        </A>
+        , including two shapes that price-only monitoring misses entirely.
+      </P>
 
       <H2>Why manual methods do not work</H2>
 

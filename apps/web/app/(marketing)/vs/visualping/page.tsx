@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Visualping for Shopify Stores (2026): Honest Comparison',
   description:
-    'Visualping vs Beaconmon: pixel-diffing vs HTML-selector targeting, competitor price tracking, and Intelligence Digest compared side-by-side for ecommerce stores. Try free, no card needed.',
+    'Visualping vs Beaconmon: pixel-diffing vs HTML-selector targeting, competitor price tracking, and Digest compared for ecommerce stores. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/visualping' },
   openGraph: { url: 'https://beaconmon.com/vs/visualping' },
 };

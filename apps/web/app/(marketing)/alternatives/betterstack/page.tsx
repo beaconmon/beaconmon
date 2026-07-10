@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Free Alternative to BetterStack Uptime Monitoring for Shopify (2026)',
   description:
-    'BetterStack has expanded into log management and infrastructure monitoring. Shopify stores that just need uptime alerts and competitor tracking should consider Beaconmon. Free plan included.',
+    'BetterStack now covers logs and infrastructure monitoring. Shopify stores that just need uptime alerts and competitor tracking should consider Beaconmon.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/betterstack' },
   openGraph: { url: 'https://beaconmon.com/alternatives/betterstack' },
 };

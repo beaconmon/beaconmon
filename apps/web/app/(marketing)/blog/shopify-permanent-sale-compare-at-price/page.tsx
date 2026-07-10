@@ -23,7 +23,7 @@ const SLUG = 'shopify-permanent-sale-compare-at-price';
 export const metadata: Metadata = {
   title: "23% of Shopify Products Are Permanently on Sale | Beaconmon",
   description:
-    "Across 178,623 tracked products, 23% have a compare_at_price set right now. For 18% of brands, that number is 30% or higher, meaning a third of their catalog is permanently framed as discounted.",
+    "Across 178,623 tracked products, 23% have a compare_at_price set right now. For 18% of brands, that figure is 30% or higher, a third of catalog discounted.",
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

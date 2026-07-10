@@ -20,7 +20,7 @@ const SLUG = 'shopify-competitor-price-increases-data';
 export const metadata: Metadata = {
   title: 'Price Increases Outnumber Cuts on Shopify | Beaconmon',
   description:
-    'Most merchants set up competitor monitoring to catch price cuts. Our data across 468,451 price change events shows prices are going up more often than down, and that most monitoring setups are looking in the wrong direction.',
+    'Most merchants monitor competitors to catch price cuts. Our data across 468,451 price change events shows prices rise more often than they fall.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

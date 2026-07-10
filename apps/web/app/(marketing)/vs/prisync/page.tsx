@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Prisync for Shopify Stores (2026): Honest Comparison',
   description:
-    'Prisync vs Beaconmon: price-database-only tracking vs price-plus-context with AI significance scoring. Competitor intelligence, uptime monitoring, and Intelligence Digest compared. Try free.',
+    'Prisync vs Beaconmon: price-only tracking vs price-plus-context with AI significance scoring. Competitor intelligence, uptime, and Digest compared.',
   alternates: { canonical: 'https://beaconmon.com/vs/prisync' },
   openGraph: { url: 'https://beaconmon.com/vs/prisync' },
 };

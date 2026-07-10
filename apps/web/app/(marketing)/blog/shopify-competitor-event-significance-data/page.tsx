@@ -19,9 +19,9 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-event-significance-data';
 
 export const metadata: Metadata = {
-  title: 'Only 5.32% of Competitor Events Are High-Significance: What 504,500 Signals Show | Beaconmon',
+  title: 'Only 5.32% of Competitor Events Are High Significance',
   description:
-    'We ran the AI significance classifier across 504,500 competitor events, every type Beaconmon tracks, not just price changes. Only 5.32% came back high-significance. Here is what the other 94.68% actually is.',
+    'We ran the AI significance classifier across 504,500 competitor events. Only 5.32% came back high significance. Here is what the other 94.68% actually is.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

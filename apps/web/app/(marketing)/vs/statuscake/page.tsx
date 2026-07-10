@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs StatusCake for Shopify (2026)',
   description:
-    "StatusCake vs Beaconmon: honest comparison for ecommerce stores. StatusCake has no competitor monitoring, no content change detection, no Intelligence Digest. Try Beaconmon free, no card needed.",
+    "StatusCake vs Beaconmon: honest comparison for ecommerce stores. StatusCake has no competitor monitoring, content detection, or Digest. Try free.",
   alternates: { canonical: 'https://beaconmon.com/vs/statuscake' },
   openGraph: { url: 'https://beaconmon.com/vs/statuscake' },
 };

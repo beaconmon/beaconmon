@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Competitor Collections and Category Page Monitoring | Beaconmon',
   description:
-    'Monitor competitor Shopify collection pages and category pages for assortment changes, featured product shifts, and catalog restructuring. HTML diff on any URL, no product feed required.',
+    'Monitor competitor Shopify collection and category pages for assortment changes, featured shifts, and catalog restructuring. HTML diff, no feed required.',
   alternates: { canonical: 'https://beaconmon.com/competitor-collections-monitoring' },
   openGraph: { url: 'https://beaconmon.com/competitor-collections-monitoring' },
 };
@@ -101,7 +101,7 @@ export default function CompetitorCollectionsMonitoringPage() {
             Monitor Competitor Collections and Category Pages for Assortment Changes
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            A competitor&apos;s collection page reflects their current merchandising priorities. Beaconmon diffs the HTML on any collection or category page so you see when products are added, removed, or repositioned, and when catalog structure changes.
+            Competitor collection page monitoring shows you a competitor&apos;s current merchandising priorities. Beaconmon diffs the HTML on any collection or category page so you see when products are added, removed, or repositioned, and when catalog structure changes.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">

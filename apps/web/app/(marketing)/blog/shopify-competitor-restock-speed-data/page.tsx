@@ -21,9 +21,9 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'shopify-competitor-restock-speed-data';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Restocks: Median 22 Hours, Average 45 Hours | Beaconmon',
+  title: 'Shopify Restocks: Median 22 Hours, Average 45 Hours',
   description:
-    'We matched 1,556 out-of-stock to back-in-stock events across tracked Shopify competitors. The median restock takes about 22 hours. The average takes 45.34. The gap between them is the actual finding.',
+    'We matched 1,556 out-of-stock to back-in-stock events across Shopify competitors. Median restock is 22 hours, average 45.34. The gap is the real finding.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Beaconmon Team', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

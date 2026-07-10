@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'WooCommerce Competitor Monitoring | Beaconmon',
   description:
-    'Monitor WooCommerce competitor prices, promotions, and content changes. CSS selector targeting on individual product and pricing pages, with Slack alerts and an Intelligence Digest. No product feed available; pages are added individually.',
+    'Monitor WooCommerce competitor prices, promotions, and content changes. CSS selectors on product/pricing pages, with Slack alerts and Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
   openGraph: { url: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
 };
@@ -208,6 +208,7 @@ export default function WooCommerceCompetitorMonitoringPage() {
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/for/woocommerce" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce store monitoring</Link>
             <Link href="/competitor-promotion-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor promotion monitoring</Link>
+            <Link href="/tools/woocommerce-uptime-test" className="text-brand-dim hover:text-brand-text transition-colors">Free WooCommerce uptime test</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
           </div>
         </div>

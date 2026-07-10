@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Hexowatch for Shopify Stores (2026): Honest Comparison',
   description:
-    'Hexowatch vs Beaconmon: all-in-one web intelligence vs Shopify-native competitor tracking with uptime monitoring and Intelligence Digest. Full comparison. Try free, no card needed.',
+    'Hexowatch vs Beaconmon: all-in-one web intelligence vs Shopify-native competitor tracking with uptime and Digest. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/hexowatch' },
   openGraph: { url: 'https://beaconmon.com/vs/hexowatch' },
 };

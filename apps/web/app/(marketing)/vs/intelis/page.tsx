@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Intelis for Shopify (2026)',
   description:
-    'Intelis AI Dynamic Pricing vs Beaconmon: automated repricing on Google Shopping vs competitor monitoring, uptime, and Intelligence Digest. Compare what each tool does.',
+    'Intelis AI Dynamic Pricing vs Beaconmon: automated repricing on Google Shopping vs competitor monitoring, uptime, and Intelligence Digest compared.',
   alternates: { canonical: 'https://beaconmon.com/vs/intelis' },
   openGraph: { url: 'https://beaconmon.com/vs/intelis' },
 };

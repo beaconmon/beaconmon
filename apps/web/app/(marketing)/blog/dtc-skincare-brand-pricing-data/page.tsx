@@ -19,9 +19,9 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'dtc-skincare-brand-pricing-data';
 
 export const metadata: Metadata = {
-  title: 'DTC Skincare Brand Pricing Data: Why Only 9% of Products Are Ever on Sale | Beaconmon',
+  title: 'DTC Skincare Pricing: Why Only 9% Are Ever on Sale',
   description:
-    'We looked at a sample of 2,146 tracked skincare and beauty SKUs across 87 brands. Only 9.04% carry a compare-at-price at any given time, and the average discount when they do is 24.01% off, about half the depth of apparel.',
+    'We tracked 2,146 skincare and beauty SKUs across 87 brands. Only 9.04% carry a compare-at-price, discounting 24.01% on average, half the depth of apparel.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
   openGraph: { url: `https://beaconmon.com/blog/${SLUG}` },
   authors: [{ name: 'Haimanot Getu', url: 'https://www.linkedin.com/in/haimanot-getu/' }],

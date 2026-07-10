@@ -7,6 +7,7 @@ const PRODUCT_LINKS: [string, string][] = [
   ['/features#status-pages', 'Status Pages'],
   ['/features#smart-alerts', 'Smart Alerts'],
   ['/features#reliability-targets', 'Uptime goals'],
+  ['/integrations', 'Integrations'],
   ['/pricing', 'Pricing'],
   ['/changelog', 'Changelog'],
 ];
@@ -15,6 +16,8 @@ const FOR_LINKS: [string, string][] = [
   ['/for/shopify', 'Shopify'],
   ['/for/woocommerce', 'WooCommerce'],
   ['/for/dtc-brands', 'DTC Brands'],
+  ['/for/dtc-fashion', 'Fashion Brands'],
+  ['/for/beauty-skincare', 'Beauty & Skincare'],
 ];
 
 const TOOLS_LINKS: [string, string][] = [
@@ -61,10 +64,12 @@ const COMPARE_LINKS: [string, string][] = [
 ];
 
 const GUIDES_LINKS: [string, string][] = [
-  ['/shopify-competitor-monitoring', 'Shopify Monitoring'],
+  ['/shopify-competitor-monitoring', 'Shopify Competitor Monitoring'],
+  ['/shopify-store-monitoring', 'Shopify Store Monitoring'],
   ['/competitor-price-tracking', 'Price Tracking'],
   ['/ecommerce-competitor-intelligence', 'Competitor Intelligence'],
-  ['/woocommerce-competitor-monitoring', 'WooCommerce Monitoring'],
+  ['/woocommerce-competitor-monitoring', 'WooCommerce Competitor Monitoring'],
+  ['/woocommerce-store-monitoring', 'WooCommerce Store Monitoring'],
   ['/ecommerce-uptime-monitoring-guide', 'Uptime Monitoring'],
 ];
 

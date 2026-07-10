@@ -139,6 +139,12 @@ export default function Post() {
       <P>
         What you do not get: internal traffic, conversion rates, revenue, or inventory quantity.
         But price, availability, and launch date are the three signals that matter most for competitive response.
+        For a field-by-field breakdown of what every part of the feed reveals about a competitor,
+        see{' '}
+        <A href="/blog/shopify-products-json-competitor-intelligence">
+          what products.json tells you about a competitor
+        </A>
+        .
       </P>
 
       <H2>Why manual tracking fails at scale</H2>

@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Better Uptime for Shopify (2026)',
   description:
-    "Better Uptime vs Beaconmon: honest comparison for ecommerce stores. Better Uptime has no competitor monitoring, no content tracking, no Intelligence Digest. Try Beaconmon free, no card needed.",
+    "Better Uptime vs Beaconmon: honest ecommerce comparison. Better Uptime lacks competitor monitoring, content tracking, and Intelligence Digest. Try free.",
   alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
   openGraph: { url: 'https://beaconmon.com/vs/better-uptime' },
 };

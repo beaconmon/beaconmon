@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon for WooCommerce Stores | Uptime and Competitor Monitoring',
   description:
-    'Monitor your WooCommerce shop, cart, and checkout without installing a plugin. Catch failures in under a minute, track competitor prices page by page, and get a daily Intelligence Digest.',
+    'Monitor your WooCommerce shop, cart, and checkout without a plugin. Catch failures fast, track competitor prices, and get a daily Intelligence Digest.',
   alternates: { canonical: 'https://beaconmon.com/for/woocommerce' },
   openGraph: { url: 'https://beaconmon.com/for/woocommerce' },
 };
@@ -157,6 +157,7 @@ export default function ForWooCommercePage() {
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/tools/woocommerce-uptime-test" className="text-brand-dim hover:text-brand-text transition-colors">Free WooCommerce uptime test</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
             <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>
           </div>

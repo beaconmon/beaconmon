@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Pingdom for Shopify (2026)',
   description:
-    'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, no competitor tracking, no Intelligence Digest. See what you are missing. Try free, no card needed.',
+    'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, competitor tracking, or Intelligence Digest. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
   openGraph: { url: 'https://beaconmon.com/vs/pingdom' },
 };
