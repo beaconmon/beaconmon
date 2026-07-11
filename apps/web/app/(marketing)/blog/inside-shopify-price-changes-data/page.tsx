@@ -302,14 +302,14 @@ export default function Post() {
         attention.
       </P>
 
-      <H3>Use the Intelligence Digest for everything below the threshold</H3>
+      <H3>Use the Weekly Competitor Report for everything below the threshold</H3>
 
       <P>
         Removing sub-threshold events from your alert channel does not mean ignoring them. Route
         them to the daily{' '}
-        <A href="/features/intelligence">Intelligence Digest</A> instead. You get a consolidated
-        view of competitor activity without the interrupt-driven noise that kills competitive
-        intelligence programs.
+        <A href="/features/intelligence">Weekly Competitor Report</A> instead. You get a consolidated
+        view of competitor activity without the interrupt-driven noise that kills good
+        monitoring programs.
       </P>
 
       <FAQ items={FAQS} />

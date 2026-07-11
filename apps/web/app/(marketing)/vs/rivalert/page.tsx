@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Rivalert for Shopify Stores (2026): Honest Comparison',
   description:
-    'Rivalert vs Beaconmon: Shopify competitor price and product tracking compared. Beaconmon adds uptime, content and promo alerts, and Intelligence Digest.',
+    'Rivalert vs Beaconmon: Shopify competitor price and product tracking compared. Beaconmon adds uptime, content and promo alerts, and Weekly Competitor Report.',
   alternates: { canonical: 'https://beaconmon.com/vs/rivalert' },
   openGraph: { url: 'https://beaconmon.com/vs/rivalert' },
 };
@@ -58,7 +58,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No',
     beaconmonGood: true,
@@ -107,7 +107,7 @@ const STAY_REASONS = [
 const SWITCH_REASONS = [
   'You want to know when a competitor launches a promotional campaign or changes their homepage banner, not just when a product price changes.',
   'Your own store going down during a competitor sale is the scenario you most need to catch. Rivalert cannot tell you that.',
-  'You want a weekly Intelligence Digest in Slack summarizing every competitor move, not individual price-drop emails throughout the day.',
+  'You want a Weekly Competitor Report in Slack summarizing every competitor move, not individual price-drop emails throughout the day.',
   "Rivalert's Starter plan only checks every 12 hours. A competitor could run a flash sale and end it before Rivalert detects it.",
   'You want SSL and domain expiry monitoring alongside competitor tracking, without paying for a second tool.',
 ];
@@ -119,7 +119,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Rivalert cheaper than Beaconmon?',
-    a: "Rivalert's Starter plan is $19/mo versus Beaconmon Starter at $29/mo. However, Beaconmon includes uptime monitoring, SSL alerts, Intelligence Digest, and content and promo tracking that Rivalert does not offer on any plan. Beaconmon also has a free plan; Rivalert does not.",
+    a: "Rivalert's Starter plan is $19/mo versus Beaconmon Starter at $29/mo. However, Beaconmon includes uptime monitoring, SSL alerts, Weekly Competitor Report, and content and promo tracking that Rivalert does not offer on any plan. Beaconmon also has a free plan; Rivalert does not.",
   },
   {
     q: 'Does Rivalert have a free plan?',
@@ -191,7 +191,7 @@ export default function VsRivalertPage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Rivalert tracks competitor price drops, price increases, new products, and stock levels. Beaconmon covers all of that and adds promotional copy changes, homepage banner monitoring, uptime monitoring, and a weekly Intelligence Digest. For Shopify stores that want a single tool instead of a narrow price tracker, that scope matters.
+            Rivalert tracks competitor price drops, price increases, new products, and stock levels. Beaconmon covers all of that and adds promotional copy changes, homepage banner monitoring, uptime monitoring, and a Weekly Competitor Report. For Shopify stores that want a single tool instead of a narrow price tracker, that scope matters.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -310,7 +310,7 @@ export default function VsRivalertPage() {
                 { step: '2', text: 'Sign up for Beaconmon free (no card). The onboarding wizard asks for your store URL and competitor domains.' },
                 { step: '3', text: 'For each competitor, choose what to track: price, stock, promotional copy, or any page element. The wizard provides Shopify preset selectors.' },
                 { step: '4', text: 'Add your own store URL to uptime monitoring.' },
-                { step: '5', text: 'Connect Slack or email. Configure the Intelligence Digest frequency.' },
+                { step: '5', text: 'Connect Slack or email. Configure the Weekly Competitor Report frequency.' },
                 { step: '6', text: 'Run both tools for a week if you want to verify coverage, then cancel Rivalert.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

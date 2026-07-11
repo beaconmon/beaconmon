@@ -40,7 +40,7 @@ const REASONS_TO_SWITCH = [
   },
   {
     heading: 'No weekly digest for website changes.',
-    body: 'Panoramata surfaces marketing channel data across email, ads, and SMS. There is no built-in weekly summary of competitor website changes delivered to Slack or email. Beaconmon ships that as the Intelligence Digest on Starter and above.',
+    body: 'Panoramata surfaces marketing channel data across email, ads, and SMS. There is no built-in weekly summary of competitor website changes delivered to Slack or email. Beaconmon ships that as the Weekly Competitor Report on Starter and above.',
   },
 ];
 
@@ -62,7 +62,7 @@ const BEACONMON_WINS = [
     body: 'Every Beaconmon plan includes uptime monitoring and SSL / domain expiry alerts at 30, 14, and 7 days. No separate subscription needed.',
   },
   {
-    heading: 'Intelligence Digest.',
+    heading: 'Weekly Competitor Report.',
     body: 'A weekly Slack or email summary grouping every competitor website change into plain language. Available on Starter and above. Panoramata has no equivalent for website changes.',
   },
   {
@@ -84,7 +84,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What does Beaconmon do that Panoramata does not?',
-    a: 'Uptime monitoring, SSL expiry alerts, domain expiry alerts, CSS-selector targeting for exact price and stock values, and the Intelligence Digest: a weekly plain-language Slack or email summary of competitor website changes.',
+    a: 'Uptime monitoring, SSL expiry alerts, domain expiry alerts, CSS-selector targeting for exact price and stock values, and the Weekly Competitor Report: a weekly plain-language Slack or email summary of competitor website changes.',
   },
   {
     q: 'Is Panoramata a replacement for Beaconmon?',
@@ -191,7 +191,7 @@ export default function PanoramataAlternativePage() {
                   <span className="text-brand-green-ink font-medium">Included on all plans</span>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <span className="text-brand-muted">Intelligence Digest</span>
+                  <span className="text-brand-muted">Weekly Competitor Report</span>
                   <span className="text-brand-green-ink font-medium">Starter and above</span>
                 </div>
                 <div className="flex justify-between gap-4">

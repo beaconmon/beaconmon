@@ -38,7 +38,7 @@ const FEATURES = [
     body: 'Watch competitor product and pricing pages as content monitors. The moment a competitor drops a price, runs a promo, or launches a new SKU, you get a Slack ping. React first.',
   },
   {
-    heading: 'Intelligence Digest, daily',
+    heading: 'Weekly Competitor Report, daily',
     body: 'One email and Slack post a day with every competitor move, every site change, and every smart alert from the last 24 hours. Skim it with coffee. Skip the dashboard.',
   },
 ];
@@ -79,7 +79,7 @@ export default function ForDtcBrandsPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -139,7 +139,7 @@ export default function ForDtcBrandsPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Built for DTC growth teams</h2>
-            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Revenue protection on one side, competitive intelligence on the other.</p>
+            <p className="text-brand-dim text-[16px] max-w-[500px] mx-auto">Revenue protection on one side, competitor monitoring on the other.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (

@@ -113,7 +113,7 @@ const FEATURES = [
     body: 'Every version of a monitored page is stored with a timestamp. Open any two snapshots side by side to see exactly what changed and when. Scroll back through a competitor\'s pricing history over the past year.',
   },
   {
-    heading: 'Weekly intelligence digests',
+    heading: 'weekly competitor reports',
     body: 'A weekly email summary of all competitor changes detected in the past 7 days. Share it with your team or use it in a weekly competitive review meeting without anyone needing to log in.',
   },
   {
@@ -193,10 +193,10 @@ export default function WebsiteChangeDetectionPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Change Detection for Ecommerce Teams</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Website Change Detection Built for Ecommerce Competitor Intelligence
+            Website Change Detection Built for Ecommerce Competitor Monitoring
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Track competitor prices, promotions, and page changes at scale. Visualping and Distill are built for personal use. Beaconmon is built for teams that need to share intelligence, get Slack alerts, and act on changes the same day.
+            Track competitor prices, promotions, and page changes at scale. Visualping and Distill are built for personal use. Beaconmon is built for teams that need to share what changed, get Slack alerts, and act on changes the same day.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -318,7 +318,7 @@ export default function WebsiteChangeDetectionPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/homepage-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor homepage monitoring</Link>
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">Shopify monitoring</Link>

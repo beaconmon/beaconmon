@@ -20,7 +20,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Shopify Uptime Monitoring: The Complete Guide for Ecommerce Stores',
   description:
-    'Funnel-by-funnel monitoring for Shopify stores, check intervals, keyword verification, and why competitor intelligence is the natural next step after uptime.',
+    'Funnel-by-funnel monitoring for Shopify stores, check intervals, keyword verification, and why competitor monitoring is the natural next step after uptime.',
   author: { '@type': 'Organization', name: 'Beaconmon' },
   publisher: { '@type': 'Organization', name: 'Beaconmon', url: 'https://beaconmon.com' },
 };
@@ -81,7 +81,7 @@ const INTEL_FEATURES = [
     body: 'Target just the pricing section or promo banner on a competitor page, not the entire page. Eliminates noise from unrelated changes like blog post timestamps or dynamic navigation.',
   },
   {
-    heading: 'Weekly intelligence digests',
+    heading: 'weekly competitor reports',
     body: 'A weekly email summary of all competitor changes detected in the past 7 days. Share with your team without anyone needing to log in to the dashboard.',
   },
 ];
@@ -258,12 +258,12 @@ export default function EcommerceUptimeMonitoringGuidePage() {
         </div>
       </section>
 
-      {/* Bridge: competitor intelligence */}
+      {/* Bridge: competitor monitoring */}
       <section className="py-[80px] border-t border-brand-line-soft bg-brand-bg1">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal max-w-[760px] mx-auto">
             <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-6 leading-[1.15]">
-              Once uptime is covered, the next unlock is competitor intelligence
+              Once uptime is covered, the next unlock is competitor monitoring
             </h2>
             <div className="space-y-4 text-brand-dim text-[16px] leading-[1.7]">
               <p>
@@ -278,14 +278,14 @@ export default function EcommerceUptimeMonitoringGuidePage() {
             </div>
             <div className="mt-8">
               <Link href="/ecommerce-competitor-intelligence" className="text-brand-green-ink font-semibold text-[15px] hover:underline">
-                See how competitor intelligence works in Beaconmon
+                See how competitor monitoring works in Beaconmon
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Competitor intelligence features */}
+      {/* Competitor monitoring features */}
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
@@ -349,7 +349,7 @@ export default function EcommerceUptimeMonitoringGuidePage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">Shopify monitoring</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>

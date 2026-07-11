@@ -227,7 +227,7 @@ export default function Post() {
         <P>
           Medium-significance events are still worth seeing, just not the moment they happen. Route
           them to the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> instead of a live alert channel.
+          <A href="/features/intelligence">Weekly Competitor Report</A> instead of a live alert channel.
           A merchant gets a consolidated view of the 94.68% without the interrupt cost of treating
           it as urgent.
         </P>
@@ -242,7 +242,7 @@ export default function Post() {
         </P>
 
         <P>
-          Significance scoring and Intelligence Digest are both{' '}
+          Significance scoring and Weekly Competitor Report are both{' '}
           <A href="/pricing">Growth-plan features</A>. If you are on Starter, the Digest still
           groups every change into a weekly summary, the AI classification layer that sorts high
           from medium is what Growth adds on top.

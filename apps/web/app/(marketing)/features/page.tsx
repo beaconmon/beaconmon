@@ -27,11 +27,11 @@ const FEATURES_SCHEMA = [
     '@type': 'ItemList',
     name: 'Beaconmon Features',
     description:
-      'Competitor intelligence and uptime monitoring for ecommerce: daily brief, AI diff summaries, smart alerts, HTTP, SSL, domain, and content monitoring.',
+      'Competitor monitoring and uptime monitoring for ecommerce: daily brief, AI diff summaries, smart alerts, HTTP, SSL, domain, and content monitoring.',
     url: 'https://beaconmon.com/features',
     numberOfItems: 10,
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Daily Intelligence Brief', description: 'One email with everything that changed across your competitor watchlist.', url: 'https://beaconmon.com/features/intelligence#daily-brief' },
+      { '@type': 'ListItem', position: 1, name: 'Daily Competitor Report', description: 'One email with everything that changed across your competitor watchlist.', url: 'https://beaconmon.com/features/intelligence#daily-brief' },
       { '@type': 'ListItem', position: 2, name: 'AI Diff Summaries', description: 'Plain-English summaries of what actually changed: "Price dropped from $89 to $74."', url: 'https://beaconmon.com/features/intelligence#ai-diffs' },
       { '@type': 'ListItem', position: 3, name: 'Competitor Watchlist', description: 'Add a domain, get suggested pages to monitor, add them all in one click.', url: 'https://beaconmon.com/features#competitor-intelligence' },
       { '@type': 'ListItem', position: 4, name: 'Smart Alerts', description: 'Statistical anomaly detection that fires only when something is genuinely wrong.', url: 'https://beaconmon.com/features#smart-alerts' },
@@ -125,7 +125,7 @@ const MONITOR_TYPES = [
     ),
     name: 'Content Change Monitoring',
     tagline: 'Know the instant a page changes.',
-    body: 'Track competitors\' pricing pages, product listings, legal terms, or any public web page. Beaconmon takes an HTML snapshot on first run and alerts you the moment the content at a CSS selector (or the full page body) changes. Perfect for competitive intelligence and change detection.',
+    body: 'Track competitors\' pricing pages, product listings, legal terms, or any public web page. Beaconmon takes an HTML snapshot on first run and alerts you the moment the content at a CSS selector (or the full page body) changes. Perfect for competitor monitoring and change detection.',
     highlights: ['CSS selector targeting', 'Full-page or partial diff', 'HTML-only (no JS rendering needed)', 'Snapshot history with diff view'],
   },
 ];
@@ -138,7 +138,7 @@ const INTEL_CARDS = [
         <polyline points="22,6 12,13 2,6" />
       </svg>
     ),
-    name: 'Daily Intelligence Brief',
+    name: 'Daily Competitor Report',
     body: 'Instead of a flood of individual alerts, get a single digest delivered every morning. Price changes, content updates, and stock status all in one place, with AI summaries explaining what each change means.',
   },
   {
@@ -186,7 +186,7 @@ export default function FeaturesPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Features</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
-            Competitor intelligence and uptime monitoring,
+            Competitor monitoring and uptime monitoring,
             <span className="text-brand-green-ink"> built for Shopify stores.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mx-auto">
@@ -195,11 +195,11 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Competitor Intelligence */}
+      {/* Competitor Monitoring */}
       <section id="competitor-intelligence" className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Intelligence</span>
+            <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Monitoring</span>
             <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How competitor price and content tracking works in Beaconmon</h2>
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Track competitor prices, promotions, and page content. Get a daily brief with AI summaries of everything that moved.</p>
           </div>
@@ -218,7 +218,7 @@ export default function FeaturesPage() {
 
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden max-w-[760px] mx-auto mb-8">
             <div className="px-5 py-4 border-b border-brand-line-soft flex items-center justify-between">
-              <span className="text-[13px] font-semibold">Intelligence Digest</span>
+              <span className="text-[13px] font-semibold">Weekly Competitor Report</span>
               <span className="text-[11px] text-brand-muted">Today, 7:00 AM</span>
             </div>
             <div className="px-5 py-4 space-y-4">
@@ -240,7 +240,7 @@ export default function FeaturesPage() {
 
           <p className="text-center">
             <Link href="/features/intelligence" className="text-brand-green-ink hover:underline text-[15px] font-semibold">
-              Full breakdown: how competitor intelligence works →
+              Full breakdown: how competitor monitoring works →
             </Link>
           </p>
         </div>

@@ -34,7 +34,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest',
+    feature: 'Weekly Competitor Report',
     beaconmon: '✓ Starter+',
     competitor: '—',
     beaconmonGood: true,
@@ -94,16 +94,16 @@ const STAY_REASONS = [
   },
   {
     title: 'You are monitoring non-ecommerce sites',
-    body: 'For internal tools, blogs, or side projects where competitor intelligence is irrelevant, StatusCake is a sensible default.',
+    body: 'For internal tools, blogs, or side projects where competitor monitoring is irrelevant, StatusCake is a sensible default.',
   },
 ];
 
 const SWITCH_REASONS = [
   'You want to track when competitors change prices, product listings, or run promotions.',
-  'You want a daily Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You want a Daily Competitor Report in Slack summarizing every change detected on competitor sites.',
   'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
   'StatusCake has no competitor monitoring and no content change detection of any kind.',
-  'Both tools start at a similar price. Beaconmon includes competitor intelligence; StatusCake does not.',
+  'Both tools start at a similar price. Beaconmon includes competitor monitoring; StatusCake does not.',
 ];
 
 const FAQ_ITEMS = [
@@ -117,7 +117,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon more expensive than StatusCake?',
-    a: 'StatusCake paid plans start at around $24.99 per month. Beaconmon Starter is $29 per month, but includes competitor monitoring, content change detection, and the Intelligence Digest. If you are comparing on uptime alone, the prices are similar. If you count competitor tracking, Beaconmon is better value for ecommerce stores.',
+    a: 'StatusCake paid plans start at around $24.99 per month. Beaconmon Starter is $29 per month, but includes competitor monitoring, content change detection, and the Weekly Competitor Report. If you are comparing on uptime alone, the prices are similar. If you count competitor tracking, Beaconmon is better value for ecommerce stores.',
   },
   {
     q: 'How long does migrating from StatusCake take?',
@@ -190,7 +190,7 @@ export default function VsStatusCakePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              StatusCake&apos;s free plan is strong for uptime monitoring (10 monitors, no card). But it has no competitor monitoring, no content change detection, and no Intelligence Digest. For a Shopify or WooCommerce store that wants competitor intelligence alongside uptime, Beaconmon is built for that job.
+              StatusCake&apos;s free plan is strong for uptime monitoring (10 monitors, no card). But it has no competitor monitoring, no content change detection, and no Weekly Competitor Report. For a Shopify or WooCommerce store that wants competitor monitoring alongside uptime, Beaconmon is built for that job.
             </p>
           </div>
         </div>
@@ -278,7 +278,7 @@ export default function VsStatusCakePage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <blockquote className="reveal max-w-[700px] mx-auto border-l-2 border-brand-green-ink pl-8 py-2">
             <p className="text-[18px] leading-[1.7] text-brand-dim italic mb-4">
-              &ldquo;StatusCake was fine for basic uptime. I switched once I realized I was manually checking three competitor sites every week to see if they had changed their pricing. The Intelligence Digest replaced all of that.&rdquo;
+              &ldquo;StatusCake was fine for basic uptime. I switched once I realized I was manually checking three competitor sites every week to see if they had changed their pricing. The Weekly Competitor Report replaced all of that.&rdquo;
             </p>
             <cite className="text-[13px] text-brand-muted not-italic">Shopify store owner, Australia, migrated 2026</cite>
           </blockquote>

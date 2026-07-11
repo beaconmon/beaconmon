@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Distill.io for Shopify Stores (2026): Honest Comparison',
   description:
-    'Distill.io vs Beaconmon: JS browser watcher vs HTML-only Shopify-native competitor intelligence. Honest comparison, including where Beaconmon falls short.',
+    'Distill.io vs Beaconmon: JS browser watcher vs HTML-only Shopify-native competitor monitoring. Honest comparison, including where Beaconmon falls short.',
   alternates: { canonical: 'https://beaconmon.com/vs/distill' },
   openGraph: { url: 'https://beaconmon.com/vs/distill' },
 };
@@ -40,7 +40,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No weekly digest',
     beaconmonGood: true,
@@ -88,14 +88,14 @@ const STAY_REASONS = [
   },
   {
     title: 'Budget is your main constraint',
-    body: "Distill's paid cloud plan starts lower than Beaconmon Starter. If you need a small number of watches with no uptime monitoring or Intelligence Digest, the price difference is real.",
+    body: "Distill's paid cloud plan starts lower than Beaconmon Starter. If you need a small number of watches with no uptime monitoring or Weekly Competitor Report, the price difference is real.",
   },
 ];
 
 const SWITCH_REASONS = [
   'Your competitors run Shopify or WooCommerce stores that serve prices and inventory in the initial HTML response, which is the default for both platforms.',
-  'You want uptime monitoring, SSL expiry warnings, and competitor intelligence in one tool, not separate subscriptions.',
-  'You want a weekly Intelligence Digest delivered to Slack or email rather than checking a dashboard manually.',
+  'You want uptime monitoring, SSL expiry warnings, and competitor monitoring in one tool, not separate subscriptions.',
+  'You want a Weekly Competitor Report delivered to Slack or email rather than checking a dashboard manually.',
   'You want AI-generated summaries that classify each competitor change by significance, not just a before/after diff.',
   'You want a server-side fleet that scales without needing a browser running, reducing memory pressure and cost.',
 ];
@@ -174,7 +174,7 @@ export default function VsDistillPage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Distill is a general-purpose web watcher that renders JavaScript before capturing changes. Beaconmon is built specifically for Shopify and WooCommerce competitor intelligence: HTML-only monitoring with preset selectors for price, stock, and copy. One important difference to know about before you choose.
+            Distill is a general-purpose web watcher that renders JavaScript before capturing changes. Beaconmon is built specifically for Shopify and WooCommerce competitor monitoring: HTML-only monitoring with preset selectors for price, stock, and copy. One important difference to know about before you choose.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -201,7 +201,7 @@ export default function VsDistillPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Distill is more flexible for monitoring any site, including those that rely heavily on JavaScript rendering. Beaconmon is built specifically for Shopify and WooCommerce: preset selectors, uptime monitoring, weekly Intelligence Digest, and AI change summaries in one tool. If your competitors are standard ecommerce stores and you want intelligence delivered to Slack without manual dashboard checks, Beaconmon is the better fit.
+              Distill is more flexible for monitoring any site, including those that rely heavily on JavaScript rendering. Beaconmon is built specifically for Shopify and WooCommerce: preset selectors, uptime monitoring, Weekly Competitor Report, and AI change summaries in one tool. If your competitors are standard ecommerce stores and you want monitoring delivered to Slack without manual dashboard checks, Beaconmon is the better fit.
             </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ export default function VsDistillPage() {
                 Why ecommerce stores switch to Beaconmon
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
-                Most Shopify stores that switch from Distill do so because they want uptime monitoring combined with competitor intelligence, and they want it delivered rather than checked.
+                Most Shopify stores that switch from Distill do so because they want uptime monitoring combined with competitor monitoring, and they want it delivered rather than checked.
               </p>
             </div>
             <ul className="space-y-4">
@@ -292,7 +292,7 @@ export default function VsDistillPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <blockquote className="reveal max-w-[700px] mx-auto border-l-2 border-brand-green-ink pl-8 py-2">
             <p className="text-[18px] leading-[1.7] text-brand-dim italic mb-4">
-              &ldquo;I appreciated that Beaconmon was upfront about not rendering JavaScript. I checked my three main competitors and they all use standard Shopify themes so it did not matter. The Intelligence Digest is the thing Distill can not replicate.&rdquo;
+              &ldquo;I appreciated that Beaconmon was upfront about not rendering JavaScript. I checked my three main competitors and they all use standard Shopify themes so it did not matter. The Weekly Competitor Report is the thing Distill can not replicate.&rdquo;
             </p>
             <cite className="text-[13px] text-brand-muted not-italic">Shopify store owner, United States, migrated late 2025</cite>
           </blockquote>
@@ -316,7 +316,7 @@ export default function VsDistillPage() {
                 { step: '1', text: 'For each competitor you track in Distill, open the page in your browser, right-click the price element, and choose Inspect. If the price value appears in the initial HTML source (View Source, not the inspector), HTML-only monitoring will work.' },
                 { step: '2', text: 'Sign up for Beaconmon (free, no card required). The onboarding wizard asks for your store URL and your competitor domains.' },
                 { step: '3', text: 'For each competitor, select what to monitor: price, stock status, promotional copy. For Shopify and WooCommerce competitors, the wizard provides preset selectors. For others, paste the CSS selector from your Distill setup.' },
-                { step: '4', text: 'Configure your alert channels and Intelligence Digest schedule. Slack and email are both available.' },
+                { step: '4', text: 'Configure your alert channels and Weekly Competitor Report schedule. Slack and email are both available.' },
                 { step: '5', text: 'Run Beaconmon for a week. If you see the same changes you were catching in Distill, cancel Distill.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

@@ -58,7 +58,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No dedicated digest',
     beaconmonGood: true,
@@ -102,7 +102,7 @@ const SWITCH_REASONS = [
   'Panoramata starts at $89/mo. For a Shopify store that wants to know when a competitor changes their price or runs a promotion on their site, that is 3x the cost of Beaconmon Starter for use cases Beaconmon covers directly.',
   'You need uptime monitoring alongside competitive monitoring. Panoramata has no uptime feature, so you would need a separate tool at additional cost.',
   'You want to monitor specific price elements, stock status, and promotional copy with CSS-selector precision. Panoramata tracks website changes at the page level, not the element level.',
-  'You want a weekly Intelligence Digest summarizing competitor site changes in plain language, delivered to Slack or email.',
+  'You want a Weekly Competitor Report summarizing competitor site changes in plain language, delivered to Slack or email.',
 ];
 
 const FAQ_ITEMS = [
@@ -302,7 +302,7 @@ export default function VsPanoramataPage() {
                 { step: '1', text: 'Identify which Panoramata features you actively use. If you rely on email and ad tracking, keep Panoramata for those signals.' },
                 { step: '2', text: 'For website change monitoring: add competitor URLs to Beaconmon with CSS-selector targeting for price, stock status, and promotional copy elements.' },
                 { step: '3', text: 'Add your own store URL to Beaconmon uptime monitoring. This alone justifies the $29/mo for most Shopify stores.' },
-                { step: '4', text: 'Connect Slack or email for the Intelligence Digest. You will get a weekly summary of every competitor site change, grouped by competitor.' },
+                { step: '4', text: 'Connect Slack or email for the Weekly Competitor Report. You will get a weekly summary of every competitor site change, grouped by competitor.' },
                 { step: '5', text: 'Beaconmon and Panoramata can run simultaneously. They cover different signal types and do not overlap in meaningful ways.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

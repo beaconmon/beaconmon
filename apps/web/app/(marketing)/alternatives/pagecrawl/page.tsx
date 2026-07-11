@@ -43,7 +43,7 @@ const REASONS_TO_SWITCH = [
     body: 'PageCrawl is a generic page-change tool. There is no onboarding for Shopify stores, no competitor setup wizard, and no concept of tracking price versus promo copy separately.',
   },
   {
-    heading: 'No Intelligence Digest.',
+    heading: 'No Weekly Competitor Report.',
     body: 'PageCrawl sends individual alerts per change. Beaconmon groups all competitor changes from the week into a single Slack or email digest on Starter and above.',
   },
 ];
@@ -52,7 +52,7 @@ const BEACONMON_WINS = [
   { point: '10 monitors free, vs PageCrawl\'s 6' },
   { point: 'Shopify and WooCommerce preset selectors, zero manual CSS work' },
   { point: 'Uptime, SSL, and domain expiry alerts on every plan' },
-  { point: 'Intelligence Digest on Starter ($29/mo)' },
+  { point: 'Weekly Competitor Report on Starter ($29/mo)' },
   { point: 'Ecommerce-native onboarding wizard' },
   { point: 'AI significance scoring on Growth (classifies changes as clearance push, margin test, etc.)' },
 ];
@@ -83,7 +83,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is PageCrawl cheaper than Beaconmon?',
-    a: 'PageCrawl paid plans start at $8/mo versus Beaconmon Starter at $29/mo. If budget is the primary concern and you do not need uptime monitoring, Shopify presets, or the Intelligence Digest, PageCrawl is cheaper. For Shopify store owners who want competitor monitoring and uptime in one tool, Beaconmon covers both.',
+    a: 'PageCrawl paid plans start at $8/mo versus Beaconmon Starter at $29/mo. If budget is the primary concern and you do not need uptime monitoring, Shopify presets, or the Weekly Competitor Report, PageCrawl is cheaper. For Shopify store owners who want competitor monitoring and uptime in one tool, Beaconmon covers both.',
   },
 ];
 
@@ -142,7 +142,7 @@ export default function PageCrawlAlternativePage() {
             Free alternative to PageCrawl.io for Shopify stores.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto mb-4">
-            PageCrawl monitors pages for changes. Beaconmon monitors competitors with Shopify-native presets, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan includes 10 monitors.
+            PageCrawl monitors pages for changes. Beaconmon monitors competitors with Shopify-native presets, adds uptime monitoring, and delivers a Weekly Competitor Report. Free plan includes 10 monitors.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -173,7 +173,7 @@ export default function PageCrawlAlternativePage() {
                   { label: 'Shopify presets', value: 'Yes, price, stock, promo copy' },
                   { label: 'Uptime monitoring', value: 'Included on all plans' },
                   { label: 'SSL + domain alerts', value: 'Included on all plans' },
-                  { label: 'Intelligence Digest', value: 'Starter ($29/mo) and above' },
+                  { label: 'Weekly Competitor Report', value: 'Starter ($29/mo) and above' },
                   { label: 'AI scoring', value: 'Growth and above' },
                   { label: 'Free trial', value: '14-day Growth trial, no card' },
                 ].map(({ label, value }) => (
@@ -221,7 +221,7 @@ export default function PageCrawlAlternativePage() {
               What Beaconmon covers instead
             </h2>
             <p className="text-brand-dim text-[16px] max-w-[520px] mx-auto">
-              Built for Shopify store owners who want competitor intelligence and uptime in one tool.
+              Built for Shopify store owners who want competitor monitoring and uptime in one tool.
             </p>
           </div>
           <div className="reveal grid grid-cols-2 max-[640px]:grid-cols-1 gap-4">

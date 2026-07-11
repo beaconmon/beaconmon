@@ -19,7 +19,7 @@ const TOOL_FACTS = [
   { label: 'Paid starting price', value: '~$7/mo for 50 monitors, 1-minute checks' },
   { label: 'Competitor monitoring', value: 'None' },
   { label: 'Shopify-specific features', value: 'None' },
-  { label: 'Intelligence Digest', value: 'None' },
+  { label: 'Weekly Competitor Report', value: 'None' },
   { label: 'Monitor types', value: 'HTTP/HTTPS uptime checks only' },
 ];
 
@@ -47,14 +47,14 @@ const BEACONMON_WINS = [
   'Competitor monitoring included: track price changes, promo banners, stock status on competitor storefronts',
   'SSL expiry alerts at 30, 14, and 7 days, included free (UptimeRobot requires paid for this)',
   'Domain expiry alerts included (UptimeRobot does not offer this)',
-  'Intelligence Digest on Starter and above consolidates every alert into a weekly Slack or email summary',
+  'Weekly Competitor Report on Starter and above consolidates every alert into a weekly Slack or email summary',
   'Onboarding wizard understands ecommerce: detects Shopify or WooCommerce and suggests the monitors that matter',
 ];
 
 const WHERE_UPTIMEROBOT_WINS = [
   "UptimeRobot's paid plan scales to 100 or more monitors at low cost. For teams monitoring many unrelated URLs, the per-monitor pricing can be cheaper than Beaconmon at volume.",
   'UptimeRobot has a longer track record and integrates with PagerDuty, OpsGenie, and other DevOps tooling. Teams with existing incident-management workflows may prefer staying in that ecosystem.',
-  'If you need only HTTP uptime checks with no interest in competitor monitoring or ecommerce intelligence, UptimeRobot paid is a simple, proven tool.',
+  'If you need only HTTP uptime checks with no interest in competitor monitoring or ecommerce monitoring, UptimeRobot paid is a simple, proven tool.',
 ];
 
 const FAQ_ITEMS = [
@@ -169,10 +169,10 @@ export default function UptimeRobotAlternativePage() {
               <ul className="space-y-3">
                 {[
                   { label: 'Free plan', value: '10 monitors, no commercial restriction, forever' },
-                  { label: 'Paid starting price', value: '$29/mo (Starter): Intelligence Digest, unlimited competitors' },
+                  { label: 'Paid starting price', value: '$29/mo (Starter): Weekly Competitor Report, unlimited competitors' },
                   { label: 'Competitor monitoring', value: 'Yes, included free (1 competitor on free plan)' },
                   { label: 'Shopify-specific features', value: 'Yes: preset selectors, ecommerce onboarding' },
-                  { label: 'Intelligence Digest', value: 'Yes, Starter and above' },
+                  { label: 'Weekly Competitor Report', value: 'Yes, Starter and above' },
                   { label: 'Monitor types', value: 'Uptime, SSL expiry, domain expiry, competitor content' },
                 ].map(({ label, value }) => (
                   <li key={label} className="flex flex-col gap-1">

@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Pingdom for Shopify (2026)',
   description:
-    'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, competitor tracking, or Intelligence Digest. Try free.',
+    'Pingdom vs Beaconmon: honest comparison for ecommerce stores. Pingdom has no free plan, competitor tracking, or Weekly Competitor Report. Try free.',
   alternates: { canonical: 'https://beaconmon.com/vs/pingdom' },
   openGraph: { url: 'https://beaconmon.com/vs/pingdom' },
 };
@@ -28,7 +28,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest',
+    feature: 'Weekly Competitor Report',
     beaconmon: '✓ Starter+',
     competitor: 'No',
     beaconmonGood: true,
@@ -101,7 +101,7 @@ const SWITCH_REASONS = [
   'Pingdom cannot track competitor prices, product listing changes, or promotional copy. Beaconmon checks those on every monitoring cycle.',
   'Domain expiry tracking is not in Pingdom. Beaconmon alerts you at 30, 14, and 7 days before a domain expires.',
   'Status pages in Pingdom cost extra. In Beaconmon they are included from the free plan, with custom domain support on paid tiers.',
-  'The daily Intelligence Digest gives you a plain-language summary of every change detected across your monitored sites, sent to email or Slack.',
+  'The Daily Competitor Report gives you a plain-language summary of every change detected across your monitored sites, sent to email or Slack.',
 ];
 
 const FAQ_ITEMS = [
@@ -178,7 +178,7 @@ export default function VsPingdomPage() {
             <span className="text-brand-green-ink">get the daily Shopify brief.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Pingdom is a strong enterprise tool: real user monitoring, scripted transaction checks, 70-plus global locations. For a Shopify or WooCommerce store owner, it has no competitor intelligence, no content change detection, and status pages cost extra. The Intelligence Digest replaces three tools worth of manual competitor checking.
+            Pingdom is a strong enterprise tool: real user monitoring, scripted transaction checks, 70-plus global locations. For a Shopify or WooCommerce store owner, it has no competitor monitoring, no content change detection, and status pages cost extra. The Weekly Competitor Report replaces three tools worth of manual competitor checking.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: May 2026</p>
         </div>

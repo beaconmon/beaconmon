@@ -30,7 +30,7 @@ const FEATURES = [
     body: 'Growth plan and above: when a competitor page changes, Beaconmon generates a plain-English summary. Know whether it was a price cut, a new promo, or a product description update before you open the diff.',
   },
   {
-    heading: 'Intelligence Digest',
+    heading: 'Weekly Competitor Report',
     body: 'A daily or weekly digest consolidates all competitor activity into one Slack message or email. Every Shopify competitor move in one place, filtered to what actually matters.',
   },
 ];
@@ -39,7 +39,7 @@ const HOW_IT_WORKS = [
   "Paste a competitor's Shopify store domain and Beaconmon finds the public product feed automatically",
   'Add specific product or pricing page URLs for CSS selector-level price targeting',
   'Beaconmon checks on your chosen interval and records every change with a timestamped diff',
-  'Get an instant Slack or email alert, or review all competitor moves in the weekly Intelligence Digest',
+  'Get an instant Slack or email alert, or review all competitor moves in the Weekly Competitor Report',
 ];
 
 const FAQS = [
@@ -48,8 +48,8 @@ const FAQS = [
     a: "Every public Shopify store exposes a JSON product catalog at store.myshopify.com/products.json. Beaconmon monitors this endpoint to detect new product additions, price changes, and availability updates across the competitor's full catalog in a single monitor, without needing to add each product page individually.",
   },
   {
-    q: 'How does Shopify competitor intelligence differ from simple price tracking?',
-    a: "Price tracking monitors one data point per page. Shopify competitor intelligence covers the full picture: prices across the product catalog, promotions, new product launches, content changes, and homepage repositioning. You see everything moving, not just one listed price.",
+    q: 'How does Shopify competitor monitoring differ from simple price tracking?',
+    a: "Price tracking monitors one data point per page. Shopify competitor monitoring covers the full picture: prices across the product catalog, promotions, new product launches, content changes, and homepage repositioning. You see everything moving, not just one listed price.",
   },
   {
     q: 'How often does Beaconmon check competitor pages?',
@@ -86,7 +86,7 @@ export default function ShopifyCompetitorMonitoringPage() {
   return (
     <>
       <JsonLd data={faqSchema} />
-      <JsonLd data={breadcrumbSchema({ name: 'Shopify Competitor Intelligence', path: '/shopify-competitor-monitoring' })} />
+      <JsonLd data={breadcrumbSchema({ name: 'Shopify Competitor Monitoring', path: '/shopify-competitor-monitoring' })} />
       <NavBar />
 
       {/* Hero */}
@@ -104,7 +104,7 @@ export default function ShopifyCompetitorMonitoringPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Shopify Competitor Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Shopify Competitor Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Shopify Competitor Monitoring:<br />
             <span className="text-brand-green-ink">Track the Full Product Feed, Not Just One Price</span>
@@ -127,7 +127,7 @@ export default function ShopifyCompetitorMonitoringPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -154,7 +154,7 @@ export default function ShopifyCompetitorMonitoringPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Intelligence that covers the full competitor picture</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Monitoring that covers the full competitor picture</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
@@ -173,7 +173,7 @@ export default function ShopifyCompetitorMonitoringPage() {
           <div className="reveal grid grid-cols-[1fr_1.2fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[980px] mx-auto">
             <div>
               <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Set up Shopify competitor intelligence in minutes
+                Set up Shopify competitor monitoring in minutes
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
                 No code required. Add a Shopify store domain and Beaconmon handles the rest.
@@ -213,10 +213,11 @@ export default function ShopifyCompetitorMonitoringPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/pricing-change-alerts" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/for/shopify" className="text-brand-dim hover:text-brand-text transition-colors">Shopify monitoring</Link>
+            <Link href="/shopify-store-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify store monitoring (uptime)</Link>
             <Link href="/blog/how-to-monitor-competitor-shopify-store-for-changes" className="text-brand-dim hover:text-brand-text transition-colors">How to monitor a competitor&apos;s Shopify store</Link>
             <Link href="/blog/best-shopify-competitor-monitoring-apps-2026" className="text-brand-dim hover:text-brand-text transition-colors">Best Shopify competitor monitoring apps</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>

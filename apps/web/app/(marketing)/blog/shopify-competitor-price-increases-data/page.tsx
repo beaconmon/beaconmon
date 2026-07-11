@@ -162,7 +162,7 @@ export default function Post() {
       </P>
 
       <P>
-        This is early warning intelligence for your own cost structure. If you share suppliers
+        This is an early warning signal for your own cost structure. If you share suppliers
         or ship via the same carriers, the same increase is likely headed your way. Knowing a
         competitor absorbed it (and at what magnitude) tells you both that there is market
         precedent for the increase and what the market-clearing level appears to be.

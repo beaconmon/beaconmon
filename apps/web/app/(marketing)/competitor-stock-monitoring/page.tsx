@@ -26,7 +26,7 @@ const FEATURES = [
     body: "Add one competitor domain and Beaconmon tracks availability across every variant in their catalog. When a specific colorway, size, or bundle configuration sells out, you see it without adding individual product page URLs.",
   },
   {
-    heading: 'Out-of-stock intelligence',
+    heading: 'Out-of-stock monitoring',
     body: "When a competitor runs out of their best-sellers, that gap is a window for your own promotions, ad targeting, or inventory decisions. Beaconmon surfaces the exact products and variants affected with a timestamp.",
   },
   {
@@ -39,7 +39,7 @@ const HOW_IT_WORKS = [
   "Paste a competitor's Shopify store domain and Beaconmon locates the public product feed automatically",
   'Beaconmon polls the feed and records the availability status of every variant on each check',
   'An event fires when any variant changes availability, with product name, variant details, and timestamp',
-  'Get instant Slack or email alerts, or review all stock changes in the weekly Intelligence Digest',
+  'Get instant Slack or email alerts, or review all stock changes in the Weekly Competitor Report',
 ];
 
 const FAQS = [
@@ -61,7 +61,7 @@ const FAQS = [
   },
   {
     q: 'What other signals can I get from the Shopify product feed?',
-    a: "The same feed monitor also captures new product launches, price changes, variant additions, and product removals. A single domain monitor covers availability, pricing, and launch intelligence in one place.",
+    a: "The same feed monitor also captures new product launches, price changes, variant additions, and product removals. A single domain monitor covers availability, pricing, and launch tracking in one place.",
   },
 ];
 
@@ -104,7 +104,7 @@ export default function CompetitorStockMonitoringPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Stock Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Stock Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Track When Competitor Products Go Out of Stock or Restock
           </h1>
@@ -118,7 +118,7 @@ export default function CompetitorStockMonitoringPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -145,7 +145,7 @@ export default function CompetitorStockMonitoringPage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Availability intelligence from structured feed data</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Availability monitoring from structured feed data</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
@@ -204,7 +204,7 @@ export default function CompetitorStockMonitoringPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-product-launch-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor product launch tracking</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/competitor-collections-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor collections monitoring</Link>

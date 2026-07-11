@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pricing — Beaconmon Store & Competitor Monitoring',
   description:
-    'Simple pricing for ecommerce website intelligence. 10 monitors free forever. Starter $29/mo, Growth $79/mo AI insights, Scale $199/mo unlimited monitoring.',
+    'Simple pricing for ecommerce website monitoring. 10 monitors free forever. Starter $29/mo, Growth $79/mo AI insights, Scale $199/mo unlimited monitoring.',
   alternates: { canonical: 'https://beaconmon.com/pricing' },
   openGraph: { url: 'https://beaconmon.com/pricing' },
 };
@@ -30,7 +30,7 @@ const CORE_MONITORING: MatrixRow[] = [
 const INTELLIGENCE: MatrixRow[] = [
   { feature: 'Competitor monitors',   free: '1',           starter: '5',         growth: '25',               scale: 'Unlimited' },
   { feature: 'Content monitoring',    free: '—',           starter: '✓',         growth: '✓',                scale: '✓' },
-  { feature: 'Intelligence Digest',   free: 'Weekly',      starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
+  { feature: 'Weekly Competitor Report',   free: 'Weekly',      starter: 'Weekly',    growth: 'Daily + weekly',   scale: 'Daily + weekly' },
   { feature: 'Smart Setup',           free: 'Template',    starter: 'Template',  growth: 'AI-powered',       scale: 'AI-powered' },
   { feature: 'AI change summaries (what changed, in plain English)',       free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
   { feature: 'Smart Alerts',          free: '—',           starter: '—',         growth: '✓',                scale: '✓' },
@@ -49,7 +49,7 @@ const BILLING_FAQ = [
   {
     id: 'after-trial',
     q: 'What happens after my trial?',
-    a: 'When your 14-day trial ends, your account moves to Free Lite automatically. You keep 1 competitor monitor, uptime checks for up to 10 monitors, and weekly intelligence digests. No charge is made unless you choose to upgrade.',
+    a: 'When your 14-day trial ends, your account moves to Free Lite automatically. You keep 1 competitor monitor, uptime checks for up to 10 monitors, and weekly competitor reports. No charge is made unless you choose to upgrade.',
   },
   {
     id: 'what-is-competitor',
@@ -102,7 +102,7 @@ const PRICING_SCHEMA = {
   url: 'https://beaconmon.com/pricing',
   brand: { '@type': 'Brand', name: 'Beaconmon' },
   description:
-    'Ecommerce website and competitor intelligence platform. Monitor your store and competitors automatically, uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
+    'Ecommerce website and competitor monitoring platform. Monitor your store and competitors automatically, uptime, content changes, pricing shifts, SSL expiry, and multi-location checks.',
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
@@ -236,7 +236,7 @@ export default function PricingPage() {
             Start free. One smart price move pays for the year.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Every plan includes a weekly intelligence digest, uptime monitoring, and SSL checks. Free Lite includes 1 competitor monitor. Daily digests and AI-powered insights unlock on Growth and above.
+            Every plan includes a weekly competitor report, uptime monitoring, and SSL checks. Free Lite includes 1 competitor monitor. Daily digests and AI-powered insights unlock on Growth and above.
           </p>
         </div>
       </section>
@@ -275,7 +275,7 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                <MatrixSection label="Intelligence" rows={INTELLIGENCE} />
+                <MatrixSection label="Monitoring & Reporting" rows={INTELLIGENCE} />
                 <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>
                 <MatrixSection label="Core monitoring" rows={CORE_MONITORING} />
                 <tr><td colSpan={5} className="border-t border-brand-line-soft" /></tr>

@@ -34,7 +34,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest',
+    feature: 'Weekly Competitor Report',
     beaconmon: '✓ Starter+',
     competitor: 'No',
     beaconmonGood: true,
@@ -100,7 +100,7 @@ const STAY_REASONS = [
 
 const SWITCH_REASONS = [
   'You want to see when a competitor drops prices, updates product listings, or launches a promotion, without checking manually.',
-  'You want a daily Intelligence Digest in Slack summarizing every change detected on competitor sites in plain language.',
+  'You want a Daily Competitor Report in Slack summarizing every change detected on competitor sites in plain language.',
   'You need SSL and domain expiry warnings sent 30, 14, and 7 days before expiry so a forgotten renewal never kills your checkout.',
   'You want 30-second check intervals and multi-region confirmation to eliminate false positives during high-traffic campaigns.',
   'You want AI change summaries that tell you what changed on a page, not just that something changed.',
@@ -180,7 +180,7 @@ export default function VsUptimeRobotPage() {
             <span className="text-brand-green-ink">get the daily Shopify brief.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            UptimeRobot&apos;s free tier is hard to beat for basic uptime pings: 50 monitors, no card, no expiry. What it cannot do is tell you when a competitor dropped prices, updated their product listings, or ran a flash sale last Tuesday. That is what the Intelligence Digest is for.
+            UptimeRobot&apos;s free tier is hard to beat for basic uptime pings: 50 monitors, no card, no expiry. What it cannot do is tell you when a competitor dropped prices, updated their product listings, or ran a flash sale last Tuesday. That is what the Weekly Competitor Report is for.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: May 2026</p>
         </div>

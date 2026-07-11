@@ -55,7 +55,7 @@ const howToSchema = createHowToSchema({
     { name: 'Add the competitor domain', text: "Go to Monitors and click Add competitor. Paste the competitor's Shopify store URL." },
     { name: 'Select the announcement bar element', text: 'In the element selector field, target the announcement bar or hero section. Beaconmon provides Shopify preset selectors for common promotional elements.' },
     { name: 'Set your alert channel', text: 'Choose Slack or email. Slack is recommended so you can respond within the hour a sale launches.' },
-    { name: 'Enable Intelligence Digest (optional)', text: 'On Starter and above, enable the Intelligence Digest to include promotional changes in your weekly competitor summary alongside price and catalog changes.' },
+    { name: 'Enable Weekly Competitor Report (optional)', text: 'On Starter and above, enable the Weekly Competitor Report to include promotional changes in your weekly competitor summary alongside price and catalog changes.' },
   ],
 });
 
@@ -249,7 +249,7 @@ export default function Post() {
         </LI>
         <LI>
           Optionally enable the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> to include promotional changes
+          <A href="/features/intelligence">Weekly Competitor Report</A> to include promotional changes
           in your weekly competitor summary alongside price and catalog changes.
         </LI>
       </OL>

@@ -142,7 +142,7 @@ export default function IntelligenceReportForm() {
             </p>
             <p className="text-[17px] font-bold text-brand-text mb-1">{state.domain} is now being watched.</p>
             <p className="text-[14px] text-brand-dim leading-[1.6] mb-4">
-              Your intelligence report arrives on {formatDay(state.reportDueAt)}. Check{' '}
+              Your 7-day report arrives on {formatDay(state.reportDueAt)}. Check{' '}
               <span className="font-mono text-brand-text">{state.email}</span>.
             </p>
             <p className="text-[14px] text-brand-dim mb-3">In the meantime, see a snapshot of the store right now:</p>

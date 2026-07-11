@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Better Uptime for Shopify (2026)',
   description:
-    "Better Uptime vs Beaconmon: honest ecommerce comparison. Better Uptime lacks competitor monitoring, content tracking, and Intelligence Digest. Try free.",
+    "Better Uptime vs Beaconmon: honest ecommerce comparison. Better Uptime lacks competitor monitoring, content tracking, and Weekly Competitor Report. Try free.",
   alternates: { canonical: 'https://beaconmon.com/vs/better-uptime' },
   openGraph: { url: 'https://beaconmon.com/vs/better-uptime' },
 };
@@ -34,7 +34,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest',
+    feature: 'Weekly Competitor Report',
     beaconmon: '✓ Starter+',
     competitor: '—',
     beaconmonGood: true,
@@ -100,7 +100,7 @@ const BETTER_UPTIME_STRENGTHS = [
 
 const SWITCH_REASONS = [
   'You want to track when competitors change prices, product listings, or run promotions.',
-  'You want a daily Intelligence Digest in Slack summarizing every change detected on competitor sites.',
+  'You want a Daily Competitor Report in Slack summarizing every change detected on competitor sites.',
   'You need SSL and domain expiry warnings so a forgotten renewal never breaks your checkout.',
   "Better Uptime's on-call rotation features are designed for DevOps teams with pager rotations. Overkill for most ecommerce stores.",
   'Better Uptime has no competitor monitoring or content change detection at any price point.',
@@ -178,7 +178,7 @@ export default function VsBetterUptimePage() {
             <span className="text-brand-green-ink">get the daily Shopify brief.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Better Uptime has excellent on-call scheduling for large engineering teams. For ecommerce store owners, it is a tool built for a different job: no competitor intelligence, no content change detection, and check intervals of 3 minutes on paid plans. Beaconmon is built for stores, not SRE teams.
+            Better Uptime has excellent on-call scheduling for large engineering teams. For ecommerce store owners, it is a tool built for a different job: no competitor monitoring, no content change detection, and check intervals of 3 minutes on paid plans. Beaconmon is built for stores, not SRE teams.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: May 2026</p>
         </div>
@@ -190,7 +190,7 @@ export default function VsBetterUptimePage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Better Uptime is built for teams that need on-call rotations and escalation policies. If your store runs a pager rotation, it might be worth a look. For a Shopify or WooCommerce store owner who wants competitor price tracking, content change alerts, and a daily Intelligence Digest, Beaconmon is purpose-built for that.
+              Better Uptime is built for teams that need on-call rotations and escalation policies. If your store runs a pager rotation, it might be worth a look. For a Shopify or WooCommerce store owner who wants competitor price tracking, content change alerts, and a Daily Competitor Report, Beaconmon is purpose-built for that.
             </p>
           </div>
         </div>
@@ -278,7 +278,7 @@ export default function VsBetterUptimePage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <blockquote className="reveal max-w-[700px] mx-auto border-l-2 border-brand-green-ink pl-8 py-2">
             <p className="text-[18px] leading-[1.7] text-brand-dim italic mb-4">
-              &ldquo;We were paying for Better Uptime&apos;s on-call features and never using them. Two-person store. Beaconmon has competitor monitoring, the Intelligence Digest, and costs less. We switched in an afternoon.&rdquo;
+              &ldquo;We were paying for Better Uptime&apos;s on-call features and never using them. Two-person store. Beaconmon has competitor monitoring, the Weekly Competitor Report, and costs less. We switched in an afternoon.&rdquo;
             </p>
             <cite className="text-[13px] text-brand-muted not-italic">WooCommerce store owner, United States, migrated 2026</cite>
           </blockquote>

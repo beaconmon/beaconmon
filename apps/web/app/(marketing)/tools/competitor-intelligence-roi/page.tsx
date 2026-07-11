@@ -9,9 +9,9 @@ import type { Metadata } from 'next';
 import { TrendingDown, Truck, PackagePlus } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Competitor Intelligence ROI Calculator | Beaconmon',
+  title: 'Competitor Monitoring ROI Calculator | Beaconmon',
   description:
-    'Free ROI calculator for ecommerce competitor intelligence. See how much revenue you recover by reacting faster to competitor price drops and promotions.',
+    'Free ROI calculator for ecommerce competitor monitoring. See how much revenue you recover by reacting faster to competitor price drops and promotions.',
   alternates: { canonical: 'https://beaconmon.com/tools/competitor-intelligence-roi' },
   openGraph: { url: 'https://beaconmon.com/tools/competitor-intelligence-roi' },
 };
@@ -43,7 +43,7 @@ const HOW_IT_HELPS = [
     detail: 'Get notified within minutes when a competitor changes a price, marks down products, or launches a sale.',
   },
   {
-    heading: 'Daily intelligence digest',
+    heading: 'daily competitor report',
     detail: 'A morning summary of every competitor move from the past 24 hours, so nothing slips through overnight.',
   },
   {
@@ -70,7 +70,7 @@ const FAQS = [
     a: 'The calculator uses industry benchmarks across 3 niche types as inputs. Your actual results depend on your specific niche competitiveness and customer price sensitivity, which vary by product category and market. Use the figure as a directional estimate of the revenue gap between reacting same-day and reacting a week later, not a precise forecast.',
   },
   {
-    q: 'What does Beaconmon track for competitor intelligence?',
+    q: 'What does Beaconmon track for competitor monitoring?',
     a: 'Beaconmon monitors competitor websites for price changes, promotional markdowns, new product launches, and content updates. You get an alert within minutes of any change, plus a weekly digest summarizing competitor activity.',
   },
 ];
@@ -88,13 +88,13 @@ const faqSchema = {
 const appSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Competitor Intelligence ROI Calculator',
+  name: 'Competitor Monitoring ROI Calculator',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/competitor-intelligence-roi',
   dateModified: '2026-06-29',
   description:
-    'Free ROI calculator for ecommerce competitor intelligence. See how much revenue you recover by reacting faster to competitor price drops and promotions.',
+    'Free ROI calculator for ecommerce competitor monitoring. See how much revenue you recover by reacting faster to competitor price drops and promotions.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   provider: { '@type': 'Organization', name: 'Beaconmon', url: 'https://beaconmon.com' },
 };
@@ -102,7 +102,7 @@ const appSchema = {
 const howToSchema = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
-  name: 'How to calculate competitor intelligence ROI for your store',
+  name: 'How to calculate competitor monitoring ROI for your store',
   step: [
     { '@type': 'HowToStep', name: 'Enter your monthly revenue', text: 'Enter your store monthly revenue.' },
     { '@type': 'HowToStep', name: 'Select your niche', text: 'Choose how competitive your niche is: commodity, mid-market, or differentiated.' },
@@ -120,7 +120,7 @@ export default function CompetitorRoiPage() {
       <JsonLd
         data={breadcrumbSchema(
           { name: 'Tools', path: '/tools' },
-          { name: 'Competitor Intelligence ROI Calculator', path: '/tools/competitor-intelligence-roi' },
+          { name: 'Competitor Monitoring ROI Calculator', path: '/tools/competitor-intelligence-roi' },
         )}
       />
       <NavBar />
@@ -147,12 +147,12 @@ export default function CompetitorRoiPage() {
             How much revenue are you losing by reacting slowly to competitor moves?
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
-            Calculate how much faster competitor intelligence could recover for your store. Based on your revenue, niche, and
+            Calculate how much faster competitor monitoring could recover for your store. Based on your revenue, niche, and
             how many competitors you track.
           </p>
           <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-8 max-w-[620px]">
             <p className="text-[14px] text-brand-dim leading-[1.6]">
-              <span className="text-brand-text font-medium">The Competitor Intelligence ROI Calculator estimates how much revenue your store recovers by reacting to competitor price drops and promotions the same day instead of a week later.</span>{' '}
+              <span className="text-brand-text font-medium">The Competitor Monitoring ROI Calculator estimates how much revenue your store recovers by reacting to competitor price drops and promotions the same day instead of a week later.</span>{' '}
               Same-day reaction recovers a large share of revenue that a typical promotion peaks within its first 48 to 72 hours.
             </p>
           </div>
@@ -245,7 +245,7 @@ export default function CompetitorRoiPage() {
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
             <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">
-              Ecommerce competitor intelligence
+              Ecommerce competitor monitoring
             </Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">
               Competitor price tracking

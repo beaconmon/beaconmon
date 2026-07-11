@@ -47,8 +47,8 @@ const ENTRIES: Entry[] = [
   {
     date: 'June 2026',
     tag: 'Improvement',
-    title: 'Daily Intelligence Digest, timezone-aware',
-    body: 'The Intelligence Digest now lands daily on Growth and Scale, summarizing every meaningful competitor move since the last one. Scheduling is timezone-aware, so the digest arrives at the start of your morning instead of the middle of your night. Free and Starter plans continue to get the weekly digest.',
+    title: 'Daily Competitor Report, timezone-aware',
+    body: 'The Weekly Competitor Report now lands daily on Growth and Scale, summarizing every meaningful competitor move since the last one. Scheduling is timezone-aware, so the digest arrives at the start of your morning instead of the middle of your night. Free and Starter plans continue to get the weekly digest.',
   },
   {
     date: 'May 2026',
@@ -164,7 +164,7 @@ export default function ChangelogPage() {
             What&apos;s new in Beaconmon.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[520px] mx-auto">
-            Competitor intelligence, store monitoring, and everything new in Beaconmon, in the order it shipped.
+            Competitor monitoring, store monitoring, and everything new in Beaconmon, in the order it shipped.
           </p>
         </div>
       </section>

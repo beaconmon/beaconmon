@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Ecommerce Competitor Intelligence Glossary | Beaconmon',
+  title: 'Ecommerce Competitor Monitoring Glossary | Beaconmon',
   description:
     'Plain-language definitions for Shopify and WooCommerce monitoring terms: compare-at price, price change noise, significance scoring, and more.',
   alternates: { canonical: 'https://beaconmon.com/glossary' },
@@ -55,15 +55,15 @@ const TERMS: Term[] = [
       "Significance scoring is an AI classification, low, medium, or high, applied to each detected competitor event to separate background activity from events worth a person's attention. Only a small share of events are typically flagged high-significance. This lets a Shopify store owner skip routine updates and focus on the handful of changes, like a real price cut on a bestseller, that actually call for a response. Available on the Growth plan and above.",
     links: [
       { href: '/blog/shopify-competitor-event-significance-data', label: 'How significance scoring splits real event data' },
-      { href: '/features/intelligence', label: 'Intelligence Digest features' },
+      { href: '/features/intelligence', label: 'Weekly Competitor Report features' },
     ],
   },
   {
     slug: 'intelligence-digest',
-    name: 'Intelligence Digest',
+    name: 'Weekly Competitor Report',
     definition:
-      "The Intelligence Digest is Beaconmon's scheduled Slack or email summary that groups every competitor change detected over a period into a plain-language digest, rather than a raw list of diffs. It is available on the Starter plan and above. Instead of checking a dashboard, a store owner or their team gets a readable roundup of what competitors did and when.",
-    links: [{ href: '/features/intelligence', label: 'How the Intelligence Digest works' }],
+      "The Weekly Competitor Report is Beaconmon's scheduled Slack or email summary that groups every competitor change detected over a period into a plain-language digest, rather than a raw list of diffs. It is available on the Starter plan and above. Instead of checking a dashboard, a store owner or their team gets a readable roundup of what competitors did and when.",
+    links: [{ href: '/features/intelligence', label: 'How the Weekly Competitor Report works' }],
   },
   {
     slug: 'css-selector-monitoring',
@@ -122,7 +122,7 @@ const definedTermSetSchema = {
   '@context': 'https://schema.org',
   '@type': 'DefinedTermSet',
   '@id': TERM_SET_ID,
-  name: 'Ecommerce Competitor Intelligence Glossary',
+  name: 'Ecommerce Competitor Monitoring Glossary',
   description:
     'Plain-language definitions of the terms used in competitor and uptime monitoring for Shopify and WooCommerce stores.',
   url: GLOSSARY_URL,
@@ -161,7 +161,7 @@ export default function GlossaryPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Glossary</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Ecommerce competitor intelligence glossary
+            Ecommerce competitor monitoring glossary
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-10">
             Plain-language definitions of the terms used in competitor and uptime monitoring for Shopify and WooCommerce stores, from compare-at price to significance scoring.

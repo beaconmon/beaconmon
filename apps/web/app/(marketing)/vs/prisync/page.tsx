@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Prisync for Shopify Stores (2026): Honest Comparison',
   description:
-    'Prisync vs Beaconmon: price-only tracking vs price-plus-context with AI significance scoring. Competitor intelligence, uptime, and Digest compared.',
+    'Prisync vs Beaconmon: price-only tracking vs price-plus-context with AI significance scoring. Competitor monitoring, uptime, and Digest compared.',
   alternates: { canonical: 'https://beaconmon.com/vs/prisync' },
   openGraph: { url: 'https://beaconmon.com/vs/prisync' },
 };
@@ -40,7 +40,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No weekly digest',
     beaconmonGood: true,
@@ -95,15 +95,15 @@ const STAY_REASONS = [
 const SWITCH_REASONS = [
   'You want to know not just that a price changed, but also whether a competitor updated their promotional copy, added a sale badge, or changed their shipping messaging at the same time.',
   'You want an AI to read each competitor change and tell you whether it is likely a clearance push, a margin test, or a seasonal promotion, not just a price difference.',
-  'You want your uptime monitoring, SSL expiry alerts, and competitor intelligence in one tool, not separate subscriptions.',
-  'You want a weekly Intelligence Digest delivered to Slack or email that groups every competitor change into a readable summary.',
+  'You want your uptime monitoring, SSL expiry alerts, and competitor monitoring in one tool, not separate subscriptions.',
+  'You want a Weekly Competitor Report delivered to Slack or email that groups every competitor change into a readable summary.',
   'You want to track fewer competitors deeply, with full page context and AI summaries, rather than many SKUs shallowly.',
 ];
 
 const FAQ_ITEMS = [
   {
     q: 'What is the main difference between Prisync and Beaconmon?',
-    a: "Prisync is a price intelligence platform. It scrapes prices into a database, tracks history, and can trigger repricing rules. Beaconmon is a broader competitor intelligence tool that tracks price changes in context: what promotional copy surrounds the price, did the sale badge appear at the same time, and an AI classifies what the change likely means. Beaconmon also covers uptime monitoring and SSL expiry, which Prisync does not.",
+    a: "Prisync is a price intelligence platform. It scrapes prices into a database, tracks history, and can trigger repricing rules. Beaconmon is a broader competitor monitoring tool that tracks price changes in context: what promotional copy surrounds the price, did the sale badge appear at the same time, and an AI classifies what the change likely means. Beaconmon also covers uptime monitoring and SSL expiry, which Prisync does not.",
   },
   {
     q: 'Does Beaconmon replace Prisync for large catalogues?',
@@ -186,7 +186,7 @@ export default function VsPrisyncPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Choose Prisync if you need structured price data across hundreds of SKUs, long price history, or automated repricing integrations. Choose Beaconmon if you want to understand competitor moves in full context, get AI significance scoring on each change, and combine competitor intelligence with uptime monitoring in one tool starting at $29 per month.
+              Choose Prisync if you need structured price data across hundreds of SKUs, long price history, or automated repricing integrations. Choose Beaconmon if you want to understand competitor moves in full context, get AI significance scoring on each change, and combine competitor monitoring with uptime monitoring in one tool starting at $29 per month.
             </p>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function VsPrisyncPage() {
                 { step: '1', text: 'Export your competitor list from Prisync. Note which product pages or category pages you care about most.' },
                 { step: '2', text: 'Sign up for Beaconmon (free, no card required). The onboarding wizard walks you through adding your store and competitors.' },
                 { step: '3', text: 'For each competitor, choose the pages you want to watch: product listing pages, specific product pages, pricing pages. The wizard suggests CSS selectors for price and availability on Shopify and WooCommerce stores.' },
-                { step: '4', text: 'Configure your Intelligence Digest in Slack or email. This replaces the manual Prisync dashboard check with a delivered weekly summary.' },
+                { step: '4', text: 'Configure your Weekly Competitor Report in Slack or email. This replaces the manual Prisync dashboard check with a delivered weekly summary.' },
                 { step: '5', text: 'Run both tools for a week if you need to validate coverage, then cancel Prisync.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

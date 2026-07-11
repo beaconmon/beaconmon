@@ -88,7 +88,7 @@ export default function Post() {
         </KeyTakeaway>
         <KeyTakeaway>
           Instant alerts routed to Slack are the only reliable way to catch flash sales before
-          they end. Daily digests work for pattern intelligence, not same-day response.
+          they end. Daily digests work for spotting patterns, not same-day response.
         </KeyTakeaway>
         <KeyTakeaway>
           Pre-staging response campaigns for your most likely competitor sale scenarios cuts
@@ -187,8 +187,8 @@ export default function Post() {
         Not every competitor needs instant sale alerts. Reserve them for your two or three direct
         competitors with the highest catalog overlap. For secondary competitors, route sale events
         to the daily{' '}
-        <A href="/features/intelligence">Intelligence Digest</A>: the sale will likely be over,
-        but the pattern of when they run sales (and at what depths) is still useful intelligence.
+        <A href="/features/intelligence">Weekly Competitor Report</A>: the sale will likely be over,
+        but the pattern of when they run sales (and at what depths) is still useful information.
       </P>
 
       <H3>Prepare responses in advance</H3>

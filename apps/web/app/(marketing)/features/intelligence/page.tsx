@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopify Competitor Intelligence Features | Beaconmon',
+  title: 'Competitor Monitoring Features for Shopify | Beaconmon',
   description:
     'Track competitor prices, promotions, and product launches on any Shopify store. Get a daily AI digest with plain-English summaries of every change.',
   alternates: { canonical: 'https://beaconmon.com/features/intelligence' },
@@ -18,7 +18,7 @@ const SCHEMA = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: 'Shopify Competitor Intelligence | Beaconmon',
+    name: 'Competitor Monitoring Features for Shopify | Beaconmon',
     description:
       'Track competitor prices, promotions, and product launches. Daily AI digest with plain-English summaries of every change.',
     url: 'https://beaconmon.com/features/intelligence',
@@ -66,7 +66,7 @@ const CAPABILITIES = [
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.05 2.68h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16.92z" />
       </svg>
     ),
-    name: 'Intelligence digest',
+    name: 'Weekly Competitor Report',
     body: 'Instead of one alert per change, get a single daily or weekly email (or Slack message) summarising everything that changed across your competitor watchlist. Toggle which sections to include per channel.',
   },
   {
@@ -142,7 +142,7 @@ export default function IntelligencePage() {
   return (
     <>
       <JsonLd data={SCHEMA} />
-      <JsonLd data={breadcrumbSchema({ name: 'Features', path: '/features' }, { name: 'Competitor Intelligence', path: '/features/intelligence' })} />
+      <JsonLd data={breadcrumbSchema({ name: 'Features', path: '/features' }, { name: 'Competitor Monitoring', path: '/features/intelligence' })} />
       <NavBar />
 
       {/* Hero */}
@@ -160,7 +160,7 @@ export default function IntelligencePage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[860px] mx-auto">
             Know what your competitors changed
             <span className="text-brand-green-ink"> before your customers do.</span>
@@ -176,7 +176,7 @@ export default function IntelligencePage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How competitor intelligence works</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How competitor monitoring works</h2>
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">Beaconmon takes an HTML snapshot on first run, then checks on your schedule and diffs the result each time.</p>
           </div>
           <div className="grid grid-cols-3 max-[880px]:grid-cols-1 gap-6">
@@ -200,7 +200,7 @@ export default function IntelligencePage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal grid grid-cols-[1fr_1.3fr] max-[880px]:grid-cols-1 gap-16 items-start">
             <div>
-              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Daily Intelligence Brief</span>
+              <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Daily Competitor Report</span>
               <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
                 One email. Everything that changed.
               </h2>
@@ -226,7 +226,7 @@ export default function IntelligencePage() {
             <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl overflow-hidden">
               <div className="px-5 py-4 border-b border-brand-line-soft flex items-center justify-between">
                 <div>
-                  <div className="text-[13px] font-semibold">Intelligence Digest</div>
+                  <div className="text-[13px] font-semibold">Weekly Competitor Report</div>
                   <div className="text-[11px] text-brand-muted mt-[2px]">Monday, June 9 at 7:00 AM</div>
                 </div>
                 <span className="text-[11px] bg-[rgba(0,229,122,0.1)] text-brand-green-ink px-2 py-1 rounded border border-[rgba(0,229,122,0.2)] font-semibold">7 changes</span>
@@ -404,7 +404,7 @@ export default function IntelligencePage() {
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Everything in the Intelligence layer</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">Everything included in competitor monitoring</h2>
             <p className="text-brand-dim text-[16px] max-w-[520px] mx-auto">Six capabilities that work together to keep you informed without overwhelming you.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'How We Collect Our Competitor Intelligence Data | Beaconmon',
+  title: 'How We Collect Our Competitor Monitoring Data | Beaconmon',
   description:
     "How Beaconmon's competitor monitoring data is collected, what it covers, and its honest limitations. The methodology behind every statistic in our research.",
   alternates: { canonical: 'https://beaconmon.com/methodology' },
@@ -70,7 +70,7 @@ export default function MethodologyPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Methodology</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            How we collect our competitor intelligence data
+            How we collect our competitor monitoring data
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-8">
             Every statistic on this site comes from monitoring data our product actually collects. Here is exactly how, what it covers, and where it falls short.

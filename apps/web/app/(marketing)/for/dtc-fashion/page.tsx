@@ -37,7 +37,7 @@ const FEATURES = [
     body: 'Sold out on a bestseller could be a real shortage or manufactured scarcity. Beaconmon tracks stock status changes on competitor SKUs, and our restock speed data shows what a real restock pattern looks like.',
   },
   {
-    heading: 'Intelligence Digest, daily',
+    heading: 'Weekly Competitor Report, daily',
     body: 'One email and Slack post a day with every competitor markdown, new drop, and stock change from the last 24 hours. Skim it with coffee. Skip the dashboard.',
   },
 ];

@@ -23,7 +23,7 @@ const TOOL_FACTS = [
   { label: 'Tracks promo copy and banners', value: 'No' },
   { label: 'Uptime monitoring', value: 'No' },
   { label: 'SSL / domain expiry alerts', value: 'No' },
-  { label: 'Intelligence Digest', value: 'No' },
+  { label: 'Weekly Competitor Report', value: 'No' },
 ];
 
 const REASONS_TO_SWITCH = [
@@ -44,7 +44,7 @@ const REASONS_TO_SWITCH = [
     body: 'Rivalert is competitor-only. You need a separate tool to know when your own store goes down or your SSL certificate is about to expire. Beaconmon covers both in one subscription.',
   },
   {
-    heading: 'No Intelligence Digest.',
+    heading: 'No Weekly Competitor Report.',
     body: 'Rivalert sends individual email alerts per event. Beaconmon Starter includes a weekly Slack or email digest that groups every competitor change from the past week into a single readable summary.',
   },
 ];
@@ -55,7 +55,7 @@ const BEACONMON_WINS = [
   'Monitors promotional copy, homepage banners, and content changes (Rivalert does not)',
   'Uptime monitoring included at no extra cost (Rivalert has none)',
   'SSL and domain expiry alerts at 30, 14, and 7 days',
-  'Intelligence Digest on Starter ($29/mo): weekly Slack or email competitor summary',
+  'Weekly Competitor Report on Starter ($29/mo): weekly Slack or email competitor summary',
 ];
 
 const WHERE_RIVALERT_WINS = [
@@ -88,7 +88,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon more expensive than Rivalert?',
-    a: 'Beaconmon Starter is $29/mo versus Rivalert Starter at $19/mo. However, Beaconmon Starter includes features Rivalert does not offer at any price: uptime monitoring, SSL alerts, content and promo change monitoring, and the Intelligence Digest. And Beaconmon has a free plan Rivalert does not.',
+    a: 'Beaconmon Starter is $29/mo versus Rivalert Starter at $19/mo. However, Beaconmon Starter includes features Rivalert does not offer at any price: uptime monitoring, SSL alerts, content and promo change monitoring, and the Weekly Competitor Report. And Beaconmon has a free plan Rivalert does not.',
   },
 ];
 
@@ -206,7 +206,7 @@ export default function AlternativesRivalertPage() {
                   <span className="text-brand-green-ink font-medium">Yes, included</span>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <span className="text-brand-muted">Intelligence Digest</span>
+                  <span className="text-brand-muted">Weekly Competitor Report</span>
                   <span className="text-brand-green-ink font-medium">Starter+</span>
                 </div>
               </div>

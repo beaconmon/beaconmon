@@ -21,7 +21,7 @@ const TOOL_FACTS = [
   { label: 'Primary use case', value: 'Catalog-level price intelligence, MAP compliance, marketplace monitoring' },
   { label: 'Uptime monitoring', value: 'Not included' },
   { label: 'Content change monitoring', value: 'Not included' },
-  { label: 'Intelligence Digest', value: 'Not included' },
+  { label: 'Weekly Competitor Report', value: 'Not included' },
   { label: 'Setup required', value: 'SKU catalog import, product matching' },
 ];
 
@@ -66,7 +66,7 @@ const BEACONMON_WINS = [
     body: 'HTTP checks, SSL expiry alerts at 30, 14, and 7 days, and domain expiry alerts are included in every Beaconmon plan.',
   },
   {
-    heading: 'Intelligence Digest on Starter.',
+    heading: 'Weekly Competitor Report on Starter.',
     body: 'A weekly Slack or email digest consolidates every competitor change into a readable summary. No dashboard to check.',
   },
   {
@@ -82,7 +82,7 @@ const BEACONMON_WINS = [
 const WHERE_PRICE2SPY_WINS = [
   'Price2Spy is a purpose-built price intelligence platform for large-catalog retailers. It handles thousands of SKUs, monitors marketplaces including Amazon, Google Shopping, and Walmart, tracks MAP compliance across resellers, and maintains long-run price history. For retailers who need that, Beaconmon is not a substitute.',
   'Price2Spy offers custom data capture for non-standard page formats. If competitor sites serve prices in unusual markup, the Price2Spy team handles the configuration.',
-  'For enterprise-level repricing workflows, Price2Spy integrates with dedicated repricing tools. Beaconmon surfaces the intelligence; it does not automate repricing.',
+  'For enterprise-level repricing workflows, Price2Spy integrates with dedicated repricing tools. Beaconmon surfaces the data; it does not automate repricing.',
 ];
 
 const FAQ_ITEMS = [
@@ -96,7 +96,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What does Beaconmon offer that Price2Spy does not?',
-    a: 'Uptime monitoring, promotional copy and banner change tracking, Intelligence Digest, and a price point that fits small Shopify stores. Price2Spy tracks prices only, starts at $157/mo, and is built for large-catalog operations.',
+    a: 'Uptime monitoring, promotional copy and banner change tracking, Weekly Competitor Report, and a price point that fits small Shopify stores. Price2Spy tracks prices only, starts at $157/mo, and is built for large-catalog operations.',
   },
   {
     q: 'How long does Beaconmon setup take?',
@@ -189,7 +189,7 @@ export default function AlternativesPrice2SpyPage() {
                 {[
                   'CSS-selector price and content tracking',
                   'Uptime, SSL, and domain expiry alerts',
-                  'Intelligence Digest on Starter',
+                  'Weekly Competitor Report on Starter',
                   'AI significance scoring on Growth',
                   'Shopify preset selectors built in',
                   'Setup in under 10 minutes',
@@ -234,7 +234,7 @@ export default function AlternativesPrice2SpyPage() {
               What Beaconmon covers instead
             </h2>
             <p className="text-brand-dim text-[16px] max-w-[540px] mx-auto">
-              Built for Shopify store owners who want competitor intelligence and uptime in one tool, at a price that makes sense for their store size.
+              Built for Shopify store owners who want competitor monitoring and uptime in one tool, at a price that makes sense for their store size.
             </p>
           </div>
           <div className="grid grid-cols-3 max-[900px]:grid-cols-2 max-[640px]:grid-cols-1 gap-5">

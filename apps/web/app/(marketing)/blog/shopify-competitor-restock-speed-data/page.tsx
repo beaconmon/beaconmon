@@ -229,7 +229,7 @@ export default function Post() {
 
       <P>
         If a specific product cycles out of stock and back in within a day repeatedly, that is
-        a deliberate pattern, not a coincidence. It is useful intelligence about how a
+        a deliberate pattern, not a coincidence. It is useful information about how a
         competitor markets urgency, worth a note in a competitive teardown, but not a reason to
         change your own inventory or pricing.
       </P>

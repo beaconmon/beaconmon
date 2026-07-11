@@ -22,7 +22,7 @@ const TOOL_FACTS = [
   { label: 'Enterprise', value: '$999+/mo' },
   { label: 'Monitor types', value: '13 (visual, content, keyword, price, API, WHOIS, and more)' },
   { label: 'Shopify preset selectors', value: 'No' },
-  { label: 'Intelligence Digest', value: 'No' },
+  { label: 'Weekly Competitor Report', value: 'No' },
   { label: 'Primary audience', value: 'Marketers and agencies' },
 ];
 
@@ -41,7 +41,7 @@ const REASONS_TO_SWITCH = [
   },
   {
     heading: 'No consolidated digest.',
-    body: 'Hexowatch sends individual alerts per change. There is no weekly Intelligence Digest grouping competitor changes into a readable summary for your store.',
+    body: 'Hexowatch sends individual alerts per change. There is no Weekly Competitor Report grouping competitor changes into a readable summary for your store.',
   },
   {
     heading: 'Visual monitoring misses specific values.',
@@ -56,14 +56,14 @@ const BEACONMON_WINS = [
   },
   {
     heading: 'Same starting price, more for ecommerce.',
-    body: 'Beaconmon Starter is $29/mo, the same as Hexowatch Pro. Starter includes the Intelligence Digest, Shopify preset selectors, uptime monitoring, SSL alerts, and domain expiry alerts.',
+    body: 'Beaconmon Starter is $29/mo, the same as Hexowatch Pro. Starter includes the Weekly Competitor Report, Shopify preset selectors, uptime monitoring, SSL alerts, and domain expiry alerts.',
   },
   {
     heading: 'Shopify and WooCommerce presets.',
     body: 'Point at a competitor product URL. Beaconmon knows which CSS selectors to target for price, stock, and promotional copy on Shopify and WooCommerce stores. No manual selector configuration.',
   },
   {
-    heading: 'Weekly Intelligence Digest.',
+    heading: 'Weekly Competitor Report.',
     body: 'A Slack or email digest groups every competitor change from the past week. No dashboard to check. Changes land in your inbox or channel on a schedule you control.',
   },
   {
@@ -98,7 +98,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What does Beaconmon do that Hexowatch does not?',
-    a: "Beaconmon ships with Shopify preset selectors for price and stock monitoring, delivers a weekly Intelligence Digest to Slack or email, and includes an ecommerce-native setup flow. Hexowatch is more general-purpose and does not offer these features.",
+    a: "Beaconmon ships with Shopify preset selectors for price and stock monitoring, delivers a Weekly Competitor Report to Slack or email, and includes an ecommerce-native setup flow. Hexowatch is more general-purpose and does not offer these features.",
   },
   {
     q: 'Can Hexowatch monitor Shopify competitor prices?',
@@ -106,7 +106,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon cheaper than Hexowatch?',
-    a: 'The Starter plans are the same price ($29/mo), but Beaconmon Starter includes the Intelligence Digest and Shopify presets that Hexowatch Pro does not. Hexowatch higher tiers ($55 to $99/mo) add features like visual monitoring and API checks that Beaconmon does not offer.',
+    a: 'The Starter plans are the same price ($29/mo), but Beaconmon Starter includes the Weekly Competitor Report and Shopify presets that Hexowatch Pro does not. Hexowatch higher tiers ($55 to $99/mo) add features like visual monitoring and API checks that Beaconmon does not offer.',
   },
 ];
 
@@ -174,7 +174,7 @@ export default function HexowatchAlternativePage() {
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mx-auto mb-4">
             Hexowatch starts at $29/month with no free plan. Beaconmon gives you competitor monitoring and uptime
-            for Shopify stores, free to start, with CSS-selector precision and a weekly Intelligence Digest.
+            for Shopify stores, free to start, with CSS-selector precision and a Weekly Competitor Report.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -220,7 +220,7 @@ export default function HexowatchAlternativePage() {
                   <span className="text-brand-green-ink font-semibold">Yes</span>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <span className="text-brand-muted">Intelligence Digest</span>
+                  <span className="text-brand-muted">Weekly Competitor Report</span>
                   <span className="text-brand-green-ink font-semibold">Starter+</span>
                 </div>
                 <div className="flex justify-between gap-4">
@@ -325,7 +325,7 @@ export default function HexowatchAlternativePage() {
           <p className="text-brand-muted text-[13px] text-center mt-6 leading-[1.65]">
             If you need API monitoring, WHOIS tracking, or visual diffing for non-Shopify sites, Hexowatch is the
             stronger tool. Beaconmon is built for stores on Shopify or WooCommerce that want competitor
-            intelligence and uptime in one focused product.
+            monitoring and uptime in one focused product.
           </p>
         </div>
       </section>

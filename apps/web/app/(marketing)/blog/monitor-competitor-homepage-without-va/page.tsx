@@ -36,7 +36,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'Do I need to monitor every page on a competitor\'s site?',
-    a: 'No. Focus produces better intelligence than coverage. The homepage, main product pages for SKUs that overlap with your catalog, and the pricing or plans page (if applicable) are the three highest-signal locations. Monitoring 5 to 8 URLs per competitor is the practical maximum before alert volume becomes noise.',
+    a: 'No. Focus produces better signal than coverage. The homepage, main product pages for SKUs that overlap with your catalog, and the pricing or plans page (if applicable) are the three highest-signal locations. Monitoring 5 to 8 URLs per competitor is the practical maximum before alert volume becomes noise.',
   },
   {
     q: 'What is the difference between a visual change and a content change?',
@@ -58,7 +58,7 @@ export default function Post() {
   return (
     <BlogPostLayout
       title="How to Monitor a Competitor's Homepage Without Hiring a VA"
-      description="A competitor's homepage is the single highest-signal page they publish. Here's how to automate monitoring it, what each change actually means, and how to turn homepage intelligence into decisions."
+      description="A competitor's homepage is the single highest-signal page they publish. Here's how to automate monitoring it, what each change actually means, and how to turn homepage monitoring into decisions."
       slug={SLUG}
       publishedAt="2026-06-24"
       readingTime={8}
@@ -292,7 +292,7 @@ export default function Post() {
       <UL>
         <LI>
           <Strong>Monday morning</Strong>: Check the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> for the previous week&apos;s
+          <A href="/features/intelligence">Weekly Competitor Report</A> for the previous week&apos;s
           changes. Flag any homepage changes that coincided with catalog changes.
         </LI>
         <LI>

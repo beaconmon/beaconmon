@@ -34,7 +34,7 @@ const HOW_IT_WORKS = [
   'Paste a competitor\'s Shopify store URL. You can use the bare domain, like competitor-store.com.',
   'Beaconmon reads the store\'s public catalog and checks our change database for recent activity.',
   'If we have history on this store, you see recent price drops, promo launches, and product changes.',
-  'Sign up to start capturing future changes with instant alerts and weekly intelligence digests.',
+  'Sign up to start capturing future changes with instant alerts and weekly competitor reports.',
 ];
 
 const FAQS = [
@@ -56,7 +56,7 @@ const FAQS = [
   },
   {
     q: 'How is this different from other Shopify spy tools?',
-    a: 'Most of the 100-plus Shopify spy tools show static information about a store: its theme, installed apps, or a rough revenue estimate. This tool focuses on what changed over time, which is the intelligence that actually affects your pricing and promotion decisions, because a competitor who cut prices 20% yesterday matters more than their theme.',
+    a: 'Most of the 100-plus Shopify spy tools show static information about a store: its theme, installed apps, or a rough revenue estimate. This tool focuses on what changed over time, which is the information that actually affects your pricing and promotion decisions, because a competitor who cut prices 20% yesterday matters more than their theme.',
   },
 ];
 

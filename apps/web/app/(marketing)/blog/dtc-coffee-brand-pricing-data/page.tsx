@@ -276,7 +276,7 @@ export default function Post() {
       <P>
         For the full set of coffee-specific signals and the intel stack to track them, see our{' '}
         <A href="/blog/coffee-brand-competitor-intelligence">
-          coffee brand competitor intelligence field guide
+          coffee brand competitor monitoring field guide
         </A>
         .
       </P>

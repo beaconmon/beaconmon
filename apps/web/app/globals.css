@@ -39,13 +39,13 @@
     --brand-line-soft:    oklch(94.5% 0.005 270);
     --brand-text:         oklch(14% 0.02 256);
     --brand-dim:          oklch(42% 0.03 256);
-    --brand-muted:        oklch(68% 0.02 256);
+    --brand-muted:        oklch(53% 0.02 256);
     /* Brand neon — reserved for filled CTAs (fails AA as text on white) */
     --brand-green:        oklch(82% 0.22 152);
     --brand-green-dim:    oklch(72% 0.20 152);
     --brand-green-fg:     oklch(8% 0.04 152);
     /* Deeper green for text/icons on white — passes WCAG AA */
-    --brand-green-ink:    oklch(68% 0.19 152);
+    --brand-green-ink:    oklch(50% 0.19 152);
     --brand-red:          oklch(55% 0.22 25);
     --brand-amber:        oklch(52% 0.16 60);
     --brand-surface:      oklch(100% 0 0);

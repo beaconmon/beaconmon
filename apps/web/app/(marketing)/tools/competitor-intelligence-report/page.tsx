@@ -9,9 +9,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Free Competitor Intelligence Report | Beaconmon',
+  title: 'Free 7-Day Competitor Report | Beaconmon',
   description:
-    'Free 7-day competitor intelligence report for any Shopify store. Tracks price changes, promotions, and product launches, delivered by email, no signup.',
+    'Free 7-day competitor report for any Shopify store. Tracks price changes, promotions, and product launches, delivered by email, no signup.',
   alternates: { canonical: 'https://beaconmon.com/tools/competitor-intelligence-report' },
   openGraph: { url: 'https://beaconmon.com/tools/competitor-intelligence-report' },
 };
@@ -44,7 +44,7 @@ const WHAT_HAPPENS = [
 
 const FAQS = [
   {
-    q: 'How does the free competitor intelligence report work?',
+    q: 'How does the free 7-day competitor report work?',
     a: 'Enter a competitor Shopify URL and your email. Beaconmon starts monitoring the store immediately. After 7 days, we email you a summary of every price change, promo launch, product addition, and content update we detected.',
   },
   {
@@ -53,7 +53,7 @@ const FAQS = [
   },
   {
     q: 'What if no changes are detected in 7 days?',
-    a: 'You still get a report confirming that the store held steady. That is also useful intelligence: it means your competitor did not run any promotions or make pricing changes that week.',
+    a: 'You still get a report confirming that the store held steady. That is also useful information: it means your competitor did not run any promotions or make pricing changes that week.',
   },
   {
     q: 'Can I request reports on multiple competitors?',
@@ -78,7 +78,7 @@ const faqSchema = {
 const appSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Free 7-Day Competitor Intelligence Report',
+  name: 'Free 7-Day Competitor Report',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://beaconmon.com/tools/competitor-intelligence-report',
@@ -97,7 +97,7 @@ export default function CompetitorIntelligenceReportPage() {
       <JsonLd
         data={breadcrumbSchema(
           { name: 'Tools', path: '/tools' },
-          { name: 'Free 7-Day Competitor Intelligence Report', path: '/tools/competitor-intelligence-report' }
+          { name: 'Free 7-Day Competitor Report', path: '/tools/competitor-intelligence-report' }
         )}
       />
       <NavBar />
@@ -121,7 +121,7 @@ export default function CompetitorIntelligenceReportPage() {
             Free tool
           </span>
           <h1 className="text-[clamp(36px,5vw,62px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-5 max-w-[840px] [overflow-wrap:anywhere]">
-            Get a free 7-day intelligence report on any Shopify competitor
+            Get a free 7-day competitor report on any Shopify store
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-6">
             Enter a competitor store URL and your email. We watch the store for 7 days and send you a report of every
@@ -129,7 +129,7 @@ export default function CompetitorIntelligenceReportPage() {
           </p>
           <div className="bg-brand-bg1 border border-brand-line-soft rounded-xl px-5 py-4 mb-8 max-w-[620px]">
             <p className="text-[14px] text-brand-dim leading-[1.6]">
-              <span className="text-brand-text font-medium">The Free 7-Day Competitor Intelligence Report monitors any Shopify store for a full week and emails you a summary of every price change, promotion, and product update detected.</span>{' '}
+              <span className="text-brand-text font-medium">The Free 7-Day Competitor Report monitors any Shopify store for a full week and emails you a summary of every price change, promotion, and product update detected.</span>{' '}
               Each email address can request up to 2 reports per week, with no account required.
             </p>
           </div>
@@ -272,7 +272,7 @@ export default function CompetitorIntelligenceReportPage() {
               Competitor change checker
             </Link>
             <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">
-              Ecommerce competitor intelligence
+              Ecommerce competitor monitoring
             </Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">
               Competitor price tracking

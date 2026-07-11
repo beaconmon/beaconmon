@@ -39,8 +39,8 @@ const FAQS: { q: string; a: string }[] = [
     a: 'Near-instantly. When a Shopify merchant changes a price or publishes a new product, the products.json feed reflects it within seconds. Checking once daily leaves a 24-hour blind spot. Most monitoring setups run every 5 to 15 minutes.',
   },
   {
-    q: 'What is the difference between price monitoring and competitor intelligence?',
-    a: 'Price monitoring tells you that a price changed. Competitor intelligence tells you what it means. A good system classifies the change (significant or noise), checks catalog overlap (does this competitor sell what you sell?), and suggests a response. Price tracking is one input into competitor intelligence, not a substitute for it.',
+    q: 'What is the difference between price monitoring and competitor monitoring?',
+    a: 'Price monitoring tells you that a price changed. Competitor monitoring tells you what it means. A good system classifies the change (significant or noise), checks catalog overlap (does this competitor sell what you sell?), and suggests a response. Price tracking is one input into competitor monitoring, not a substitute for it.',
   },
   {
     q: 'Do I need to add every competitor product URL individually?',
@@ -242,7 +242,7 @@ export default function Post() {
         </LI>
         <LI>
           Connect Slack or email. Enable the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> for a daily summary of all competitor
+          <A href="/features/intelligence">Weekly Competitor Report</A> for a daily summary of all competitor
           moves instead of per-change instant alerts.
         </LI>
       </OL>
@@ -296,7 +296,7 @@ export default function Post() {
         </LI>
         <LI>
           Route alerts to Slack and enable a daily{' '}
-          <A href="/ecommerce-competitor-intelligence">Intelligence Digest</A> for lower-priority competitors.
+          <A href="/ecommerce-competitor-intelligence">Weekly Competitor Report</A> for lower-priority competitors.
         </LI>
         <LI>
           When an alert fires, evaluate before you react. Match, counter, or leapfrog based on the move&apos;s

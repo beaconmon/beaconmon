@@ -41,7 +41,7 @@ export default function IntelligenceMockup({ storeLabel, stats, events, slackNot
             <span className="text-[11px] text-[rgba(255,255,255,0.5)] tracking-wide">{storeLabel}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[rgba(255,255,255,0.3)]">Intelligence Feed</span>
+            <span className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[rgba(255,255,255,0.55)]">Competitor Feed</span>
             <span className="text-[9px] font-bold tracking-[0.12em] uppercase text-amber-400">· LIVE</span>
           </div>
         </div>
@@ -50,15 +50,15 @@ export default function IntelligenceMockup({ storeLabel, stats, events, slackNot
         <div className="grid grid-cols-3 gap-px bg-[rgba(255,255,255,0.04)] border-b border-[rgba(255,255,255,0.06)]">
           <div className="bg-[#0d1117] px-4 py-3 flex flex-col gap-1">
             <span className="text-[22px] font-bold text-amber-400 leading-none">{stats.competitorMoves}</span>
-            <span className="text-[10px] text-[rgba(255,255,255,0.35)] leading-tight">competitor moves</span>
+            <span className="text-[10px] text-[rgba(255,255,255,0.55)] leading-tight">competitor moves</span>
           </div>
           <div className="bg-[#0d1117] px-4 py-3 flex flex-col gap-1">
             <span className="text-[22px] font-bold text-green-400 leading-none">{stats.storeChanges}</span>
-            <span className="text-[10px] text-[rgba(255,255,255,0.35)] leading-tight">{stats.storeChangesLabel}</span>
+            <span className="text-[10px] text-[rgba(255,255,255,0.55)] leading-tight">{stats.storeChangesLabel}</span>
           </div>
           <div className="bg-[#0d1117] px-4 py-3 flex flex-col gap-1">
             <span className="text-[22px] font-bold text-yellow-400 leading-none">{stats.smartAlerts}</span>
-            <span className="text-[10px] text-[rgba(255,255,255,0.35)] leading-tight">{stats.smartAlertsLabel}</span>
+            <span className="text-[10px] text-[rgba(255,255,255,0.55)] leading-tight">{stats.smartAlertsLabel}</span>
           </div>
         </div>
 
@@ -73,9 +73,9 @@ export default function IntelligenceMockup({ storeLabel, stats, events, slackNot
                 </span>
                 <div className="flex-1 min-w-0">
                   <span className={`${event.bigText ? 'text-[13px]' : 'text-[12px]'} font-semibold ${colors.text}`}>{event.label}</span>
-                  <p className="text-[11px] text-[rgba(255,255,255,0.4)] mt-0.5 leading-snug truncate">{event.detail}</p>
+                  <p className="text-[11px] text-[rgba(255,255,255,0.55)] mt-0.5 leading-snug truncate">{event.detail}</p>
                 </div>
-                <span className="shrink-0 text-[10px] text-[rgba(255,255,255,0.25)] whitespace-nowrap mt-0.5">{event.timeAgo}</span>
+                <span className="shrink-0 text-[10px] text-[rgba(255,255,255,0.55)] whitespace-nowrap mt-0.5">{event.timeAgo}</span>
               </div>
             );
           })}
@@ -97,7 +97,7 @@ export default function IntelligenceMockup({ storeLabel, stats, events, slackNot
         </div>
         <p className="text-[11px] text-[rgba(255,255,255,0.5)] leading-snug mb-2">{slackNotification.body}</p>
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-[rgba(255,255,255,0.25)]">{slackNotification.timeAgo}</span>
+          <span className="text-[10px] text-[rgba(255,255,255,0.55)]">{slackNotification.timeAgo}</span>
           <span className="text-[10px] text-[#6c5ce7]">{slackNotification.channel}</span>
         </div>
       </div>

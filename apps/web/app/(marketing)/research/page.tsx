@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 const datasetSchema = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
-  name: 'Beaconmon Competitor Intelligence Dataset',
+  name: 'Beaconmon Competitor Monitoring Dataset',
   description:
     'Original statistics derived from monitoring 641 competitors (639 distinct domains) across 4 teams, covering 504,500 competitor events and 180,065 tracked products over a rolling six-week window.',
   creator: { '@type': 'Organization', name: 'Beaconmon', url: 'https://beaconmon.com' },
@@ -142,7 +142,7 @@ export default function ResearchPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Research</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Shopify competitor intelligence research
+            Shopify competitor monitoring research
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mb-4">
             A living index of original findings pulled from Beaconmon&apos;s own monitoring data. Every stat below is sourced back to the full post it came from and updated as the dataset grows.

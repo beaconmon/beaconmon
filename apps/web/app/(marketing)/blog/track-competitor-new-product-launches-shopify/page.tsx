@@ -119,7 +119,7 @@ export default function Post() {
       </SummaryStatement>
 
       <Callout>
-        The published_at field is the most underused signal in Shopify competitor intelligence.
+        The published_at field is the most underused signal in Shopify competitor monitoring.
         Everyone watches prices. Almost nobody watches launch dates, which means being early is
         cheap competitive advantage.
       </Callout>
@@ -185,7 +185,7 @@ export default function Post() {
         than adding a new bag of beans to an existing roast collection. For more signals specific
         to that vertical, see our{' '}
         <A href="/blog/coffee-brand-competitor-intelligence">
-          coffee brand competitor intelligence field guide
+          coffee brand competitor monitoring field guide
         </A>
         .
       </P>
@@ -265,7 +265,7 @@ export default function Post() {
         </LI>
         <LI>
           Review the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> each morning for a summary of
+          <A href="/features/intelligence">Weekly Competitor Report</A> each morning for a summary of
           all catalog changes across your competitor set, including new launches from the previous
           24 hours.
         </LI>
@@ -282,7 +282,7 @@ export default function Post() {
       <UL>
         <LI>
           <Strong>Does it overlap with my catalog?</Strong> If the competitor launched a product
-          you also sell, evaluate the pricing. If it does not overlap, file it as market intelligence
+          you also sell, evaluate the pricing. If it does not overlap, note it as market context
           and watch whether it gets traction.
         </LI>
         <LI>

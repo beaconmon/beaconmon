@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About Beaconmon | Shopify Store Monitoring',
   description:
-    'Beaconmon is Shopify-first competitor intelligence and uptime monitoring for store owners tracking competitor prices, promotions, and content changes.',
+    'Beaconmon is Shopify-first competitor monitoring and uptime monitoring for store owners tracking competitor prices, promotions, and content changes.',
   alternates: { canonical: 'https://beaconmon.com/about' },
   openGraph: { url: 'https://beaconmon.com/about' },
 };
@@ -34,7 +34,7 @@ const ABOUT_SCHEMA = [
     '@type': 'Organization',
     name: 'Beaconmon',
     url: 'https://beaconmon.com',
-    description: 'Store monitoring and competitor intelligence for ecommerce businesses. Tracks uptime, pricing changes, content updates, and competitor activity across Shopify and WooCommerce stores.',
+    description: 'Store monitoring and competitor monitoring for ecommerce businesses. Tracks uptime, pricing changes, content updates, and competitor activity across Shopify and WooCommerce stores.',
     email: 'hello@beaconmon.com',
     founder: { '@type': 'Person', name: 'Haimanot Getu' },
   },

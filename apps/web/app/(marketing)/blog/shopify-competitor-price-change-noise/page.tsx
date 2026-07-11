@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 const FAQS: { q: string; a: string }[] = [
   {
     q: 'How do I stop getting too many competitor price alerts?',
-    a: 'Set a minimum price change threshold in your monitoring tool. A 5% floor eliminates the vast majority of rounding artifacts and minor adjustments without missing genuinely significant moves. Also consider switching lower-priority competitors from instant alerts to a daily Intelligence Digest so individual changes do not interrupt your workflow.',
+    a: 'Set a minimum price change threshold in your monitoring tool. A 5% floor eliminates the vast majority of rounding artifacts and minor adjustments without missing genuinely significant moves. Also consider switching lower-priority competitors from instant alerts to a Daily Competitor Report so individual changes do not interrupt your workflow.',
   },
   {
     q: 'What counts as a significant competitor price change?',
@@ -42,8 +42,8 @@ const FAQS: { q: string; a: string }[] = [
     a: 'Rarely. The most common cause is Shopify app interference (loyalty apps, dynamic pricing rules, bundle calculators) that touches prices without any human decision behind it. The second most common cause is currency rounding when a merchant updates exchange rates. If you are seeing consistent sub-5% moves from the same competitor, it may indicate they are running automated dynamic pricing. That is worth knowing, but it still does not require you to match each individual move.',
   },
   {
-    q: 'What is an Intelligence Digest and how does it reduce noise?',
-    a: 'Instead of sending an alert for every price change the moment it happens, the Intelligence Digest consolidates all competitor activity from the past 24 hours into a single summary, ranked by significance. Minor moves are grouped at the bottom. Significant moves (large price drops, new products, stockouts) are surfaced at the top. You get the same information without the constant interruption.',
+    q: 'What is an Weekly Competitor Report and how does it reduce noise?',
+    a: 'Instead of sending an alert for every price change the moment it happens, the Weekly Competitor Report consolidates all competitor activity from the past 24 hours into a single summary, ranked by significance. Minor moves are grouped at the bottom. Significant moves (large price drops, new products, stockouts) are surfaced at the top. You get the same information without the constant interruption.',
   },
   {
     q: 'Can I set different alert thresholds for different competitors?',
@@ -89,7 +89,7 @@ export default function Post() {
         </KeyTakeaway>
         <KeyTakeaway>
           Route 15%+ drops to an immediate Slack alert. Route 5 to 15% moves to the daily
-          Intelligence Digest. Route sub-5% to price history only - visible for forensic
+          Weekly Competitor Report. Route sub-5% to price history only - visible for forensic
           review, silent in your workflow.
         </KeyTakeaway>
         <KeyTakeaway>
@@ -116,7 +116,7 @@ export default function Post() {
 
       <SummaryStatement>
         90.76% of raw price changes require no action. Configuring a 5% floor does not reduce
-        your intelligence coverage. It eliminates the noise that was hiding the 1.88% of events
+        your monitoring coverage. It eliminates the noise that was hiding the 1.88% of events
         that actually matter.
       </SummaryStatement>
 
@@ -178,7 +178,7 @@ export default function Post() {
 
       <Callout>
         A well-configured monitoring setup should fire fewer alerts, not more. If your competitor
-        intelligence channel is generating more than 5 to 10 alerts per competitor per day, the
+        monitoring channel is generating more than 5 to 10 alerts per competitor per day, the
         threshold is too low and you are training your team to ignore it.
       </Callout>
 
@@ -206,7 +206,7 @@ export default function Post() {
         A 5-15% price change might be a sale, a repricing, or a clearance event. It is worth
         knowing about, but it does not usually require an immediate response. Route these to
         your daily{' '}
-        <A href="/features/intelligence">Intelligence Digest</A> rather than an instant Slack ping.
+        <A href="/features/intelligence">Weekly Competitor Report</A> rather than an instant Slack ping.
         Review them in context: did other competitors move? Did the change happen on a Friday
         afternoon (typical flash sale timing)?
       </P>
@@ -235,7 +235,7 @@ export default function Post() {
         for secondary competitors you are less exposed to.
       </P>
 
-      <H3>Use the Intelligence Digest for ambient monitoring</H3>
+      <H3>Use the Weekly Competitor Report for ambient monitoring</H3>
 
       <P>
         Not every competitor needs to be monitored with instant alerts. For competitors that are

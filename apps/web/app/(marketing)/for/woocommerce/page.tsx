@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon for WooCommerce Stores | Uptime and Competitor Monitoring',
   description:
-    'Monitor your WooCommerce shop, cart, and checkout without a plugin. Catch failures fast, track competitor prices, and get a daily Intelligence Digest.',
+    'Monitor your WooCommerce shop, cart, and checkout without a plugin. Catch failures fast, track competitor prices, and get a Daily Competitor Report.',
   alternates: { canonical: 'https://beaconmon.com/for/woocommerce' },
   openGraph: { url: 'https://beaconmon.com/for/woocommerce' },
 };
@@ -37,7 +37,7 @@ const FEATURES = [
     body: 'Add competitor product and pricing pages as content monitors using a CSS selector to target the exact price element. Beaconmon alerts you the moment a competitor changes their price or runs a sale. Note: WooCommerce stores do not have a public product feed the way Shopify does. You choose which competitor pages to watch; Beaconmon watches them on your chosen interval.',
   },
   {
-    heading: 'Intelligence Digest',
+    heading: 'Weekly Competitor Report',
     body: 'A daily or weekly email and Slack summary of every change detected on competitor sites and every checkout anomaly from your own store. One skim with coffee and you are up to speed.',
   },
 ];
@@ -78,7 +78,7 @@ export default function ForWooCommercePage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -156,7 +156,9 @@ export default function ForWooCommercePage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/woocommerce-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce competitor monitoring (deep dive)</Link>
+            <Link href="/woocommerce-store-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce store monitoring (uptime deep dive)</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/tools/woocommerce-uptime-test" className="text-brand-dim hover:text-brand-text transition-colors">Free WooCommerce uptime test</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
             <Link href="/vs/uptimerobot" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs UptimeRobot</Link>

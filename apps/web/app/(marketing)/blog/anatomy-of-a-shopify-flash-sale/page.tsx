@@ -236,11 +236,11 @@ export default function Post() {
         code language. Price history catches the increase that never got a banner.
       </P>
 
-      <H3>Route promo detections through the Intelligence Digest, not raw alerts</H3>
+      <H3>Route promo detections through the Weekly Competitor Report, not raw alerts</H3>
 
       <P>
         With 956 events across a sample window, a raw per-event alert channel gets noisy fast. The{' '}
-        <A href="/features/intelligence">Intelligence Digest</A>, available on Starter and above at{' '}
+        <A href="/features/intelligence">Weekly Competitor Report</A>, available on Starter and above at{' '}
         <A href="/pricing">$29/mo</A>, groups every detected promo into a plain-language weekly
         summary instead of an interrupt-driven stream. AI significance scoring, which is what
         classifies these 956 events in the first place, is a Growth-plan feature.

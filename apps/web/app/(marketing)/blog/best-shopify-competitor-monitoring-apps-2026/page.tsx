@@ -100,7 +100,7 @@ export default function Post() {
       </P>
 
       <P>
-        The <A href="/features/intelligence">Intelligence Digest</A> sends a weekly Slack or email
+        The <A href="/features/intelligence">Weekly Competitor Report</A> sends a weekly Slack or email
         summary grouping all competitor changes from the past seven days into plain-language
         descriptions. On the Growth plan, AI significance scoring classifies each change as a
         clearance push, margin test, new campaign, or routine update.
@@ -108,7 +108,7 @@ export default function Post() {
 
       <P>
         <A href="/pricing">Free plan</A>: 10 monitors, 1 competitor, forever. Starter: $29/mo with
-        unlimited competitors and the Intelligence Digest.
+        unlimited competitors and the Weekly Competitor Report.
       </P>
 
       <P>
@@ -202,8 +202,8 @@ export default function Post() {
       </P>
 
       <P>
-        <Strong>Limitation:</Strong> The output is a price adjustment, not underlying competitor
-        intelligence. You see that your price changed, not the specific competitor data that
+        <Strong>Limitation:</Strong> The output is a price adjustment, not the underlying competitor
+        monitoring. You see that your price changed, not the specific competitor data that
         triggered it. No uptime monitoring. No promotional copy or content change detection.
       </P>
 
@@ -319,7 +319,7 @@ export default function Post() {
             </tr>
             <tr className="border-b border-brand-line-soft">
               <td className="py-3 pr-4 text-brand-text font-medium whitespace-nowrap">
-                Intelligence Digest
+                Weekly Competitor Report
               </td>
               <td className="py-3 px-3 text-brand-green-ink">Yes</td>
               <td className="py-3 px-3 text-brand-muted">No</td>

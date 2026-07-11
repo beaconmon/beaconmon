@@ -9,9 +9,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Ecommerce Competitor Intelligence | Beaconmon',
+  title: 'Ecommerce Competitor Monitoring | Beaconmon',
   description:
-    'Track price, promotion, and content changes across Shopify, WooCommerce, and DTC stores. CSS selectors, AI digest, and multi-competitor dashboards.',
+    'Track price, promotion, and content changes across Shopify, WooCommerce, and DTC stores. CSS selectors, a weekly competitor report, and multi-competitor dashboards.',
   alternates: { canonical: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
   openGraph: { url: 'https://beaconmon.com/ecommerce-competitor-intelligence' },
 };
@@ -38,8 +38,8 @@ const FEATURES = [
     body: 'Route competitor change alerts to the channels your team already uses. Configure per-monitor alert channels so pricing changes go to the pricing team and promo changes go to marketing.',
   },
   {
-    heading: 'Intelligence Digest',
-    body: 'Opt into a daily or weekly digest that consolidates all competitor activity into one structured summary. Ideal for teams who want a briefing rather than a real-time stream of alerts.',
+    heading: 'Weekly Competitor Report',
+    body: 'Opt into a daily or weekly report that consolidates all competitor activity into one structured summary. Ideal for teams who want a briefing rather than a real-time stream of alerts.',
   },
 ];
 
@@ -47,7 +47,7 @@ const HOW_IT_WORKS = [
   'Add competitor URLs as content monitors: Shopify product feeds, pricing pages, product listings, homepages, or any page you want to track',
   'Optionally enter a CSS selector to target a specific element like a price or promo banner',
   'Beaconmon checks at your chosen interval and records every change with a timestamped diff',
-  'Get instant alerts for significant changes, or review the weekly Intelligence Digest in Slack',
+  'Get instant alerts for significant changes, or review the Weekly Competitor Report in Slack',
 ];
 
 const SIGNALS = [
@@ -65,8 +65,8 @@ const FAQS = [
     a: 'Beaconmon detects any text or content change on a competitor page: price updates, promotion launches, shipping policy changes, new product additions, homepage copy rewrites, and more. For Shopify stores, the public product feed gives you catalog-wide coverage in a single monitor.',
   },
   {
-    q: 'How is competitor intelligence different from simple price tracking?',
-    a: 'Price tracking monitors one data point. Competitor intelligence covers the full picture: prices, promotions, product availability, shipping offers, and site-wide content shifts. Beaconmon lets you monitor any element on any page, so you see everything changing across your competitor set, not just listed prices.',
+    q: 'How is competitor monitoring different from simple price tracking?',
+    a: 'Price tracking monitors one data point. Competitor monitoring covers the full picture: prices, promotions, product availability, shipping offers, and site-wide content shifts. Beaconmon lets you monitor any element on any page, so you see everything changing across your competitor set, not just listed prices.',
   },
   {
     q: 'How often does Beaconmon check competitor pages?',
@@ -82,7 +82,7 @@ const FAQS = [
   },
   {
     q: 'Can I get a weekly summary instead of individual alerts?',
-    a: 'Yes. Growth plan and above includes the Intelligence Digest: a daily or weekly summary of all competitor activity, filtered by significance. Instead of a Slack ping for every minor CSS update, you get one consolidated view of what actually changed.',
+    a: 'Yes. Growth plan and above includes the Weekly Competitor Report: a daily or weekly summary of all competitor activity, filtered by significance. Instead of a Slack ping for every minor CSS update, you get one consolidated view of what actually changed.',
   },
 ];
 
@@ -107,7 +107,7 @@ export default function EcommerceCompetitorIntelligencePage() {
   return (
     <>
       <JsonLd data={faqSchema} />
-      <JsonLd data={breadcrumbSchema({ name: 'Ecommerce Competitor Intelligence', path: '/ecommerce-competitor-intelligence' })} />
+      <JsonLd data={breadcrumbSchema({ name: 'Ecommerce Competitor Monitoring', path: '/ecommerce-competitor-intelligence' })} />
       <NavBar />
 
       {/* Hero */}
@@ -125,12 +125,12 @@ export default function EcommerceCompetitorIntelligencePage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Competitor Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
-            Ecommerce Competitor Intelligence Across Shopify, WooCommerce, and DTC
+            Ecommerce Competitor Monitoring Across Shopify, WooCommerce, and DTC
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Monitor every price change, promotion launch, and content update across your entire competitor set. Shopify product feed tracking, CSS selector targeting, AI-filtered alerts, and a weekly Intelligence Digest for ecommerce teams.
+            Monitor every price change, promotion launch, and content update across your entire competitor set. Shopify product feed tracking, CSS selector targeting, AI-filtered alerts, and a Weekly Competitor Report for ecommerce teams.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -139,7 +139,7 @@ export default function EcommerceCompetitorIntelligencePage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -184,7 +184,7 @@ export default function EcommerceCompetitorIntelligencePage() {
       <section className="py-[100px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-14">
-            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How ecommerce teams use competitor intelligence to respond faster</h2>
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How ecommerce teams use competitor monitoring to respond faster</h2>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
             {FEATURES.map(({ heading, body }) => (
@@ -203,7 +203,7 @@ export default function EcommerceCompetitorIntelligencePage() {
           <div className="reveal grid grid-cols-[1fr_1.2fr] max-[880px]:grid-cols-1 gap-16 items-start max-w-[980px] mx-auto">
             <div>
               <h2 className="text-[clamp(28px,3.4vw,40px)] tracking-[-0.03em] font-extrabold mb-5 leading-[1.15]">
-                Set up competitor intelligence in minutes
+                Set up competitor monitoring in minutes
               </h2>
               <p className="text-brand-dim text-[15px] leading-[1.65]">
                 No code required. Add a URL, choose what to watch, and Beaconmon handles the rest.
@@ -243,7 +243,7 @@ export default function EcommerceCompetitorIntelligencePage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/website-change-detection" className="text-brand-dim hover:text-brand-text transition-colors">Website change detection</Link>

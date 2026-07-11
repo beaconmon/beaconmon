@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Hexowatch for Shopify Stores (2026): Honest Comparison',
   description:
-    'Hexowatch vs Beaconmon: all-in-one web intelligence vs Shopify-native competitor tracking with uptime and Digest. Try free, no card needed.',
+    'Hexowatch vs Beaconmon: all-in-one web intelligence vs Shopify-native competitor tracking with uptime and a Weekly Competitor Report. Try free, no card needed.',
   alternates: { canonical: 'https://beaconmon.com/vs/hexowatch' },
   openGraph: { url: 'https://beaconmon.com/vs/hexowatch' },
 };
@@ -34,7 +34,7 @@ const TABLE_ROWS = [
     beaconmonGood: false,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No weekly digest',
     beaconmonGood: true,
@@ -82,26 +82,26 @@ const STAY_REASONS = [
   },
   {
     title: 'You want a lower entry price',
-    body: "Hexowatch's entry tier starts below Beaconmon Starter. If you do not need the Intelligence Digest or AI significance scoring, the price difference is real at the low end.",
+    body: "Hexowatch's entry tier starts below Beaconmon Starter. If you do not need the Weekly Competitor Report or AI significance scoring, the price difference is real at the low end.",
   },
 ];
 
 const SWITCH_REASONS = [
   'You want competitor monitoring built specifically for Shopify and WooCommerce, with preset selectors for price, stock status, and promotional copy.',
-  'You want a weekly Intelligence Digest delivered to Slack or email that groups and ranks every competitor change, without logging into a dashboard.',
+  'You want a Weekly Competitor Report delivered to Slack or email that groups and ranks every competitor change, without logging into a dashboard.',
   'You want AI to read each change and tell you whether it is significant enough to act on, not just that something changed on the page.',
-  'You want uptime monitoring and competitor intelligence in one tool that is designed around the ecommerce store owner workflow, not a general web monitoring console.',
+  'You want uptime monitoring and competitor monitoring in one tool that is designed around the ecommerce store owner workflow, not a general web monitoring console.',
   'You want SSL and domain expiry warnings timed to protect your checkout, 30, 14, and 7 days before expiry.',
 ];
 
 const FAQ_ITEMS = [
   {
     q: 'What is the main difference between Hexowatch and Beaconmon?',
-    a: "Hexowatch is a general-purpose web monitoring platform with many monitor types. Beaconmon is built specifically for ecommerce stores: competitor price and content tracking with Shopify preset selectors, uptime monitoring, SSL expiry alerts, AI significance scoring, and an Intelligence Digest delivered to Slack or email. If you run a Shopify or WooCommerce store, Beaconmon's UX is shaped around your workflow. Hexowatch is built for broader use cases.",
+    a: "Hexowatch is a general-purpose web monitoring platform with many monitor types. Beaconmon is built specifically for ecommerce stores: competitor price and content tracking with Shopify preset selectors, uptime monitoring, SSL expiry alerts, AI significance scoring, and an Weekly Competitor Report delivered to Slack or email. If you run a Shopify or WooCommerce store, Beaconmon's UX is shaped around your workflow. Hexowatch is built for broader use cases.",
   },
   {
-    q: 'Does Hexowatch have an Intelligence Digest?',
-    a: 'No. Hexowatch sends alerts when changes are detected, and you can view a change history in the dashboard. It does not bundle changes into a scheduled digest grouped by competitor and ranked by significance. The Intelligence Digest in Beaconmon is specifically designed so a store owner can get a Slack message every Monday morning summarizing everything that moved on competitor sites that week.',
+    q: 'Does Hexowatch have an Weekly Competitor Report?',
+    a: 'No. Hexowatch sends alerts when changes are detected, and you can view a change history in the dashboard. It does not bundle changes into a scheduled digest grouped by competitor and ranked by significance. The Weekly Competitor Report in Beaconmon is specifically designed so a store owner can get a Slack message every Monday morning summarizing everything that moved on competitor sites that week.',
   },
   {
     q: 'Can Hexowatch monitor Shopify competitors?',
@@ -109,7 +109,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon more expensive than Hexowatch?',
-    a: "Hexowatch's entry tier starts slightly lower. On a per-ecommerce-feature basis, Beaconmon includes things Hexowatch does not: Intelligence Digest, AI significance scoring, domain expiry alerts alongside SSL, and Shopify preset selectors. If you are using Hexowatch for general site monitoring and switching to Beaconmon for ecommerce intelligence, the comparison is less about price and more about fit.",
+    a: "Hexowatch's entry tier starts slightly lower. On a per-ecommerce-feature basis, Beaconmon includes things Hexowatch does not: Weekly Competitor Report, AI significance scoring, domain expiry alerts alongside SSL, and Shopify preset selectors. If you are using Hexowatch for general site monitoring and switching to Beaconmon for ecommerce monitoring, the comparison is less about price and more about fit.",
   },
 ];
 
@@ -168,7 +168,7 @@ export default function VsHexowatchPage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Hexowatch is a broad web intelligence platform with many monitor types. Beaconmon is narrower and deeper: built specifically for Shopify and WooCommerce competitor tracking, with preset selectors, a weekly Intelligence Digest, and AI that scores which competitor changes actually matter to your store.
+            Hexowatch is a broad web intelligence platform with many monitor types. Beaconmon is narrower and deeper: built specifically for Shopify and WooCommerce competitor tracking, with preset selectors, a Weekly Competitor Report, and AI that scores which competitor changes actually matter to your store.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -180,7 +180,7 @@ export default function VsHexowatchPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Hexowatch covers more ground with its range of monitor types. Beaconmon goes deeper on ecommerce: Shopify preset selectors, Intelligence Digest delivered to Slack, AI significance scoring, and uptime monitoring all included from $29 per month. If you run a Shopify or WooCommerce store and want competitor intelligence designed for that workflow, Beaconmon is the more focused choice.
+              Hexowatch covers more ground with its range of monitor types. Beaconmon goes deeper on ecommerce: Shopify preset selectors, Weekly Competitor Report delivered to Slack, AI significance scoring, and uptime monitoring all included from $29 per month. If you run a Shopify or WooCommerce store and want competitor monitoring designed for that workflow, Beaconmon is the more focused choice.
             </p>
           </div>
         </div>
@@ -268,7 +268,7 @@ export default function VsHexowatchPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <blockquote className="reveal max-w-[700px] mx-auto border-l-2 border-brand-green-ink pl-8 py-2">
             <p className="text-[18px] leading-[1.7] text-brand-dim italic mb-4">
-              &ldquo;Hexowatch felt like a general tool I was bending toward ecommerce. Beaconmon felt like someone had already done that bending. The Intelligence Digest alone was worth the switch.&rdquo;
+              &ldquo;Hexowatch felt like a general tool I was bending toward ecommerce. Beaconmon felt like someone had already done that bending. The Weekly Competitor Report alone was worth the switch.&rdquo;
             </p>
             <cite className="text-[13px] text-brand-muted not-italic">Shopify store owner, United Kingdom, migrated early 2026</cite>
           </blockquote>
@@ -292,7 +292,7 @@ export default function VsHexowatchPage() {
                 { step: '1', text: 'Review your active Hexowatch monitors. Note which are for competitor content watching versus other monitor types. Beaconmon will cover the content and uptime monitors.' },
                 { step: '2', text: 'Sign up for Beaconmon (free, no card required). The onboarding wizard asks for your store URL and competitor domains.' },
                 { step: '3', text: 'For each competitor, choose what to track: price, stock status, promotional copy, or full-page content. The wizard provides preset selectors for Shopify and WooCommerce competitors.' },
-                { step: '4', text: 'Set up alert channels: Slack for real-time alerts and the Intelligence Digest, email as a fallback.' },
+                { step: '4', text: 'Set up alert channels: Slack for real-time alerts and the Weekly Competitor Report, email as a fallback.' },
                 { step: '5', text: 'Run both tools in parallel for a week. Once Beaconmon is catching the changes you care about, cancel the Hexowatch monitors you have replicated.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

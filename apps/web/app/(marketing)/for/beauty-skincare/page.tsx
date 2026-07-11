@@ -37,7 +37,7 @@ const FEATURES = [
     body: 'Copy changes are the single largest category of site change we track across the whole dataset, 47.79% of all site changes. On a PDP, that copy is the ingredient list and the claims. A change there usually means a reformulation or a positioning shift, and it is worth knowing about before a customer asks you why.',
   },
   {
-    heading: 'Intelligence Digest for the routine, real-time alerts for the exception',
+    heading: 'Weekly Competitor Report for the routine, real-time alerts for the exception',
     body: 'Most competitor activity, price checks, minor copy edits, small stock changes, belongs in a daily or weekly digest you can skim with coffee. A first-time sale or a new launch on a brand that rarely moves is the kind of pattern-break that should reach you immediately instead.',
   },
 ];

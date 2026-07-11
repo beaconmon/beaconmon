@@ -38,7 +38,7 @@ const FEATURES = [
   },
   {
     heading: 'One digest instead of a dashboard to babysit',
-    body: 'The Intelligence Digest emails you every morning or week with a summary of every competitor change and every anomaly on your own store. One skim with coffee and you are caught up.',
+    body: 'The Weekly Competitor Report emails you every morning or week with a summary of every competitor change and every anomaly on your own store. One skim with coffee and you are caught up.',
   },
 ];
 
@@ -97,7 +97,7 @@ export default function ForShopifyPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -185,7 +185,7 @@ export default function ForShopifyPage() {
               },
               {
                 heading: 'New product launches',
-                body: "Competitor launches are easy to miss unless you're checking their catalog every day. Beaconmon watches competitor collection and new arrivals pages for content changes. When a new product appears, you see the change in your feed and your next Intelligence Digest, with a diff of exactly what was added.",
+                body: "Competitor launches are easy to miss unless you're checking their catalog every day. Beaconmon watches competitor collection and new arrivals pages for content changes. When a new product appears, you see the change in your feed and your next Weekly Competitor Report, with a diff of exactly what was added.",
               },
               {
                 heading: 'Promotional banner changes',
@@ -227,7 +227,7 @@ export default function ForShopifyPage() {
               {
                 num: '03',
                 heading: 'Get alerts and your morning brief',
-                body: 'Alerts fire to email or Slack within 60 seconds of a confirmed change. Your Intelligence Digest summarizes everything from the past 24 hours every morning at 8am.',
+                body: 'Alerts fire to email or Slack within 60 seconds of a confirmed change. Your Weekly Competitor Report summarizes everything from the past 24 hours every morning at 8am.',
               },
             ].map(({ num, heading, body }) => (
               <div key={num} className="reveal p-8 bg-brand-bg1 border border-brand-line-soft rounded-[14px]">
@@ -288,10 +288,11 @@ export default function ForShopifyPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">Related guides</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence (deep dive)</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring (deep dive)</Link>
+            <Link href="/shopify-store-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify store monitoring (uptime deep dive)</Link>
             <Link href="/blog/how-to-monitor-competitor-shopify-store-for-changes" className="text-brand-dim hover:text-brand-text transition-colors">How to monitor a competitor&apos;s Shopify store</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking guide</Link>
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
           </div>
         </div>

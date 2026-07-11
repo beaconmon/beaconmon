@@ -43,7 +43,7 @@ const BEACONMON_WINS = [
   'Tracks price changes plus promotional copy, banners, stock status, and full-page content changes on competitor sites',
   'Uptime monitoring included in every plan at no extra cost',
   'SSL and domain expiry alerts at 30, 14, and 7 days',
-  'Intelligence Digest: a weekly Slack or email summary of every competitor move in plain language, available on Starter and above',
+  'Weekly Competitor Report: a weekly Slack or email summary of every competitor move in plain language, available on Starter and above',
   'AI significance scoring on Growth+ classifies each change as clearance push, margin test, new campaign, or minor tweak',
 ];
 

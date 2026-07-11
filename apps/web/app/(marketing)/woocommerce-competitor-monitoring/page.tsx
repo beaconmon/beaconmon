@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'WooCommerce Competitor Monitoring | Beaconmon',
   description:
-    'Monitor WooCommerce competitor prices, promotions, and content changes. CSS selectors on product/pricing pages, with Slack alerts and Intelligence Digest.',
+    'Monitor WooCommerce competitor prices, promotions, and content changes. CSS selectors on product/pricing pages, with Slack alerts and Weekly Competitor Report.',
   alternates: { canonical: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
   openGraph: { url: 'https://beaconmon.com/woocommerce-competitor-monitoring' },
 };
@@ -30,7 +30,7 @@ const FEATURES = [
     body: "Add a WooCommerce competitor's homepage and key sale pages as content monitors. When they update a promotional banner, change their hero copy, or add a site-wide sale notice, Beaconmon captures the diff.",
   },
   {
-    heading: 'Intelligence Digest',
+    heading: 'Weekly Competitor Report',
     body: 'All WooCommerce competitor activity rolls up into the same daily or weekly digest alongside any Shopify competitors you track. Every change across your full competitor set in one Slack message or email.',
   },
 ];
@@ -104,7 +104,7 @@ export default function WooCommerceCompetitorMonitoringPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">WooCommerce Competitor Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">WooCommerce Competitor Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Monitor WooCommerce Competitor Prices, Promotions, and Content Changes
           </h1>
@@ -118,7 +118,7 @@ export default function WooCommerceCompetitorMonitoringPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -204,9 +204,9 @@ export default function WooCommerceCompetitorMonitoringPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
-            <Link href="/for/woocommerce" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce store monitoring</Link>
+            <Link href="/woocommerce-store-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce store monitoring (uptime)</Link>
             <Link href="/competitor-promotion-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor promotion monitoring</Link>
             <Link href="/tools/woocommerce-uptime-test" className="text-brand-dim hover:text-brand-text transition-colors">Free WooCommerce uptime test</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>

@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Pricing Change Alerts for Ecommerce | Beaconmon',
-  description: 'Get notified the moment a competitor changes their price. Intelligence Digest, Slack and email delivery, snapshot history, and diff view.',
+  description: 'Get notified the moment a competitor changes their price. Weekly Competitor Report, Slack and email delivery, snapshot history, and diff view.',
   alternates: { canonical: 'https://beaconmon.com/pricing-change-alerts' },
   openGraph: { url: 'https://beaconmon.com/pricing-change-alerts' },
 };
@@ -63,7 +63,7 @@ const faqSchema = {
 
 const FEATURES = [
   {
-    heading: 'Intelligence Digest',
+    heading: 'Weekly Competitor Report',
     body: 'Consolidate all competitor pricing changes into one daily or weekly Slack or email digest. Stay informed without alert fatigue.',
   },
   {

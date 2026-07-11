@@ -258,7 +258,7 @@ export default function Post() {
 
       <P>
         Price drop plus stockout is the single most valuable pattern in{' '}
-        <A href="/ecommerce-competitor-intelligence">competitor intelligence</A>. When a competitor
+        <A href="/ecommerce-competitor-intelligence">competitor monitoring</A>. When a competitor
         drops prices and their variants start going out of stock simultaneously, they are liquidating.
         They are selling down inventory, possibly because they are about to run out of cash, pivot,
         or shut down a product line. This is not a moment to match their price and go down with them.
@@ -266,7 +266,7 @@ export default function Post() {
       </P>
 
       <SummaryStatement>
-        Price drop plus stockout is the single most valuable pattern in competitor intelligence.
+        Price drop plus stockout is the single most valuable pattern in competitor monitoring.
         It means a competitor is liquidating - and their customers are still in market, actively
         looking for an alternative.
       </SummaryStatement>

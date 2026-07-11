@@ -29,7 +29,7 @@ const REASONS_TO_SWITCH = [
   },
   {
     heading: 'No digest or Slack integration.',
-    body: 'Wachete sends per-change email alerts. There is no weekly digest grouping changes into a readable summary and no native Slack delivery. Beaconmon Starter includes a scheduled Intelligence Digest to Slack or email.',
+    body: 'Wachete sends per-change email alerts. There is no weekly digest grouping changes into a readable summary and no native Slack delivery. Beaconmon Starter includes a scheduled Weekly Competitor Report to Slack or email.',
   },
   {
     heading: 'Built for generic use, not ecommerce.',
@@ -41,7 +41,7 @@ const BEACONMON_WINS = [
   'Free plan: 10 monitors, 1 competitor, hourly checks (Wachete free: 5 pages, daily checks)',
   'Preset Shopify and WooCommerce selectors included, no manual CSS setup required',
   'Uptime monitoring, SSL expiry, and domain expiry alerts on every plan',
-  'Intelligence Digest to Slack or email on Starter ($29/mo)',
+  'Weekly Competitor Report to Slack or email on Starter ($29/mo)',
   'Ecommerce-native onboarding that detects Shopify and WooCommerce from step one',
 ];
 
@@ -61,7 +61,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is Beaconmon more expensive than Wachete?',
-    a: "Wachete's paid plan starts at $5.40/mo. Beaconmon Starter is $29/mo. If you only need basic web page monitoring with no ecommerce context, Wachete is cheaper. If you need Shopify preset selectors, uptime monitoring, and the Intelligence Digest, Beaconmon covers things Wachete does not offer at any price.",
+    a: "Wachete's paid plan starts at $5.40/mo. Beaconmon Starter is $29/mo. If you only need basic web page monitoring with no ecommerce context, Wachete is cheaper. If you need Shopify preset selectors, uptime monitoring, and the Weekly Competitor Report, Beaconmon covers things Wachete does not offer at any price.",
   },
 ];
 
@@ -173,7 +173,7 @@ export default function WacheteAlternativePage() {
                 <Link href="/pricing" className="text-brand-green-ink hover:underline">
                   $29/mo
                 </Link>{' '}
-                adds Intelligence Digest and unlimited competitors
+                adds Weekly Competitor Report and unlimited competitors
               </p>
             </div>
           </div>

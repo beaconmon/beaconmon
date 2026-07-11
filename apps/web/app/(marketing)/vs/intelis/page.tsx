@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Beaconmon vs Intelis for Shopify (2026)',
   description:
-    'Intelis AI Dynamic Pricing vs Beaconmon: automated repricing on Google Shopping vs competitor monitoring, uptime, and Intelligence Digest compared.',
+    'Intelis AI Dynamic Pricing vs Beaconmon: automated repricing on Google Shopping vs competitor monitoring, uptime, and Weekly Competitor Report compared.',
   alternates: { canonical: 'https://beaconmon.com/vs/intelis' },
   openGraph: { url: 'https://beaconmon.com/vs/intelis' },
 };
@@ -58,7 +58,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No',
     beaconmonGood: true,
@@ -95,7 +95,7 @@ const STAY_REASONS = [
 const SWITCH_REASONS = [
   'You want to know when a competitor changes their homepage banner or launches a promotional campaign, not just when a product price changes. Intelis does not monitor content changes.',
   'Your own store\'s uptime is as important as your competitor\'s prices. Intelis does not monitor uptime. Beaconmon covers both.',
-  'You want a weekly Intelligence Digest summarizing every competitor move in Slack, not just individual price alerts.',
+  'You want a Weekly Competitor Report summarizing every competitor move in Slack, not just individual price alerts.',
   'You do not sell on Google Shopping and do not need repricing automation. Beaconmon is simpler and cheaper for stores that want monitoring without automation.',
 ];
 
@@ -189,7 +189,7 @@ export default function VsIntelisPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Intelis is a repricing engine. It is the right choice if you want your Shopify prices to adjust automatically when competitors move on Google Shopping. Beaconmon is an intelligence and monitoring tool. It is the right choice if you want to know when a competitor changes prices, launches a promotion, or edits their product pages, and you want that context alongside uptime and SSL monitoring. Many stores end up running both.
+              Intelis is a repricing engine. It is the right choice if you want your Shopify prices to adjust automatically when competitors move on Google Shopping. Beaconmon is a competitor monitoring tool. It is the right choice if you want to know when a competitor changes prices, launches a promotion, or edits their product pages, and you want that context alongside uptime and SSL monitoring. Many stores end up running both.
             </p>
           </div>
         </div>
@@ -295,7 +295,7 @@ export default function VsIntelisPage() {
               {[
                 { step: '1', text: 'Sign up for Beaconmon free (no card required). Add your store URL for uptime monitoring.' },
                 { step: '2', text: 'Add competitor domains. For each competitor, choose what to track: price, stock, promotional copy, or the full page. Preset selectors handle most Shopify and WooCommerce stores.' },
-                { step: '3', text: 'Connect Slack or email. The Intelligence Digest is configured here.' },
+                { step: '3', text: 'Connect Slack or email. The Weekly Competitor Report is configured here.' },
                 { step: '4', text: 'If you also want auto-repricing, Intelis and Beaconmon can run simultaneously: Beaconmon for monitoring and context, Intelis for the repricing automation.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

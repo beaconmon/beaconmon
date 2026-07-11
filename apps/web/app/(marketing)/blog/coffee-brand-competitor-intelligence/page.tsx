@@ -21,7 +21,7 @@ import { createFAQSchema } from '@/lib/blog';
 const SLUG = 'coffee-brand-competitor-intelligence';
 
 export const metadata: Metadata = {
-  title: 'Coffee Brand Competitor Intelligence: A Field Guide | Beaconmon',
+  title: 'Coffee Brand Competitor Monitoring: A Field Guide | Beaconmon',
   description:
     'DTC coffee brands compete on subscription pricing, roast depth, seasonal drops, and bundle tactics. Here\'s the intel stack that surfaces moves that matter.',
   alternates: { canonical: `https://beaconmon.com/blog/${SLUG}` },
@@ -57,7 +57,7 @@ const faqSchema = createFAQSchema(FAQS);
 export default function Post() {
   return (
     <BlogPostLayout
-      title="Coffee Brand Competitor Intelligence: A Field Guide"
+      title="Coffee Brand Competitor Monitoring: A Field Guide"
       description="DTC coffee brands compete on subscription pricing, roast lineup depth, seasonal drops, and bundle tactics. Here is the intel stack that actually surfaces the moves that matter."
       slug={SLUG}
       publishedAt="2026-06-27"
@@ -103,7 +103,7 @@ export default function Post() {
         DTC coffee competition is narrower than it looks. Five levers account for almost every
         differentiated position in the market: subscription structure, roast lineup composition,
         bundle pricing, seasonal drops, and promotional cadence. Understanding which levers a
-        competitor is pulling, and how aggressively, is the entire intelligence problem.
+        competitor is pulling, and how aggressively, is the entire monitoring problem.
       </P>
 
       <P>
@@ -332,7 +332,7 @@ export default function Post() {
       <OL>
         <LI>
           <Strong>Monday</Strong>: Review the{' '}
-          <A href="/features/intelligence">Intelligence Digest</A> for the previous week.
+          <A href="/features/intelligence">Weekly Competitor Report</A> for the previous week.
           Note any subscription price changes, new products, or homepage changes that
           occurred since your last review.
         </LI>

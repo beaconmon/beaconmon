@@ -39,7 +39,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'Does products.json show sold-out products or only in-stock items?',
-    a: 'It shows all published products regardless of stock status. Each variant has an "available" boolean. A product with all variants set to available: false is published but fully sold out. This distinction matters for stockout intelligence, which is a separate signal from product removal.',
+    a: 'It shows all published products regardless of stock status. Each variant has an "available" boolean. A product with all variants set to available: false is published but fully sold out. This distinction matters for stockout tracking, which is a separate signal from product removal.',
   },
   {
     q: 'Can I use products.json to see a competitor\'s historical pricing?',
@@ -70,7 +70,7 @@ export default function Post() {
         active, which variants survived rationalization, and what internal tags reveal about
         upcoming strategy. The endpoint is publicly accessible on every Shopify store with no
         authentication required. Most merchants who know it exists use it only to pull prices.
-        The other fields contain better intelligence.
+        The other fields carry more signal.
       </P>
 
       <KeyTakeaways>
@@ -115,20 +115,20 @@ export default function Post() {
 
       <StatGrid>
         <Stat value="250" label="products per request using ?limit=250; paginate with ?page=2 for larger catalogs" />
-        <Stat value="6+" label="actionable intelligence fields per product beyond just the price" />
+        <Stat value="6+" label="actionable data fields per product beyond just the price" />
         <Stat value="seconds" label="how quickly the feed reflects a price change or new publish in Shopify admin" />
       </StatGrid>
 
       <Callout>
         The products.json feed is a snapshot of right now. It shows current state, not history.
-        The intelligence value compounds when you store snapshots over time and compare them,
+        The signal compounds when you store snapshots over time and compare them,
         which is what monitoring tools do automatically.
       </Callout>
 
       <H2>Field-by-field: what each property reveals</H2>
 
       <P>
-        Six fields carry the bulk of competitive intelligence: price, compare_at_price, available,
+        Six fields carry most of what matters: price, compare_at_price, available,
         published_at, tags, and variants. Price and compare_at_price show current positioning and
         promotions. Published_at tracks launch timing. Tags expose internal merchandising intent
         before any public announcement. Variants map catalog depth and rationalization over time.
@@ -319,7 +319,7 @@ export default function Post() {
 
       <P>
         Automated monitoring that checks every 5 to 15 minutes and surfaces only meaningful
-        changes is how you turn a public endpoint into an operational intelligence feed.
+        changes is how you turn a public endpoint into an operational monitoring feed.
       </P>
 
       <P>

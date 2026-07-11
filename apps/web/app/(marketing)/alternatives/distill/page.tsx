@@ -9,7 +9,7 @@ import CheckIcon from '@/components/marketing/CheckIcon';
 export const metadata: Metadata = {
   title: 'Free Alternative to Distill.io for Ecommerce Stores (2026)',
   description:
-    'Beaconmon monitors competitor prices and page changes for Shopify stores, adds uptime monitoring, and delivers a weekly Intelligence Digest. Free plan.',
+    'Beaconmon monitors competitor prices and page changes for Shopify stores, adds uptime monitoring, and delivers a Weekly Competitor Report. Free plan.',
   alternates: { canonical: 'https://beaconmon.com/alternatives/distill' },
   openGraph: { url: 'https://beaconmon.com/alternatives/distill' },
 };
@@ -59,7 +59,7 @@ const BEACONMON_WINS = [
     body: 'HTTP checks, SSL expiry alerts at 30, 14, and 7 days, and domain expiry warnings. All included at no extra cost. One tool instead of two.',
   },
   {
-    heading: 'Intelligence Digest on Starter.',
+    heading: 'Weekly Competitor Report on Starter.',
     body: 'A weekly Slack or email summary of every competitor change, written in plain language. Available from $29/mo. No inbox clutter from one-off notifications.',
   },
   {
@@ -97,7 +97,7 @@ const FAQ_ITEMS = [
     a: "Distill's free plan: 25 monitors, 30 email alerts per month, 6-hour minimum check frequency. Beaconmon's free plan: 10 monitors, 1 competitor, no monthly alert count cap. Beaconmon also includes uptime monitoring and SSL expiry alerts on the free plan. The better fit depends on whether monitor count or alert limits are your binding constraint.",
   },
   {
-    q: 'What is the Intelligence Digest?',
+    q: 'What is the Weekly Competitor Report?',
     a: 'A weekly Slack or email summary of every competitor change detected in the past week, written in plain language. Available on Beaconmon Starter ($29/mo). Distill does not offer a digest feature on any plan.',
   },
 ];
@@ -160,7 +160,7 @@ export default function AlternativesDistillPage() {
             Free alternative to Distill.io for Shopify stores.
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[620px] mx-auto mb-4">
-            Beaconmon tracks competitor prices and page changes, adds uptime monitoring, and delivers a weekly Intelligence Digest. Built for ecommerce. No Chrome extension. Free plan, no card required.
+            Beaconmon tracks competitor prices and page changes, adds uptime monitoring, and delivers a Weekly Competitor Report. Built for ecommerce. No Chrome extension. Free plan, no card required.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -184,7 +184,7 @@ export default function AlternativesDistillPage() {
                 <li>$80+/mo for AI summaries</li>
                 <li>Chrome extension required</li>
                 <li>No uptime monitoring</li>
-                <li>No Intelligence Digest</li>
+                <li>No Weekly Competitor Report</li>
               </ul>
             </div>
             <div className="bg-[rgba(0,229,122,0.04)] border border-[rgba(0,229,122,0.2)] rounded-2xl p-8">
@@ -205,7 +205,7 @@ export default function AlternativesDistillPage() {
                   <CheckIcon /> Shopify preset selectors
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon /> Intelligence Digest from $29/mo
+                  <CheckIcon /> Weekly Competitor Report from $29/mo
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckIcon /> AI scoring on Growth plan

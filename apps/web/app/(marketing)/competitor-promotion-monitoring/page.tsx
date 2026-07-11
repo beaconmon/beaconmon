@@ -25,7 +25,7 @@ const FEATURES = [
     body: 'Add a competitor homepage or sale page as an HTML content monitor. When server-rendered sale copy appears, a promo banner is added, or a sitewide discount notice is baked into the page, Beaconmon captures the diff.',
   },
   {
-    heading: 'Intelligence Digest promotion roll-up',
+    heading: 'Weekly Competitor Report promotion roll-up',
     body: "Feed price-drop signals and HTML content changes appear together in the weekly digest. You can see whether a competitor's moves look like a coordinated promotional push or a one-off product adjustment.",
   },
   {
@@ -38,7 +38,7 @@ const HOW_IT_WORKS = [
   "Add a competitor's Shopify domain for feed-level price-drop detection across their full product catalog",
   "Add their homepage and key promo pages (e.g. /sale, /collections/sale) as separate HTML content monitors",
   'Beaconmon detects feed price drops and HTML content changes independently on each check',
-  'Review both signal types in the dashboard or get them consolidated in the Intelligence Digest',
+  'Review both signal types in the dashboard or get them consolidated in the Weekly Competitor Report',
 ];
 
 const FAQS = [
@@ -96,12 +96,12 @@ export default function CompetitorPromotionMonitoringPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Promotion Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Promotion Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Detect Competitor Promotions: Feed Price Drops and HTML Banner Changes
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Beaconmon combines two signals: Shopify feed price drops and HTML content monitoring on competitor pages. It catches server-rendered sale banners and feed-level discounts. JavaScript-injected overlays and countdown widgets are outside scope. Here is what you can actually expect.
+            Competitor promotion monitoring tracks when a competitor launches a sale, drops prices, or changes promotional copy, so you see the move before your customers do. Beaconmon combines two signals: Shopify feed price drops and HTML content monitoring on competitor pages. It catches server-rendered sale banners and feed-level discounts. JavaScript-injected overlays and countdown widgets are outside scope. Here is what you can actually expect.
           </p>
           <CtaForm />
           <p className="mt-[14px] text-[13px] text-brand-muted">
@@ -188,7 +188,7 @@ export default function CompetitorPromotionMonitoringPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/pricing-change-alerts" className="text-brand-dim hover:text-brand-text transition-colors">Pricing change alerts</Link>
             <Link href="/woocommerce-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">WooCommerce competitor monitoring</Link>

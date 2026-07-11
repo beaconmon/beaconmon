@@ -20,7 +20,7 @@ const TOOL_FACTS = [
   { label: 'Extra features added', value: 'Log management, distributed tracing, infrastructure metrics, real user monitoring, error tracking, on-call scheduling' },
   { label: 'Shopify-specific features', value: 'None' },
   { label: 'Competitor monitoring', value: 'None at any tier' },
-  { label: 'Intelligence Digest', value: 'None' },
+  { label: 'Weekly Competitor Report', value: 'None' },
   { label: 'Primary audience', value: 'Developers and DevOps teams' },
 ];
 
@@ -45,7 +45,7 @@ const BEACONMON_WINS = [
     body: 'Track your own uptime and competitor pages in one tool. When a competitor drops prices or adds a promotional banner, you see it alongside your own site health.',
   },
   {
-    heading: 'Intelligence Digest on Starter and above.',
+    heading: 'Weekly Competitor Report on Starter and above.',
     body: 'A scheduled Slack or email digest groups every competitor change from the week into a readable summary. No equivalent exists in BetterStack at any tier.',
   },
 ];
@@ -68,7 +68,7 @@ const WHERE_BETTERSTACK_WINS = [
 const FAQ_ITEMS = [
   {
     q: 'Is Beaconmon only for Shopify stores?',
-    a: 'Primarily, yes. Beaconmon is built around the Shopify and WooCommerce workflow: competitor monitoring with preset selectors, ecommerce uptime monitoring, and Intelligence Digests. BetterStack is a better fit for teams running custom infrastructure or needing log management.',
+    a: 'Primarily, yes. Beaconmon is built around the Shopify and WooCommerce workflow: competitor monitoring with preset selectors, ecommerce uptime monitoring, and Weekly Competitor Reports. BetterStack is a better fit for teams running custom infrastructure or needing log management.',
   },
   {
     q: 'Does Beaconmon have an on-call or escalation system?',
@@ -80,7 +80,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What does BetterStack do that Beaconmon does not?',
-    a: 'BetterStack covers log management, infrastructure metrics, distributed tracing, real user monitoring, and on-call scheduling. These are enterprise DevOps capabilities that Beaconmon does not offer. Beaconmon is focused on ecommerce store monitoring and competitor intelligence.',
+    a: 'BetterStack covers log management, infrastructure metrics, distributed tracing, real user monitoring, and on-call scheduling. These are enterprise DevOps capabilities that Beaconmon does not offer. Beaconmon is focused on ecommerce store monitoring and competitor monitoring.',
   },
 ];
 
@@ -172,7 +172,7 @@ export default function AlternativesBetterStackPage() {
               <p className="text-[28px] font-extrabold tracking-[-0.02em] mb-1">
                 Free / $29<span className="text-[16px] font-medium text-brand-dim">/mo</span>
               </p>
-              <p className="text-brand-dim text-[14px] leading-[1.55] mb-4">10 uptime monitors, SSL monitoring, domain expiry alerts, and 1 competitor monitor on the free plan. Starter adds unlimited competitors and the Intelligence Digest.</p>
+              <p className="text-brand-dim text-[14px] leading-[1.55] mb-4">10 uptime monitors, SSL monitoring, domain expiry alerts, and 1 competitor monitor on the free plan. Starter adds unlimited competitors and the Weekly Competitor Report.</p>
               <Link href="/pricing" className="text-[13px] text-brand-green-ink hover:underline">See full pricing details →</Link>
             </div>
           </div>

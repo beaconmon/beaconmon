@@ -46,7 +46,7 @@ const TABLE_ROWS = [
     beaconmonGood: true,
   },
   {
-    feature: 'Intelligence Digest (Slack/email)',
+    feature: 'Weekly Competitor Report (Slack/email)',
     beaconmon: '✓ Starter+',
     competitor: 'No',
     beaconmonGood: true,
@@ -95,7 +95,7 @@ const STAY_REASONS = [
 const SWITCH_REASONS = [
   'You want to know specifically that a competitor changed their product price, not just that something on the page looks different.',
   'You want your Shopify store monitored for downtime, SSL expiry, and competitor changes from one tool, not three.',
-  'You want a weekly Intelligence Digest in Slack summarizing exactly what changed on competitor sites, in plain language.',
+  'You want a Weekly Competitor Report in Slack summarizing exactly what changed on competitor sites, in plain language.',
   'You need AI-generated summaries that explain what changed and why it might matter to your store, not just a before/after screenshot.',
   'You want to track competitor product availability and promotional copy with the precision of a CSS selector, not a cropped image region.',
 ];
@@ -186,7 +186,7 @@ export default function VsVisualpingPage() {
           <div className="reveal bg-brand-bg1 border border-brand-line-soft rounded-2xl p-10 max-w-[820px]">
             <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Summary verdict</span>
             <p className="text-[17px] leading-[1.65] text-brand-dim">
-              Visualping is a visual change detector. It shows you that something on a page changed. Beaconmon is an ecommerce intelligence tool. It tells you what changed, by how much, and delivers a digest of every competitor move to your Slack. If you run a Shopify store and care about competitor prices, not just pixels, Beaconmon is the better fit.
+              Visualping is a visual change detector. It shows you that something on a page changed. Beaconmon is an ecommerce monitoring tool. It tells you what changed, by how much, and delivers a digest of every competitor move to your Slack. If you run a Shopify store and care about competitor prices, not just pixels, Beaconmon is the better fit.
             </p>
           </div>
         </div>
@@ -274,7 +274,7 @@ export default function VsVisualpingPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <blockquote className="reveal max-w-[700px] mx-auto border-l-2 border-brand-green-ink pl-8 py-2">
             <p className="text-[18px] leading-[1.7] text-brand-dim italic mb-4">
-              &ldquo;With Visualping I got a screenshot saying something changed. With Beaconmon I get a Slack message saying the price on their bestseller dropped $10. That is the difference between noise and intelligence.&rdquo;
+              &ldquo;With Visualping I got a screenshot saying something changed. With Beaconmon I get a Slack message saying the price on their bestseller dropped $10. That is the difference between noise and signal.&rdquo;
             </p>
             <cite className="text-[13px] text-brand-muted not-italic">Shopify store owner, Canada, migrated early 2026</cite>
           </blockquote>
@@ -298,7 +298,7 @@ export default function VsVisualpingPage() {
                 { step: '1', text: 'Make a note of the competitor URLs you are currently watching in Visualping.' },
                 { step: '2', text: 'Sign up for Beaconmon (free, no card required). The onboarding wizard asks for your store URL and competitor domains.' },
                 { step: '3', text: 'For each competitor, choose what to track: price, stock status, promotional copy, or the full page. The wizard provides preset selectors for Shopify and WooCommerce stores.' },
-                { step: '4', text: 'Connect Slack or email for alerts. The Intelligence Digest is configured here too.' },
+                { step: '4', text: 'Connect Slack or email for alerts. The Weekly Competitor Report is configured here too.' },
                 { step: '5', text: 'Run Beaconmon for a week alongside Visualping to verify you are catching the same changes, then cancel Visualping.' },
               ].map(({ step, text }) => (
                 <li key={step} className="reveal flex items-start gap-4 text-[14px] text-brand-dim">

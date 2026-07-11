@@ -4,11 +4,11 @@ import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
 import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
-import { Bot, Activity, Clock, ShieldCheck, Eye, TrendingDown, Bell, Rss } from 'lucide-react';
+import { Bot, Activity, Clock, ShieldCheck, Eye, TrendingDown, Bell, Rss, DollarSign, RefreshCw, Radar, GitCompare, Gauge } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Beaconmon vs Alternatives: Competitor Intelligence for Shopify Stores',
+  title: 'Beaconmon vs Alternatives: Competitor Monitoring for Shopify Stores',
   description:
     'Honest comparisons for ecommerce store owners. Beaconmon vs Visualping, Prisync, UptimeRobot, Pingdom, and more, built for Shopify stores.',
   alternates: { canonical: 'https://beaconmon.com/vs' },
@@ -18,15 +18,15 @@ export const metadata: Metadata = {
 const FAQ_ITEMS = [
   {
     q: 'What makes Beaconmon different from uptime tools like UptimeRobot or Pingdom?',
-    a: "Uptime tools tell you when your site goes down. Beaconmon does that too, but it also tracks competitor prices, product listings, and promotional copy, then delivers a daily Intelligence Digest summarizing every change. UptimeRobot, Pingdom, Better Uptime, and StatusCake do not offer any of that.",
+    a: "Uptime tools tell you when your site goes down. Beaconmon does that too, but it also tracks competitor prices, product listings, and promotional copy, then delivers a Daily Competitor Report summarizing every change. UptimeRobot, Pingdom, Better Uptime, and StatusCake do not offer any of that.",
   },
   {
     q: 'Is Beaconmon cheaper than the alternatives?',
-    a: "On a per-ecommerce-feature basis, yes. UptimeRobot's paid plan starts at $7/mo but has no competitor monitoring or content tracking. Pingdom has no free plan and starts at $15/mo with no ecommerce features. Better Uptime starts at $25/mo. Beaconmon Starter is $29/mo with competitor monitoring, content change detection, and Intelligence Digest included.",
+    a: "On a per-ecommerce-feature basis, yes. UptimeRobot's paid plan starts at $7/mo but has no competitor monitoring or content tracking. Pingdom has no free plan and starts at $15/mo with no ecommerce features. Better Uptime starts at $25/mo. Beaconmon Starter is $29/mo with competitor monitoring, content change detection, and Weekly Competitor Report included.",
   },
   {
     q: 'Which tool should I choose if I just need basic ping checks?',
-    a: "If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot's 50-monitor free tier is hard to beat. Beaconmon's free tier (10 monitors, 1 competitor monitor) is better suited to ecommerce stores that will outgrow basic pings and want full competitor intelligence as they grow.",
+    a: "If you only need simple HTTP uptime monitoring and want the most monitors for free, UptimeRobot's 50-monitor free tier is hard to beat. Beaconmon's free tier (10 monitors, 1 competitor monitor) is better suited to ecommerce stores that will outgrow basic pings and want full competitor monitoring as they grow.",
   },
   {
     q: 'Does Beaconmon have on-call scheduling like Better Uptime?',
@@ -35,6 +35,10 @@ const FAQ_ITEMS = [
   {
     q: 'What makes content change monitoring unique to Beaconmon?',
     a: 'UptimeRobot, Pingdom, Better Uptime, and StatusCake do not offer content change detection. Beaconmon takes an HTML snapshot on first run and alerts you the moment a CSS-selector target changes. It tracks competitor pricing, product availability, and promotional copy.',
+  },
+  {
+    q: 'How is Beaconmon different from repricing apps like Pricefy or PriceMole?',
+    a: 'Pricefy, PriceMole, and PriceOtus automatically adjust your Shopify prices when a competitor moves. Beaconmon does not touch your prices. It watches competitor prices, promotions, and page content, then alerts you or sends a Weekly Competitor Report, so you decide what to do with the information.',
   },
 ];
 
@@ -63,7 +67,7 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     name: 'Visualping',
     slug: 'visualping',
     tagline: 'Visual diff tool with no ecommerce focus.',
-    verdict: 'Visualping detects visual page changes but has no competitor intelligence digest, no Shopify context, and no uptime monitoring.',
+    verdict: 'Visualping detects visual page changes but has no competitor weekly competitor report, no Shopify context, and no uptime monitoring.',
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
         <Eye size={24} color="#8B5CF6" strokeWidth={1.5} />
@@ -96,10 +100,57 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
     name: 'Hexowatch',
     slug: 'hexowatch',
     tagline: 'General-purpose page monitoring without the intel layer.',
-    verdict: 'Hexowatch monitors pages for changes but lacks a curated intelligence digest, Shopify-specific features, and competitor-first workflows.',
+    verdict: 'Hexowatch monitors pages for changes but lacks a curated weekly competitor report, Shopify-specific features, and competitor-first workflows.',
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(20, 184, 166, 0.12)' }}>
         <Rss size={24} color="#14B8A6" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'changedetection.io',
+    slug: 'changedetection-io',
+    tagline: 'Open-source and self-hosted, 30.7k GitHub stars.',
+    verdict: 'Free if you run it yourself. No Shopify presets, no uptime monitoring, and no Weekly Competitor Report.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(99, 102, 241, 0.12)' }}>
+        <GitCompare size={24} color="#6366F1" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+];
+
+const REPRICING_COMPETITORS: CompetitorCard[] = [
+  {
+    name: 'Pricefy',
+    slug: 'pricefy',
+    tagline: 'AI auto-matching and rule-based repricing, 80 reviews at 4.7 stars.',
+    verdict: 'Adjusts your Shopify prices automatically. No promo/content monitoring, no uptime monitoring, no Weekly Competitor Report.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.12)' }}>
+        <DollarSign size={24} color="#22C55E" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'PriceMole',
+    slug: 'pricemole',
+    tagline: 'Marketplace repricing across Amazon, eBay, and Walmart.',
+    verdict: 'Starts at $99/mo with no free plan. Built for multi-channel sellers, not single-storefront monitoring.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(168, 85, 247, 0.12)' }}>
+        <RefreshCw size={24} color="#A855F7" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'PriceOtus',
+    slug: 'priceotus',
+    tagline: 'Budget repricing app, 13 reviews at a perfect 5.0 stars.',
+    verdict: 'Free plan capped at 5 products. Strong on variant-level pricing, no content or uptime monitoring.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
+        <Radar size={24} color="#EC4899" strokeWidth={1.5} />
       </div>
     ),
   },
@@ -143,10 +194,21 @@ const UPTIME_COMPETITORS: CompetitorCard[] = [
     name: 'StatusCake',
     slug: 'statuscake',
     tagline: 'Generous free tier, missing ecommerce features.',
-    verdict: 'Generous free tier. No competitor monitoring, no content change detection, no Intelligence Digest.',
+    verdict: 'Generous free tier. No competitor monitoring, no content change detection, no Weekly Competitor Report.',
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(74, 222, 128, 0.12)' }}>
         <ShieldCheck size={24} color="#4ADE80" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'getuptime.co',
+    slug: 'getuptime',
+    tagline: 'Shopify-native UI testing, 31 reviews at 5.0 stars.',
+    verdict: 'Scripted checkout tests and app monitoring, no free plan, and no competitor tracking at any tier.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(56, 189, 248, 0.12)' }}>
+        <Gauge size={24} color="#38BDF8" strokeWidth={1.5} />
       </div>
     ),
   },
@@ -158,7 +220,7 @@ const DIFFERENTIATORS = [
     body: 'Track when a competitor changes their pricing page, product listings, or homepage copy. Get alerted instantly or via weekly digest.',
   },
   {
-    heading: 'Intelligence Digest, delivered to Slack or email.',
+    heading: 'Weekly Competitor Report, delivered to Slack or email.',
     body: 'A scheduled summary (daily or weekly) of every change detected on competitor sites, grouped and ranked. Available on Starter and above.',
   },
   {
@@ -247,7 +309,7 @@ export default function VsHubPage() {
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative text-center">
           <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Compare</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[820px] mx-auto">
-            Competitor intelligence and uptime,<br />
+            Competitor monitoring and uptime,<br />
             <span className="text-brand-green-ink">compared honestly.</span>
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[560px] mx-auto">
@@ -256,11 +318,11 @@ export default function VsHubPage() {
         </div>
       </section>
 
-      {/* Competitor intelligence comparisons */}
+      {/* Competitor monitoring comparisons */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal mb-8">
-            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-2">Competitor intelligence tools</p>
+            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-2">Competitor monitoring tools</p>
             <p className="text-brand-dim text-[15px] max-w-[500px]">Page change monitoring, price tracking, and visual diff tools that Shopify stores compare against Beaconmon.</p>
           </div>
           <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 mb-16">
@@ -273,8 +335,18 @@ export default function VsHubPage() {
             <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-muted mb-2">Uptime monitoring tools</p>
             <p className="text-brand-dim text-[15px] max-w-[500px]">Traditional uptime monitoring tools that stores often start with before discovering Beaconmon.</p>
           </div>
-          <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
+          <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5 mb-16">
             {UPTIME_COMPETITORS.map((card) => (
+              <CompetitorCard key={card.slug} card={card} />
+            ))}
+          </div>
+
+          <div className="reveal mb-8">
+            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-brand-muted mb-2">Repricing and dynamic pricing tools</p>
+            <p className="text-brand-dim text-[15px] max-w-[500px]">Shopify apps that automatically adjust your prices based on competitor moves. Beaconmon alerts you instead of changing your prices.</p>
+          </div>
+          <div className="grid grid-cols-2 max-[640px]:grid-cols-1 gap-5">
+            {REPRICING_COMPETITORS.map((card) => (
               <CompetitorCard key={card.slug} card={card} />
             ))}
           </div>

@@ -21,7 +21,7 @@ const TOOL_FACTS = [
   { label: 'Uptime monitoring', value: 'None' },
   { label: 'Tells you what changed', value: 'No. Shows a highlighted region, not the specific value.' },
   { label: 'Shopify preset selectors', value: 'None' },
-  { label: 'Intelligence Digest', value: 'None' },
+  { label: 'Weekly Competitor Report', value: 'None' },
 ];
 
 const REASONS_TO_SWITCH = [
@@ -65,7 +65,7 @@ const BEACONMON_WINS = [
     body: 'HTTP uptime checks, SSL expiry alerts at 30, 14, and 7 days, and domain expiry alerts are included on every plan, including free. One tool, not two.',
   },
   {
-    heading: 'Intelligence Digest on Starter.',
+    heading: 'Weekly Competitor Report on Starter.',
     body: 'A scheduled Slack or email summary of every competitor change from the past week, grouped by competitor, in plain language. Available on Starter ($29/mo) and above.',
   },
 ];
@@ -90,7 +90,7 @@ const FAQ_ITEMS = [
     a: 'Yes. Uptime monitoring, SSL expiry alerts, and domain expiry alerts are included on all plans including the free plan. Visualping does not offer uptime monitoring.',
   },
   {
-    q: 'What is the Intelligence Digest?',
+    q: 'What is the Weekly Competitor Report?',
     a: 'A scheduled Slack or email summary of every competitor change detected in the past week, grouped by competitor, written in plain language. It ships on Starter ($29/mo) and above. Visualping does not offer a digest feature.',
   },
 ];
@@ -155,7 +155,7 @@ export default function AlternativesVisualpingPage() {
             <span className="text-brand-green-ink">for Shopify stores.</span>
           </h1>
           <p className="text-[17px] leading-[1.6] text-brand-dim max-w-[620px] mb-4">
-            Visualping detects visual changes by comparing screenshots. Beaconmon targets specific HTML elements with CSS selectors and tells you exactly what changed: the price, the stock status, the promotional headline. For Shopify stores, that precision is the difference between noise and intelligence.
+            Visualping detects visual changes by comparing screenshots. Beaconmon targets specific HTML elements with CSS selectors and tells you exactly what changed: the price, the stock status, the promotional headline. For Shopify stores, that precision is the difference between noise and signal.
           </p>
           <p className="text-brand-muted text-[13px]">Last updated: June 2026</p>
         </div>
@@ -184,7 +184,7 @@ export default function AlternativesVisualpingPage() {
                 </div>
                 <div className="flex gap-3">
                   <span className="text-brand-muted shrink-0 w-[140px]">Starter paid</span>
-                  <span>$29/mo, unlimited competitors, Intelligence Digest</span>
+                  <span>$29/mo, unlimited competitors, Weekly Competitor Report</span>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-brand-muted shrink-0 w-[140px]">Uptime monitoring</span>
@@ -195,7 +195,7 @@ export default function AlternativesVisualpingPage() {
                   <span className="text-brand-green-ink font-medium">Included</span>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-brand-muted shrink-0 w-[140px]">Intelligence Digest</span>
+                  <span className="text-brand-muted shrink-0 w-[140px]">Weekly Competitor Report</span>
                   <span className="text-brand-green-ink font-medium">Starter and above</span>
                 </div>
                 <div className="flex gap-3">

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Competitor Intelligence & Uptime Monitoring for eCommerce | Beaconmon',
+  title: 'Competitor Monitoring & Uptime Monitoring for eCommerce | Beaconmon',
   description:
     "Beaconmon tracks your Shopify competitors' prices, launches, and promos. Daily brief at 8am. Set up in five minutes. Free to start.",
   alternates: { canonical: 'https://beaconmon.com' },
@@ -140,7 +140,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Right — intelligence mockup */}
+            {/* Right side: competitor mockup */}
             <IntelligenceMockup
               storeLabel="yourstore.myshopify.com"
               stats={{ competitorMoves: 7, storeChanges: 4, storeChangesLabel: 'price drops', smartAlerts: 3, smartAlertsLabel: 'new launches' }}
@@ -454,7 +454,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
             <Link href="/shopify-competitor-monitoring" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Competitor price tracking</Link>
-            <Link href="/ecommerce-competitor-intelligence" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Competitor intelligence guide</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Competitor monitoring guide</Link>
             <Link href="/ecommerce-uptime-monitoring-guide" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Uptime monitoring for eCommerce</Link>
             <Link href="/website-change-detection" className="text-[14px] text-brand-dim hover:text-brand-green-ink transition-colors">Website change detection</Link>
           </div>

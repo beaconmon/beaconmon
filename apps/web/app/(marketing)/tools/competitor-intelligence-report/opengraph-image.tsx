@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = '7-day competitor intelligence report | Beaconmon';
+export const alt = '7-day competitor monitoring report | Beaconmon';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

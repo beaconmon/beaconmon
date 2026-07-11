@@ -30,7 +30,7 @@ const FEATURES = [
     body: 'Growth plan and above: when a new product appears in the feed, Beaconmon generates a plain-English summary. Know whether it is a new SKU, a bundle, or a full product line expansion before you open the diff.',
   },
   {
-    heading: 'Intelligence Digest new-launch roll-up',
+    heading: 'Weekly Competitor Report new-launch roll-up',
     body: 'New competitor product launches get their own section in the daily or weekly digest. Every launch across your tracked competitor set in one Slack message or email, filtered to what actually shipped.',
   },
 ];
@@ -39,7 +39,7 @@ const HOW_IT_WORKS = [
   "Paste a competitor's Shopify store domain and Beaconmon locates the public product feed automatically",
   'Beaconmon polls the feed on your chosen interval and compares each snapshot to the previous one',
   'A structured event fires when a new product handle appears, with title, variants, price, and a link to the live listing',
-  'Get the alert in Slack or email, or review all competitor launches in the weekly Intelligence Digest',
+  'Get the alert in Slack or email, or review all competitor launches in the Weekly Competitor Report',
 ];
 
 const FAQS = [
@@ -57,7 +57,7 @@ const FAQS = [
   },
   {
     q: 'Can I track only new product launches and ignore price changes?',
-    a: 'The Shopify feed monitor captures all feed changes, including price updates and availability flips, in addition to new products. You can filter the Intelligence Digest to show only new-product events, or create a dedicated monitor focused on the feed.',
+    a: 'The Shopify feed monitor captures all feed changes, including price updates and availability flips, in addition to new products. You can filter the Weekly Competitor Report to show only new-product events, or create a dedicated monitor focused on the feed.',
   },
   {
     q: 'How many competitors can I track for product launches?',
@@ -104,7 +104,7 @@ export default function CompetitorProductLaunchTrackingPage() {
           }}
         />
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5 relative">
-          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Product Launch Intelligence</span>
+          <span className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-brand-green-ink mb-4">Product Launch Monitoring</span>
           <h1 className="text-[clamp(40px,5vw,68px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-6 max-w-[900px]">
             Know the Moment a Competitor Adds a New Product to Their Shopify Store
           </h1>
@@ -118,7 +118,7 @@ export default function CompetitorProductLaunchTrackingPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">
@@ -204,7 +204,7 @@ export default function CompetitorProductLaunchTrackingPage() {
         <div className="max-w-[720px] mx-auto px-8 max-[640px]:px-5 text-center">
           <p className="text-brand-muted text-[13px] tracking-[0.06em] uppercase mb-4">See also</p>
           <div className="flex flex-wrap justify-center gap-4 text-[14px]">
-            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor intelligence</Link>
+            <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-stock-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor stock monitoring</Link>
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/competitor-collections-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Competitor collections monitoring</Link>

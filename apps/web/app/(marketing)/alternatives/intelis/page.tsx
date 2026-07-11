@@ -21,7 +21,7 @@ const TOOL_FACTS = [
   { label: 'Content change monitoring', value: 'No — promotional copy, banners, and page changes are not tracked' },
   { label: 'Uptime monitoring', value: 'No' },
   { label: 'SSL / domain expiry alerts', value: 'No' },
-  { label: 'Intelligence Digest', value: 'No' },
+  { label: 'Weekly Competitor Report', value: 'No' },
   { label: 'Google Shopping prices', value: 'Yes — a genuine advantage over Beaconmon' },
 ];
 
@@ -54,7 +54,7 @@ const BEACONMON_WINS = [
   'Monitors promotional copy, sale banners, and content changes alongside price.',
   'Uptime monitoring and SSL expiry alerts included in every plan.',
   'Domain expiry alerts at 30, 14, and 7 days.',
-  'Intelligence Digest: a weekly Slack or email summary of every competitor change.',
+  'Weekly Competitor Report: a weekly Slack or email summary of every competitor change.',
   'No repricing automation. You decide what to do with the information.',
 ];
 
@@ -176,13 +176,13 @@ export default function IntelisAlternativePage() {
             <div className="bg-[rgba(0,229,122,0.04)] border border-[rgba(0,229,122,0.2)] rounded-2xl p-8">
               <span className="text-[11px] font-semibold tracking-[0.1em] uppercase text-brand-green-ink mb-3 block">Beaconmon</span>
               <div className="text-[36px] font-extrabold tracking-[-0.03em] mb-1">Free<span className="text-[18px] font-semibold text-brand-dim"> to start</span></div>
-              <p className="text-brand-dim text-[14px] mb-6">10 monitors and 1 competitor free forever. Starter at $29/mo unlocks unlimited competitors and Intelligence Digest.</p>
+              <p className="text-brand-dim text-[14px] mb-6">10 monitors and 1 competitor free forever. Starter at $29/mo unlocks unlimited competitors and Weekly Competitor Report.</p>
               <div className="space-y-3">
                 {[
                   'No card required to start',
                   'Competitor content and price monitoring',
                   'Uptime, SSL, and domain expiry alerts',
-                  'Intelligence Digest on Starter+',
+                  'Weekly Competitor Report on Starter+',
                   'No auto-repricing (you stay in control)',
                   'See pricing details',
                 ].map((item, i) =>

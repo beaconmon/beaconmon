@@ -117,7 +117,7 @@ export default function WooCommerceStoreMonitoringPage() {
             WooCommerce Store Monitoring for Checkout, Cart, and Uptime
           </h1>
           <p className="text-[18px] leading-[1.55] text-brand-dim max-w-[600px] mb-8">
-            Beaconmon checks your shop page, cart, and checkout from outside your store, the way a customer would experience them. Catch a broken plugin update, an expiring SSL certificate, or a failed API endpoint before it costs you an order. No plugin to install. Also want competitor intelligence alongside your uptime? See{' '}
+            Beaconmon checks your shop page, cart, and checkout from outside your store, the way a customer would experience them. Catch a broken plugin update, an expiring SSL certificate, or a failed API endpoint before it costs you an order. No plugin to install. Also want competitor monitoring alongside your uptime? See{' '}
             <Link href="/for/woocommerce" className="text-brand-green-ink hover:underline">
               Beaconmon for WooCommerce
             </Link>
@@ -130,7 +130,7 @@ export default function WooCommerceStoreMonitoringPage() {
         </div>
       </section>
 
-      {/* Intelligence mockup */}
+      {/* Competitor mockup */}
       <section className="py-[80px] border-t border-brand-line-soft">
         <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
           <div className="reveal text-center mb-12">

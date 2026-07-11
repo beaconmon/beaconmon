@@ -5,9 +5,9 @@ import { BLOG_POSTS } from '@/lib/blog';
 import { JsonLd } from '@/components/json-ld';
 
 export const metadata: Metadata = {
-  title: 'Competitor Intelligence Blog for Shopify Merchants | Beaconmon',
+  title: 'Competitor Monitoring Blog for Shopify Merchants | Beaconmon',
   description:
-    'Practical guides on Shopify competitor intelligence: price monitoring, competitive tactics, and turning competitor data into margin-protecting decisions.',
+    'Practical guides on Shopify competitor monitoring: price monitoring, competitive tactics, and turning competitor data into margin-protecting decisions.',
   alternates: { canonical: 'https://beaconmon.com/blog' },
   openGraph: { url: 'https://beaconmon.com/blog' },
 };
@@ -26,7 +26,7 @@ export default function BlogIndexPage() {
     '@type': 'Blog',
     name: 'Beaconmon Blog',
     description:
-      'Competitor intelligence and ecommerce strategy for Shopify merchants.',
+      'Competitor monitoring and ecommerce strategy for Shopify merchants.',
     url: 'https://beaconmon.com/blog',
     author: {
       '@type': 'Person',
@@ -57,7 +57,7 @@ export default function BlogIndexPage() {
             Beaconmon Blog
           </span>
           <h1 className="text-[clamp(34px,4vw,56px)] leading-[1.05] tracking-[-0.035em] font-extrabold mb-4 max-w-[700px]">
-            Competitor intelligence for Shopify merchants
+            Competitor monitoring for Shopify merchants
           </h1>
           <p className="text-[17px] text-brand-dim leading-[1.6] max-w-[520px]">
             Practical guides on price monitoring, competitive tactics, and how to turn competitor data into decisions that protect your margin.

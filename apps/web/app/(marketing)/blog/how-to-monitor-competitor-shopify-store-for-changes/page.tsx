@@ -33,7 +33,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'How often will I get alerts?',
-    a: 'Beaconmon checks competitor pages at least every hour. If you prefer a consolidated view rather than hourly alerts, the Intelligence Digest (Starter+) batches all changes into a weekly Slack or email summary.',
+    a: 'Beaconmon checks competitor pages at least every hour. If you prefer a consolidated view rather than hourly alerts, the Weekly Competitor Report (Starter+) batches all changes into a weekly Slack or email summary.',
   },
   {
     q: 'What if a competitor uses a custom Shopify theme with non-standard CSS?',
@@ -53,7 +53,7 @@ const howToSchema = createHowToSchema({
     { name: 'Choose preset selectors', text: 'The wizard suggests preset selectors for the most common Shopify elements: price, stock status, announcement bar, and compare-at price. These cover most standard Shopify themes without any CSS knowledge required.' },
     { name: 'Choose which elements to watch', text: 'Select which elements to monitor. Starting with price and announcement bar covers the highest-signal changes with the fewest monitors.' },
     { name: 'Set your alert channel', text: 'Set Slack for same-day response on priority competitors, or email for lower-priority competitors where a delay is acceptable.' },
-    { name: 'Enable Intelligence Digest (optional)', text: 'On Starter and above, enable the Intelligence Digest for a weekly consolidated summary instead of individual per-change alerts.' },
+    { name: 'Enable Weekly Competitor Report (optional)', text: 'On Starter and above, enable the Weekly Competitor Report for a weekly consolidated summary instead of individual per-change alerts.' },
   ],
 });
 
@@ -192,7 +192,7 @@ export default function Post() {
           lower-priority competitors where a delay is acceptable.
         </LI>
         <LI>
-          On Starter+, enable the Intelligence Digest for a weekly consolidated summary instead
+          On Starter+, enable the Weekly Competitor Report for a weekly consolidated summary instead
           of individual per-change alerts. This is useful once you have several competitors
           tracked and per-change volume becomes heavy.
         </LI>
@@ -209,11 +209,11 @@ export default function Post() {
       <UL>
         <LI>
           Create one monitor per product page for price, using the price CSS selector. These
-          are your pricing intelligence monitors.
+          are your pricing monitors.
         </LI>
         <LI>
           Create one monitor per competitor homepage for promotional copy, covering the
-          announcement bar and hero section. These are your campaign intelligence monitors.
+          announcement bar and hero section. These are your campaign monitors.
           For more detail on homepage signals, see{' '}
           <A href="/competitor-promotion-monitoring">competitor promotion monitoring</A>.
         </LI>
@@ -262,7 +262,7 @@ export default function Post() {
       </P>
 
       <P>
-        The Intelligence Digest helps with this context by grouping changes over a week.
+        The Weekly Competitor Report helps with this context by grouping changes over a week.
         Seeing that a competitor changed their announcement bar, dropped prices on three SKUs,
         and added a new collection all within four days is a clearer signal than three
         individual alerts arriving at different times.

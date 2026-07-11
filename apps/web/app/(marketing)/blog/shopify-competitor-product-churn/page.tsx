@@ -39,7 +39,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'Should I alert on competitor product removals?',
-    a: 'For your direct competitors, yes: a product removal from a competitor can indicate an assortment gap they created, a supply problem you can exploit, or a signal that a category you are both in is contracting. Route product_removed events to your daily Intelligence Digest for most competitors, and set instant alerts for removals from your two or three closest direct competitors.',
+    a: 'For your direct competitors, yes: a product removal from a competitor can indicate an assortment gap they created, a supply problem you can exploit, or a signal that a category you are both in is contracting. Route product_removed events to your Daily Competitor Report for most competitors, and set instant alerts for removals from your two or three closest direct competitors.',
   },
   {
     q: 'What does a high product churn rate signal about a competitor?',
@@ -244,7 +244,7 @@ export default function Post() {
         drop strategy. Knowing the pattern helps you anticipate when the next push is coming.
       </P>
 
-      <H3>Fast kills as category intelligence</H3>
+      <H3>Fast kills as a category signal</H3>
 
       <P>
         When a competitor launches and quickly removes a product in a category you are both in,

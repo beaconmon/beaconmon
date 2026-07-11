@@ -49,14 +49,14 @@ const TOOLS = [
   },
   {
     href: '/tools/competitor-intelligence-report',
-    name: 'Free 7-Day Competitor Intelligence Report',
+    name: 'Free 7-Day Competitor Monitoring Report',
     blurb:
       "Enter a competitor's Shopify URL and get a 7-day report of every price drop, promo, and product change delivered to your email.",
     tag: 'Report',
   },
   {
     href: '/tools/competitor-intelligence-roi',
-    name: 'Competitor Intelligence ROI Calculator',
+    name: 'Competitor Monitoring ROI Calculator',
     blurb: 'Calculate how much revenue you recover by reacting faster to competitor price drops and promotions.',
     tag: 'Calculator',
   },
@@ -98,7 +98,7 @@ const HUB_FAQS = [
   },
   {
     q: 'What do these tools check?',
-    a: 'Across the 10 tools you can pull a competitor product and price snapshot, detect recent price and promo changes, run an instant uptime and SSL test, audit which of your 5 critical store pages are healthy, and calculate your downtime detection time and competitor intelligence ROI in dollars.',
+    a: 'Across the 10 tools you can pull a competitor product and price snapshot, detect recent price and promo changes, run an instant uptime and SSL test, audit which of your 5 critical store pages are healthy, and calculate your downtime detection time and competitor monitoring ROI in dollars.',
   },
 ];
 

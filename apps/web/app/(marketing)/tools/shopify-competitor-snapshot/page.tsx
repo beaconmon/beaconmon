@@ -142,7 +142,7 @@ export default function ShopifyCompetitorSnapshotPage() {
               What a snapshot shows, and what monitoring adds
             </h2>
             <p className="text-brand-dim text-[16px] leading-[1.6]">
-              A snapshot is a picture of one moment. The real edge in competitor intelligence is knowing the moment
+              A snapshot is a picture of one moment. The real edge in competitor monitoring is knowing the moment
               something changes.
             </p>
           </div>
@@ -236,7 +236,7 @@ export default function ShopifyCompetitorSnapshotPage() {
             <Link href="/competitor-price-tracking" className="text-brand-dim hover:text-brand-text transition-colors">Competitor price tracking</Link>
             <Link href="/shopify-competitor-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Shopify competitor monitoring</Link>
             <Link href="/competitor-promotion-monitoring" className="text-brand-dim hover:text-brand-text transition-colors">Promotion monitoring</Link>
-            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor intelligence</Link>
+            <Link href="/ecommerce-competitor-intelligence" className="text-brand-dim hover:text-brand-text transition-colors">Ecommerce competitor monitoring</Link>
             <Link href="/pricing" className="text-brand-dim hover:text-brand-text transition-colors">Pricing</Link>
           </div>
         </div>
