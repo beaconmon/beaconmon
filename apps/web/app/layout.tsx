@@ -54,7 +54,11 @@ const SITE_SCHEMA = [
     logo: { '@type': 'ImageObject', url: 'https://beaconmon.com/logo.svg', width: 200, height: 60 },
     description: 'Store and competitor monitoring for e-commerce businesses.',
     email: 'hello@beaconmon.com',
-    sameAs: ['https://x.com/beaconmon'],
+    sameAs: [
+      'https://x.com/beaconmon',
+      'https://chromewebstore.google.com/detail/beaconmon-competitor-x-ra/djimmfglabcdgooiigibpmghbgiebdke',
+      'https://apps.shopify.com/store-intel-by-beaconmon',
+    ],
   },
   {
     '@context': 'https://schema.org',

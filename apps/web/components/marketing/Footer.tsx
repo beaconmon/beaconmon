@@ -83,9 +83,9 @@ const COMPANY_LINKS: [string, string][] = [
 
 function ColHead({ children }: { children: React.ReactNode }) {
   return (
-    <h4 className="text-[11px] font-semibold tracking-[0.09em] uppercase text-brand-muted mb-5">
+    <h3 className="text-[11px] font-semibold tracking-[0.09em] uppercase text-brand-muted mb-5">
       {children}
-    </h4>
+    </h3>
   );
 }
 

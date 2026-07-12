@@ -45,7 +45,7 @@
     --brand-green-dim:    oklch(72% 0.20 152);
     --brand-green-fg:     oklch(8% 0.04 152);
     /* Deeper green for text/icons on white — passes WCAG AA */
-    --brand-green-ink:    oklch(50% 0.19 152);
+    --brand-green-ink:    oklch(44% 0.19 152);
     --brand-red:          oklch(55% 0.22 25);
     --brand-amber:        oklch(52% 0.16 60);
     --brand-surface:      oklch(100% 0 0);

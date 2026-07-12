@@ -44,6 +44,16 @@ const nextConfig: NextConfig = {
         destination: '/pricing',
         permanent: true,
       },
+      {
+        source: '/vs/betterstack',
+        destination: '/vs/better-uptime',
+        permanent: true,
+      },
+      {
+        source: '/alternatives/better-uptime',
+        destination: '/alternatives/betterstack',
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

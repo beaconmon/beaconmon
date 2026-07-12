@@ -98,7 +98,7 @@ export default function IntelligenceMockup({ storeLabel, stats, events, slackNot
         <p className="text-[11px] text-[rgba(255,255,255,0.5)] leading-snug mb-2">{slackNotification.body}</p>
         <div className="flex items-center justify-between">
           <span className="text-[10px] text-[rgba(255,255,255,0.55)]">{slackNotification.timeAgo}</span>
-          <span className="text-[10px] text-[#6c5ce7]">{slackNotification.channel}</span>
+          <span className="text-[10px] text-[#a29bfe]">{slackNotification.channel}</span>
         </div>
       </div>
     </div>

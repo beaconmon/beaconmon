@@ -24,6 +24,11 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 if (key) {
+  // Session recording, surveys, dead-click capture, and web vitals each lazy-load
+  // their own script from PostHog's CDN (posthog-recorder.js, surveys.js, etc),
+  // roughly 60KB of JS that mobile PSI flags as legacy/unused. Marketing pages have
+  // no signed-in user behavior worth recording, so they get pageviews only; the app
+  // keeps full instrumentation.
   const initPostHog = () =>
     posthog.init(key, {
       api_host: '/ingest',
@@ -32,7 +37,11 @@ if (key) {
       person_profiles: 'identified_only',
       capture_pageview: false,
       capture_pageleave: true,
-      capture_exceptions: true,
+      capture_exceptions: isAppRoute,
+      capture_performance: isAppRoute,
+      capture_dead_clicks: isAppRoute,
+      disable_session_recording: !isAppRoute,
+      disable_surveys: !isAppRoute,
       debug: process.env.NODE_ENV === 'development',
     });
 
