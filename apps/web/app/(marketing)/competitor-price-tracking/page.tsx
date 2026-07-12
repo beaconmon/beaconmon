@@ -74,6 +74,34 @@ const faqSchema = {
   })),
 };
 
+const COMPARISONS = [
+  {
+    name: 'Pricemole',
+    href: '/vs/pricemole',
+    body: "Pricemole is a dedicated Shopify price tracker. See how its repricing focus compares to Beaconmon's broader content and price monitoring.",
+  },
+  {
+    name: 'Prisync',
+    href: '/vs/prisync',
+    body: "Prisync targets larger catalogs with per-SKU pricing. Compare its setup and cost against Beaconmon's feed-based tracking.",
+  },
+  {
+    name: 'Distill',
+    href: '/vs/distill',
+    body: 'Distill.io watches any page for changes but has no ecommerce-specific parsing. See how it stacks up for price tracking.',
+  },
+  {
+    name: 'Visualping',
+    href: '/vs/visualping',
+    body: "Visualping is a general purpose page monitor. Compare its screenshot diffing to Beaconmon's CSS selector price tracking.",
+  },
+  {
+    name: 'Hexowatch',
+    href: '/vs/hexowatch',
+    body: 'Hexowatch bundles several monitor types into one tool. See how it compares to Beaconmon for tracking competitor prices specifically.',
+  },
+];
+
 export default function CompetitorPriceTrackingPage() {
   return (
     <>
@@ -163,6 +191,24 @@ export default function CompetitorPriceTrackingPage() {
                 <h3 className="text-[16px] font-bold tracking-[-0.01em] mb-2">{q}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{a}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How Beaconmon compares */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How Beaconmon compares</h2>
+            <p className="text-brand-dim text-[16px] max-w-[560px] mx-auto">See how Beaconmon's Shopify-first price tracking stacks up against dedicated price monitoring and change detection tools.</p>
+          </div>
+          <div className="reveal grid grid-cols-3 max-[880px]:grid-cols-2 max-[560px]:grid-cols-1 gap-4 max-w-[1000px] mx-auto">
+            {COMPARISONS.map(({ name, href, body }) => (
+              <Link key={href} href={href} className="block bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 hover:border-brand-green-ink transition-colors">
+                <p className="text-[15px] font-bold tracking-[-0.01em] mb-1 text-brand-green-ink">Beaconmon vs {name}</p>
+                <p className="text-brand-dim text-[13px] leading-[1.6]">{body}</p>
+              </Link>
             ))}
           </div>
         </div>

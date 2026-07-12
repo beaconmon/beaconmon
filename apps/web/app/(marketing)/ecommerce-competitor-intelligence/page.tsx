@@ -96,6 +96,34 @@ const faqSchema = {
   })),
 };
 
+const COMPARISONS = [
+  {
+    name: 'Pricemole',
+    href: '/vs/pricemole',
+    body: "Pricemole focuses on Shopify price tracking alone. See how it compares to Beaconmon's fuller picture of competitor promotions and content.",
+  },
+  {
+    name: 'Prisync',
+    href: '/vs/prisync',
+    body: "Prisync covers per-SKU pricing for larger catalogs. Compare its scope against Beaconmon's combined uptime and competitor monitoring.",
+  },
+  {
+    name: 'Visualping',
+    href: '/vs/visualping',
+    body: 'Visualping detects changes on any page but has no ecommerce-specific parsing or significance filtering. See the difference.',
+  },
+  {
+    name: 'UptimeRobot',
+    href: '/vs/uptimerobot',
+    body: "UptimeRobot is uptime-only, with no competitor tracking. Compare it to Beaconmon's combined monitoring for ecommerce teams.",
+  },
+  {
+    name: 'StatusCake',
+    href: '/vs/statuscake',
+    body: "StatusCake covers uptime and performance checks but not competitor pricing or content. See how it stacks up against Beaconmon.",
+  },
+];
+
 const MOCKUP_EVENTS: React.ComponentProps<typeof IntelligenceMockup>['events'] = [
   { type: 'competitor', icon: '↓', label: 'Price drop detected', detail: 'CompetitorBrand / Runner Pro — $129 → $99', timeAgo: '15 min ago', bigText: true },
   { type: 'competitor', icon: '+', label: 'New product added', detail: 'CompetitorBrand2 added "Holiday Bundle" to catalog', timeAgo: '1 hr ago' },
@@ -233,6 +261,24 @@ export default function EcommerceCompetitorIntelligencePage() {
                 <h3 className="text-[16px] font-bold tracking-[-0.01em] mb-2">{q}</h3>
                 <p className="text-brand-dim text-[14px] leading-[1.65]">{a}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How Beaconmon compares */}
+      <section className="py-[80px] border-t border-brand-line-soft">
+        <div className="max-w-[1200px] mx-auto px-8 max-[640px]:px-5">
+          <div className="reveal text-center mb-12">
+            <h2 className="text-[clamp(28px,3.4vw,42px)] tracking-[-0.03em] font-extrabold mb-3">How Beaconmon compares</h2>
+            <p className="text-brand-dim text-[16px] max-w-[560px] mx-auto">Beaconmon combines competitor tracking with uptime monitoring. See how it stacks up against tools that cover only one side of that.</p>
+          </div>
+          <div className="reveal grid grid-cols-3 max-[880px]:grid-cols-2 max-[560px]:grid-cols-1 gap-4 max-w-[1000px] mx-auto">
+            {COMPARISONS.map(({ name, href, body }) => (
+              <Link key={href} href={href} className="block bg-brand-bg1 border border-brand-line-soft rounded-2xl p-6 hover:border-brand-green-ink transition-colors">
+                <p className="text-[15px] font-bold tracking-[-0.01em] mb-1 text-brand-green-ink">Beaconmon vs {name}</p>
+                <p className="text-brand-dim text-[13px] leading-[1.6]">{body}</p>
+              </Link>
             ))}
           </div>
         </div>

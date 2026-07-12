@@ -119,6 +119,20 @@ const ALTERNATIVES = [
     beaconmonEdge: 'No self-hosting required, Shopify/WooCommerce presets, uptime monitoring, Weekly Competitor Report',
     limitation: "changedetection.io's self-hosted control, JSON/PDF monitoring, and JavaScript rendering on its hosted plan cover more ground than Beaconmon's HTML-only, ecommerce-focused approach.",
   },
+  {
+    name: 'ChangeTower',
+    slug: 'changetower',
+    positioning: "ChangeTower combines generic web page change detection with uptime monitoring, the closest positioning match to Beaconmon's own content-plus-uptime combo, starting at $9/mo. Beaconmon runs the same combo but built for ecommerce: Shopify and WooCommerce preset selectors return the specific price, stock, or promo field that changed, not just that a page looks different.",
+    beaconmonEdge: 'Shopify/WooCommerce presets, field-level alerts, Weekly Competitor Report, AI significance scoring',
+    limitation: "ChangeTower works for any website, not just ecommerce stores, and has a longer track record with G2/Capterra presence and enterprise plans. If you monitor non-ecommerce pages alongside your store, that broader scope is a real advantage.",
+  },
+  {
+    name: 'Lurk',
+    slug: 'lurk',
+    positioning: "Lurk is a smaller Shopify repricing app, 8 reviews at 4.6 stars, with a crawler that matches competitor prices across any website rather than just other Shopify stores. Beaconmon does not touch your prices: it watches for price, promo, and content changes and alerts you. For stores that want visibility without an algorithm setting prices, Beaconmon is $29/mo versus Lurk's $49/mo paid tier.",
+    beaconmonEdge: 'No repricing automation, promo/content monitoring, uptime monitoring, larger free plan',
+    limitation: "Lurk's rule-based repricing and its ability to match products against non-Shopify sites and marketplaces without manual selectors are real advantages if automated price adjustment is the goal.",
+  },
 ];
 
 const WHAT_BEACONMON_DOES = [
@@ -328,6 +342,8 @@ export default function AlternativesPage() {
             <Link href="/vs/intelis" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Intelis</Link>
             <Link href="/vs/pricefy" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Pricefy</Link>
             <Link href="/vs/changedetection-io" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs changedetection.io</Link>
+            <Link href="/vs/changetower" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs ChangeTower</Link>
+            <Link href="/vs/lurk" className="text-brand-dim hover:text-brand-text transition-colors">Beaconmon vs Lurk</Link>
             <Link href="/vs" className="text-brand-dim hover:text-brand-text transition-colors">All comparisons</Link>
           </div>
         </div>

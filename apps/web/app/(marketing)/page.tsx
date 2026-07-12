@@ -314,7 +314,7 @@ export default function LandingPage() {
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-text font-semibold border-b border-brand-line-soft">Feature</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-green-ink font-semibold border-b border-brand-line-soft bg-[var(--brand-green-glow-04)] border-l border-r border-[var(--brand-green-border-20)]">Beaconmon</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">
-                    <Link href="/vs/visualping" className="hover:text-brand-dim transition-colors">Visualping</Link>
+                    <Link href="/vs/visualping" className="hover:text-brand-dim transition-colors" aria-label="Compare Beaconmon vs Visualping">Visualping</Link>
                   </th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Prisync</th>
                   <th className="p-4 text-left text-[12px] uppercase tracking-[0.06em] text-brand-muted font-semibold border-b border-brand-line-soft">Manual</th>

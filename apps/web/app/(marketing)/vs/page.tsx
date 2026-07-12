@@ -4,7 +4,7 @@ import { RevealObserver } from '@/components/reveal-observer';
 import { JsonLd } from '@/components/json-ld';
 import { breadcrumbSchema } from '@/lib/breadcrumb';
 import Link from 'next/link';
-import { Bot, Activity, Clock, ShieldCheck, Eye, TrendingDown, Bell, Rss, DollarSign, RefreshCw, Radar, GitCompare, Gauge } from 'lucide-react';
+import { Bot, Activity, Clock, ShieldCheck, Eye, TrendingDown, Bell, Rss, DollarSign, RefreshCw, Radar, GitCompare, Gauge, RadioTower, Search } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -118,6 +118,17 @@ const INTEL_COMPETITORS: CompetitorCard[] = [
       </div>
     ),
   },
+  {
+    name: 'ChangeTower',
+    slug: 'changetower',
+    tagline: 'Generic content and uptime combo, no ecommerce fields.',
+    verdict: 'Closest positioning match to Beaconmon\'s own content-plus-uptime combo, but detects that a page changed, not the specific price or stock field.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(56, 189, 248, 0.12)' }}>
+        <RadioTower size={24} color="#38BDF8" strokeWidth={1.5} />
+      </div>
+    ),
+  },
 ];
 
 const REPRICING_COMPETITORS: CompetitorCard[] = [
@@ -151,6 +162,17 @@ const REPRICING_COMPETITORS: CompetitorCard[] = [
     icon: (
       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
         <Radar size={24} color="#EC4899" strokeWidth={1.5} />
+      </div>
+    ),
+  },
+  {
+    name: 'Lurk',
+    slug: 'lurk',
+    tagline: '"Any website" crawler, 8 reviews at 4.6 stars.',
+    verdict: 'Matches prices across non-Shopify sites without manual selectors. No content or uptime monitoring, free plan capped at 5 SKUs.',
+    icon: (
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(250, 204, 21, 0.12)' }}>
+        <Search size={24} color="#FACC15" strokeWidth={1.5} />
       </div>
     ),
   },

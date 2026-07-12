@@ -274,4 +274,13 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ['Data & Research'],
     readingTime: 7,
   },
+  {
+    slug: 'shopify-competitor-price-tracking-apps-compared',
+    title: 'Shopify Competitor Price Tracking Apps Compared (2026)',
+    description:
+      'Every Shopify competitor price tracking and repricing app worth knowing in 2026, from established repricers to the long tail of small apps. Honest pros, cons, and pricing.',
+    publishedAt: '2026-07-11',
+    tags: ['Competitor Monitoring'],
+    readingTime: 11,
+  },
 ];
