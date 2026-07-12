@@ -53,7 +53,9 @@
       "Bash(gunzip -c /Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/0de19172-bcb1-47af-bb00-77371fa5d17b/tool-results/webfetch-1779007265062-haio3u.bin)",
       "Bash(gunzip -c /Users/haimanotgetu/.claude/projects/-Users-haimanotgetu-repos-personal-beaconmon/0de19172-bcb1-47af-bb00-77371fa5d17b/tool-results/webfetch-1779007269139-kq2ex5.bin)",
       "Bash(graphify explain *)",
-      "Bash(graphify query *)"
+      "Bash(graphify query *)",
+      "Bash(curl -sIL --max-redirs 3 https://beaconmon.com/pricing/)",
+      "Bash(curl -sI https://beaconmon.com/pricing/)"
     ]
   }
 }
