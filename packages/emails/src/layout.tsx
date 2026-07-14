@@ -9,7 +9,7 @@ import {
   Section,
   Text,
 } from '@react-email/components';
-import { EP, SANS, MONO } from './tokens';
+import { EP, SANS, MONO, EMAIL_DARK_STYLE } from './tokens';
 
 // Email design system.
 // Literal inline hex (email clients strip CSS vars). Single 600px container.
@@ -54,12 +54,13 @@ export function EmailLayout({ preview, context, children }: EmailLayoutProps) {
   return (
     <Html>
       <Head>
-        <meta name="color-scheme" content="light only" />
-        <meta name="supported-color-schemes" content="light" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="supported-color-schemes" content="light dark" />
+        <style>{EMAIL_DARK_STYLE}</style>
       </Head>
       <Preview>{preview}</Preview>
-      <Body style={bodyStyle}>
-        <Container style={containerStyle}>
+      <Body style={bodyStyle} className="em-page">
+        <Container style={containerStyle} className="em-paper">
           <div style={brandRule}>&nbsp;</div>
           <Section style={innerStyle}>
             <Masthead context={context} />
@@ -130,15 +131,19 @@ function BeaconMark({ size = 20 }: { size?: number }) {
 
 export function Masthead({ context }: { context?: string }) {
   return (
-    <Section style={mastheadOuter}>
+    <Section style={mastheadOuter} className="em-line">
       <table style={mastheadRow} role="presentation" cellPadding={0} cellSpacing={0}>
         <tbody>
           <tr>
             <td style={mastheadLogoCell}>
               <BeaconMark />
-              <span style={wordmark}>Beaconmon</span>
+              <span style={wordmark} className="em-ink">Beaconmon</span>
             </td>
-            {context && <td style={mastheadContextCell}>{context}</td>}
+            {context && (
+              <td style={mastheadContextCell} className="em-muted-c">
+                {context}
+              </td>
+            )}
           </tr>
         </tbody>
       </table>
@@ -168,6 +173,7 @@ export function EmailFooter({
         marginTop: '10px',
         paddingTop: '24px',
       }}
+      className="em-line"
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ marginBottom: '12px' }}>
         <tbody>
@@ -176,18 +182,29 @@ export function EmailFooter({
               <BeaconMark size={15} />
             </td>
             <td style={{ verticalAlign: 'middle', paddingLeft: '8px' }}>
-              <span style={{ fontSize: '12.5px', fontWeight: 600, color: EP.ink }}>Beaconmon</span>
-              <span style={{ fontSize: '11.5px', color: EP.faint, marginLeft: '7px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 600, color: EP.ink }} className="em-ink">
+                Beaconmon
+              </span>
+              <span
+                style={{ fontSize: '11.5px', color: EP.faint, marginLeft: '7px' }}
+                className="em-faint-c"
+              >
                 · Competitor intelligence for eCommerce
               </span>
             </td>
           </tr>
         </tbody>
       </table>
-      <Text style={{ margin: '0 0 9px', fontSize: '11.5px', lineHeight: 1.58, color: EP.muted }}>
+      <Text
+        style={{ margin: '0 0 9px', fontSize: '11.5px', lineHeight: 1.58, color: EP.muted }}
+        className="em-muted-c"
+      >
         {reason}
       </Text>
-      <Text style={{ margin: 0, fontSize: '11.5px', lineHeight: 1.5, color: EP.muted }}>
+      <Text
+        style={{ margin: 0, fontSize: '11.5px', lineHeight: 1.5, color: EP.muted }}
+        className="em-muted-c"
+      >
         {manageUrl && (
           <Link
             href={manageUrl}

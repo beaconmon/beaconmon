@@ -46,7 +46,6 @@ export function FirstCompetitorChange({
           style={{
             backgroundColor: EP.surface,
             border: `1px solid ${EP.line}`,
-            borderLeft: `3px solid ${EP.brand}`,
             borderRadius: '9px',
             padding: '14px 16px',
             marginBottom: '20px',

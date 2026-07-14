@@ -9,6 +9,7 @@ import {
   DigestSection,
   EventCard,
   TopSignal,
+  SignalMix,
   DetailBox,
   EBtn,
   BtnRow,
@@ -201,6 +202,22 @@ export function IntelligenceDigestEmail({
   const competitorCount = sections.competitors?.length ?? 0;
   const distinctCompetitors = new Set(sections.competitors?.map((c) => c.monitorId)).size;
 
+  const ongoingIncidentCount = sections.incidents?.filter((i) => !i.resolvedAt).length ?? 0;
+  const resolvedIncidentCount = (sections.incidents?.length ?? 0) - ongoingIncidentCount;
+  const mixSegments = [
+    { label: 'urgent', count: ongoingIncidentCount, color: EP.crit },
+    {
+      label: 'watch',
+      count: competitorCount + (sections.expiry?.length ?? 0),
+      color: EP.warn,
+    },
+    {
+      label: 'fyi',
+      count: (sections.smartAlerts?.length ?? 0) + (sections.ownContent?.length ?? 0) + resolvedIncidentCount,
+      color: EP.info,
+    },
+  ];
+
   const preview =
     competitorCount > 0
       ? `${totalEvents} change${totalEvents !== 1 ? 's' : ''} across ${distinctCompetitors} competitor${distinctCompetitors !== 1 ? 's' : ''} overnight.`
@@ -225,6 +242,8 @@ export function IntelligenceDigestEmail({
       <Para style={{ margin: '0 0 22px' }}>
         Here's what changed on your monitors.
       </Para>
+
+      {totalEvents > 1 && <SignalMix segments={mixSegments} />}
 
       {top && (
         <TopSignal sev={top.sev} title={top.title} body={top.body} />
@@ -297,7 +316,7 @@ export function IntelligenceDigestEmail({
             rows={sections.expiry.map((e) => ({
               k: e.monitorName,
               v: `${e.type.toUpperCase()} expires in ${e.daysRemaining} day${e.daysRemaining !== 1 ? 's' : ''}`,
-              color: e.daysRemaining <= 7 ? EP.critInk : EP.warnInk,
+              sev: e.daysRemaining <= 7 ? 'critical' : 'warning',
               mono: false,
             }))}
           />

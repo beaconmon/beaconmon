@@ -21,7 +21,6 @@ export function AlertBanner({
       style={{
         backgroundColor: s.soft,
         borderRadius: '10px',
-        borderLeft: `4px solid ${s.c}`,
         padding: '14px 16px',
         marginBottom: '24px',
       }}
@@ -78,19 +77,19 @@ export function EventCard({
   actionUrl,
   sev,
 }: EventCardProps) {
-  const accent = sev ? SEV[sev].c : null;
-  const deltaColor = sev ? SEV[sev].ink : EP.infoInk;
+  const deltaSev = sev ?? 'info';
+  const deltaColor = SEV[deltaSev].ink;
   const initial = name.charAt(0).toUpperCase();
   return (
     <Section
       style={{
         backgroundColor: EP.surface,
         border: `1px solid ${EP.line}`,
-        borderLeft: accent ? `4px solid ${accent}` : `1px solid ${EP.line}`,
         borderRadius: '10px',
         padding: '14px 16px',
         marginBottom: '11px',
       }}
+      className="em-surface em-line"
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
         <tbody>
@@ -109,6 +108,7 @@ export function EventCard({
                   textAlign: 'center',
                   lineHeight: '30px',
                 }}
+                className="em-paper em-line2 em-body-c"
               >
                 {initial}
               </div>
@@ -121,6 +121,7 @@ export function EventCard({
                   fontWeight: 600,
                   color: EP.ink,
                 }}
+                className="em-ink"
               >
                 {name}
               </Text>
@@ -132,6 +133,7 @@ export function EventCard({
                   color: EP.muted,
                   wordBreak: 'break-all',
                 }}
+                className="em-muted-c"
               >
                 {host}
               </Text>
@@ -153,12 +155,13 @@ export function EventCard({
                     color: EP.body,
                     paddingLeft: '41px',
                   }}
+                  className="em-body-c"
                 >
                   {summary}
                   {delta && (
                     <>
                       {' '}
-                      <MonoVal color={deltaColor}>{delta}</MonoVal>
+                      <MonoVal color={deltaColor} sev={deltaSev}>{delta}</MonoVal>
                     </>
                   )}
                 </Text>
@@ -177,6 +180,7 @@ export function EventCard({
                           fontSize: '10.5px',
                           color: EP.faint,
                         }}
+                        className="em-faint-c"
                       >
                         {time}
                       </td>
@@ -246,6 +250,7 @@ export function DigestSection({
                   letterSpacing: '0.12em',
                   color: EP.ink,
                 }}
+                className="em-ink"
               >
                 {label}
               </span>
@@ -261,6 +266,7 @@ export function DigestSection({
                     padding: '2px 8px',
                     borderRadius: '999px',
                   }}
+                  className="em-muted-c em-surface2"
                 >
                   {count}
                 </span>
@@ -272,7 +278,10 @@ export function DigestSection({
                 verticalAlign: 'middle',
               }}
             >
-              <div style={{ height: '1px', backgroundColor: EP.line, width: '100%' }} />
+              <div
+                style={{ height: '1px', backgroundColor: EP.line, width: '100%' }}
+                className="em-line-bg"
+              />
             </td>
           </tr>
         </tbody>
@@ -301,11 +310,11 @@ export function TopSignal({
       style={{
         backgroundColor: EP.surface,
         border: `1px solid ${EP.line}`,
-        borderLeft: `4px solid ${s.c}`,
         borderRadius: '10px',
         padding: '16px 17px',
         marginBottom: '28px',
       }}
+      className="em-surface em-line"
     >
       <Text
         style={{
@@ -317,6 +326,7 @@ export function TopSignal({
           letterSpacing: '0.12em',
           color: s.ink,
         }}
+        className={`em-sev-ink-${sev}`}
       >
         {label}
       </Text>
@@ -327,10 +337,14 @@ export function TopSignal({
           fontWeight: 600,
           color: EP.ink,
         }}
+        className="em-ink"
       >
         {title}
       </Text>
-      <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}>
+      <Text
+        style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}
+        className="em-body-c"
+      >
         {body}
       </Text>
     </Section>
@@ -342,7 +356,7 @@ export function TopSignal({
 export interface DetailRow {
   k: string;
   v: React.ReactNode;
-  color?: string;
+  sev?: Severity;
   mono?: boolean;
   break?: boolean;
 }
@@ -357,6 +371,7 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
         padding: '8px 17px',
         marginBottom: '24px',
       }}
+      className="em-surface em-line"
     >
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ width: '100%' }}>
         <tbody>
@@ -370,6 +385,7 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
                   color: EP.muted,
                   verticalAlign: 'top',
                 }}
+                className={i ? 'em-line em-muted-c' : 'em-muted-c'}
               >
                 {r.k}
               </td>
@@ -380,11 +396,14 @@ export function DetailBox({ rows }: { rows: DetailRow[] }) {
                   fontFamily: r.mono === false ? SANS : MONO,
                   fontSize: '12.5px',
                   fontWeight: 600,
-                  color: r.color ?? EP.ink,
+                  color: r.sev ? SEV[r.sev].ink : EP.ink,
                   textAlign: 'right',
                   wordBreak: r.break ? 'break-all' : 'normal',
                   verticalAlign: 'top',
                 }}
+                className={[i ? 'em-line' : '', r.sev ? `em-sev-ink-${r.sev}` : 'em-ink']
+                  .filter(Boolean)
+                  .join(' ')}
               >
                 {r.v}
               </td>
@@ -404,6 +423,12 @@ const BTN_STYLES: Record<BtnVariant, React.CSSProperties> = {
   primary: { backgroundColor: EP.inkBtn, color: '#FFFFFF' },
   green: { backgroundColor: EP.brand, color: EP.brandInk },
   outline: { backgroundColor: EP.paper, color: EP.ink, border: `1px solid ${EP.line2}` },
+};
+
+const BTN_DARK_CLASS: Record<BtnVariant, string | undefined> = {
+  primary: 'em-btn-primary',
+  green: undefined,
+  outline: 'em-paper em-ink em-line2',
 };
 
 export function EBtn({
@@ -429,6 +454,7 @@ export function EBtn({
         textDecoration: 'none',
         ...BTN_STYLES[variant],
       }}
+      className={BTN_DARK_CLASS[variant]}
     >
       {children}
     </Link>
@@ -490,15 +516,22 @@ export function StepRow({
                 textAlign: 'center',
                 lineHeight: '26px',
               }}
+              className="em-surface2 em-line2"
             >
               {n}
             </div>
           </td>
           <td style={{ paddingLeft: '14px', verticalAlign: 'top' }}>
-            <Text style={{ margin: '0 0 3px', fontSize: '14.5px', fontWeight: 600, color: EP.ink }}>
+            <Text
+              style={{ margin: '0 0 3px', fontSize: '14.5px', fontWeight: 600, color: EP.ink }}
+              className="em-ink"
+            >
               {title}
             </Text>
-            <Text style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}>
+            <Text
+              style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.58, color: EP.body }}
+              className="em-body-c"
+            >
               {body}
             </Text>
           </td>
@@ -539,6 +572,7 @@ export function StatStrip({ stats }: { stats: Stat[] }) {
                     padding: '16px 13px',
                     textAlign: 'center',
                   }}
+                  className="em-surface em-line"
                 >
                   <Text
                     style={{
@@ -548,10 +582,14 @@ export function StatStrip({ stats }: { stats: Stat[] }) {
                       fontWeight: 700,
                       color: EP.ink,
                     }}
+                    className="em-ink"
                   >
                     {s.n}
                   </Text>
-                  <Text style={{ margin: 0, fontSize: '11px', lineHeight: 1.4, color: EP.muted }}>
+                  <Text
+                    style={{ margin: 0, fontSize: '11px', lineHeight: 1.4, color: EP.muted }}
+                    className="em-muted-c"
+                  >
                     {s.label}
                   </Text>
                 </div>
@@ -602,6 +640,102 @@ export function DurationBox({ duration, label }: { duration: string; label: stri
       >
         {label}
       </Text>
+    </Section>
+  );
+}
+
+// ───────── SignalMix ─────────
+// At-a-glance triage bar for digests: a proportional strip built from counts
+// that are already on the page (never invented), grouped into urgent/watch/fyi
+// tiers. Table cells, not SVG — Outlook desktop doesn't render inline SVG.
+
+export interface SignalMixSegment {
+  label: string;
+  count: number;
+  color: string;
+}
+
+export function SignalMix({ segments }: { segments: SignalMixSegment[] }) {
+  const withShare = segments.filter((s) => s.count > 0);
+  const total = withShare.reduce((sum, s) => sum + s.count, 0);
+  if (total === 0) return null;
+
+  return (
+    <Section style={{ marginBottom: '24px' }}>
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        style={{ width: '100%', borderCollapse: 'collapse' }}
+      >
+        <tbody>
+          <tr>
+            {withShare.map((s, i) => (
+              <td
+                key={i}
+                style={{
+                  width: `${Math.max((s.count / total) * 100, 4)}%`,
+                  height: '7px',
+                  fontSize: '0',
+                  lineHeight: '7px',
+                  backgroundColor: s.color,
+                  borderRadius:
+                    i === 0
+                      ? '4px 0 0 4px'
+                      : i === withShare.length - 1
+                      ? '0 4px 4px 0'
+                      : '0',
+                }}
+              >
+                &nbsp;
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        style={{ width: '100%', marginTop: '10px' }}
+      >
+        <tbody>
+          <tr>
+            {withShare.map((s, i) => (
+              <td
+                key={i}
+                style={{
+                  paddingRight: i === withShare.length - 1 ? 0 : '16px',
+                  whiteSpace: 'nowrap',
+                  verticalAlign: 'middle',
+                }}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '6px',
+                    height: '6px',
+                    borderRadius: '999px',
+                    backgroundColor: s.color,
+                    marginRight: '6px',
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: MONO,
+                    fontSize: '10.5px',
+                    fontWeight: 600,
+                    color: EP.muted,
+                  }}
+                  className="em-muted-c"
+                >
+                  {s.count} {s.label}
+                </span>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
     </Section>
   );
 }

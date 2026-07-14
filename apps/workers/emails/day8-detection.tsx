@@ -97,8 +97,6 @@ export function Day8Detection({
             <Section
               key={i}
               style={{
-                borderLeft: `3px solid ${EP.brand}`,
-                paddingLeft: '12px',
                 marginBottom: '12px',
               }}
             >

@@ -110,8 +110,6 @@ export function Day2Aha({
             <Section
               key={i}
               style={{
-                borderLeft: `3px solid ${EP.brand}`,
-                paddingLeft: '12px',
                 marginBottom: '12px',
               }}
             >

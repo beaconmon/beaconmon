@@ -79,7 +79,6 @@ export function CalculatorLeadEmail({
         style={{
           backgroundColor: EP.surface,
           border: `1px solid ${EP.line}`,
-          borderLeft: `4px solid ${EP.brandDeep}`,
           borderRadius: '10px',
           padding: '16px 17px',
           marginBottom: '28px',

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text } from '@react-email/components';
-import { EP, MONO } from './tokens';
+import { EP, MONO, type Severity } from './tokens';
 
 export function Eyebrow({
   children,
@@ -20,6 +20,7 @@ export function Eyebrow({
         letterSpacing: '0.13em',
         color,
       }}
+      className={color === EP.muted ? 'em-muted-c' : undefined}
     >
       {children}
     </Text>
@@ -44,6 +45,7 @@ export function H1({
         color: EP.ink,
         ...style,
       }}
+      className="em-ink"
     >
       {children}
     </Text>
@@ -66,6 +68,7 @@ export function Para({
         color: EP.body,
         ...style,
       }}
+      className="em-body-c"
     >
       {children}
     </Text>
@@ -73,18 +76,28 @@ export function Para({
 }
 
 export function Strong({ children }: { children: React.ReactNode }) {
-  return <strong style={{ color: EP.ink, fontWeight: 600 }}>{children}</strong>;
+  return (
+    <strong style={{ color: EP.ink, fontWeight: 600 }} className="em-ink">
+      {children}
+    </strong>
+  );
 }
 
 export function MonoVal({
   children,
   color = EP.ink,
+  sev,
 }: {
   children: React.ReactNode;
   color?: string;
+  sev?: Severity;
 }) {
+  const darkClass = sev ? `em-sev-ink-${sev}` : color === EP.ink ? 'em-ink' : undefined;
   return (
-    <span style={{ fontFamily: MONO, fontSize: '0.92em', fontWeight: 600, color }}>
+    <span
+      style={{ fontFamily: MONO, fontSize: '0.92em', fontWeight: 600, color }}
+      className={darkClass}
+    >
       {children}
     </span>
   );

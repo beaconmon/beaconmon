@@ -9,7 +9,6 @@ import {
   EBtn,
   BtnRow,
   EmailFooter,
-  EP,
   formatBriefDateTime,
 } from '@beaconmon/emails';
 
@@ -55,7 +54,7 @@ export function DowntimeAlert({
         rows={[
           { k: 'Monitor', v: monitorName, mono: false },
           { k: 'URL', v: monitorUrl, break: true },
-          { k: 'Status', v: 'Unreachable', color: EP.critInk },
+          { k: 'Status', v: 'Unreachable', sev: 'critical' },
           { k: 'Failing since', v: formatBriefDateTime(incidentStartedAt) },
           { k: 'Incident', v: `#${incidentId}` },
         ]}

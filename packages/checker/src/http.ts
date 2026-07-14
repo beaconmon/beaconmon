@@ -3,7 +3,12 @@ import type { CheckResult } from '@beaconmon/types';
 import type { CheckInput } from './types.js';
 import { classifyError } from './errors.js';
 
-export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
+// A single failed poll is often a transient WAF/rate-limit challenge rather
+// than real downtime, especially against third-party (competitor) sites we
+// don't control. Confirm with one retry before the failure is recorded.
+const RETRY_DELAY_MS = 3000;
+
+async function attemptHttpCheck(job: CheckInput): Promise<CheckResult> {
   const startedAt = Date.now();
   const checkedAt = new Date();
 
@@ -85,4 +90,12 @@ export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
       type: job.type,
     };
   }
+}
+
+export async function runHttpCheck(job: CheckInput): Promise<CheckResult> {
+  const first = await attemptHttpCheck(job);
+  if (first.success) return first;
+
+  await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+  return attemptHttpCheck(job);
 }
