@@ -56,15 +56,13 @@ const shopifyProductsSchema = z.object({
   products: z.array(z.object({ handle: z.string() })),
 });
 
-function obKey(teamId: string): string {
-  return `bm_ob_${teamId}`;
-}
-
-function markComplete(teamId: string): void {
+// Persists onboarding-skipped server-side (teams.onboarding_completed_at) so
+// /today and /onboarding read the same fact instead of racing a client flag.
+async function markOnboardingSkipped(): Promise<void> {
   try {
-    localStorage.setItem(obKey(teamId), JSON.stringify({ completedAt: new Date().toISOString() }));
+    await apiFetch('/api/onboarding/skip', { method: 'POST' });
   } catch {
-    // localStorage unavailable
+    // best-effort — worst case the user is bounced back to onboarding once
   }
 }
 
@@ -171,19 +169,6 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     competitors: Promise<z.infer<typeof suggestCompetitorsResponseSchema>>;
   } | null>(null);
   const bundleSourceRef = useRef<{ storeUrl: string; platform: string } | null>(null);
-  const [ready] = useState(() => {
-    try {
-      return localStorage.getItem(obKey(teamId)) === null;
-    } catch {
-      return true;
-    }
-  });
-
-  useEffect(() => {
-    if (!ready) {
-      router.replace('/today');
-    }
-  }, [ready, router]);
 
   // Clear the stashed competitor once seeded so a later onboarding does not reuse it.
   useEffect(() => {
@@ -194,8 +179,8 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
     }
   }, []);
 
-  function skip(): void {
-    markComplete(teamId);
+  async function skip(): Promise<void> {
+    await markOnboardingSkipped();
     router.push('/today');
   }
 
@@ -342,7 +327,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       const total = enabledBundle.length + competitorInputs.length;
 
       if (total === 0) {
-        markComplete(teamId);
+        await markOnboardingSkipped();
         router.push('/today');
         return;
       }
@@ -368,8 +353,7 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
         return;
       }
 
-      markComplete(teamId);
-
+      // bulk-create already marks onboardingCompletedAt server-side.
       const shopifyCompetitors =
         platform === 'shopify' ? competitors.slice(0, 5) : [];
 
@@ -400,8 +384,6 @@ export function OnboardingWizard({ teamId, plan, email }: OnboardingWizardProps)
       setSubmitting(false);
     }
   }
-
-  if (!ready) return null;
 
   return (
     <div

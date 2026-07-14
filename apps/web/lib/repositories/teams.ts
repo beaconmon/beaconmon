@@ -43,6 +43,8 @@ export const teamRepository: {
   removeMember(teamId: string, userId: string): Promise<void>;
   updateMemberRole(teamId: string, userId: string, role: string): Promise<void>;
   updatePlan(teamId: string, plan: string): Promise<void>;
+  findOnboardingCompletedAt(teamId: string): Promise<Date | null>;
+  markOnboardingComplete(teamId: string): Promise<boolean>;
 } = {
   async findById(teamId) {
     const row = await prisma.team.findUnique({
@@ -146,5 +148,24 @@ export const teamRepository: {
       where: { id: teamId },
       data: { plan: plan as 'free' | 'starter' | 'growth' | 'scale' },
     });
+  },
+
+  async findOnboardingCompletedAt(teamId) {
+    const row = await prisma.team.findUnique({
+      where: { id: teamId },
+      select: { onboardingCompletedAt: true },
+    });
+    return row?.onboardingCompletedAt ?? null;
+  },
+
+  // Idempotent: returns true only on the transition from null -> set, so
+  // callers (e.g. the welcome-email send) can tell first-completion apart
+  // from a redundant call.
+  async markOnboardingComplete(teamId) {
+    const { count } = await prisma.team.updateMany({
+      where: { id: teamId, onboardingCompletedAt: null },
+      data: { onboardingCompletedAt: new Date() },
+    });
+    return count > 0;
   },
 };

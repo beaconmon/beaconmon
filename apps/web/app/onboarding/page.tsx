@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 import { auth } from '@/lib/auth';
-import { monitorRepository } from '@/lib/repositories/monitors';
+import { isTeamOnboarded } from '@/lib/onboarding';
 import { OnboardingWizard } from './OnboardingWizard';
 
 function isPlanTier(value: unknown): value is PlanTier {
@@ -26,8 +26,7 @@ export default async function OnboardingPage() {
     redirect('/sign-in');
   }
 
-  const monitorCount = await monitorRepository.countByTeam(teamId);
-  if (monitorCount > 0) {
+  if (await isTeamOnboarded(teamId)) {
     redirect('/today');
   }
 

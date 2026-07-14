@@ -3,6 +3,7 @@ import { prisma } from '@beaconmon/db';
 import { withAuth } from '@/lib/api/with-auth';
 import { monitorRepository } from '@/lib/repositories/monitors';
 import { competitorRepository } from '@/lib/repositories/competitors';
+import { teamRepository } from '@/lib/repositories/teams';
 import { createMonitorSchema } from '@/lib/validations/monitors';
 import { PLAN_LIMITS } from '@beaconmon/types';
 import { ForbiddenError, ValidationError, PlanLimitError } from '@/lib/api/errors';
@@ -123,12 +124,9 @@ export const POST = withAuth(async (req, { teamId, plan, role }) => {
 
   // Mark onboarding complete and enqueue welcome email (idempotent via updateMany + job dedup)
   try {
-    const { count } = await prisma.team.updateMany({
-      where: { id: teamId, onboardingCompletedAt: null },
-      data: { onboardingCompletedAt: new Date() },
-    });
+    const justCompleted = await teamRepository.markOnboardingComplete(teamId);
 
-    if (count > 0) {
+    if (justCompleted) {
       const teamWithOwner = await prisma.team.findUnique({
         where: { id: teamId },
         select: {

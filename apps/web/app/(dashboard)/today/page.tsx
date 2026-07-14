@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { monitorRepository } from '@/lib/repositories/monitors';
+import { isTeamOnboarded } from '@/lib/onboarding';
 import { TodayPageClient } from './TodayPageClient';
 
 export default async function TodayPage() {
@@ -12,8 +12,7 @@ export default async function TodayPage() {
     redirect('/sign-in');
   }
 
-  const count = await monitorRepository.countByTeam(teamId);
-  if (count === 0) {
+  if (!(await isTeamOnboarded(teamId))) {
     redirect('/onboarding');
   }
 
