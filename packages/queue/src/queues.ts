@@ -20,7 +20,8 @@ export function createCheckQueue(connection: Redis): Queue<CheckJob> {
   return new Queue<CheckJob>(QUEUE_NAMES.CHECK_SCHEDULED, {
     connection,
     defaultJobOptions: {
-      attempts: 1, // no retries — wait for next scheduled interval
+      attempts: 1, // no job-level retries — wait for next scheduled interval.
+      // (runHttpCheck itself retries once internally on failure; see CLAUDE.md)
       removeOnComplete: { count: 100 },
       removeOnFail: { count: 500 },
     },

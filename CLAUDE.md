@@ -32,7 +32,7 @@ pnpm --filter @beaconmon/checker test
 
 **Workers use `DATABASE_URL_POOLED`, not `DATABASE_URL`.** The direct URL is only for migrations run from a laptop.
 
-**Never mark a monitor down on a single failure.** Two consecutive failures required. Logic lives in `evaluateCheckResult()` in `packages/checker/`. Do not bypass it.
+**Never mark a monitor down on a single failure.** Two consecutive failures required. Logic lives in `evaluateCheckResult()` in `packages/checker/`. Do not bypass it. Additionally, `runHttpCheck()` (`packages/checker/src/http.ts`) retries once internally on failure (3s delay) before returning, to absorb transient WAF/rate-limit blips on third-party sites. Combined with the consecutive-failures rule, a real outage takes up to 2 failed attempts per check across 2 consecutive scheduled checks to trigger an alert. Keep this in mind when changing either layer, since they compound.
 
 **Scheduler must stay at one replica.** It is a singleton. Scaling it causes duplicate jobs.
 
