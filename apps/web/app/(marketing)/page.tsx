@@ -9,7 +9,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Competitor Monitoring & Uptime Monitoring for eCommerce | Beaconmon',
+  title: 'Competitor Tracking for Shopify Stores | Beaconmon',
   description:
     "Beaconmon tracks your Shopify competitors' prices, launches, and promos. Daily brief at 8am. Set up in five minutes. Free to start.",
   alternates: { canonical: 'https://beaconmon.com' },

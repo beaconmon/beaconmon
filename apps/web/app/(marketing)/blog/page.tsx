@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   title: 'Competitor Monitoring Blog for Shopify Merchants | Beaconmon',
   description:
     'Practical guides on Shopify competitor monitoring: price monitoring, competitive tactics, and turning competitor data into margin-protecting decisions.',
-  alternates: { canonical: 'https://beaconmon.com/blog' },
+  alternates: {
+    canonical: 'https://beaconmon.com/blog',
+    types: { 'application/rss+xml': 'https://beaconmon.com/feed.xml' },
+  },
   openGraph: { url: 'https://beaconmon.com/blog' },
 };
 

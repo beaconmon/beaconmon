@@ -55,7 +55,8 @@
       "Bash(graphify explain *)",
       "Bash(graphify query *)",
       "Bash(curl -sIL --max-redirs 3 https://beaconmon.com/pricing/)",
-      "Bash(curl -sI https://beaconmon.com/pricing/)"
+      "Bash(curl -sI https://beaconmon.com/pricing/)",
+      "Bash(curl -s https://beaconmon.com/robots.txt)"
     ]
   }
 }
