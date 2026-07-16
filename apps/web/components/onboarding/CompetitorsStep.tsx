@@ -122,29 +122,29 @@ export function CompetitorsStep({
         />
       )}
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-sm text-brand-dim transition-colors hover:text-brand-text"
+          className="flex items-center gap-1 self-start py-1 text-sm text-brand-dim transition-colors hover:text-brand-text"
         >
           <ChevronRight className="h-4 w-4 rotate-180" />
           Back to your store
         </button>
 
         {!isFree && (
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
             <button
               onClick={() => void onContinue()}
               disabled={continuing}
-              className="text-sm text-brand-muted transition-colors hover:text-brand-dim disabled:opacity-50"
+              className="py-1 text-center text-sm text-brand-muted transition-colors hover:text-brand-dim disabled:opacity-50"
             >
               Skip &middot; I&apos;ll add later
             </button>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-center gap-1 sm:items-end">
               <button
                 onClick={() => void onContinue()}
                 disabled={continuing}
-                className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto"
                 style={{
                   background: 'var(--brand-green, #00e57a)',
                   boxShadow: '0 0 24px rgba(0,229,122,0.35)',

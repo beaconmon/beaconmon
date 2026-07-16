@@ -93,17 +93,21 @@ function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () =
       role="switch"
       aria-checked={enabled}
       aria-label={label}
-      className={cn(
-        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2',
-        enabled ? 'bg-brand-green' : 'bg-brand-bg3'
-      )}
+      className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2"
     >
       <span
         className={cn(
-          'pointer-events-none absolute top-0.5 inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-[left] duration-200',
-          enabled ? 'left-5' : 'left-0.5'
+          'relative inline-flex h-6 w-11 rounded-full transition-colors duration-200',
+          enabled ? 'bg-brand-green' : 'bg-brand-bg3'
         )}
-      />
+      >
+        <span
+          className={cn(
+            'pointer-events-none absolute top-0.5 inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-[left] duration-200',
+            enabled ? 'left-5' : 'left-0.5'
+          )}
+        />
+      </span>
     </button>
   );
 }
@@ -127,15 +131,19 @@ function StatCol({ label, value, sub, border }: StatColProps) {
 
 function SkeletonRow({ last }: { last?: boolean }) {
   return (
-    <div className={cn('flex items-center gap-3 px-4 py-4', !last && 'border-b border-brand-line')}>
-      <div className="h-9 w-9 shrink-0 animate-pulse rounded-lg bg-brand-bg3" />
-      <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-3 w-40 animate-pulse rounded bg-brand-bg3" />
-        <div className="h-2.5 w-28 animate-pulse rounded bg-brand-bg2" />
+    <div className={cn('flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-4', !last && 'border-b border-brand-line')}>
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="h-9 w-9 shrink-0 animate-pulse rounded-lg bg-brand-bg3" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-3 w-40 animate-pulse rounded bg-brand-bg3" />
+          <div className="h-2.5 w-28 animate-pulse rounded bg-brand-bg2" />
+        </div>
       </div>
-      <div className="h-5 w-16 shrink-0 animate-pulse rounded-md bg-brand-bg3" />
-      <div className="h-4 w-10 shrink-0 animate-pulse rounded bg-brand-bg2" />
-      <div className="h-6 w-11 shrink-0 animate-pulse rounded-full bg-brand-bg3" />
+      <div className="flex shrink-0 items-center gap-2 pl-12 sm:pl-0">
+        <div className="h-5 w-16 shrink-0 animate-pulse rounded-md bg-brand-bg3" />
+        <div className="h-4 w-10 shrink-0 animate-pulse rounded bg-brand-bg2" />
+        <div className="h-6 w-11 shrink-0 animate-pulse rounded-full bg-brand-bg3" />
+      </div>
     </div>
   );
 }
@@ -295,7 +303,7 @@ export function BundleStep({
       {/* Monitor list */}
       <div className="overflow-hidden rounded-lg border border-brand-line">
         {!loading && (
-          <div className="flex items-center justify-between border-b border-brand-line bg-brand-bg2 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-brand-line bg-brand-bg2 px-4 py-3">
             <span className="text-sm font-medium text-brand-text">
               {enabledCount} monitor{enabledCount !== 1 ? 's' : ''} in your starter bundle
               {allEnabled && (
@@ -303,7 +311,7 @@ export function BundleStep({
               )}
             </span>
             <button
-              className="flex items-center gap-1 text-xs text-brand-muted transition-colors hover:text-brand-dim disabled:opacity-40"
+              className="flex min-h-[44px] shrink-0 items-center gap-1 py-2 text-xs text-brand-muted transition-colors hover:text-brand-dim disabled:opacity-40"
               onClick={openAddForm}
               disabled={showAddForm}
             >
@@ -326,47 +334,51 @@ export function BundleStep({
               <div
                 key={item.id}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3.5',
+                  'flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3.5',
                   i > 0 && 'border-t border-brand-line',
                   !item.enabled && 'opacity-40'
                 )}
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-green/10 text-brand-green-ink">
-                  {getItemIcon(item)}
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-green/10 text-brand-green-ink">
+                    {getItemIcon(item)}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-brand-text">{item.label}</p>
+                    <p className="mt-0.5 truncate text-xs text-brand-muted">
+                      <span className="font-mono">{displayPath(item)}</span>
+                      {item.description && (
+                        <span> &middot; {item.description}</span>
+                      )}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-brand-text">{item.label}</p>
-                  <p className="mt-0.5 truncate text-xs text-brand-muted">
-                    <span className="font-mono">{displayPath(item)}</span>
-                    {item.description && (
-                      <span> &middot; {item.description}</span>
-                    )}
-                  </p>
-                </div>
+                <div className="flex shrink-0 items-center gap-2 pl-12 sm:pl-0">
+                  {item.source === 'ai' && (
+                    <span className="shrink-0 rounded-full bg-brand-green/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-green-ink">
+                      AI
+                    </span>
+                  )}
 
-                {item.source === 'ai' && (
-                  <span className="shrink-0 rounded-full bg-brand-green/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-green-ink">
-                    AI
+                  <span
+                    className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-medium text-brand-dim"
+                    style={{ boxShadow: 'inset 0 0 0 1px var(--brand-line)' }}
+                  >
+                    {TYPE_LABEL[item.type]}
                   </span>
-                )}
 
-                <span
-                  className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-medium text-brand-dim"
-                  style={{ boxShadow: 'inset 0 0 0 1px var(--brand-line)' }}
-                >
-                  {TYPE_LABEL[item.type]}
-                </span>
+                  <span className="w-10 shrink-0 text-right font-mono text-xs text-brand-muted">
+                    {formatInterval(item.intervalSeconds)}
+                  </span>
 
-                <span className="w-12 shrink-0 text-right font-mono text-xs text-brand-muted">
-                  {formatInterval(item.intervalSeconds)}
-                </span>
-
-                <Toggle
-                  enabled={item.enabled}
-                  onToggle={() => toggle(item.id)}
-                  label={item.enabled ? 'Disable monitor' : 'Enable monitor'}
-                />
+                  <Toggle
+                    enabled={item.enabled}
+                    onToggle={() => toggle(item.id)}
+                    label={item.enabled ? 'Disable monitor' : 'Enable monitor'}
+                  />
+                </div>
               </div>
             ))}
 
@@ -436,27 +448,27 @@ export function BundleStep({
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
         <Button
           variant="ghost"
           onClick={onBack}
-          className="gap-1.5 text-brand-dim hover:text-brand-text"
+          className="gap-1.5 self-start text-brand-dim hover:text-brand-text"
         >
           <ChevronRight className="h-3.5 w-3.5 rotate-180" />
           Back to Competitors
         </Button>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
           <button
             onClick={onSkip}
-            className="text-sm text-brand-muted transition-colors hover:text-brand-dim"
+            className="py-1 text-center text-sm text-brand-muted transition-colors hover:text-brand-dim"
           >
             Skip &middot; I&apos;ll add manually
           </button>
           <Button
             onClick={() => void onSubmit()}
             disabled={loading || submitting}
-            className="gap-1.5 bg-brand-green text-brand-green-fg hover:bg-brand-green/90 disabled:opacity-50"
+            className="w-full justify-center gap-1.5 bg-brand-green text-brand-green-fg hover:bg-brand-green/90 disabled:opacity-50 sm:w-auto"
           >
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             Set it up

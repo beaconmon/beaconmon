@@ -192,13 +192,13 @@ export function Step1Store({
           Confirm your platform{' '}
           <span className="text-brand-muted">· we&apos;ll tailor what we monitor</span>
         </p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {PLATFORMS.map((p) => (
             <button
               key={p.id}
               onClick={() => onPlatformChange(p.id)}
               className={cn(
-                'relative flex flex-col items-start gap-3 rounded-lg border p-4 text-left transition-all',
+                'relative flex flex-row items-center gap-3 rounded-lg border p-4 text-left transition-all sm:flex-col sm:items-start',
                 platform === p.id
                   ? 'border-brand-green'
                   : 'border-brand-line bg-brand-bg2 hover:border-brand-green/40 hover:bg-brand-bg3'
@@ -213,13 +213,15 @@ export function Step1Store({
               }
             >
               {platform === p.id && (
-                <span className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-brand-green">
+                <span className="absolute right-3 top-3 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-green">
                   <Check className="h-3 w-3 text-brand-green-fg" />
                 </span>
               )}
-              <PlatformIcon id={p.id} />
-              <div>
-                <p className="text-sm font-semibold text-brand-text">{p.label}</p>
+              <span className="shrink-0">
+                <PlatformIcon id={p.id} />
+              </span>
+              <div className="min-w-0 flex-1 pr-6 sm:pr-0">
+                <p className="truncate text-sm font-semibold text-brand-text">{p.label}</p>
                 <p className="mt-0.5 text-xs text-brand-muted">{p.description}</p>
               </div>
             </button>
@@ -228,17 +230,17 @@ export function Step1Store({
       </div>
 
       {/* Footer row */}
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={onSkip}
-          className="text-sm text-brand-muted transition-colors hover:text-brand-dim"
+          className="py-1 text-center text-sm text-brand-muted transition-colors hover:text-brand-dim"
         >
           I don&apos;t have a store yet
         </button>
         <Button
           onClick={() => void handleContinue()}
           disabled={!canContinue || continuing}
-          className="bg-brand-green text-brand-green-fg hover:bg-brand-green/90"
+          className="w-full justify-center bg-brand-green text-brand-green-fg hover:bg-brand-green/90 sm:w-auto"
         >
           {continuing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Continue to Competitors →
