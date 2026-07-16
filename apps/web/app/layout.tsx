@@ -78,6 +78,7 @@ export default function RootLayout({
       <head>
         <link rel="dns-prefetch" href="https://checkout.freemius.com" />
         <link rel="dns-prefetch" href="https://ingest.sentry.io" />
+        <link rel="alternate" type="application/rss+xml" title="Beaconmon Blog" href="https://beaconmon.com/feed.xml" />
         <JsonLd data={SITE_SCHEMA} />
       </head>
       <body>

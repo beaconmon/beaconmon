@@ -195,6 +195,14 @@ export default function Footer() {
                   <FooterLink key={label} href={href}>{label}</FooterLink>
                 ))}
                 <FooterLink href="/blog">Blog</FooterLink>
+                <li className="py-[7px]">
+                  <a
+                    href="/feed.xml"
+                    className="text-[13.5px] text-brand-dim hover:text-brand-text transition-colors duration-150"
+                  >
+                    RSS Feed
+                  </a>
+                </li>
               </ul>
             </div>
 

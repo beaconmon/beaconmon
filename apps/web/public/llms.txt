@@ -90,6 +90,7 @@ All plans include a 14-day Growth trial with no credit card required.
 - [Ecommerce uptime monitoring guide](https://beaconmon.com/ecommerce-uptime-monitoring-guide): uptime guide for merchants
 - [Website change detection](https://beaconmon.com/website-change-detection): content change monitoring
 - [Homepage monitoring](https://beaconmon.com/homepage-monitoring): monitoring a competitor or your own homepage
+- [RSS Feed](https://beaconmon.com/feed.xml): full blog post feed, updated on publish
 - [Research](https://beaconmon.com/research): index of every original statistic Beaconmon has published from its own monitoring data
 - [Glossary](https://beaconmon.com/glossary): plain-language definitions of competitor and uptime monitoring terms
 - [Methodology](https://beaconmon.com/methodology): how Beaconmon's competitor monitoring data is collected and its limitations
@@ -184,4 +185,4 @@ Haimanot Getu — https://www.linkedin.com/in/haimanot-getu/
 
 ## Last updated
 
-2026-07-10
+2026-07-15
