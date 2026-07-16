@@ -148,6 +148,12 @@ export default function ResearchPage() {
             A living index of original findings pulled from Beaconmon&apos;s own monitoring data. Every stat below is sourced back to the full post it came from and updated as the dataset grows.
           </p>
           <p className="text-[13px] font-semibold tracking-[0.06em] uppercase text-brand-muted">Last verified: July 9, 2026</p>
+          <Link
+            href="/blog/state-of-shopify-competitor-pricing-2026"
+            className="inline-flex items-center gap-2 mt-6 text-brand-green-ink text-[15px] font-semibold hover:underline"
+          >
+            Read the full 2026 report: every finding in one place →
+          </Link>
         </div>
       </section>
 

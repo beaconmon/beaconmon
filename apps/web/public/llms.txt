@@ -92,6 +92,7 @@ All plans include a 14-day Growth trial with no credit card required.
 - [Homepage monitoring](https://beaconmon.com/homepage-monitoring): monitoring a competitor or your own homepage
 - [RSS Feed](https://beaconmon.com/feed.xml): full blog post feed, updated on publish
 - [Research](https://beaconmon.com/research): index of every original statistic Beaconmon has published from its own monitoring data
+- [The 2026 State of Shopify Competitor Pricing](https://beaconmon.com/blog/state-of-shopify-competitor-pricing-2026): annual report aggregating every original finding from 504,500 competitor events across 641 Shopify stores
 - [Glossary](https://beaconmon.com/glossary): plain-language definitions of competitor and uptime monitoring terms
 - [Methodology](https://beaconmon.com/methodology): how Beaconmon's competitor monitoring data is collected and its limitations
 - [vs UptimeRobot](https://beaconmon.com/vs/uptimerobot): comparison with UptimeRobot

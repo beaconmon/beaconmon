@@ -8,6 +8,7 @@ import BlogPostLayout, {
   A,
   Strong,
   Callout,
+  Quote,
   Stat,
   StatGrid,
   KeyTakeaways,
@@ -112,11 +113,23 @@ export default function Post() {
       <H2>Finding 1: 91% of price changes require no action</H2>
 
       <P>
-        The most important number in our dataset: <Strong>90.76% of all price change events are
-        sub-1% moves.</Strong> A product priced at $49.99 shifts to $49.50. A variant moves from
-        $24.00 to $23.97. These are not pricing decisions. They are artifacts of automated software
-        running in the background of your competitors&apos; stores.
+        <Strong>90.76% of all price change events</Strong> Beaconmon recorded across 511 Shopify
+        stores are sub-1% moves: a product shifting from $49.99 to $49.50, a variant moving from
+        $24.00 to $23.97. These are not pricing decisions. They are artifacts of dynamic pricing
+        apps, currency rounding, and bulk sale rules running automatically in the background of a
+        competitor&apos;s store, with no person involved. Only 1.88% of all price changes are 5% or
+        larger, the threshold above which a move likely represents an actual decision. If your
+        monitoring alerts on every price change, 98.12% of what it sends you requires no response,
+        and the signal that matters gets buried inside it within days. The pattern holds whether
+        you track one direct rival or dozens: automated noise dominates the feed until you filter
+        for it.
       </P>
+
+      <Quote cite="Haimanot Getu" role="Founder, Beaconmon">
+        Most merchants set up competitor price alerts and mute them within a week. The problem
+        is never that they stopped caring, it&apos;s that the alert channel never filtered out the
+        noise in the first place.
+      </Quote>
 
       <P>
         Stack up the buckets and the picture sharpens further:
@@ -159,22 +172,15 @@ export default function Post() {
       <H2>Finding 2: Prices go up more than they go down</H2>
 
       <P>
-        Of the 468,451 price change events, <Strong>55.4% are increases</Strong> and 44.6% are
-        decreases. The average increase magnitude is 0.92%. The average decrease is 0.85%. The
-        median for both directions is under 0.2%.
-      </P>
-
-      <P>
-        This does not mean competitors are raising prices in ways that create opportunity for you.
-        At these magnitudes, most increases are the same automated noise as the decreases. But the
-        directional imbalance is real: if you are only watching for price cuts, you are
-        missing the majority of what is happening.
-      </P>
-
-      <P>
-        The strategically relevant moves in either direction remain in the 5%+ bucket. A 6% increase
-        on a hero SKU is worth knowing about as much as a 6% decrease: it tells you the competitor
-        is testing margin expansion on that product and may be vulnerable to a positioning attack.
+        Of the 468,451 price change events in our dataset, <Strong>55.4% are increases</Strong> and
+        44.6% are decreases, the opposite split most merchants assume. The average increase
+        magnitude is 0.92%, the average decrease is 0.85%, and the median move in either direction
+        is under 0.2%, so most of this activity isn&apos;t a meaningful strategic signal on its own.
+        What it does tell you is where to point your attention: if your monitoring only alerts on
+        price cuts, you&apos;re missing the majority of what your competitors&apos; pricing software is
+        actually doing. The strategically relevant moves live in the 5%+ bucket regardless of
+        direction. A 6% increase on a hero SKU signals margin testing the same way a 6% decrease
+        signals a threat, so both directions deserve the same alert threshold, not just cuts.
       </P>
 
       <SummaryStatement>

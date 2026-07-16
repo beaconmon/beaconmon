@@ -41,6 +41,15 @@ export function createHowToSchema(opts: {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'state-of-shopify-competitor-pricing-2026',
+    title: 'The 2026 State of Shopify Competitor Pricing',
+    description:
+      'We analyzed 504,500 competitor events across 641 Shopify stores and 180,065 products. Eleven original findings on pricing, timing, restocking, and discounting, in one report.',
+    publishedAt: '2026-07-16',
+    tags: ['Data & Research'],
+    readingTime: 12,
+  },
+  {
     slug: 'how-to-monitor-competitor-prices-shopify',
     title: 'How to Monitor Competitor Prices on Shopify (2026 Guide)',
     description:

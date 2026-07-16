@@ -8,6 +8,7 @@ import BlogPostLayout, {
   A,
   Strong,
   Callout,
+  Quote,
   Stat,
   StatGrid,
   KeyTakeaways,
@@ -181,6 +182,12 @@ export default function Post() {
         monitoring channel is generating more than 5 to 10 alerts per competitor per day, the
         threshold is too low and you are training your team to ignore it.
       </Callout>
+
+      <Quote cite="Haimanot Getu" role="Founder, Beaconmon">
+        A 5% threshold isn&apos;t a guess, it&apos;s the line in our own data where noise stops and
+        decisions start. Everything below it is a currency rounding job or a repricing app talking
+        to itself.
+      </Quote>
 
       <H2>The threshold framework: how to decide what matters</H2>
 

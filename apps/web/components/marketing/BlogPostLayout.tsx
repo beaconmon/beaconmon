@@ -88,6 +88,17 @@ export function Callout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function Quote({ children, cite, role }: { children: React.ReactNode; cite: string; role?: string }) {
+  return (
+    <blockquote className="border-l-[3px] border-brand-green-ink pl-6 my-8">
+      <p className="text-[18px] text-brand-text leading-[1.65] italic m-0">{children}</p>
+      <footer className="text-[13px] text-brand-muted mt-3 not-italic">
+        {cite}{role ? `, ${role}` : ''}
+      </footer>
+    </blockquote>
+  );
+}
+
 export function KeyTakeaways({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-[var(--brand-green-glow-10)] border border-[var(--brand-green-border-25)] rounded-xl px-6 py-5 my-8">
